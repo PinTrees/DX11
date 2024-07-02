@@ -193,7 +193,7 @@ void SsaoDemo::UpdateScene(float dt)
 	_camera.UpdateViewMatrix();
 }
 
-void SsaoDemo::DrawScene()
+void SsaoDemo::RenderApplication()
 {
 	//
 	// Render the scene to the shadow map.

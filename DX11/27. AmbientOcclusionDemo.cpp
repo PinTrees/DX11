@@ -72,7 +72,7 @@ void AmbientOcclusionDemo::UpdateScene(float dt)
 		_camera.Strafe(10.0f * dt);
 }
 
-void AmbientOcclusionDemo::DrawScene()
+void AmbientOcclusionDemo::RenderApplication()
 {
 	_deviceContext->ClearRenderTargetView(_renderTargetView.Get(), reinterpret_cast<const float*>(&Colors::Silver));
 	_deviceContext->ClearDepthStencilView(_depthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);

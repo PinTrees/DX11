@@ -28,7 +28,7 @@ public:
 	static void InitAll(ComPtr<ID3D11Device> device);
 	static void DestroyAll();
 
-	static Shader* GetShader(const std::wstring& shaderFileName);
+	static Shader* GetShaderByName(const std::wstring& shaderFileName);
 	template <class T>
 	static T* GetShader()
 	{

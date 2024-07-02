@@ -118,3 +118,26 @@ void Transform::SetPosition(const Vec3& worldPosition)
 		SetLocalPosition(worldPosition);
 	}
 }
+
+void Transform::OnInspectorGUI()
+{
+	ImGui::Text("Transform");
+
+	bool positionChanged = false;
+	bool rotationChanged = false;
+	bool scaleChanged = false;
+
+	ImGui::Text("Position");
+	positionChanged = ImGui::DragFloat3("##Position", reinterpret_cast<float*>(&_localPosition), 0.1f);
+
+	ImGui::Text("Rotation");
+	rotationChanged = ImGui::DragFloat3("##Rotation", reinterpret_cast<float*>(&_localRotation), 0.1f);
+
+	ImGui::Text("Scale");
+	scaleChanged = ImGui::DragFloat3("##Scale", reinterpret_cast<float*>(&_localScale), 0.1f);
+
+	if (positionChanged || rotationChanged || scaleChanged)
+	{
+		UpdateTransform();
+	}
+}

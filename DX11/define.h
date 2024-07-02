@@ -22,3 +22,4 @@
 
 
 
+#define DT TimeManager::GetI()->GetDT();

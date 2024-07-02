@@ -14,7 +14,8 @@ public:
 	HWND      MainWnd() { return _hMainWnd; }
 	ID3D11Device* GetDevice() { return  _device.Get(); }
 	ID3D11DeviceContext* GetDeviceContext() { return  _deviceContext.Get(); }
-
+	D3D11_VIEWPORT GetViewport() { return _viewport; }
+	
 	float     AspectRatio() { return static_cast<float>(_clientWidth) / _clientHeight; }
 	
 	int32 Run();
@@ -22,12 +23,15 @@ public:
 	virtual bool Init();
 	virtual void OnResize(); 
 	virtual void UpdateScene(float dt) = 0;
-	virtual void DrawScene() = 0;
+	virtual void RenderApplication();
 	virtual LRESULT MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 	virtual void OnMouseDown(WPARAM btnState, int32 x, int32 y){ }
 	virtual void OnMouseUp(WPARAM btnState, int32 x, int32 y)  { }
 	virtual void OnMouseMove(WPARAM btnState, int32 x, int32 y){ }
+
+	virtual void OnRender(ID3D11RenderTargetView* renderTargetView) { }
+	void SetScreenSize(UINT width, UINT height);
 
 protected:
 	bool InitMainWindow();

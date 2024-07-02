@@ -4,7 +4,7 @@ class GameObject;
 
 class Component
 {
-private:
+protected:
 	GameObject* m_pGameObject;
 
 public:
@@ -16,6 +16,9 @@ public:
 	virtual void Update() { }
 	virtual void LateUpdate() { }
 	virtual void FixedUpdate() { }
+	virtual void Render() {}
+
+	virtual void OnInspectorGUI() { }
 
 public:
 	GameObject* GetGameObject() { return m_pGameObject; }

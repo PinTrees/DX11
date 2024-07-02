@@ -76,8 +76,8 @@ void ProjectEditorWindow::DisplayDirectoryContents(const std::string& directory)
                 // 드래그 앤 드롭 소스 시작
                 if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
                 {
-                    std::string filePath = entry.path().string();
-                    ImGui::SetDragDropPayload("FBX_FILE", &filePath, sizeof(std::string));
+                    const std::string filePath = entry.path().string();
+                    ImGui::SetDragDropPayload("FBX_FILE", filePath.c_str(), filePath.size() + 1); // +1 for null terminator
                     ImGui::Text("Dragging %s", entry.path().filename().string().c_str());
                     ImGui::EndDragDropSource();
                 }

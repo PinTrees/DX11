@@ -3,6 +3,10 @@
 #include <WindowsX.h>
 #include <sstream>
 
+#include "SceneHierachyEditorWindow.h"
+#include "SceneEditorWindow.h"
+#include "ProjectEditorWindow.h"
+#include "InspectorEditorWindow.h"
 
 namespace
 {
@@ -53,12 +57,23 @@ int32 App::Run()
 		else
         {	
 			_timer.Tick();
+			TimeManager::GetI()->Update();
 
 			if (!_appPaused)
 			{
 				CalculateFrameStats();
+
+				// Update
 				UpdateScene(_timer.DeltaTime());	
-				DrawScene();
+				SceneManager::GetI()->UpdateScene();
+				PhysicsManager::GetI()->Update(_timer.DeltaTime());
+				EditorGUIManager::GetI()->Update();
+
+				// Render
+				RenderApplication();
+				EditorGUIManager::GetI()->RenderEditorWindows();
+
+				HR(_swapChain->Present(0, 0)); 
 			}
 			else
 			{
@@ -77,6 +92,19 @@ bool App::Init()
 
 	if (!InitDirect3D())
 		return false;
+
+	EditorGUIManager::GetI()->Init();
+	EditorGUIManager::GetI()->RegisterWindow(new SceneHierachyEditorWindow);
+	EditorGUIManager::GetI()->RegisterWindow(new ProjectEditorWindow);
+	EditorGUIManager::GetI()->RegisterWindow(new SceneEditorWindow);
+	EditorGUIManager::GetI()->RegisterWindow(new InspectorEditorWindow);
+
+	// Singleton Init
+	SceneManager::GetI()->Init();
+	SceneManager::GetI()->LoadScene("");
+
+	// TimeManager Init
+	TimeManager::GetI()->Init();
 
 	return true;
 }
@@ -102,6 +130,11 @@ void App::OnResize()
 	_viewport.MaxDepth = 1.0f;
 
 	_deviceContext->RSSetViewports(1, &_viewport);
+}
+
+void App::RenderApplication()
+{
+
 }
  
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -237,6 +270,14 @@ LRESULT App::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	return DefWindowProc(hwnd, msg, wParam, lParam);
 }
 
+
+void App::SetScreenSize(UINT width, UINT height)
+{
+	_clientHeight = height;
+	_clientWidth = width;
+
+	OnResize();
+}
 
 bool App::InitMainWindow()
 {

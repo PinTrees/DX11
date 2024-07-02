@@ -16,9 +16,6 @@
     <Filter Include="1. Engine">
       <UniqueIdentifier>{2c8d9d8c-d25c-4cad-92d9-772e50adeed7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="2. Game\98. Utils">
-      <UniqueIdentifier>{861c456f-060b-45fd-a1c8-ee2f466bf87a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="2. Game\01. Common">
       <UniqueIdentifier>{37de27df-36d8-409f-ae96-16b637d22eb8}</UniqueIdentifier>
     </Filter>
@@ -33,9 +30,6 @@
     </Filter>
     <Filter Include="1. Engine\GameObject">
       <UniqueIdentifier>{64dba578-83fa-437f-93d1-7331eed8b124}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="1. Engine\Component\ModelRenderer">
-      <UniqueIdentifier>{eb1a1ad1-bab8-46b3-a863-c00453045ab6}</UniqueIdentifier>
     </Filter>
     <Filter Include="1. Engine\Shader">
       <UniqueIdentifier>{6f371416-cc11-4eed-8da7-e8414a34a94a}</UniqueIdentifier>
@@ -73,17 +67,11 @@
     <Filter Include="1. Engine\ImguiContainer">
       <UniqueIdentifier>{6335fedd-5f53-4747-b4af-e9793084429a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="1. Engine\ImguiContainer\0. Base">
-      <UniqueIdentifier>{d56871c5-4795-4c3c-85b3-268d778c81bf}</UniqueIdentifier>
-    </Filter>
     <Filter Include="1. Engine\ImguiContainer\0. Core">
       <UniqueIdentifier>{a61e248d-b524-4276-9960-a0a7f19d9033}</UniqueIdentifier>
     </Filter>
     <Filter Include="1. Engine\ImguiContainer\SceneHierarchyWindow">
       <UniqueIdentifier>{a009764f-5f0b-4b42-9bc1-4bcf19eb46cc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="1. Engine\ImguiContainer\0. Base\EditorWindow">
-      <UniqueIdentifier>{ee80240f-f446-403f-9348-b6bcc6a9ba5b}</UniqueIdentifier>
     </Filter>
     <Filter Include="1. Engine\ImguiContainer\ProjectEditorWindow">
       <UniqueIdentifier>{9cdf2c29-136c-436c-a9b0-b70b465778ad}</UniqueIdentifier>
@@ -94,17 +82,44 @@
     <Filter Include="1. Engine\ImguiContainer\InspectorEditorWindow">
       <UniqueIdentifier>{32910d32-b0b7-478a-9151-c7a197ae73dc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="2. Game\App">
+      <UniqueIdentifier>{d4ee942b-ae43-4d32-9960-811c5058929a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="1. Engine\98. Utils">
+      <UniqueIdentifier>{861c456f-060b-45fd-a1c8-ee2f466bf87a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="1. Engine\ImguiContainer\1. Base">
+      <UniqueIdentifier>{d56871c5-4795-4c3c-85b3-268d778c81bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="1. Engine\ImguiContainer\1. Base\EditorWindow">
+      <UniqueIdentifier>{ee80240f-f446-403f-9348-b6bcc6a9ba5b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="1. Engine\Component\MeshRenderer">
+      <UniqueIdentifier>{eb1a1ad1-bab8-46b3-a863-c00453045ab6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="1. Engine\Manager">
+      <UniqueIdentifier>{c94e3105-beff-449c-b378-f8c60e06adff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="1. Engine\Manager\RenderManager">
+      <UniqueIdentifier>{43ad6e07-5c80-40c4-9310-e67e2a2d935e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="1. Engine\Manager\PhysicsManager">
+      <UniqueIdentifier>{12d75b60-5376-4662-97b8-098756f516b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="1. Engine\Component\RigidBody">
+      <UniqueIdentifier>{d1556633-cadd-4c30-9d2a-3c53c423e46e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="1. Engine\Manager\TimeManager">
+      <UniqueIdentifier>{55973ca5-fcc5-4012-aff8-78d199739482}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="1. Engine\Component\Collider">
+      <UniqueIdentifier>{3cdd5ec9-5503-45ca-9d70-48788ebd1c3b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="1. Engine\Component\Collider\BoxCollider">
+      <UniqueIdentifier>{06af4196-39f7-4b6d-921c-41850b00ceab}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="pch.cpp">
-      <Filter>2. Game\00. Headers</Filter>
-    </ClCompile>
-    <ClCompile Include="SimpleMath.cpp">
-      <Filter>2. Game\00. Headers</Filter>
-    </ClCompile>
-    <ClCompile Include="Main.cpp">
-      <Filter>2. Game</Filter>
-    </ClCompile>
     <ClCompile Include="01. InitDemo.cpp">
       <Filter>2. Game\Demo</Filter>
     </ClCompile>
@@ -145,10 +160,10 @@
       <Filter>2. Game\Demo</Filter>
     </ClCompile>
     <ClCompile Include="Effects.cpp">
-      <Filter>2. Game\98. Utils</Filter>
+      <Filter>1. Engine\98. Utils</Filter>
     </ClCompile>
     <ClCompile Include="Vertex.cpp">
-      <Filter>2. Game\98. Utils</Filter>
+      <Filter>1. Engine\98. Utils</Filter>
     </ClCompile>
     <ClCompile Include="09. TexturedHillsAndWavesDemo.cpp">
       <Filter>2. Game\Demo</Filter>
@@ -163,10 +178,10 @@
       <Filter>2. Game\Demo</Filter>
     </ClCompile>
     <ClCompile Include="Utils.cpp">
-      <Filter>2. Game\98. Utils</Filter>
+      <Filter>1. Engine\98. Utils</Filter>
     </ClCompile>
     <ClCompile Include="RenderStates.cpp">
-      <Filter>2. Game\98. Utils</Filter>
+      <Filter>1. Engine\98. Utils</Filter>
     </ClCompile>
     <ClCompile Include="13. VecAddDemo.cpp">
       <Filter>2. Game\Demo</Filter>
@@ -175,7 +190,7 @@
       <Filter>2. Game\Demo</Filter>
     </ClCompile>
     <ClCompile Include="BlurFilter.cpp">
-      <Filter>2. Game\98. Utils</Filter>
+      <Filter>1. Engine\98. Utils</Filter>
     </ClCompile>
     <ClCompile Include="15. BasicTessellation.cpp">
       <Filter>2. Game\Demo</Filter>
@@ -240,9 +255,6 @@
     <ClCompile Include="Ssao.cpp">
       <Filter>2. Game\01. Common</Filter>
     </ClCompile>
-    <ClCompile Include="29. MeshViewDemo.cpp">
-      <Filter>2. Game\Demo</Filter>
-    </ClCompile>
     <ClCompile Include="MeshGeometry.cpp">
       <Filter>1. Engine\Mesh\97. Model</Filter>
     </ClCompile>
@@ -253,7 +265,7 @@
       <Filter>2. Game\Demo</Filter>
     </ClCompile>
     <ClCompile Include="AnimationHelper.cpp">
-      <Filter>2. Game\98. Utils</Filter>
+      <Filter>1. Engine\98. Utils</Filter>
     </ClCompile>
     <ClCompile Include="31. SkinnedMeshDemo.cpp">
       <Filter>2. Game\Demo</Filter>
@@ -267,8 +279,8 @@
     <ClCompile Include="GameObject.cpp">
       <Filter>1. Engine\GameObject</Filter>
     </ClCompile>
-    <ClCompile Include="ModelRenderer.cpp">
-      <Filter>1. Engine\Component\ModelRenderer</Filter>
+    <ClCompile Include="MeshRenderer.cpp">
+      <Filter>1. Engine\Component\MeshRenderer</Filter>
     </ClCompile>
     <ClCompile Include="Shader.cpp">
       <Filter>1. Engine\Shader</Filter>
@@ -310,7 +322,7 @@
       <Filter>1. Engine\App</Filter>
     </ClCompile>
     <ClCompile Include="EditorGUIManager.cpp">
-      <Filter>1. Engine\ImguiContainer\0. Base</Filter>
+      <Filter>1. Engine\ImguiContainer\1. Base</Filter>
     </ClCompile>
     <ClCompile Include="imgui.cpp">
       <Filter>1. Engine\ImguiContainer\0. Core</Filter>
@@ -340,7 +352,7 @@
       <Filter>1. Engine\ImguiContainer\SceneHierarchyWindow</Filter>
     </ClCompile>
     <ClCompile Include="EditorWindow.cpp">
-      <Filter>1. Engine\ImguiContainer\0. Base\EditorWindow</Filter>
+      <Filter>1. Engine\ImguiContainer\1. Base\EditorWindow</Filter>
     </ClCompile>
     <ClCompile Include="ProjectEditorWindow.cpp">
       <Filter>1. Engine\ImguiContainer\ProjectEditorWindow</Filter>
@@ -351,17 +363,38 @@
     <ClCompile Include="InspectorEditorWindow.cpp">
       <Filter>1. Engine\ImguiContainer\InspectorEditorWindow</Filter>
     </ClCompile>
+    <ClCompile Include="Main.cpp">
+      <Filter>1. Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="29. MeshViewDemo.cpp">
+      <Filter>2. Game\App</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>1. Engine\00. Header</Filter>
+    </ClCompile>
+    <ClCompile Include="SimpleMath.cpp">
+      <Filter>1. Engine\00. Header</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderManager.cpp">
+      <Filter>1. Engine\Manager\RenderManager</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysicsManager.cpp">
+      <Filter>1. Engine\Manager\PhysicsManager</Filter>
+    </ClCompile>
+    <ClCompile Include="RigidBody.cpp">
+      <Filter>1. Engine\Component\RigidBody</Filter>
+    </ClCompile>
+    <ClCompile Include="TimeManager.cpp">
+      <Filter>1. Engine\Manager\TimeManager</Filter>
+    </ClCompile>
+    <ClCompile Include="BoxCollider.cpp">
+      <Filter>1. Engine\Component\Collider\BoxCollider</Filter>
+    </ClCompile>
+    <ClCompile Include="Collider.cpp">
+      <Filter>1. Engine\Component\Collider</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="pch.h">
-      <Filter>2. Game\00. Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="SimpleMath.h">
-      <Filter>2. Game\00. Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="Types.h">
-      <Filter>2. Game\00. Headers</Filter>
-    </ClInclude>
     <ClInclude Include="01. InitDemo.h">
       <Filter>2. Game\Demo</Filter>
     </ClInclude>
@@ -402,10 +435,10 @@
       <Filter>2. Game\Demo</Filter>
     </ClInclude>
     <ClInclude Include="Effects.h">
-      <Filter>2. Game\98. Utils</Filter>
+      <Filter>1. Engine\98. Utils</Filter>
     </ClInclude>
     <ClInclude Include="Vertex.h">
-      <Filter>2. Game\98. Utils</Filter>
+      <Filter>1. Engine\98. Utils</Filter>
     </ClInclude>
     <ClInclude Include="09. TexturedHillsAndWavesDemo.h">
       <Filter>2. Game\Demo</Filter>
@@ -420,10 +453,10 @@
       <Filter>2. Game\Demo</Filter>
     </ClInclude>
     <ClInclude Include="Utils.h">
-      <Filter>2. Game\98. Utils</Filter>
+      <Filter>1. Engine\98. Utils</Filter>
     </ClInclude>
     <ClInclude Include="RenderStates.h">
-      <Filter>2. Game\98. Utils</Filter>
+      <Filter>1. Engine\98. Utils</Filter>
     </ClInclude>
     <ClInclude Include="13. VecAddDemo.h">
       <Filter>2. Game\Demo</Filter>
@@ -432,7 +465,7 @@
       <Filter>2. Game\Demo</Filter>
     </ClInclude>
     <ClInclude Include="BlurFilter.h">
-      <Filter>2. Game\98. Utils</Filter>
+      <Filter>1. Engine\98. Utils</Filter>
     </ClInclude>
     <ClInclude Include="15. BasicTessellation.h">
       <Filter>2. Game\Demo</Filter>
@@ -497,9 +530,6 @@
     <ClInclude Include="Ssao.h">
       <Filter>2. Game\01. Common</Filter>
     </ClInclude>
-    <ClInclude Include="29. MeshViewDemo.h">
-      <Filter>2. Game\Demo</Filter>
-    </ClInclude>
     <ClInclude Include="MeshGeometry.h">
       <Filter>1. Engine\Mesh\97. Model</Filter>
     </ClInclude>
@@ -510,7 +540,7 @@
       <Filter>2. Game\Demo</Filter>
     </ClInclude>
     <ClInclude Include="AnimationHelper.h">
-      <Filter>2. Game\98. Utils</Filter>
+      <Filter>1. Engine\98. Utils</Filter>
     </ClInclude>
     <ClInclude Include="31. SkinnedMeshDemo.h">
       <Filter>2. Game\Demo</Filter>
@@ -524,8 +554,8 @@
     <ClInclude Include="GameObject.h">
       <Filter>1. Engine\GameObject</Filter>
     </ClInclude>
-    <ClInclude Include="ModelRenderer.h">
-      <Filter>1. Engine\Component\ModelRenderer</Filter>
+    <ClInclude Include="MeshRenderer.h">
+      <Filter>1. Engine\Component\MeshRenderer</Filter>
     </ClInclude>
     <ClInclude Include="Shader.h">
       <Filter>1. Engine\Shader</Filter>
@@ -568,7 +598,7 @@
       <Filter>1. Engine\App</Filter>
     </ClInclude>
     <ClInclude Include="EditorGUIManager.h">
-      <Filter>1. Engine\ImguiContainer\0. Base</Filter>
+      <Filter>1. Engine\ImguiContainer\1. Base</Filter>
     </ClInclude>
     <ClInclude Include="imconfig.h">
       <Filter>1. Engine\ImguiContainer\0. Core</Filter>
@@ -601,7 +631,7 @@
       <Filter>1. Engine\ImguiContainer\SceneHierarchyWindow</Filter>
     </ClInclude>
     <ClInclude Include="EditorWindow.h">
-      <Filter>1. Engine\ImguiContainer\0. Base\EditorWindow</Filter>
+      <Filter>1. Engine\ImguiContainer\1. Base\EditorWindow</Filter>
     </ClInclude>
     <ClInclude Include="ProjectEditorWindow.h">
       <Filter>1. Engine\ImguiContainer\ProjectEditorWindow</Filter>
@@ -612,11 +642,36 @@
     <ClInclude Include="InspectorEditorWindow.h">
       <Filter>1. Engine\ImguiContainer\InspectorEditorWindow</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="SimpleMath.inl">
-      <Filter>2. Game\00. Headers</Filter>
-    </None>
+    <ClInclude Include="29. MeshViewDemo.h">
+      <Filter>2. Game\App</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>1. Engine\00. Header</Filter>
+    </ClInclude>
+    <ClInclude Include="SimpleMath.h">
+      <Filter>1. Engine\00. Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Types.h">
+      <Filter>1. Engine\00. Header</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderManager.h">
+      <Filter>1. Engine\Manager\RenderManager</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicsManager.h">
+      <Filter>1. Engine\Manager\PhysicsManager</Filter>
+    </ClInclude>
+    <ClInclude Include="RigidBody.h">
+      <Filter>1. Engine\Component\RigidBody</Filter>
+    </ClInclude>
+    <ClInclude Include="TimeManager.h">
+      <Filter>1. Engine\Manager\TimeManager</Filter>
+    </ClInclude>
+    <ClInclude Include="BoxCollider.h">
+      <Filter>1. Engine\Component\Collider\BoxCollider</Filter>
+    </ClInclude>
+    <ClInclude Include="Collider.h">
+      <Filter>1. Engine\Component\Collider</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Shaders\02. Color.fx">
@@ -706,5 +761,10 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DX11.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="SimpleMath.inl">
+      <Filter>1. Engine\00. Header</Filter>
+    </None>
   </ItemGroup>
 </Project>

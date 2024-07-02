@@ -119,7 +119,7 @@ void TerrainDemo::UpdateScene(float dt)
 	_camera.UpdateViewMatrix();
 }
 
-void TerrainDemo::DrawScene()
+void TerrainDemo::RenderApplication()
 {
 	_deviceContext->ClearRenderTargetView(_renderTargetView.Get(), reinterpret_cast<const float*>(&Colors::Silver));
 	_deviceContext->ClearDepthStencilView(_depthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);

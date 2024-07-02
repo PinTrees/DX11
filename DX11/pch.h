@@ -61,18 +61,24 @@ using namespace Microsoft::WRL;
 
 // ENGINE
 #include "Application.h"
+#include "RenderManager.h"
 
 #include "Shader.h"
 #include "Mesh.h"
 #include "GameObject.h"
 #include "Transform.h"
-#include "ModelRenderer.h"
+#include "MeshRenderer.h"
 
 #include "EditorWindow.h"
 #include "EditorGUIManager.h"
 
 #include "Scene.h"
 #include "SceneManager.h"
+
+#include "Collider.h"
+#include "BoxCollider.h"
+#include "PhysicsManager.h"
+#include "TimeManager.h"
 
 // SHADER
 #include "NormalMapSkinnedShader.h"

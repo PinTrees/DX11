@@ -9,9 +9,6 @@
 #include "ShadowMap.h"
 #include "Ssao.h"
 
-#include "SceneHierachyEditorWindow.h"
-#include "ProjectEditorWindow.h"
-
 
 MeshViewDemo::MeshViewDemo(HINSTANCE hInstance)
 	: App(hInstance)
@@ -55,23 +52,6 @@ bool MeshViewDemo::Init()
 	if (!App::Init())
 		return false;
 
-	// Singleton Init
-	EditorGUIManager::GetI()->Init();
-	EditorGUIManager::GetI()->RegisterWindow(new EditorWindow("AAA"));
-	EditorGUIManager::GetI()->RegisterWindow(new SceneHierachyEditorWindow);
-	EditorGUIManager::GetI()->RegisterWindow(new ProjectEditorWindow);
-
-	SceneManager::GetI()->Init();
-	SceneManager::GetI()->LoadScene("");
-
-	GameObject* go = new GameObject("TestObject");
-	GameObject* g1 = new GameObject("TestObject");
-	GameObject* g2 = new GameObject("TestObject");
-
-	SceneManager::GetI()->GetCurrentScene()->AddRootGameObject(go);
-	SceneManager::GetI()->GetCurrentScene()->AddRootGameObject(g1);
-	SceneManager::GetI()->GetCurrentScene()->AddRootGameObject(g2);
-
 	// Must init Effects first since InputLayouts depend on shader signatures.
 	Effects::InitAll(_device, L"../Shaders/28. Basic.fx");
 	Shaders::InitAll(_device);
@@ -98,6 +78,18 @@ bool MeshViewDemo::Init()
 	_rockModel = make_shared<Mesh>(_device, _texMgr, "../Resources/Models/rock.m3d", L"../Resources/Textures/");
 
 	_Fbx = make_shared<Mesh>(_device, _texMgr, "../Resources/Meshs/Banana.fbx", L"../Resources/Textures/");
+
+	GameObject* go = new GameObject("TestObject1");
+	GameObject* g1 = new GameObject("TestObject2");
+	GameObject* g2 = new GameObject("TestObject3");
+
+	go->AddComponent<MeshRenderer>()->SetMesh(_rockModel);
+	go->GetComponent<MeshRenderer>()->SetShader(Shaders::GetShaderByName(L"../Shaders/28. Basic.fx"));
+	go->AddComponent<BoxCollider>();
+
+	SceneManager::GetI()->GetCurrentScene()->AddRootGameObject(go);
+	SceneManager::GetI()->GetCurrentScene()->AddRootGameObject(g1);
+	SceneManager::GetI()->GetCurrentScene()->AddRootGameObject(g2);
 
 	MeshInstance treeInstance;
 	MeshInstance baseInstance;
@@ -232,8 +224,6 @@ void MeshViewDemo::OnResize()
 
 void MeshViewDemo::UpdateScene(float dt)
 {
-	EditorGUIManager::GetI()->Update();
-
 	//
 	// Control the camera.
 	//
@@ -258,12 +248,11 @@ void MeshViewDemo::UpdateScene(float dt)
 	_camera.UpdateViewMatrix();
 }
 
-void MeshViewDemo::DrawScene()
+void MeshViewDemo::RenderApplication()
 {
 	//
 	// Render the scene to the shadow map.
 	//
-
 	_smap->BindDsvAndSetNullRenderTarget(_deviceContext);
 
 	DrawSceneToShadowMap();
@@ -286,7 +275,6 @@ void MeshViewDemo::DrawScene()
 	//
 	// Now compute the ambient occlusion.
 	//
-
 	_ssao->ComputeSsao(_camera);
 	_ssao->BlurAmbientMap(2);
 
@@ -337,19 +325,26 @@ void MeshViewDemo::DrawScene()
 
 	XMMATRIX shadowTransform = XMLoadFloat4x4(&_shadowTransform);
 
+	if (GetAsyncKeyState('1') & 0x8000)
+		_deviceContext->RSSetState(RenderStates::WireframeRS.Get());
+
+	RenderManager::GetI()->shadowTransform = XMLoadFloat4x4(&_shadowTransform);
+	RenderManager::GetI()->cameraViewProjectionMatrix = view * proj;
+
 	uint32 stride = sizeof(Vertex::PosNormalTexTan);
 	uint32 offset = 0;
 
 	_deviceContext->IASetInputLayout(InputLayouts::PosNormalTexTan.Get());
 
-	if (GetAsyncKeyState('1') & 0x8000)
-		_deviceContext->RSSetState(RenderStates::WireframeRS.Get());
+	SceneManager::GetI()->GetCurrentScene()->RenderScene();
 
 	//
 	// Draw opaque objects.
 	//
 	D3DX11_TECHNIQUE_DESC techDesc;
 	tech->GetDesc(&techDesc);
+
+
 	for (uint32 p = 0; p < techDesc.Passes; ++p)
 	{
 		for (uint32 modelIndex = 0; modelIndex < _modelInstances.size(); ++modelIndex)
@@ -426,10 +421,141 @@ void MeshViewDemo::DrawScene()
 	// to it next frame.  These textures can be at any slot, so clear all slots.
 	ID3D11ShaderResourceView* nullSRV[16] = { 0 };
 	_deviceContext->PSSetShaderResources(0, 16, nullSRV);
+}
 
-	EditorGUIManager::GetI()->RenderEditorWindows();
+void MeshViewDemo::OnRender(ID3D11RenderTargetView* renderTargetView)
+{
+	_smap->BindDsvAndSetNullRenderTarget(_deviceContext);
 
-	HR(_swapChain->Present(0, 0));
+	DrawSceneToShadowMap();
+
+	_deviceContext->RSSetState(0);
+
+	_deviceContext->ClearDepthStencilView(_depthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+	_deviceContext->RSSetViewports(1, &_viewport);
+	_ssao->SetNormalDepthRenderTarget(_depthStencilView.Get());
+
+	DrawSceneToSsaoNormalDepthMap();
+
+	_ssao->ComputeSsao(_camera);
+	_ssao->BlurAmbientMap(10);
+
+	ID3D11RenderTargetView* renderTargets[1] = { renderTargetView };
+	_deviceContext->OMSetRenderTargets(1, renderTargets, _depthStencilView.Get());
+	_deviceContext->RSSetViewports(1, &_viewport);
+	_deviceContext->ClearRenderTargetView(renderTargetView, reinterpret_cast<const float*>(&Colors::Silver));
+
+	_deviceContext->OMSetDepthStencilState(RenderStates::EqualsDSS.Get(), 0);
+
+	XMMATRIX view = _camera.View();
+	XMMATRIX proj = _camera.Proj();
+	XMMATRIX viewProj = _camera.ViewProj();
+
+	float blendFactor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
+
+	Effects::NormalMapFX->SetDirLights(_dirLights);
+	Effects::NormalMapFX->SetEyePosW(_camera.GetPosition());
+	Effects::NormalMapFX->SetCubeMap(_sky->CubeMapSRV().Get());
+	Effects::NormalMapFX->SetShadowMap(_smap->DepthMapSRV().Get());
+	Effects::NormalMapFX->SetSsaoMap(_ssao->AmbientSRV().Get());
+
+	ComPtr<ID3DX11EffectTechnique> tech = Effects::NormalMapFX->Light3TexTech;
+	ComPtr<ID3DX11EffectTechnique> alphaClippedTech = Effects::NormalMapFX->Light3TexAlphaClipTech;
+
+	_deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	XMMATRIX world;
+	XMMATRIX worldInvTranspose;
+	XMMATRIX worldViewProj;
+	XMMATRIX toTexSpace(
+		0.5f, 0.0f, 0.0f, 0.0f,
+		0.0f, -0.5f, 0.0f, 0.0f,
+		0.0f, 0.0f, 1.0f, 0.0f,
+		0.5f, 0.5f, 0.0f, 1.0f);
+
+	XMMATRIX shadowTransform = XMLoadFloat4x4(&_shadowTransform);
+
+	RenderManager::GetI()->shadowTransform = XMLoadFloat4x4(&_shadowTransform);
+	RenderManager::GetI()->cameraViewProjectionMatrix = view * proj;
+
+	uint32 stride = sizeof(Vertex::PosNormalTexTan);
+	uint32 offset = 0;
+
+	_deviceContext->IASetInputLayout(InputLayouts::PosNormalTexTan.Get());
+
+	SceneManager::GetI()->GetCurrentScene()->RenderScene();
+
+	D3DX11_TECHNIQUE_DESC techDesc;
+	tech->GetDesc(&techDesc);
+
+	for (uint32 p = 0; p < techDesc.Passes; ++p)
+	{
+		for (uint32 modelIndex = 0; modelIndex < _modelInstances.size(); ++modelIndex)
+		{
+			world = XMLoadFloat4x4(&_modelInstances[modelIndex].World);
+			worldInvTranspose = MathHelper::InverseTranspose(world);
+			worldViewProj = world * view * proj;
+
+			Effects::NormalMapFX->SetWorld(world);
+			Effects::NormalMapFX->SetWorldInvTranspose(worldInvTranspose);
+			Effects::NormalMapFX->SetWorldViewProj(worldViewProj);
+			Effects::NormalMapFX->SetWorldViewProjTex(worldViewProj * toTexSpace);
+			Effects::NormalMapFX->SetShadowTransform(world * shadowTransform);
+			Effects::NormalMapFX->SetTexTransform(XMMatrixScaling(1.0f, 1.0f, 1.0f));
+
+			for (uint32 subset = 0; subset < _modelInstances[modelIndex].Model->SubsetCount; ++subset)
+			{
+				Effects::NormalMapFX->SetMaterial(_modelInstances[modelIndex].Model->Mat[subset]);
+				Effects::NormalMapFX->SetDiffuseMap(_modelInstances[modelIndex].Model->DiffuseMapSRV[subset].Get());
+				Effects::NormalMapFX->SetNormalMap(_modelInstances[modelIndex].Model->NormalMapSRV[subset].Get());
+
+				tech->GetPassByIndex(p)->Apply(0, _deviceContext.Get());
+				_modelInstances[modelIndex].Model->ModelMesh.Draw(_deviceContext, subset);
+			}
+		}
+	}
+
+	// The alpha tested triangles are leaves, so render them double sided.
+	_deviceContext->RSSetState(RenderStates::NoCullRS.Get());
+	alphaClippedTech->GetDesc(&techDesc);
+
+	for (uint32 p = 0; p < techDesc.Passes; ++p)
+	{
+		for (uint32 modelIndex = 0; modelIndex < _alphaClippedModelInstances.size(); ++modelIndex)
+		{
+			world = XMLoadFloat4x4(&_alphaClippedModelInstances[modelIndex].World);
+			worldInvTranspose = MathHelper::InverseTranspose(world);
+			worldViewProj = world * view * proj;
+
+			Effects::NormalMapFX->SetWorld(world);
+			Effects::NormalMapFX->SetWorldInvTranspose(worldInvTranspose);
+			Effects::NormalMapFX->SetWorldViewProj(worldViewProj);
+			Effects::NormalMapFX->SetWorldViewProjTex(worldViewProj * toTexSpace);
+			Effects::NormalMapFX->SetShadowTransform(world * shadowTransform);
+			Effects::NormalMapFX->SetTexTransform(XMMatrixScaling(1.0f, 1.0f, 1.0f));
+
+			for (uint32 subset = 0; subset < _alphaClippedModelInstances[modelIndex].Model->SubsetCount; ++subset)
+			{
+				Effects::NormalMapFX->SetMaterial(_alphaClippedModelInstances[modelIndex].Model->Mat[subset]);
+				Effects::NormalMapFX->SetDiffuseMap(_alphaClippedModelInstances[modelIndex].Model->DiffuseMapSRV[subset].Get());
+				Effects::NormalMapFX->SetNormalMap(_alphaClippedModelInstances[modelIndex].Model->NormalMapSRV[subset].Get());
+
+				alphaClippedTech->GetPassByIndex(p)->Apply(0, _deviceContext.Get());
+				_alphaClippedModelInstances[modelIndex].Model->ModelMesh.Draw(_deviceContext, subset);
+			}
+		}
+	}
+
+	_deviceContext->RSSetState(0);
+	_deviceContext->OMSetDepthStencilState(0, 0);
+
+	_sky->Draw(_deviceContext, _camera);
+
+	_deviceContext->RSSetState(0);
+	_deviceContext->OMSetDepthStencilState(0, 0);
+
+	ID3D11ShaderResourceView* nullSRV[16] = { 0 };
+	_deviceContext->PSSetShaderResources(0, 16, nullSRV);
 }
 
 void MeshViewDemo::OnMouseDown(WPARAM btnState, int32 x, int32 y)
@@ -467,6 +593,10 @@ void MeshViewDemo::DrawSceneToSsaoNormalDepthMap()
 	XMMATRIX proj = _camera.Proj();
 	XMMATRIX viewProj = XMMatrixMultiply(view, proj);
 
+	RenderManager::GetI()->cameraViewMatrix = _camera.View();
+	RenderManager::GetI()->cameraProjectionMatrix = _camera.Proj();
+	RenderManager::GetI()->cameraViewProjectionMatrix = XMMatrixMultiply(view, proj);
+
 	ComPtr<ID3DX11EffectTechnique> tech = Effects::SsaoNormalDepthFX->NormalDepthTech;
 	ComPtr<ID3DX11EffectTechnique> alphaClippedTech = Effects::SsaoNormalDepthFX->NormalDepthAlphaClipTech;
 
@@ -478,6 +608,9 @@ void MeshViewDemo::DrawSceneToSsaoNormalDepthMap()
 
 	_deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	_deviceContext->IASetInputLayout(InputLayouts::PosNormalTexTan.Get());
+
+	// Draw Scene Objects
+	SceneManager::GetI()->GetCurrentScene()->RenderSceneShadowNormal();
 
 	if (GetAsyncKeyState('1') & 0x8000)
 		_deviceContext->RSSetState(RenderStates::WireframeRS.Get());
@@ -544,8 +677,13 @@ void MeshViewDemo::DrawSceneToShadowMap()
 	XMMATRIX proj = XMLoadFloat4x4(&_lightProj);
 	XMMATRIX viewProj = XMMatrixMultiply(view, proj);
 
+	RenderManager::GetI()->directinalLightViewProjection = XMMatrixMultiply(view, proj);
+
 	Effects::BuildShadowMapFX->SetEyePosW(_camera.GetPosition());
 	Effects::BuildShadowMapFX->SetViewProj(viewProj);
+
+	// Draw Scene Objects
+	SceneManager::GetI()->GetCurrentScene()->RenderSceneShadow();
 
 	ComPtr<ID3DX11EffectTechnique> tech = Effects::BuildShadowMapFX->BuildShadowMapTech;
 	ComPtr<ID3DX11EffectTechnique> alphaClippedTech = Effects::BuildShadowMapFX->BuildShadowMapAlphaClipTech;

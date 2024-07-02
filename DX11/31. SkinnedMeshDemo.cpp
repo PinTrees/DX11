@@ -220,7 +220,7 @@ void SkinnedMeshDemo::UpdateScene(float dt)
 	_camera.UpdateViewMatrix();
 }
 
-void SkinnedMeshDemo::DrawScene()
+void SkinnedMeshDemo::RenderApplication()
 {
 	//
 	// Render the scene to the shadow map.

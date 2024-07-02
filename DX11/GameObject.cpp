@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "GameObject.h"
+#include "Transform.h"
 
 atomic<uint64> GameObject::g_NextInstanceID = 0;
 
@@ -8,6 +9,7 @@ GameObject::GameObject()
 	m_LayerIndex(0),
 	m_pParentGameObject(nullptr)
 {
+	AddComponent<Transform>();
 }
 
 GameObject::GameObject(const string& name)
@@ -16,6 +18,7 @@ GameObject::GameObject(const string& name)
 	m_LayerIndex(0),
 	m_pParentGameObject(nullptr)
 {
+	AddComponent<Transform>();
 }
 
 GameObject::~GameObject()

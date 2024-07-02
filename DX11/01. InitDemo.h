@@ -10,5 +10,5 @@ public:
 	bool Init();
 	void OnResize();
 	void UpdateScene(float dt);
-	void DrawScene();
+	void RenderApplication();
 };

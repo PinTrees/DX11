@@ -19,7 +19,7 @@ public:
 	bool Init();
 	void OnResize();
 	void UpdateScene(float dt);
-	void DrawScene();
+	void RenderApplication();
 
 	void OnMouseDown(WPARAM btnState, int32 x, int32 y);
 	void OnMouseUp(WPARAM btnState, int32 x, int32 y);

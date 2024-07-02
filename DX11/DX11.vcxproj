@@ -200,7 +200,9 @@
     <ClInclude Include="01. InitDemo.h" />
     <ClInclude Include="Application.h" />
     <ClInclude Include="BlurFilter.h" />
+    <ClInclude Include="BoxCollider.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Collider.h" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="define.h" />
     <ClInclude Include="EditorGUIManager.h" />
@@ -224,14 +226,17 @@
     <ClInclude Include="MathHelper.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MeshGeometry.h" />
-    <ClInclude Include="ModelRenderer.h" />
+    <ClInclude Include="MeshRenderer.h" />
     <ClInclude Include="NormalMapSkinnedShader.h" />
     <ClInclude Include="Octree.h" />
     <ClInclude Include="ParticleSystem.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="PhysicsManager.h" />
     <ClInclude Include="ProjectEditorWindow.h" />
+    <ClInclude Include="RenderManager.h" />
     <ClInclude Include="RenderStates.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="RigidBody.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneEditorWindow.h" />
     <ClInclude Include="SceneHierachyEditorWindow.h" />
@@ -246,6 +251,7 @@
     <ClInclude Include="Ssao.h" />
     <ClInclude Include="Terrain.h" />
     <ClInclude Include="TextureMgr.h" />
+    <ClInclude Include="TimeManager.h" />
     <ClInclude Include="Transform.h" />
     <ClInclude Include="Types.h" />
     <ClInclude Include="Utils.h" />
@@ -289,7 +295,9 @@
     <ClCompile Include="01. InitDemo.cpp" />
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="BlurFilter.cpp" />
+    <ClCompile Include="BoxCollider.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Collider.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="define.cpp" />
     <ClCompile Include="EditorGUIManager.cpp" />
@@ -327,7 +335,7 @@
     <ClCompile Include="MathHelper.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="MeshGeometry.cpp" />
-    <ClCompile Include="ModelRenderer.cpp" />
+    <ClCompile Include="MeshRenderer.cpp" />
     <ClCompile Include="NormalMapSkinnedShader.cpp" />
     <ClCompile Include="Octree.cpp" />
     <ClCompile Include="ParticleSystem.cpp" />
@@ -337,8 +345,11 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="PhysicsManager.cpp" />
     <ClCompile Include="ProjectEditorWindow.cpp" />
+    <ClCompile Include="RenderManager.cpp" />
     <ClCompile Include="RenderStates.cpp" />
+    <ClCompile Include="RigidBody.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneEditorWindow.cpp" />
     <ClCompile Include="SceneHierachyEditorWindow.cpp" />
@@ -353,6 +364,7 @@
     <ClCompile Include="Ssao.cpp" />
     <ClCompile Include="Terrain.cpp" />
     <ClCompile Include="TextureMgr.cpp" />
+    <ClCompile Include="TimeManager.cpp" />
     <ClCompile Include="Transform.cpp" />
     <ClCompile Include="Utils.cpp" />
     <ClCompile Include="vector_ex.cpp" />

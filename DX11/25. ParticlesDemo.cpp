@@ -145,7 +145,7 @@ void ParticlesDemo::UpdateScene(float dt)
 	_camera.UpdateViewMatrix();
 }
 
-void ParticlesDemo::DrawScene()
+void ParticlesDemo::RenderApplication()
 {
 	_deviceContext->ClearRenderTargetView(_renderTargetView.Get(), reinterpret_cast<const float*>(&Colors::Silver));
 	_deviceContext->ClearDepthStencilView(_depthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);

@@ -5,6 +5,7 @@
 SINGLE_BODY(Application)
 
 Application::Application()
+	: m_pCurrApp(nullptr)
 {
 
 }

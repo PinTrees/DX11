@@ -85,7 +85,7 @@ void ShapesDemo::UpdateScene(float dt)
 	XMStoreFloat4x4(&_view, V);
 }
 
-void ShapesDemo::DrawScene()
+void ShapesDemo::RenderApplication()
 {
 	_deviceContext->ClearRenderTargetView(_renderTargetView.Get(), reinterpret_cast<const float*>(&Colors::LightSteelBlue));
 	_deviceContext->ClearDepthStencilView(_depthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);

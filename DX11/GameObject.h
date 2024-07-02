@@ -1,8 +1,11 @@
 #pragma once
 #include <atomic>
+#include "Component.h"
 
+using std::make_shared;
+using std::static_pointer_cast;
+	
 class MonoBehaviour;
-class Component;
 
 class GameObject
 {
@@ -13,7 +16,7 @@ private:
 	string m_Name;
 
 	uint8 m_LayerIndex;
-	vector<Component*> m_Components;
+	vector<shared_ptr<Component>> m_Components;
 	vector<MonoBehaviour*> m_Scripts;
 
 	GameObject* m_pParentGameObject;
@@ -43,11 +46,11 @@ public:
 	template <class T>
 	T* AddComponent()
 	{
-		shared_ptr<T> component = make_shared<T>();
-		Component* baseComponent = (Component*)(component.get());
+		std::shared_ptr<T> component = std::make_shared<T>();
+		Component* baseComponent = static_cast<Component*>(component.get());
 
-		baseComponent->gameObject = this;
-		m_Components.push_back(static_pointer_cast<Component>(component));
+		baseComponent->SetGameObject(this);
+		m_Components.push_back(component);
 
 		return component.get();
 	}
@@ -57,13 +60,16 @@ public:
 		for (auto& component : m_Components)
 		{
 			std::shared_ptr<T> castedComponent = std::dynamic_pointer_cast<T>(component);
-
 			if (castedComponent)
 			{
 				return castedComponent.get();
 			}
 		}
-		return nullptr; 
+		return nullptr;
+	}
+	vector<shared_ptr<Component>> GetComponents()
+	{
+		return m_Components;
 	}
 
 private:

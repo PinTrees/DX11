@@ -16,11 +16,14 @@ public:
 	void Enter();
 	void Exit();
 
-	void RenderScene();
 	void UpdateScene();
+	void RenderScene();
+	void RenderSceneShadow();
+	void RenderSceneShadowNormal();
 
 public:
 	void AddRootGameObject(GameObject* gameObject);
 	vector<GameObject*> GetRootGameObjects() { return m_RootGameObjects; }
+	vector<GameObject*> GetAllGameObjects() const { return m_arrGameObjects[0]; }
 };
 

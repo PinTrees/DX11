@@ -185,7 +185,7 @@ void ShadowsDemo::UpdateScene(float dt)
 	_camera.UpdateViewMatrix();
 }
 
-void ShadowsDemo::DrawScene()
+void ShadowsDemo::RenderApplication()
 {
 	_smap->BindDsvAndSetNullRenderTarget(_deviceContext);
 

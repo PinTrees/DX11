@@ -106,7 +106,7 @@ void WavesDemo::UpdateScene(float dt)
 	_deviceContext->Unmap(_wavesVB.Get(), 0);
 }
 
-void WavesDemo::DrawScene()
+void WavesDemo::RenderApplication()
 {
 	_deviceContext->ClearRenderTargetView(_renderTargetView.Get(), reinterpret_cast<const float*>(&Colors::LightSteelBlue));
 	_deviceContext->ClearDepthStencilView(_depthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);

@@ -18,7 +18,8 @@ public:
 	bool Init();
 	void OnResize();
 	void UpdateScene(float dt);
-	void DrawScene();
+	void RenderApplication();
+	virtual void OnRender(ID3D11RenderTargetView* renderTargetView) override;
 
 	void OnMouseDown(WPARAM btnState, int32 x, int32 y);
 	void OnMouseUp(WPARAM btnState, int32 x, int32 y);

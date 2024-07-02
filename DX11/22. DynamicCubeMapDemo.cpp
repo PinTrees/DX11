@@ -166,7 +166,7 @@ void DynamicCubeMapDemo::UpdateScene(float dt)
 	_camera.UpdateViewMatrix();
 }
 
-void DynamicCubeMapDemo::DrawScene()
+void DynamicCubeMapDemo::RenderApplication()
 {
 	ID3D11RenderTargetView* renderTargets[1];
 

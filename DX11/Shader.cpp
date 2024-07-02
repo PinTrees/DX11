@@ -49,7 +49,7 @@ void Shaders::DestroyAll()
 {
 }
 
-Shader* Shaders::GetShader(const std::wstring& shaderFileName)
+Shader* Shaders::GetShaderByName(const std::wstring& shaderFileName)
 {
 	for (auto shader : m_Shaders)
 	{

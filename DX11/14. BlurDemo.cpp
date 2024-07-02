@@ -185,7 +185,7 @@ void BlurDemo::UpdateScene(float dt)
 		_renderOptions = RenderOptions::TexturesAndFog;
 }
 
-void BlurDemo::DrawScene()
+void BlurDemo::RenderApplication()
 {
 	// Render to our offscreen texture.  Note that we can use the same depth/stencil buffer
 	// we normally use since our offscreen texture matches the dimensions.  

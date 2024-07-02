@@ -13,6 +13,7 @@ public:
 	~EditorWindow();
 
 	void Render();
+	virtual void Update() {}
 
 protected:
 	virtual void OnRender() {}
