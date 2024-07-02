@@ -14,8 +14,5 @@ public:
 public:
 	void SetCenter(Vec3 center) { m_Center = center; }
 	Vec3 GetCenter() const { return m_Center; }
-
-public:
-	virtual void Render() override { }
 };
 

@@ -14,7 +14,7 @@ BoxCollider::~BoxCollider()
 
 void BoxCollider::Render()
 {
-
+    Gizmo::DrawCube(m_pGameObject->GetComponent<Transform>()->GetWorldMatrix(), m_Size);
 }
 
 void BoxCollider::OnInspectorGUI()

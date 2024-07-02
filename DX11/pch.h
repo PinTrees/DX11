@@ -80,5 +80,7 @@ using namespace Microsoft::WRL;
 #include "PhysicsManager.h"
 #include "TimeManager.h"
 
+#include "Gizmo.h"
+
 // SHADER
 #include "NormalMapSkinnedShader.h"

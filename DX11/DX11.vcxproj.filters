@@ -393,6 +393,9 @@
     <ClCompile Include="Collider.cpp">
       <Filter>1. Engine\Component\Collider</Filter>
     </ClCompile>
+    <ClCompile Include="Gizmo.cpp">
+      <Filter>1. Engine\98. Utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="01. InitDemo.h">
@@ -671,6 +674,9 @@
     </ClInclude>
     <ClInclude Include="Collider.h">
       <Filter>1. Engine\Component\Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="Gizmo.h">
+      <Filter>1. Engine\98. Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
