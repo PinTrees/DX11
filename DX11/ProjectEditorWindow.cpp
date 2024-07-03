@@ -32,6 +32,36 @@ void ProjectEditorWindow::OnRender()
     ImGui::BeginChild("DirectoryContents", ImVec2(0, 0), true);
     DisplayDirectoryContents(currentDirectory);
     ImGui::EndChild();
+
+    if (ImGui::IsItemClicked(1)) // Right-click
+    {
+        ImGui::OpenPopup("ItemContextMenu");
+    }
+
+    if (ImGui::BeginPopup("ItemContextMenu"))
+    {
+        if (ImGui::BeginMenu("Create"))
+        {
+            if (ImGui::MenuItem("Material"))
+            {
+                UMaterial::Create(currentDirectory);
+                ImGui::CloseCurrentPopup();
+            }
+            if (ImGui::MenuItem("Folder"))
+            {
+                std::string folderPath = currentDirectory + "/New Folder";
+                int folderIndex = 1;
+                while (std::filesystem::exists(folderPath)) 
+                {
+                    folderPath = currentDirectory + "/New Folder (" + std::to_string(folderIndex++) + ")";
+                }
+                std::filesystem::create_directory(folderPath);
+                ImGui::CloseCurrentPopup();
+            }
+            ImGui::EndMenu();
+        }
+        ImGui::EndPopup();
+    }
 }
 
 void ProjectEditorWindow::DisplayDirectoryTree(const std::string& directory)
@@ -53,40 +83,138 @@ void ProjectEditorWindow::DisplayDirectoryTree(const std::string& directory)
     }
 }
 
+void RenameSelectedFile(const fs::path& oldPath, const char* newName)
+{
+    fs::path newPath = oldPath.parent_path() / newName;
+    try
+    {
+        fs::rename(oldPath, newPath);
+        SelectionManager::SetSelectedFile(newPath.string());
+    }
+    catch (const fs::filesystem_error& e)
+    {
+        std::cerr << "Error renaming file: " << e.what() << std::endl;
+    }
+}
+
 void ProjectEditorWindow::DisplayDirectoryContents(const std::string& directory)
 {
+    static char newName[256] = "";
+    static bool renaming = false;
+    static std::string renamingPath = "";
+
     for (const auto& entry : fs::directory_iterator(directory))
     {
+        bool isSelected = (SelectionManager::GetSelectedFile() == entry.path().string());
+
+        ImGui::PushID(entry.path().string().c_str());
+
         if (entry.is_directory())
         {
-            if (ImGui::Selectable(entry.path().filename().string().c_str()))
+            if (ImGui::Selectable(entry.path().filename().string().c_str(), isSelected))
+            {
+                if (renaming && renamingPath != entry.path().string())
+                {
+                    RenameSelectedFile(renamingPath, newName);
+                    renaming = false;
+                }
+
+                SelectionManager::SetSelectedFile(entry.path().string());
+                renaming = false;
+            }
+
+            if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(0))
             {
                 currentDirectory = entry.path().string();
             }
         }
         else
         {
-            if (entry.path().extension() == ".fbx")
+            if (entry.path().extension() == ".fbx" || entry.path().extension() == ".png"
+                || entry.path().extension() == ".mat")
             {
-                if (ImGui::Selectable(entry.path().filename().string().c_str()))
+                if (ImGui::Selectable(entry.path().filename().string().c_str(), isSelected))
                 {
-                    currentDirectory = entry.path().parent_path().string();
+                    if (renaming && renamingPath != entry.path().string())
+                    {
+                        RenameSelectedFile(renamingPath, newName);
+                        renaming = false;
+                    }
+
+                    SelectionManager::SetSelectedFile(entry.path().string());
+                    renaming = false;
                 }
 
-                // 드래그 앤 드롭 소스 시작
-                if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
+                if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(0))
                 {
-                    const std::string filePath = entry.path().string();
-                    ImGui::SetDragDropPayload("FBX_FILE", filePath.c_str(), filePath.size() + 1); // +1 for null terminator
-                    ImGui::Text("Dragging %s", entry.path().filename().string().c_str());
-                    ImGui::EndDragDropSource();
+                    if (entry.path().extension() == ".png")
+                    {
+                        std::string command = "rundll32.exe \"%ProgramFiles%\\Windows Photo Viewer\\PhotoViewer.dll\", ImageView_Fullscreen " + entry.path().string();
+                        system(command.c_str());
+                    }
+                    else
+                    {
+                        currentDirectory = entry.path().parent_path().string();
+                    }
+                }
+
+                if (entry.path().extension() == ".fbx")
+                {
+                    if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
+                    {
+                        const std::string filePath = entry.path().string();
+                        ImGui::SetDragDropPayload("FBX_FILE", filePath.c_str(), filePath.size() + 1);
+                        ImGui::Text("Dragging %s", entry.path().filename().string().c_str());
+                        ImGui::EndDragDropSource();
+                    }
+                }
+
+                if (entry.path().extension() == ".mat")
+                {
+
                 }
             }
             else
             {
-                ImGui::Text(entry.path().filename().string().c_str());
+                if (ImGui::Selectable(entry.path().filename().string().c_str(), isSelected))
+                {
+                    if (renaming && renamingPath != entry.path().string())
+                    {
+                        RenameSelectedFile(renamingPath, newName);
+                        renaming = false;
+                    }
+
+                    SelectionManager::SetSelectedFile(entry.path().string());
+                    renaming = false;
+                }
             }
         }
+
+        if (isSelected && !renaming)
+        {
+            if (ImGui::IsItemClicked())
+            {
+                renaming = true;
+                renamingPath = entry.path().string();
+                strncpy_s(newName, entry.path().filename().string().c_str(), sizeof(newName));
+            }
+        }
+
+        if (renaming && renamingPath == entry.path().string())
+        {
+            if (ImGui::InputText("##rename", newName, sizeof(newName), ImGuiInputTextFlags_EnterReturnsTrue))
+            {
+                RenameSelectedFile(entry.path(), newName);
+                renaming = false;
+            }
+            if (ImGui::IsMouseClicked(0) && !ImGui::IsItemHovered())
+            {
+                RenameSelectedFile(entry.path(), newName);
+                renaming = false;
+            }
+        }
+
+        ImGui::PopID();
     }
 }
 

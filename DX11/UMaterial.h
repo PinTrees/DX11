@@ -5,6 +5,10 @@ class TextureMgr;
 class UMaterial
 {
 private:
+	string m_ResourcePath;
+
+	string m_BaseMapPath;
+	string m_NormalMapPath;
 	ComPtr<ID3D11ShaderResourceView> BaseMapSRV;
 	ComPtr<ID3D11ShaderResourceView> NormalMapSRV;
 	
@@ -16,6 +20,11 @@ private:
 public:
 	UMaterial();
 	~UMaterial();
+
+public:
+	static void Create(string fullPath);
+	static UMaterial* Load(string fullPath);
+	static void Save(UMaterial* material);
 
 public:
 	void SetBaseMap(TextureMgr texMgr, wstring fullPath);

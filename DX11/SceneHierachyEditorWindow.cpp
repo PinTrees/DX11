@@ -50,13 +50,13 @@ void SceneHierachyEditorWindow::DrawGameObject(GameObject* gameObject)
 {
 	ImGui::PushID(gameObject->GetInstanceID()); // 고유 ID를 사용하여 ImGui ID 스택에 푸시
 
-	bool isSelected = (Application::GetI()->GetCurSelectGameObject() == gameObject);
+	bool isSelected = (SelectionManager::GetSelectedGameObject() == gameObject);
 
 	if (ImGui::TreeNodeEx(gameObject->GetName().c_str(), isSelected ? ImGuiTreeNodeFlags_Selected : 0))
 	{
 		if (ImGui::IsItemClicked())
 		{
-			Application::GetI()->SetCurSelectGameObject(gameObject);
+			SelectionManager::SetSelectedGameObject(gameObject);
 		}
 
 		std::vector<GameObject*> children = gameObject->GetChildren();
@@ -68,7 +68,7 @@ void SceneHierachyEditorWindow::DrawGameObject(GameObject* gameObject)
 	}
 	else if (ImGui::IsItemClicked())
 	{
-		Application::GetI()->SetCurSelectGameObject(gameObject);
+		SelectionManager::SetSelectedGameObject(gameObject);
 	}
 
 	// 드래그 앤 드롭 처리 (특정 오브젝트에 드롭)

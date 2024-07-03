@@ -9,14 +9,10 @@ class Application
 
 private:
 	App* m_pCurrApp;
-	GameObject* m_pCurSelectGameObject;
 
 public:
 	void SetApp(App* app) { m_pCurrApp = app; }
 	App* GetApp() { return m_pCurrApp; }
-
-	void SetCurSelectGameObject(GameObject* gameObject) { m_pCurSelectGameObject = gameObject; }
-	GameObject* GetCurSelectGameObject() { return m_pCurSelectGameObject; }
 
 public:
 	HWND GetMainHwnd();

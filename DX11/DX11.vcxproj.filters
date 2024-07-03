@@ -121,6 +121,12 @@
     <Filter Include="1. Engine\Shader\Material">
       <UniqueIdentifier>{5228a916-4096-4730-8e48-9bc69cd498d7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="1. Engine\Manager\Editor">
+      <UniqueIdentifier>{e466edc6-b8da-483a-a747-4b2623887009}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="1. Engine\Manager\Editor\SelectionManager">
+      <UniqueIdentifier>{4784bdb0-d89b-49c2-b8c1-2ee3022ff4ec}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="01. InitDemo.cpp">
@@ -401,6 +407,9 @@
     </ClCompile>
     <ClCompile Include="UMaterial.cpp">
       <Filter>1. Engine\Shader\Material</Filter>
+    </ClCompile>
+    <ClCompile Include="SelectionManager.cpp">
+      <Filter>1. Engine\Manager\Editor\SelectionManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -686,6 +695,9 @@
     </ClInclude>
     <ClInclude Include="UMaterial.h">
       <Filter>1. Engine\Shader\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="SelectionManager.h">
+      <Filter>1. Engine\Manager\Editor\SelectionManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

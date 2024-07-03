@@ -60,6 +60,12 @@ using namespace Microsoft::WRL;
 #include "vector_ex.h"
 
 // ENGINE
+// EDITOR - ONLY
+#include "EditorUtility.h"
+#include "EditorWindow.h"
+#include "EditorGUIManager.h"
+#include "SelectionManager.h"
+
 #include "Application.h"
 #include "RenderManager.h"
 
@@ -70,9 +76,6 @@ using namespace Microsoft::WRL;
 #include "GameObject.h"
 #include "Transform.h"
 #include "MeshRenderer.h"
-
-#include "EditorWindow.h"
-#include "EditorGUIManager.h"
 
 #include "Scene.h"
 #include "SceneManager.h"

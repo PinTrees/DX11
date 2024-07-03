@@ -242,6 +242,7 @@
     <ClInclude Include="SceneEditorWindow.h" />
     <ClInclude Include="SceneHierachyEditorWindow.h" />
     <ClInclude Include="SceneManager.h" />
+    <ClInclude Include="SelectionManager.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="ShadowMap.h" />
     <ClInclude Include="SimpleMath.h" />
@@ -357,6 +358,7 @@
     <ClCompile Include="SceneEditorWindow.cpp" />
     <ClCompile Include="SceneHierachyEditorWindow.cpp" />
     <ClCompile Include="SceneManager.cpp" />
+    <ClCompile Include="SelectionManager.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="ShadowMap.cpp" />
     <ClCompile Include="SimpleMath.cpp" />
