@@ -69,6 +69,30 @@ Mesh::Mesh(ComPtr<ID3D11Device> device, TextureMgr& texMgr, const std::string& m
 	}
 }
 
+Mesh::Mesh(ComPtr<ID3D11Device> device, const std::string& modelFilename)
+{
+	std::string fileExtension = GetFileExtension(modelFilename);
+
+	if (fileExtension == "fbx")
+	{
+		std::vector<FbxMaterial> mats;
+
+		FBXLoader m3dLoader;
+		m3dLoader.LoadFBX(modelFilename, Vertices, Indices, Subsets, mats);
+
+		ModelMesh.SetVertices(device, &Vertices[0], Vertices.size());
+		ModelMesh.SetIndices(device, &Indices[0], Indices.size());
+		ModelMesh.SetSubsetTable(Subsets);
+
+		SubsetCount = mats.size();
+
+		for (uint32 i = 0; i < SubsetCount; ++i)
+		{
+			Mat.push_back(mats[i].Mat);
+		}
+	}
+}
+
 Mesh::~Mesh()
 {
 }

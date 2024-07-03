@@ -64,6 +64,8 @@ using namespace Microsoft::WRL;
 #include "RenderManager.h"
 
 #include "Shader.h"
+#include "UMaterial.h"
+
 #include "Mesh.h"
 #include "GameObject.h"
 #include "Transform.h"

@@ -255,6 +255,7 @@
     <ClInclude Include="TimeManager.h" />
     <ClInclude Include="Transform.h" />
     <ClInclude Include="Types.h" />
+    <ClInclude Include="UMaterial.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="vector_ex.h" />
     <ClInclude Include="Vertex.h" />
@@ -368,6 +369,7 @@
     <ClCompile Include="TextureMgr.cpp" />
     <ClCompile Include="TimeManager.cpp" />
     <ClCompile Include="Transform.cpp" />
+    <ClCompile Include="UMaterial.cpp" />
     <ClCompile Include="Utils.cpp" />
     <ClCompile Include="vector_ex.cpp" />
     <ClCompile Include="Vertex.cpp" />

@@ -4,6 +4,7 @@
 #include "MathHelper.h"
 
 MeshRenderer::MeshRenderer()
+	: m_pMaterial(nullptr)
 {
 }
 
@@ -14,7 +15,8 @@ MeshRenderer::~MeshRenderer()
 void MeshRenderer::Render()
 {
 	auto deviceContext = Application::GetI()->GetDeviceContext();
-	ComPtr<ID3DX11EffectTechnique> tech = Effects::NormalMapFX->Light3TexTech;
+	ComPtr<ID3DX11EffectTechnique> tech = Effects::NormalMapFX->Light0TexTech;
+	//Light3TexTech;
 
 	D3DX11_TECHNIQUE_DESC techDesc;
 	tech->GetDesc(&techDesc);
@@ -43,8 +45,17 @@ void MeshRenderer::Render()
 		for (uint32 subset = 0; subset < m_Mesh->SubsetCount; ++subset)
 		{
 			Effects::NormalMapFX->SetMaterial(m_Mesh->Mat[subset]);
-			Effects::NormalMapFX->SetDiffuseMap(m_Mesh->DiffuseMapSRV[subset].Get());
-			Effects::NormalMapFX->SetNormalMap(m_Mesh->NormalMapSRV[subset].Get());
+
+			if (m_pMaterial == nullptr)
+			{
+				Effects::NormalMapFX->SetDiffuseMap(m_Mesh->DiffuseMapSRV[subset].Get());
+				Effects::NormalMapFX->SetNormalMap(m_Mesh->NormalMapSRV[subset].Get());
+			}
+			else
+			{
+				Effects::NormalMapFX->SetDiffuseMap(m_pMaterial->GetBaseMapSRV());
+				Effects::NormalMapFX->SetNormalMap(m_pMaterial->GetNormalMapSRV());
+			}
 
 			tech->GetPassByIndex(p)->Apply(0, deviceContext);
 			m_Mesh->ModelMesh.Draw(deviceContext, subset);

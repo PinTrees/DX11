@@ -8,6 +8,7 @@ class Mesh
 {
 public:
 	Mesh(ComPtr<ID3D11Device> device, TextureMgr& texMgr, const std::string& modelFilename, const std::wstring& texturePath);
+	Mesh(ComPtr<ID3D11Device> device, const std::string& modelFilename);
 	~Mesh();
 
 	uint32 SubsetCount;

@@ -77,8 +77,6 @@ bool MeshViewDemo::Init()
 	_pillar4Model = make_shared<Mesh>(_device, _texMgr, "../Resources/Models/pillar6.m3d", L"../Resources/Textures/");
 	_rockModel = make_shared<Mesh>(_device, _texMgr, "../Resources/Models/rock.m3d", L"../Resources/Textures/");
 
-	_Fbx = make_shared<Mesh>(_device, _texMgr, "../Resources/Meshs/Banana.fbx", L"../Resources/Textures/");
-
 	GameObject* go = new GameObject("TestObject1");
 	GameObject* g1 = new GameObject("TestObject2");
 	GameObject* g2 = new GameObject("TestObject3");
@@ -86,6 +84,15 @@ bool MeshViewDemo::Init()
 	go->AddComponent<MeshRenderer>()->SetMesh(_rockModel);
 	go->GetComponent<MeshRenderer>()->SetShader(Shaders::GetShaderByName(L"../Shaders/28. Basic.fx"));
 	go->AddComponent<BoxCollider>();
+
+	UMaterial* mat = new UMaterial;
+	mat->SetBaseMap(_texMgr, L"../Resources/Meshs/Rock/Mossy_rock_var7-8_basecolor.png");
+	mat->SetNormalMap(_texMgr, L"../Resources/Meshs/Rock/Mossy_rock_var7-8_normal.png");
+	
+	g1->GetComponent<Transform>()->SetScale(Vec3(0.2f, 0.2f, 0.2f));
+	g1->AddComponent<MeshRenderer>()->SetMesh(make_shared<Mesh>(_device, "../Resources/Meshs/Rock/Mossy_rock_var8.fbx"));
+	g1->GetComponent<MeshRenderer>()->SetMaterial(mat);
+	g1->AddComponent<BoxCollider>()->SetSize(Vec3(1, 1, 1));
 
 	SceneManager::GetI()->GetCurrentScene()->AddRootGameObject(go);
 	SceneManager::GetI()->GetCurrentScene()->AddRootGameObject(g1);
@@ -101,7 +108,6 @@ bool MeshViewDemo::Init()
 	MeshInstance rockInstance1;
 	MeshInstance rockInstance2;
 	MeshInstance rockInstance3;
-	MeshInstance fbxInstance;
 
 	treeInstance.Model = _treeModel;
 	baseInstance.Model = _baseModel;
@@ -113,7 +119,6 @@ bool MeshViewDemo::Init()
 	rockInstance1.Model = _rockModel;
 	rockInstance2.Model = _rockModel;
 	rockInstance3.Model = _rockModel;
-	fbxInstance.Model = _Fbx;
 
 	XMMATRIX modelScale = ::XMMatrixScaling(1.0f, 1.0f, 1.0f);
 	XMMATRIX modelRot = ::XMMatrixRotationY(0.0f);
@@ -153,10 +158,6 @@ bool MeshViewDemo::Init()
 	modelOffset = ::XMMatrixTranslation(-4.0f, 1.3f, 3.0f);
 	::XMStoreFloat4x4(&rockInstance3.World, modelScale * modelRot * modelOffset);
 
-	modelScale = ::XMMatrixScaling(5.0f, 5.0f, 5.0f);
-	modelOffset = ::XMMatrixTranslation(-4.0f, 3.0f, 3.0f);
-	::XMStoreFloat4x4(&fbxInstance.World, modelScale * modelRot * modelOffset);
-
 	_alphaClippedModelInstances.push_back(treeInstance);
 
 	_modelInstances.push_back(baseInstance);
@@ -168,7 +169,6 @@ bool MeshViewDemo::Init()
 	_modelInstances.push_back(rockInstance1);
 	_modelInstances.push_back(rockInstance2);
 	_modelInstances.push_back(rockInstance3);
-	_modelInstances.push_back(fbxInstance);
 
 	//
 	// Compute scene bounding box.
@@ -419,8 +419,8 @@ void MeshViewDemo::RenderApplication()
 
 	// Unbind shadow map and AmbientMap as a shader input because we are going to render
 	// to it next frame.  These textures can be at any slot, so clear all slots.
-	ID3D11ShaderResourceView* nullSRV[16] = { 0 };
-	_deviceContext->PSSetShaderResources(0, 16, nullSRV);
+	ID3D11ShaderResourceView* nullSRV[128] = { 0 };
+	_deviceContext->PSSetShaderResources(0, 128, nullSRV);
 }
 
 void MeshViewDemo::OnRender(ID3D11RenderTargetView* renderTargetView)
@@ -554,8 +554,8 @@ void MeshViewDemo::OnRender(ID3D11RenderTargetView* renderTargetView)
 	_deviceContext->RSSetState(0);
 	_deviceContext->OMSetDepthStencilState(0, 0);
 
-	ID3D11ShaderResourceView* nullSRV[16] = { 0 };
-	_deviceContext->PSSetShaderResources(0, 16, nullSRV);
+	ID3D11ShaderResourceView* nullSRV[128] = { 0 };
+	_deviceContext->PSSetShaderResources(0, 128, nullSRV);
 }
 
 void MeshViewDemo::OnMouseDown(WPARAM btnState, int32 x, int32 y)
