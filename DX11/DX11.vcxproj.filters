@@ -127,6 +127,12 @@
     <Filter Include="1. Engine\Manager\Editor\SelectionManager">
       <UniqueIdentifier>{4784bdb0-d89b-49c2-b8c1-2ee3022ff4ec}</UniqueIdentifier>
     </Filter>
+    <Filter Include="1. Engine\98. Utils\EditorUtility">
+      <UniqueIdentifier>{834d5b16-c2c5-45b6-986c-cd9a5ef54e76}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="1. Engine\Manager\ResourceManager">
+      <UniqueIdentifier>{5e07e780-7225-4fb7-a258-5093a21de822}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="01. InitDemo.cpp">
@@ -410,6 +416,12 @@
     </ClCompile>
     <ClCompile Include="SelectionManager.cpp">
       <Filter>1. Engine\Manager\Editor\SelectionManager</Filter>
+    </ClCompile>
+    <ClCompile Include="EditorUtility.cpp">
+      <Filter>1. Engine\98. Utils\EditorUtility</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceManager.cpp">
+      <Filter>1. Engine\Manager\ResourceManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -698,6 +710,12 @@
     </ClInclude>
     <ClInclude Include="SelectionManager.h">
       <Filter>1. Engine\Manager\Editor\SelectionManager</Filter>
+    </ClInclude>
+    <ClInclude Include="EditorUtility.h">
+      <Filter>1. Engine\98. Utils\EditorUtility</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceManager.h">
+      <Filter>1. Engine\Manager\ResourceManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

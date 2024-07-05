@@ -100,6 +100,8 @@ bool App::Init()
 	EditorGUIManager::GetI()->RegisterWindow(new InspectorEditorWindow);
 
 	// Singleton Init
+	ResourceManager::GetI()->Init(_device);
+
 	SceneManager::GetI()->Init();
 	SceneManager::GetI()->LoadScene("");
 

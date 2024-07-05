@@ -206,6 +206,7 @@
     <ClInclude Include="Component.h" />
     <ClInclude Include="define.h" />
     <ClInclude Include="EditorGUIManager.h" />
+    <ClInclude Include="EditorUtility.h" />
     <ClInclude Include="EditorWindow.h" />
     <ClInclude Include="Effects.h" />
     <ClInclude Include="FBXLoader.h" />
@@ -237,6 +238,7 @@
     <ClInclude Include="RenderManager.h" />
     <ClInclude Include="RenderStates.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="RigidBody.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneEditorWindow.h" />
@@ -304,6 +306,7 @@
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="define.cpp" />
     <ClCompile Include="EditorGUIManager.cpp" />
+    <ClCompile Include="EditorUtility.cpp" />
     <ClCompile Include="EditorWindow.cpp" />
     <ClCompile Include="Effects.cpp" />
     <ClCompile Include="FBXLoader.cpp" />
@@ -353,6 +356,7 @@
     <ClCompile Include="ProjectEditorWindow.cpp" />
     <ClCompile Include="RenderManager.cpp" />
     <ClCompile Include="RenderStates.cpp" />
+    <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="RigidBody.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneEditorWindow.cpp" />

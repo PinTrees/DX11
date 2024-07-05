@@ -13,6 +13,7 @@
 #include <sstream>
 #include <fstream>
 #include <vector>
+#include <codecvt>
 
 #define HR(p)	assert(SUCCEEDED(p))
 #define CHECK(p)	assert(SUCCEEDED(p))
@@ -69,3 +70,8 @@ namespace Colors
 	XMGLOBALCONST XMVECTORF32 Silver    = {0.75f, 0.75f, 0.75f, 1.0f};
 	XMGLOBALCONST XMVECTORF32 LightSteelBlue = {0.69f, 0.77f, 0.87f, 1.0f};
 }
+
+
+std::wstring string_to_wstring(const std::string& str);
+
+std::string wstring_to_string(const std::wstring& wstr);

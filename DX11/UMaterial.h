@@ -1,4 +1,7 @@
 #pragma once
+#include <nlohmann/json.hpp>
+
+using json = nlohmann::json;
 
 class TextureMgr;
 
@@ -7,8 +10,8 @@ class UMaterial
 private:
 	string m_ResourcePath;
 
-	string m_BaseMapPath;
-	string m_NormalMapPath;
+	wstring m_BaseMapPath;
+	wstring m_NormalMapPath;
 	ComPtr<ID3D11ShaderResourceView> BaseMapSRV;
 	ComPtr<ID3D11ShaderResourceView> NormalMapSRV;
 	
@@ -25,6 +28,8 @@ public:
 	static void Create(string fullPath);
 	static UMaterial* Load(string fullPath);
 	static void Save(UMaterial* material);
+
+	friend void to_json(json& j, const UMaterial& m);
 
 public:
 	void SetBaseMap(TextureMgr texMgr, wstring fullPath);

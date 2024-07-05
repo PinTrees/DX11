@@ -3,6 +3,7 @@
 class EditorUtility
 {
 public:
-	static std::string OpenFileDialog();
+	static std::wstring OpenFileDialog();
+	static std::wstring OpenFileDialog(const std::string& initialPath);
 };
 

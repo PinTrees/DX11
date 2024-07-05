@@ -69,6 +69,8 @@ using namespace Microsoft::WRL;
 #include "Application.h"
 #include "RenderManager.h"
 
+#include "ResourceManager.h"
+
 #include "Shader.h"
 #include "UMaterial.h"
 
