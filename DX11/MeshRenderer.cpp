@@ -14,6 +14,9 @@ MeshRenderer::~MeshRenderer()
 
 void MeshRenderer::Render()
 {
+	if (m_Mesh == nullptr)
+		return;
+
 	auto deviceContext = Application::GetI()->GetDeviceContext();
 	ComPtr<ID3DX11EffectTechnique> tech = Effects::NormalMapFX->Light3TexTech;
 	//Light3TexTech;
@@ -47,8 +50,8 @@ void MeshRenderer::Render()
 			if (m_pMaterial == nullptr)
 			{
 				Effects::NormalMapFX->SetMaterial(m_Mesh->Mat[subset]);
-				Effects::NormalMapFX->SetDiffuseMap(m_Mesh->DiffuseMapSRV[subset].Get());
-				Effects::NormalMapFX->SetNormalMap(m_Mesh->NormalMapSRV[subset].Get());
+				//Effects::NormalMapFX->SetDiffuseMap(m_Mesh->DiffuseMapSRV[subset].Get());
+				//Effects::NormalMapFX->SetNormalMap(m_Mesh->NormalMapSRV[subset].Get());
 			}
 			else
 			{
@@ -65,6 +68,9 @@ void MeshRenderer::Render()
 
 void MeshRenderer::RenderShadow()
 {
+	if (m_Mesh == nullptr)
+		return;
+
 	Transform* transform = m_pGameObject->GetComponent<Transform>();
 	auto deviceContext = Application::GetI()->GetDeviceContext();
 
@@ -104,6 +110,9 @@ void MeshRenderer::RenderShadow()
 
 void MeshRenderer::RenderShadowNormal()
 {
+	if (m_Mesh == nullptr)
+		return;
+
 	auto deviceContext = Application::GetI()->GetDeviceContext();
 	Transform* transform = m_pGameObject->GetComponent<Transform>();
 	ComPtr<ID3DX11EffectTechnique> tech = Effects::SsaoNormalDepthFX->NormalDepthTech;
@@ -144,10 +153,27 @@ void MeshRenderer::OnInspectorGUI()
 {
 	ImGui::Text("Mesh Renderer");
 
-	if (ImGui::Button("Select Mesh"))
+	// 같은 라인에 배치
+	ImGui::SameLine();
+	ImGui::PushItemWidth(-100);
+	ImGui::Text("%s", m_Mesh ? "Meshs" : "None");
+	ImGui::PopItemWidth();
+
+	ImGui::SameLine();
+	if (ImGui::Button("Select##Mesh"))
 	{
-		
+		std::wstring filePath = EditorUtility::OpenFileDialog(Application::GetDataPath(), L"Mesh", { L"fbx" });
+		if (!filePath.empty())
+		{
+			m_Mesh = ResourceManager::GetI()->LoadMesh(filePath);
+			if (m_Mesh)
+			{
+				m_MeshPath = filePath;
+			}
+		}
 	}
+
+
 
 	if (m_pMaterial) {
 		ImGui::Text("Selected Material: %s", m_MaterialPath);
@@ -168,4 +194,16 @@ void MeshRenderer::OnInspectorGUI()
 			}
 		}
 	}
+}
+
+
+GENERATE_COMPONENT_FUNC_TOJSON(MeshRenderer)
+{
+	json j;
+	j["type"] = "MeshRenderer";
+	return j;
+}
+
+GENERATE_COMPONENT_FUNC_FROMJSON(MeshRenderer)
+{
 }

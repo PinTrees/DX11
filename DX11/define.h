@@ -31,3 +31,39 @@
 #define INPUT_KEY_NONE(key) INPUT_CHECK(key,KEY_STATE::NONE)
 
 #define	MOUSE_POSITION InputManager::GetI()->GetMousePos()
+
+
+#define SERIALIZE(CLASS) friend void to_json(json& j, const CLASS& obj);
+#define DESERIALIZE(CLASS) friend void from_json(const json& j, CLASS& obj);
+
+
+#define GENERATE_COMPONENT_BODY(CLASS) public:                            \
+    json toJson() const override;                                         \
+    void fromJson(const json& j) override;                                \
+    friend void to_json(json& j, const CLASS& obj) { j = obj.toJson(); }  \
+    friend void from_json(const json& j, CLASS& obj) { obj.fromJson(j); } \
+																		  \
+public:																	  \
+    std::string GetType() const override { return #CLASS; }               \
+    static std::shared_ptr<Component> CreateInstance() {                  \
+        return std::make_shared<CLASS>();								  \
+    }																	  \
+																		  \
+private:																  \
+	static const bool registered;										  \
+
+#define GENERATE_COMPONENT_FUNC_TOJSON(CLASS)	json CLASS::toJson() const
+#define GENERATE_COMPONENT_FUNC_FROMJSON(CLASS)	void CLASS::fromJson(const json& j)
+
+#define REGISTER_COMPONENT(CLASS)													\
+const bool CLASS::registered =														\
+    ComponentFactory::Instance().RegisterComponent(#CLASS, CLASS::CreateInstance);	\
+
+//Component Requied Func
+//GENERATE_COMPONENT_BODY(Component)
+//GENERATE_COMPONENT_FUNC_TOJSON(Component)
+//{
+//}
+//GENERATE_COMPONENT_FUNC_FROMJSON(Component)
+//{
+//}

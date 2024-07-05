@@ -29,8 +29,10 @@ public:
 	void RenderSceneShadow();
 	void RenderSceneShadowNormal();
 
+	void LastFramUpdate();
+
 public:
-	static void Load(string scenePath);
+	static Scene* Load(wstring scenePath);
 	static void Save(Scene* scene);
 	static void SaveNewScene(Scene* scene);
 
@@ -40,24 +42,7 @@ public:
 	vector<GameObject*> GetAllGameObjects() const { return m_arrGameObjects[0]; }
 
 public:
-	json toJson() const
-	{
-		json j;
-		j["rootGameObjects"] = json::array();
-		for (const GameObject* gameObject : m_RootGameObjects)
-			j["rootGameObjects"].push_back(gameObject->toJson());
-		
-		return j;
-	}
-
-	void fromJson(const json& j)
-	{
-		for (const auto& gameObjectJson : j.at("rootGameObjects"))
-		{
-			GameObject* gameObject = new GameObject();
-			gameObject->fromJson(gameObjectJson);
-			m_RootGameObjects.push_back(gameObject);
-		}
-	}
+	friend void from_json(const json& j, Scene& scene);
+	friend void to_json(json& j, const Scene& scene);
 };
 

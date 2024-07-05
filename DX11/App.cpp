@@ -78,6 +78,9 @@ int32 App::Run()
 				EditorGUIManager::GetI()->RenderEditorWindows();
 
 				HR(_swapChain->Present(0, 0)); 
+
+				// Last Frame
+				SceneManager::GetI()->GetCurrentScene()->LastFramUpdate();
 			}
 			else
 			{
@@ -97,6 +100,8 @@ bool App::Init()
 	if (!InitDirect3D())
 		return false;
 
+	EditorSettingManager::Init();
+
 	EditorGUIManager::GetI()->Init();
 	EditorGUIManager::GetI()->RegisterWindow(new SceneHierachyEditorWindow);
 	EditorGUIManager::GetI()->RegisterWindow(new ProjectEditorWindow);
@@ -108,7 +113,15 @@ bool App::Init()
 	InputManager::GetI()->Init();
 
 	SceneManager::GetI()->Init();
-	SceneManager::GetI()->LoadScene("");
+
+	if (!EditorSettingManager::GetSetting()->LastOpenedScenePath.empty())
+	{
+		SceneManager::GetI()->LoadScene(EditorSettingManager::GetSetting()->LastOpenedScenePath);
+	}
+	else
+	{
+		SceneManager::GetI()->LoadScene(L"");
+	}
 
 	// TimeManager Init
 	TimeManager::GetI()->Init();

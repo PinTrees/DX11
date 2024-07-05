@@ -39,5 +39,8 @@ public:
 	virtual void Render() override;
 	void RenderShadow();
 	void RenderShadowNormal();
+
+	GENERATE_COMPONENT_BODY(MeshRenderer)
 };
 
+REGISTER_COMPONENT(MeshRenderer)

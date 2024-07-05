@@ -29,3 +29,16 @@ void BoxCollider::OnInspectorGUI()
         }
     }
 }
+
+
+GENERATE_COMPONENT_FUNC_TOJSON(BoxCollider)
+{
+    json j;
+    j["type"] = "BoxCollider";
+    return j;
+}
+
+GENERATE_COMPONENT_FUNC_FROMJSON(BoxCollider)
+{
+
+}

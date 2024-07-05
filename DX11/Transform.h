@@ -4,6 +4,23 @@
 class Transform : public Component
 {
 	using Super = Component;
+
+private:
+	shared_ptr<Transform> _parent;
+	vector<shared_ptr<Transform>> _children;
+
+	Vec3 _localScale = { 1.f, 1.f, 1.f };
+	Vec3 _localRotation = { 0.f, 0.f, 0.f };
+	Vec3 _localPosition = { 0.f, 0.f, 0.f };
+
+	// Cache
+	Matrix _matLocal = Matrix::Identity;
+	Matrix _matWorld = Matrix::Identity;
+
+	Vec3 _scale;
+	Vec3 _rotation;
+	Vec3 _position;
+
 public:
 	Transform();
 	~Transform();
@@ -49,21 +66,8 @@ public:
 public:
 	virtual void OnInspectorGUI() override;
 
-private:
-	Vec3 _localScale = { 1.f, 1.f, 1.f };
-	Vec3 _localRotation = { 0.f, 0.f, 0.f };
-	Vec3 _localPosition = { 0.f, 0.f, 0.f };
-
-	// Cache
-	Matrix _matLocal = Matrix::Identity;
-	Matrix _matWorld = Matrix::Identity;
-
-	Vec3 _scale;
-	Vec3 _rotation;
-	Vec3 _position;
-
-private:
-	shared_ptr<Transform> _parent;
-	vector<shared_ptr<Transform>> _children;
+public:
+	GENERATE_COMPONENT_BODY(Transform)
 };
 
+REGISTER_COMPONENT(Transform)

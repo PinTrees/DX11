@@ -31,12 +31,8 @@ private:
 	void SetGameObject(GameObject* gameObject) { m_pGameObject = gameObject; }
 
 public:
-	virtual json toJson() const 
-	{
-		return json{};
-	}
-	virtual void fromJson(const json& j) 
-	{
-	}
+	virtual json toJson() const = 0;
+	virtual void fromJson(const json& j) = 0;
+	virtual std::string GetType() const = 0;
 };
 

@@ -22,13 +22,7 @@ void InspectorEditorWindow::OnRender()
 		if (curSelectGameObject == nullptr)
 			return;
 
-		const std::vector<shared_ptr<Component>>& components = curSelectGameObject->GetComponents();
-
-		for (const auto& component : components)
-		{
-			component->OnInspectorGUI();
-			ImGui::Separator();
-		}
+		curSelectGameObject->OnInspectorGUI();
 	}
 	else if (SelectionManager::GetSelectedObjectType() == SelectionType::FILE)
 	{

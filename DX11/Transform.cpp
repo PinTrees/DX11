@@ -141,3 +141,29 @@ void Transform::OnInspectorGUI()
 		UpdateTransform();
 	}
 }
+
+GENERATE_COMPONENT_FUNC_TOJSON(Transform)
+{
+	json j;
+	j["type"] = "Transform";
+	j["_localScale"] = { _localScale.x, _localScale.y, _localScale.z };
+	j["_localRotation"] = { _localRotation.x, _localRotation.y, _localRotation.z };
+	j["_localPosition"] = { _localPosition.x, _localPosition.y, _localPosition.z };
+	j["_scale"] = { _scale.x, _scale.y, _scale.z };
+	j["_rotation"] = { _rotation.x, _rotation.y, _rotation.z };
+	j["_position"] = { _position.x, _position.y, _position.z };
+
+	return j;
+}
+
+GENERATE_COMPONENT_FUNC_FROMJSON(Transform)
+{
+	_localScale = { j.at("_localScale")[0].get<float>(), j.at("_localScale")[1].get<float>(), j.at("_localScale")[2].get<float>() };
+	_localRotation = { j.at("_localRotation")[0].get<float>(), j.at("_localRotation")[1].get<float>(), j.at("_localRotation")[2].get<float>() };
+	_localPosition = { j.at("_localPosition")[0].get<float>(), j.at("_localPosition")[1].get<float>(), j.at("_localPosition")[2].get<float>() };
+	_scale = { j.at("_scale")[0].get<float>(), j.at("_scale")[1].get<float>(), j.at("_scale")[2].get<float>() };
+	_rotation = { j.at("_rotation")[0].get<float>(), j.at("_rotation")[1].get<float>(), j.at("_rotation")[2].get<float>() };
+	_position = { j.at("_position")[0].get<float>(), j.at("_position")[1].get<float>(), j.at("_position")[2].get<float>() };
+
+	UpdateTransform(); 
+}

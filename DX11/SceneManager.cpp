@@ -19,9 +19,29 @@ void SceneManager::Init()
 {
 }
 
-void SceneManager::LoadScene(string sceneName)
+void SceneManager::LoadScene(wstring scenePath)
 {
-	CreateScene();
+	Scene* scene = nullptr;
+
+	if (m_Scenes.find(scenePath) != m_Scenes.end())
+	{
+		scene = m_Scenes[scenePath];
+		m_pCurrScene = scene;
+	}
+	else
+	{
+		scene = Scene::Load(scenePath);
+		if (scene == nullptr)
+		{
+			CreateScene();
+		}
+		else
+		{
+			m_Scenes[scenePath] = scene;
+			m_pCurrScene = scene;
+		}
+	}
+
 	m_pCurrScene->Enter();
 }
 

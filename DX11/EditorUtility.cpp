@@ -86,6 +86,45 @@ std::wstring EditorUtility::OpenFileDialog(const std::wstring& initialPath, cons
     return L"";
 }
 
+std::wstring EditorUtility::OpenFileDialog(const std::wstring& initialPath, const wstring title, const vector<wstring> filters)
+{
+    fs::path resourcePath(initialPath);
+    fs::path directoryPath = resourcePath.parent_path();
+    std::wstring directoryPathW = directoryPath.wstring();
+
+    std::wstring filterString = L"";
+
+    for (const auto& filter : filters)
+    {
+        filterString += title + L'\0' + filterString + L"*." + filter + L';';
+    }
+      
+
+    if (!filters.empty())
+        filterString.pop_back();
+
+    // "All Files" 필터 추가
+    filterString += L"\0All Files\0*.*\0";
+
+    OPENFILENAME ofn;
+    wchar_t szFile[260] = { 0 };
+    ZeroMemory(&ofn, sizeof(ofn));
+    ofn.lStructSize = sizeof(ofn);
+    ofn.hwndOwner = NULL;
+    ofn.lpstrFile = szFile;
+    ofn.nMaxFile = sizeof(szFile) / sizeof(wchar_t);
+    ofn.lpstrFilter = filterString.c_str();
+    ofn.nFilterIndex = 1;
+    ofn.lpstrInitialDir = directoryPathW.c_str();  // 초기 경로 설정
+    ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+
+    if (GetOpenFileNameW(&ofn) == TRUE) {
+        return std::wstring(ofn.lpstrFile);
+    }
+
+    return L"";
+}
+
 std::wstring EditorUtility::SaveFileDialog(const std::wstring& initialPath, const std::wstring& title, const std::wstring& extension)
 {
     fs::path resourcePath(initialPath);

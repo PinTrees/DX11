@@ -8,6 +8,7 @@ using std::make_shared;
 using std::static_pointer_cast;
 	
 class MonoBehaviour;
+class Component;
 
 class GameObject
 {
@@ -19,6 +20,8 @@ private:
 
 	uint8 m_LayerIndex;
 	vector<shared_ptr<Component>> m_Components;
+	vector<shared_ptr<Component>> m_ComponentsToAdd;	// 임시 저장소
+
 	vector<MonoBehaviour*> m_Scripts;
 
 	GameObject* m_pParentGameObject;
@@ -45,6 +48,7 @@ public:
 	void SetLayerIndex(uint8 layer) { m_LayerIndex = layer; }
 	uint8 GetLayerIndex() { return m_LayerIndex; }
 
+	void ApplyPendingComponents();
 	template <class T>
 	T* AddComponent()
 	{
@@ -55,6 +59,14 @@ public:
 		m_Components.push_back(component);
 
 		return component.get();
+	}
+	void AddComponent(const std::shared_ptr<Component>& component)
+	{
+		if (component == nullptr)
+			return;
+
+		component->SetGameObject(this);
+		m_Components.push_back(component);
 	}
 	template <class T>
 	T* GetComponent()
@@ -79,33 +91,10 @@ private:
 	void SetChild(GameObject* child);
 
 public:
-	json toJson() const 
-	{
-		json j;
-		j["name"] = m_Name;
-		j["components"] = json::array();
-		for (const shared_ptr<Component> component : m_Components) 
-			j["components"].push_back(component->toJson());
-		
-		return j;
-	}
+	void OnInspectorGUI();
 
-	void fromJson(const json& j)
-	{
-		m_Name = j.at("name").get<string>();
-		for (const auto& compJson : j.at("components"))
-		{
-			string type = compJson.at("type").get<string>();
-			shared_ptr<Component> component = nullptr;
-			if (type == "Transform")
-			{
-				//component = make_shared<Transform>();
-			}
-
-			// 다른 컴포넌트 타입도 여기에 추가
-			component->fromJson(compJson);
-			m_Components.push_back(component);
-		}
-	}
+public:
+	SERIALIZE(GameObject)
+	DESERIALIZE(GameObject)
 };
 

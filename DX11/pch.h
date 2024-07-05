@@ -60,10 +60,13 @@ using namespace Microsoft::WRL;
 #include "vector_ex.h"
 
 // ENGINE
+#include "ComponentFactory.h"
+
 // EDITOR - ONLY
 #include "EditorUtility.h"
 #include "EditorWindow.h"
 #include "EditorGUIManager.h"
+#include "EditorSettingManager.h"
 #include "SelectionManager.h"
 
 #include "Application.h"

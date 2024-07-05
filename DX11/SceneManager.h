@@ -8,11 +8,12 @@ class SceneManager
 
 private:
 	Scene* m_pCurrScene;
+	std::map<wstring, Scene*> m_Scenes;
 
 public:
 	void Init();
 
-	void LoadScene(string sceneName);
+	void LoadScene(wstring scenePath);
 
 	void UpdateScene();
 	void RenderScene();

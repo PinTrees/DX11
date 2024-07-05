@@ -136,6 +136,9 @@
     <Filter Include="1. Engine\Manager\InputManager">
       <UniqueIdentifier>{2fab3b4d-24e3-4fbe-8094-a14cf4306e3d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="1. Engine\Manager\Editor\EditorSettingManager">
+      <UniqueIdentifier>{bfa631b1-4b7d-400d-ae02-53ce10fb6d0e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="01. InitDemo.cpp">
@@ -428,6 +431,12 @@
     </ClCompile>
     <ClCompile Include="InputManager.cpp">
       <Filter>1. Engine\Manager\InputManager</Filter>
+    </ClCompile>
+    <ClCompile Include="EditorSettingManager.cpp">
+      <Filter>1. Engine\Manager\Editor\EditorSettingManager</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentFactory.cpp">
+      <Filter>1. Engine\Component\0. Base</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -725,6 +734,12 @@
     </ClInclude>
     <ClInclude Include="InputManager.h">
       <Filter>1. Engine\Manager\InputManager</Filter>
+    </ClInclude>
+    <ClInclude Include="EditorSettingManager.h">
+      <Filter>1. Engine\Manager\Editor\EditorSettingManager</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentFactory.h">
+      <Filter>1. Engine\Component\0. Base</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

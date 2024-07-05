@@ -18,5 +18,8 @@ public:
 public:
 	virtual void Render() override;
 	virtual void OnInspectorGUI() override;
+
+public:
+	GENERATE_COMPONENT_BODY(BoxCollider)
 };
 

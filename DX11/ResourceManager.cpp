@@ -52,3 +52,20 @@ UMaterial* ResourceManager::LoadMaterial(string filename)
 
 	return material;
 }
+
+shared_ptr<Mesh> ResourceManager::LoadMesh(wstring filename)
+{
+	shared_ptr<Mesh> mesh = nullptr;
+
+	if (m_Meshs.find(filename) != m_Meshs.end())
+	{
+		mesh = m_Meshs[filename];
+	}
+	else
+	{
+		mesh = make_shared<Mesh>(Application::GetI()->GetDevice(), wstring_to_string(filename));
+		m_Meshs[filename] = mesh;
+	}
+
+	return mesh;
+}
