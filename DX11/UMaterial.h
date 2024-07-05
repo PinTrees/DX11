@@ -20,6 +20,10 @@ private:
 	XMFLOAT4 Specular; // w = SpecPower
 	XMFLOAT4 Reflect;
 
+	// base
+public:
+	Material Mat;
+
 public:
 	UMaterial();
 	~UMaterial();
@@ -29,6 +33,7 @@ public:
 	static UMaterial* Load(string fullPath);
 	static void Save(UMaterial* material);
 
+	friend void from_json(const json& j, UMaterial& m);
 	friend void to_json(json& j, const UMaterial& m);
 
 public:

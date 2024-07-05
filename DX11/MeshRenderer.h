@@ -12,12 +12,16 @@ class MeshRenderer
 	using Super = Component;
 
 private:
-	Shader* m_Shader;
-	shared_ptr<Effect>  m_Effect;
-	uint8				m_Pass = 0;
-	shared_ptr<Mesh>	m_Mesh;
+	Shader*				m_Shader;
+	wstring				m_ShaderPath;
 
-	UMaterial* m_pMaterial;
+	shared_ptr<Effect>  m_Effect;
+
+	shared_ptr<Mesh>	m_Mesh;
+	wstring				m_MeshPath;
+
+	UMaterial*	m_pMaterial;
+	wstring		m_MaterialPath;
 
 public:
 	MeshRenderer();
@@ -27,7 +31,6 @@ public:
 	void SetMesh(shared_ptr<Mesh> mesh) { m_Mesh = mesh; }
 	void SetShader(Shader* shader) { m_Shader = shader; }
 	void SetShader(shared_ptr<Effect> effect) { m_Effect = effect; }
-	void SetPass(uint8 pass) { m_Pass = pass; }
 
 public:
 	virtual void OnInspectorGUI() override;

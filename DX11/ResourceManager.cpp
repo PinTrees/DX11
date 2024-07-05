@@ -35,3 +35,20 @@ ComPtr<ID3D11ShaderResourceView> ResourceManager::LoadTexture(wstring filename)
 
 	return srv;
 }
+
+UMaterial* ResourceManager::LoadMaterial(string filename)
+{
+	UMaterial* material = nullptr;
+
+	if (m_Materials.find(filename) != m_Materials.end())
+	{
+		material = m_Materials[filename];
+	}
+	else
+	{
+		material = UMaterial::Load(filename);
+		m_Materials[filename] = material;
+	}
+
+	return material;
+}

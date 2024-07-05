@@ -29,10 +29,22 @@ UMaterial* UMaterial::Load(string fullPath)
 		return nullptr;
 	}
 
+	json j;
+	is >> j;
+
 	UMaterial* material = new UMaterial;
 	material->m_ResourcePath = fullPath;
+	j.get_to(*material);
 
-	
+	if (!material->m_BaseMapPath.empty())
+		material->BaseMapSRV = ResourceManager::GetI()->LoadTexture(material->m_BaseMapPath);
+	if (!material->m_NormalMapPath.empty())
+		material->NormalMapSRV = ResourceManager::GetI()->LoadTexture(material->m_NormalMapPath);
+
+	material->Mat.Ambient = material->Ambient;
+	material->Mat.Diffuse = material->Diffuse;
+	material->Mat.Specular = material->Specular;
+	material->Mat.Reflect = material->Reflect;
 
 	return material;
 }
@@ -121,7 +133,7 @@ void UMaterial::OnInspectorGUI()
 			if (!filePath.empty())
 			{
 				NormalMapSRV = ResourceManager::GetI()->LoadTexture(filePath);
-				m_BaseMapPath = filePath;
+				m_NormalMapPath = filePath;
 				changed = true;
 			}
 		}
@@ -135,7 +147,26 @@ void UMaterial::OnInspectorGUI()
 	if (changed) 
 	{
 		UMaterial::Save(this);
+		Mat.Ambient = Ambient;
+		Mat.Diffuse = Diffuse;
+		Mat.Reflect = Reflect;
+		Mat.Specular = Specular;
 	}
+}
+
+void from_json(const json& j, UMaterial& m)
+{
+	m.m_BaseMapPath = string_to_wstring(j.at("BaseMapPath").get<std::string>());
+	m.m_NormalMapPath = string_to_wstring(j.at("NormalMapPath").get<std::string>());
+	m.m_ResourcePath = j.at("ResourcePath").get<std::string>();
+	auto ambient = j.at("Ambient").get<std::vector<float>>();
+	m.Ambient = XMFLOAT4{ ambient[0], ambient[1], ambient[2], ambient[3] };
+	auto diffuse = j.at("Diffuse").get<std::vector<float>>();
+	m.Diffuse = XMFLOAT4{ diffuse[0], diffuse[1], diffuse[2], diffuse[3] };
+	auto specular = j.at("Specular").get<std::vector<float>>();
+	m.Specular = XMFLOAT4{ specular[0], specular[1], specular[2], specular[3] };
+	auto reflect = j.at("Reflect").get<std::vector<float>>();
+	m.Reflect = XMFLOAT4{ reflect[0], reflect[1], reflect[2], reflect[3] };
 }
 
 void to_json(json& j, const UMaterial& m)

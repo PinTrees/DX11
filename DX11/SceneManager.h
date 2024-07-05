@@ -20,7 +20,7 @@ public:
 	Scene* GetCurrentScene() { return m_pCurrScene; }
 
 public:
-	void SaveScene();
+	void HandleSaveScene();
 
 private:
 	void CreateScene();

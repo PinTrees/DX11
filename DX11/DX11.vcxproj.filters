@@ -133,6 +133,9 @@
     <Filter Include="1. Engine\Manager\ResourceManager">
       <UniqueIdentifier>{5e07e780-7225-4fb7-a258-5093a21de822}</UniqueIdentifier>
     </Filter>
+    <Filter Include="1. Engine\Manager\InputManager">
+      <UniqueIdentifier>{2fab3b4d-24e3-4fbe-8094-a14cf4306e3d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="01. InitDemo.cpp">
@@ -422,6 +425,9 @@
     </ClCompile>
     <ClCompile Include="ResourceManager.cpp">
       <Filter>1. Engine\Manager\ResourceManager</Filter>
+    </ClCompile>
+    <ClCompile Include="InputManager.cpp">
+      <Filter>1. Engine\Manager\InputManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -716,6 +722,9 @@
     </ClInclude>
     <ClInclude Include="ResourceManager.h">
       <Filter>1. Engine\Manager\ResourceManager</Filter>
+    </ClInclude>
+    <ClInclude Include="InputManager.h">
+      <Filter>1. Engine\Manager\InputManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

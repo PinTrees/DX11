@@ -15,7 +15,7 @@ MeshRenderer::~MeshRenderer()
 void MeshRenderer::Render()
 {
 	auto deviceContext = Application::GetI()->GetDeviceContext();
-	ComPtr<ID3DX11EffectTechnique> tech = Effects::NormalMapFX->Light0TexTech;
+	ComPtr<ID3DX11EffectTechnique> tech = Effects::NormalMapFX->Light3TexTech;
 	//Light3TexTech;
 
 	D3DX11_TECHNIQUE_DESC techDesc;
@@ -44,15 +44,15 @@ void MeshRenderer::Render()
 
 		for (uint32 subset = 0; subset < m_Mesh->SubsetCount; ++subset)
 		{
-			Effects::NormalMapFX->SetMaterial(m_Mesh->Mat[subset]);
-
 			if (m_pMaterial == nullptr)
 			{
+				Effects::NormalMapFX->SetMaterial(m_Mesh->Mat[subset]);
 				Effects::NormalMapFX->SetDiffuseMap(m_Mesh->DiffuseMapSRV[subset].Get());
 				Effects::NormalMapFX->SetNormalMap(m_Mesh->NormalMapSRV[subset].Get());
 			}
 			else
 			{
+				Effects::NormalMapFX->SetMaterial(m_pMaterial->Mat);
 				Effects::NormalMapFX->SetDiffuseMap(m_pMaterial->GetBaseMapSRV());
 				Effects::NormalMapFX->SetNormalMap(m_pMaterial->GetNormalMapSRV());
 			}
@@ -147,5 +147,25 @@ void MeshRenderer::OnInspectorGUI()
 	if (ImGui::Button("Select Mesh"))
 	{
 		
+	}
+
+	if (m_pMaterial) {
+		ImGui::Text("Selected Material: %s", m_MaterialPath);
+	}
+	else {
+		ImGui::Text("Selected Material: None");
+	}
+
+	if (ImGui::Button("Select Material")) {
+
+		std::wstring filePath = EditorUtility::OpenFileDialog(L"", "Material", {"mat"});
+		if (!filePath.empty())
+		{
+			m_pMaterial = ResourceManager::GetI()->LoadMaterial(wstring_to_string(filePath));
+			if (m_pMaterial) 
+			{
+				m_MaterialPath = filePath;
+			}
+		}
 	}
 }

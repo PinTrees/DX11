@@ -41,8 +41,25 @@ void SceneManager::RenderScene()
 	m_pCurrScene->RenderScene();
 }
 
-void SceneManager::SaveScene()
+void SceneManager::HandleSaveScene()
 {
+	if (INPUT_KEY_HOLD(KEY::CTRL) && INPUT_KEY_HOLD(KEY::LSHIFT) && INPUT_KEY_DOWN(KEY::S))
+	{
+		if (m_pCurrScene == nullptr)
+			return;
+
+		Scene::SaveNewScene(m_pCurrScene);
+	}
+	else if (INPUT_KEY_HOLD(KEY::CTRL) && INPUT_KEY_DOWN(KEY::S))
+	{
+		if (m_pCurrScene == nullptr)
+			return;
+
+		if (m_pCurrScene->GetScenePath().empty())
+			Scene::SaveNewScene(m_pCurrScene);
+		else
+			Scene::Save(m_pCurrScene);
+	}
 }
 
 void SceneManager::CreateScene()

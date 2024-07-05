@@ -1,0 +1,26 @@
+{
+    "rootGameObjects": [
+        {
+            "components": [
+                null,
+                null,
+                null
+            ],
+            "name": "TestObject1"
+        },
+        {
+            "components": [
+                null,
+                null,
+                null
+            ],
+            "name": "TestObject2"
+        },
+        {
+            "components": [
+                null
+            ],
+            "name": "TestObject3"
+        }
+    ]
+}

@@ -58,6 +58,10 @@ int32 App::Run()
         {	
 			_timer.Tick();
 			TimeManager::GetI()->Update();
+			InputManager::GetI()->Update();
+
+			// Handle
+			SceneManager::GetI()->HandleSaveScene();
 
 			if (!_appPaused)
 			{
@@ -101,6 +105,7 @@ bool App::Init()
 
 	// Singleton Init
 	ResourceManager::GetI()->Init(_device);
+	InputManager::GetI()->Init();
 
 	SceneManager::GetI()->Init();
 	SceneManager::GetI()->LoadScene("");

@@ -36,7 +36,7 @@ void SelectionManager::SetSelectedFile(const std::string& filePath)
 		if (m_SelectedFile_Material != nullptr)
 			delete m_SelectedFile_Material;
 
-		m_SelectedFile_Material = UMaterial::Load(filePath);
+		m_SelectedFile_Material = ResourceManager::GetI()->LoadMaterial(filePath);
 		m_SelectedSubType == SelectionSubType::MATERIAL;
 	}
 }

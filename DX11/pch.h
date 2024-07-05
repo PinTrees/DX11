@@ -70,6 +70,7 @@ using namespace Microsoft::WRL;
 #include "RenderManager.h"
 
 #include "ResourceManager.h"
+#include "InputManager.h"
 
 #include "Shader.h"
 #include "UMaterial.h"
