@@ -28,16 +28,19 @@ void SelectionManager::SetSelectedFile(const std::wstring& filePath)
 {
 	m_SelectedFilePath = filePath;
 	m_SelectedType = SelectionType::FILE;
+	m_SelectedSubType = SelectionSubType::NONE;
 
 	fs::path path(filePath);
 
 	if (path.extension() == ".mat")
 	{
-		if (m_SelectedFile_Material != nullptr)
-			delete m_SelectedFile_Material;
-
 		m_SelectedFile_Material = ResourceManager::GetI()->LoadMaterial(wstring_to_string(filePath));
-		m_SelectedSubType == SelectionSubType::MATERIAL;
+		m_SelectedSubType = SelectionSubType::MATERIAL;
+	}
+	else
+	{
+		m_SelectedFile_Material = nullptr;
+		m_SelectedSubType = SelectionSubType::NONE;
 	}
 }
 
@@ -45,4 +48,5 @@ void SelectionManager::SetSelectedGameObject(GameObject* gameObject)
 {
 	m_SelectedGameObject = gameObject;
 	m_SelectedType = SelectionType::GAMEOBJECT;
+	m_SelectedSubType = SelectionSubType::NONE;
 }

@@ -5,12 +5,14 @@ class UMaterial;
 
 enum class SelectionType
 {
+    NONE,
     FILE,
     GAMEOBJECT,
 };
 
 enum class SelectionSubType
 {
+    NONE,
     MATERIAL,
 };
 

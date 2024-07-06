@@ -103,10 +103,10 @@ bool App::Init()
 	EditorSettingManager::Init();
 
 	EditorGUIManager::GetI()->Init();
+	EditorGUIManager::GetI()->RegisterWindow(new InspectorEditorWindow);
 	EditorGUIManager::GetI()->RegisterWindow(new SceneHierachyEditorWindow);
 	EditorGUIManager::GetI()->RegisterWindow(new ProjectEditorWindow);
 	EditorGUIManager::GetI()->RegisterWindow(new SceneEditorWindow);
-	EditorGUIManager::GetI()->RegisterWindow(new InspectorEditorWindow);
 
 	// Singleton Init
 	ResourceManager::GetI()->Init(_device);

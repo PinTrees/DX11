@@ -15,6 +15,9 @@ InspectorEditorWindow::~InspectorEditorWindow()
 
 void InspectorEditorWindow::OnRender()
 {
+	if (SelectionManager::GetSelectedObjectType() == SelectionType::NONE)
+		return;
+
 	if (SelectionManager::GetSelectedObjectType() == SelectionType::GAMEOBJECT)
 	{
 		GameObject* curSelectGameObject = SelectionManager::GetSelectedGameObject();
@@ -26,6 +29,9 @@ void InspectorEditorWindow::OnRender()
 	}
 	else if (SelectionManager::GetSelectedObjectType() == SelectionType::FILE)
 	{
+		if (SelectionManager::GetSelectedSubType() == SelectionSubType::NONE)
+			return;
+
 		if (SelectionManager::GetSelectedSubType() == SelectionSubType::MATERIAL)
 		{
 			UMaterial* material = SelectionManager::GetSelectMaterial();
