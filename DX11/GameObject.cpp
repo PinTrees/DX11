@@ -98,7 +98,8 @@ void GameObject::OnInspectorGUI()
 
 void to_json(json& j, const GameObject& obj)
 {
-    j = json{
+    j = json
+    {
         { "name", obj.m_Name },
         { "components", json::array() }
     };
@@ -126,11 +127,12 @@ void from_json(const json& j, GameObject& obj)
             pComponent = obj.GetComponent<Transform>();
             pComponent->fromJson(compJson); 
         }
-
-        if (component)
+        else
         {
+            // ComponentFactory를 사용하여 컴포넌트 생성
+            component = ComponentFactory::Instance().CreateComponent(type);
             component->fromJson(compJson);
-            obj.m_Components.push_back(component);
+            obj.AddComponent(component);
         }
     }
 }

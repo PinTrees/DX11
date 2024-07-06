@@ -31,9 +31,9 @@ void EditorGUIManager::Init()
     ImGui_ImplDX11_Init(Application::GetI()->GetDevice(), Application::GetI()->GetDeviceContext());
 
     // Load Fonts
-    io.Fonts->AddFontDefault(); 
+    //io.Fonts->AddFontDefault(); 
+    io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\malgun.ttf", 16.0f, NULL, io.Fonts->GetGlyphRangesKorean());
     io.Fonts->Build();
-    // io.Fonts->AddFontFromFileTTF("path_to_font.ttf", 16.0f);
 }
 
 void EditorGUIManager::Update()

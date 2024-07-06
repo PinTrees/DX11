@@ -12,13 +12,10 @@ UMaterial::~UMaterial()
 
 void UMaterial::Create(string fullPath)
 {
-	std::string filePath = fullPath + "/New Material.mat";
-	std::ofstream ofs(filePath);
-	if (ofs)
-	{
-		ofs << "Material data"; 
-		ofs.close();
-	}
+	UMaterial* material = new UMaterial;
+	material->m_ResourcePath = fullPath + "/New Material.mat";
+
+	Save(material);
 }
 
 UMaterial* UMaterial::Load(string fullPath)

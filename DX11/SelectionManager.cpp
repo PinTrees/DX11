@@ -9,7 +9,7 @@ SINGLE_BODY(SelectionManager)
 SelectionType SelectionManager::m_SelectedType = SelectionType::GAMEOBJECT;
 SelectionSubType SelectionManager::m_SelectedSubType = SelectionSubType::MATERIAL;
 
-std::string SelectionManager::m_SelectedFilePath;
+wstring SelectionManager::m_SelectedFilePath = L"";
 GameObject* SelectionManager::m_SelectedGameObject = nullptr;
 
 UMaterial* SelectionManager::m_SelectedFile_Material = nullptr;
@@ -24,7 +24,7 @@ SelectionManager::~SelectionManager()
 
 }
 
-void SelectionManager::SetSelectedFile(const std::string& filePath)
+void SelectionManager::SetSelectedFile(const std::wstring& filePath)
 {
 	m_SelectedFilePath = filePath;
 	m_SelectedType = SelectionType::FILE;
@@ -36,7 +36,7 @@ void SelectionManager::SetSelectedFile(const std::string& filePath)
 		if (m_SelectedFile_Material != nullptr)
 			delete m_SelectedFile_Material;
 
-		m_SelectedFile_Material = ResourceManager::GetI()->LoadMaterial(filePath);
+		m_SelectedFile_Material = ResourceManager::GetI()->LoadMaterial(wstring_to_string(filePath));
 		m_SelectedSubType == SelectionSubType::MATERIAL;
 	}
 }

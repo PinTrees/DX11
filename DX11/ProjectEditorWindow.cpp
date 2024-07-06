@@ -1,14 +1,28 @@
 #include "pch.h"
 #include "ProjectEditorWindow.h"
-#include <filesystem>
+#include "Utils.h"
 
-namespace fs = std::filesystem;
+wchar_t  ProjectEditorWindow::newName[512] = L"";
+bool ProjectEditorWindow::renaming = false;
+std::wstring ProjectEditorWindow::renamingPath = L"";
+
+std::wstring ProjectEditorWindow::solutionDirectory = L""; 
+std::wstring ProjectEditorWindow::currentDirectory = L"."; 
+
+std::string WStringToString(const std::wstring& wstr)
+{
+    if (wstr.empty()) return std::string();
+    int size_needed = WideCharToMultiByte(CP_UTF8, 0, &wstr[0], (int)wstr.size(), NULL, 0, NULL, NULL);
+    std::string strTo(size_needed, 0);
+    WideCharToMultiByte(CP_UTF8, 0, &wstr[0], (int)wstr.size(), &strTo[0], size_needed, NULL, NULL);
+    return strTo;
+}
+
 
 ProjectEditorWindow::ProjectEditorWindow()
-	: EditorWindow("Project"),
-	currentDirectory(".")
+    : EditorWindow("Project")
 {
-    solutionDirectory = GetSolutionDirectory();
+    solutionDirectory = Application::GetDataPath();
     currentDirectory = solutionDirectory;
 }
 
@@ -44,16 +58,16 @@ void ProjectEditorWindow::OnRender()
         {
             if (ImGui::MenuItem("Material"))
             {
-                UMaterial::Create(currentDirectory);
+                UMaterial::Create(wstring_to_string(currentDirectory));
                 ImGui::CloseCurrentPopup();
             }
             if (ImGui::MenuItem("Folder"))
             {
-                std::string folderPath = currentDirectory + "/New Folder";
+                std::wstring folderPath = currentDirectory + L"/New Folder";
                 int folderIndex = 1;
                 while (std::filesystem::exists(folderPath)) 
                 {
-                    folderPath = currentDirectory + "/New Folder (" + std::to_string(folderIndex++) + ")";
+                    folderPath = currentDirectory + L"/New Folder (" + std::to_wstring(folderIndex++) + L")";
                 }
                 std::filesystem::create_directory(folderPath);
                 ImGui::CloseCurrentPopup();
@@ -64,129 +78,115 @@ void ProjectEditorWindow::OnRender()
     }
 }
 
-void ProjectEditorWindow::DisplayDirectoryTree(const std::string& directory)
+void ProjectEditorWindow::DisplayDirectoryTree(const std::wstring& directory)
 {
     for (const auto& entry : fs::directory_iterator(directory))
     {
+        std::string filename = wstring_to_string(entry.path().filename().wstring());
+
         if (entry.is_directory())
         {
-            if (ImGui::TreeNode(entry.path().filename().string().c_str()))
+            if (ImGui::TreeNode(filename.c_str()))
             {
                 if (ImGui::IsItemClicked())
                 {
-                    currentDirectory = entry.path().string();
+                    currentDirectory = entry.path().wstring();
                 }
-                DisplayDirectoryTree(entry.path().string());
+
+                DisplayDirectoryTree(entry.path().wstring());
                 ImGui::TreePop();
             }
         }
     }
 }
 
-void RenameSelectedFile(const fs::path& oldPath, const char* newName)
+void ProjectEditorWindow::DisplayDirectoryContents(const std::wstring& directory)
 {
-    fs::path newPath = oldPath.parent_path() / newName;
-    try
+    for (const auto& entry : fs::directory_iterator(directory))
     {
-        fs::rename(oldPath, newPath);
-        SelectionManager::SetSelectedFile(newPath.string());
-    }
-    catch (const fs::filesystem_error& e)
-    {
-        std::cerr << "Error renaming file: " << e.what() << std::endl;
+        bool isSelected = (SelectionManager::GetSelectedFile() == entry.path().wstring());
+
+        ImGui::PushID(entry.path().wstring().c_str()); 
+
+        RenderFileEntry(entry, isSelected);
+
+        ImGui::PopID();
     }
 }
 
-void ProjectEditorWindow::DisplayDirectoryContents(const std::string& directory)
+void ProjectEditorWindow::RenderFileEntry(const fs::directory_entry& entry, bool isSelected)
 {
-    static char newName[256] = "";
-    static bool renaming = false;
-    static std::string renamingPath = "";
+    std::string filename = WStringToString(entry.path().filename().wstring());
 
-    for (const auto& entry : fs::directory_iterator(directory))
+    if (renaming && renamingPath == entry.path().wstring() && isSelected)
     {
-        bool isSelected = (SelectionManager::GetSelectedFile() == entry.path().string());
+        // 이름 변경 UI 표시
+        ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, { 0, 0 });
+        ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
 
-        ImGui::PushID(entry.path().string().c_str());
+        string aa = wstring_to_string(newName);
+        char* ss = (char*)aa.c_str();
+
+        if (ImGui::InputText("##rename", ss, sizeof(ss)))
+        {
+            RenameSelectedFile(renamingPath, string_to_wstring(ss));
+            renaming = false;
+        }
+        if (ImGui::IsMouseClicked(0) && !ImGui::IsItemHovered())
+        {
+            RenameSelectedFile(renamingPath, newName);
+            renaming = false;
+        }
+        ImGui::PopStyleVar();
+    }
+    else
+    {
+        if (ImGui::Selectable(filename.c_str(), isSelected))
+        {
+        }
+
+        if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(0))
+        {
+            SelectionManager::SetSelectedFile(entry.path().wstring());
+            renaming = false;
+        }
 
         if (entry.is_directory())
         {
-            if (ImGui::Selectable(entry.path().filename().string().c_str(), isSelected))
-            {
-                if (renaming && renamingPath != entry.path().string())
-                {
-                    RenameSelectedFile(renamingPath, newName);
-                    renaming = false;
-                }
-
-                SelectionManager::SetSelectedFile(entry.path().string());
-                renaming = false;
-            }
-
             if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(0))
             {
-                currentDirectory = entry.path().string();
+                currentDirectory = entry.path().wstring();
             }
         }
         else
         {
-            if (entry.path().extension() == ".fbx" || entry.path().extension() == ".png"
-                || entry.path().extension() == ".mat")
+            if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(0))
             {
-                if (ImGui::Selectable(entry.path().filename().string().c_str(), isSelected))
+                if (entry.path().extension() == ".png")
                 {
-                    if (renaming && renamingPath != entry.path().string())
-                    {
-                        RenameSelectedFile(renamingPath, newName);
-                        renaming = false;
-                    }
-
-                    SelectionManager::SetSelectedFile(entry.path().string());
-                    renaming = false;
+                    std::string command = "rundll32.exe \"%ProgramFiles%\\Windows Photo Viewer\\PhotoViewer.dll\", ImageView_Fullscreen " + entry.path().string();
+                    system(command.c_str());
                 }
-
-                if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(0))
+                else
                 {
-                    if (entry.path().extension() == ".png")
-                    {
-                        std::string command = "rundll32.exe \"%ProgramFiles%\\Windows Photo Viewer\\PhotoViewer.dll\", ImageView_Fullscreen " + entry.path().string();
-                        system(command.c_str());
-                    }
-                    else
-                    {
-                        currentDirectory = entry.path().parent_path().string();
-                    }
-                }
-
-                if (entry.path().extension() == ".fbx")
-                {
-                    if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
-                    {
-                        const std::string filePath = entry.path().string();
-                        ImGui::SetDragDropPayload("FBX_FILE", filePath.c_str(), filePath.size() + 1);
-                        ImGui::Text("Dragging %s", entry.path().filename().string().c_str());
-                        ImGui::EndDragDropSource();
-                    }
-                }
-
-                if (entry.path().extension() == ".mat")
-                {
-
+                    currentDirectory = entry.path().parent_path().wstring();
                 }
             }
-            else
-            {
-                if (ImGui::Selectable(entry.path().filename().string().c_str(), isSelected))
-                {
-                    if (renaming && renamingPath != entry.path().string())
-                    {
-                        RenameSelectedFile(renamingPath, newName);
-                        renaming = false;
-                    }
 
-                    SelectionManager::SetSelectedFile(entry.path().string());
-                    renaming = false;
+            if (entry.path().extension() == ".fbx")
+            {
+                if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
+                {
+                    const std::string filePath = entry.path().string();
+                    ImGui::SetDragDropPayload("FBX_FILE", filePath.c_str(), filePath.size() + 1);
+                    ImGui::Text("Dragging %s", filename.c_str());
+                    ImGui::EndDragDropSource();
                 }
+            }
+
+            if (entry.path().extension() == ".mat")
+            {
+                // Handle .mat files if necessary
             }
         }
 
@@ -195,49 +195,33 @@ void ProjectEditorWindow::DisplayDirectoryContents(const std::string& directory)
             if (ImGui::IsItemClicked())
             {
                 renaming = true;
-                renamingPath = entry.path().string();
-                strncpy_s(newName, entry.path().filename().string().c_str(), sizeof(newName));
+                renamingPath = entry.path().wstring();
+                // 기존 이름을 버퍼 크기만큼 복사, 안전하게 처리
+                std::wstring wfilename = entry.path().filename().wstring();
+                size_t len = wfilename.length();
+                if (len >= sizeof(newName) / sizeof(newName[0]))
+                {
+                    len = sizeof(newName) / sizeof(newName[0]) - 1; // 최대 크기 조정
+                }
+                wcsncpy_s(newName, sizeof(newName) / sizeof(newName[0]), wfilename.c_str(), len);
+                newName[len] = L'\0'; // Null-terminate the string
             }
         }
-
-        if (renaming && renamingPath == entry.path().string())
-        {
-            if (ImGui::InputText("##rename", newName, sizeof(newName), ImGuiInputTextFlags_EnterReturnsTrue))
-            {
-                RenameSelectedFile(entry.path(), newName);
-                renaming = false;
-            }
-            if (ImGui::IsMouseClicked(0) && !ImGui::IsItemHovered())
-            {
-                RenameSelectedFile(entry.path(), newName);
-                renaming = false;
-            }
-        }
-
-        ImGui::PopID();
     }
 }
 
-std::string ProjectEditorWindow::GetSolutionDirectory()
+void ProjectEditorWindow::RenameSelectedFile(const std::wstring& oldPath, const std::wstring& newName)
 {
-    char buffer[MAX_PATH];
-    GetModuleFileNameA(NULL, buffer, MAX_PATH);
-    std::string::size_type pos = std::string(buffer).find_last_of("\\/");
-    std::string executablePath = std::string(buffer).substr(0, pos);
-
-    // 솔루션 경로를 찾기 위해 부모 디렉토리를 탐색합니다.
-    fs::path currentPath = executablePath;
-    while (!currentPath.empty())
+    try
     {
-        for (const auto& entry : fs::directory_iterator(currentPath))
-        {
-            if (entry.path().extension() == ".sln")
-            {
-                return currentPath.string();
-            }
-        }
-        currentPath = currentPath.parent_path();
-    }
+        fs::path oldFilePath(oldPath);
+        fs::path newFilePath = oldFilePath.parent_path() / newName;
 
-    return executablePath;
+        fs::rename(oldFilePath, newFilePath);
+        SelectionManager::SetSelectedFile(newFilePath.wstring());
+    }
+    catch (const fs::filesystem_error& e)
+    {
+        std::cerr << "Error renaming file: " << e.what() << std::endl;
+    }
 }

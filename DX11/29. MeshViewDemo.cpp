@@ -77,27 +77,6 @@ bool MeshViewDemo::Init()
 	_pillar4Model = make_shared<Mesh>(_device, _texMgr, "../Resources/Models/pillar6.m3d", L"../Resources/Textures/");
 	_rockModel = make_shared<Mesh>(_device, _texMgr, "../Resources/Models/rock.m3d", L"../Resources/Textures/");
 
-	//GameObject* go = new GameObject("TestObject1");
-	//GameObject* g1 = new GameObject("TestObject2");
-	//GameObject* g2 = new GameObject("TestObject3");
-	//
-	//go->AddComponent<MeshRenderer>()->SetMesh(_rockModel);
-	//go->GetComponent<MeshRenderer>()->SetShader(Shaders::GetShaderByName(L"../Shaders/28. Basic.fx"));
-	//go->AddComponent<BoxCollider>();
-	//
-	//UMaterial* mat = new UMaterial;
-	//mat->SetBaseMap(_texMgr, L"../Resources/Meshs/Rock/Mossy_rock_var7-8_basecolor.png");
-	//mat->SetNormalMap(_texMgr, L"../Resources/Meshs/Rock/Mossy_rock_var7-8_normal.png");
-	//
-	//g1->GetComponent<Transform>()->SetScale(Vec3(0.2f, 0.2f, 0.2f));
-	//g1->AddComponent<MeshRenderer>()->SetMesh(make_shared<Mesh>(_device, "../Resources/Meshs/Rock/Mossy_rock_var8.fbx"));
-	//g1->GetComponent<MeshRenderer>()->SetMaterial(mat);
-	//g1->AddComponent<BoxCollider>()->SetSize(Vec3(1, 1, 1));
-	//
-	//SceneManager::GetI()->GetCurrentScene()->AddRootGameObject(go);
-	//SceneManager::GetI()->GetCurrentScene()->AddRootGameObject(g1);
-	//SceneManager::GetI()->GetCurrentScene()->AddRootGameObject(g2);
-
 	MeshInstance treeInstance;
 	MeshInstance baseInstance;
 	MeshInstance stairsInstance;

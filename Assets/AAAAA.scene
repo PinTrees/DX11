@@ -74,6 +74,9 @@
                     "type": "Transform"
                 },
                 {
+                    "materialPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\Rock\\RockMaterial.mat",
+                    "meshPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\Rock\\Mossy_rock_var8.fbx",
+                    "shaderPath": "",
                     "type": "MeshRenderer"
                 }
             ],

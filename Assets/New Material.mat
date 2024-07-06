@@ -1,0 +1,29 @@
+{
+    "Ambient": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+    ],
+    "BaseMapPath": "",
+    "Diffuse": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+    ],
+    "NormalMapPath": "",
+    "Reflect": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+    ],
+    "ResourcePath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets/New Material.mat",
+    "Specular": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+    ]
+}
