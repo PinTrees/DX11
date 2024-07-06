@@ -61,6 +61,7 @@ using namespace Microsoft::WRL;
 
 // ENGINE
 #include "ComponentFactory.h"
+#include "PostProcessingManager.h";
 
 // EDITOR - ONLY
 #include "EditorUtility.h"
@@ -68,6 +69,7 @@ using namespace Microsoft::WRL;
 #include "EditorGUIManager.h"
 #include "EditorSettingManager.h"
 #include "SelectionManager.h"
+#include "SceneViewManager.h"
 
 #include "Application.h"
 #include "RenderManager.h"

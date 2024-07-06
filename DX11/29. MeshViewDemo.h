@@ -19,7 +19,7 @@ public:
 	void OnResize();
 	void UpdateScene(float dt);
 	void RenderApplication();
-	virtual void OnRender(ID3D11RenderTargetView* renderTargetView) override;
+	virtual void OnEditorSceneRender(ID3D11RenderTargetView* renderTargetView, EditorCamera* camera) override;
 
 	void OnMouseDown(WPARAM btnState, int32 x, int32 y);
 	void OnMouseUp(WPARAM btnState, int32 x, int32 y);
@@ -57,19 +57,19 @@ private:
 
 	BoundingSphere _sceneBounds;
 
-	static const int SMapSize = 2048;
-	shared_ptr<class ShadowMap> _smap;
+	//static const int SMapSize = 2048;
+	//shared_ptr<class ShadowMap> _smap;
 	XMFLOAT4X4 _lightView;
 	XMFLOAT4X4 _lightProj;
 	XMFLOAT4X4 _shadowTransform;
 
-	shared_ptr<class Ssao> _ssao;
+	//shared_ptr<class Ssao> _ssao;
 
 	float _lightRotationAngle = 0.f;
 	XMFLOAT3 _originalLightDir[3];
 	DirectionalLight _dirLights[3];
 
-	Camera _camera;
+	//Camera _camera;
 
 	POINT _lastMousePos;
 };

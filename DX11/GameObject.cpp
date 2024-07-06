@@ -67,6 +67,12 @@ void GameObject::ApplyPendingComponents()
 
 void GameObject::OnInspectorGUI()
 {
+    // 게임 오브젝트 이름 변경 인풋 필드
+    if (ImGui::InputText("Name", &m_Name[0], m_Name.capacity() + 1))
+    {
+        // 이름 변경 시 필요한 추가 작업이 있으면 여기에 추가
+    }
+
     for (const auto& component : m_Components)
     {
         component->OnInspectorGUI();

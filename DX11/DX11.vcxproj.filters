@@ -139,6 +139,18 @@
     <Filter Include="1. Engine\Manager\Editor\EditorSettingManager">
       <UniqueIdentifier>{bfa631b1-4b7d-400d-ae02-53ce10fb6d0e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="1. Engine\Manager\Editor\SceneViewManager">
+      <UniqueIdentifier>{938a1da5-237c-470e-885e-bf5771588abd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="1. Engine\Component\0. Editor">
+      <UniqueIdentifier>{b4dce466-c5d9-4805-ac8d-4fbab6d7564a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="1. Engine\Component\0. Editor\EditorCamera">
+      <UniqueIdentifier>{499fa586-e293-4a99-a718-4c610c8d2e11}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="1. Engine\Manager\PostProcessingManager">
+      <UniqueIdentifier>{328db151-8bd3-41fa-9cde-815d234ceb98}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="01. InitDemo.cpp">
@@ -437,6 +449,15 @@
     </ClCompile>
     <ClCompile Include="ComponentFactory.cpp">
       <Filter>1. Engine\Component\0. Base</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneViewManager.cpp">
+      <Filter>1. Engine\Manager\Editor\SceneViewManager</Filter>
+    </ClCompile>
+    <ClCompile Include="EditorCamera.cpp">
+      <Filter>1. Engine\Component\0. Editor\EditorCamera</Filter>
+    </ClCompile>
+    <ClCompile Include="PostProcessingManager.cpp">
+      <Filter>1. Engine\Manager\PostProcessingManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -740,6 +761,15 @@
     </ClInclude>
     <ClInclude Include="ComponentFactory.h">
       <Filter>1. Engine\Component\0. Base</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneViewManager.h">
+      <Filter>1. Engine\Manager\Editor\SceneViewManager</Filter>
+    </ClInclude>
+    <ClInclude Include="EditorCamera.h">
+      <Filter>1. Engine\Component\0. Editor\EditorCamera</Filter>
+    </ClInclude>
+    <ClInclude Include="PostProcessingManager.h">
+      <Filter>1. Engine\Manager\PostProcessingManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

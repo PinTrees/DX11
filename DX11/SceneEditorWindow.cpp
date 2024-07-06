@@ -1,19 +1,23 @@
 #include "pch.h"
 #include "SceneEditorWindow.h"
 #include "App.h"
+#include "EditorCamera.h"
+#include "MathHelper.h"
 
 SceneEditorWindow::SceneEditorWindow()
     : EditorWindow("Scene"),
     windowWidth(800),
     windowHeight(600)
 {
+    m_Camera = new EditorCamera;
     InitRenderTarget(windowWidth, windowHeight);
+    SceneViewManager::GetI()->m_LastActiveSceneEditorWindow = this;
 }
 
 SceneEditorWindow::~SceneEditorWindow()
 {
+    delete m_Camera;
 }
-
 
 void SceneEditorWindow::InitRenderTarget(UINT width, UINT height)
 {
@@ -42,6 +46,10 @@ void SceneEditorWindow::InitRenderTarget(UINT width, UINT height)
     // ¼ÎÀÌ´õ ¸®¼Ò½º ºä »ý¼º
     hr = device->CreateShaderResourceView(renderTargetTexture, nullptr, &shaderResourceView);
     if (FAILED(hr)) { /* ¿¡·¯ Ã³¸® */ }
+
+    float aspectRatio = static_cast<float>(width) / height;
+    m_Camera->SetLens(0.25f * MathHelper::Pi, aspectRatio, 1.0f, 1000.0f);
+    PostProcessingManager::GetI()->SetEditorSSAO(width, height, m_Camera);
 }
 
 void SceneEditorWindow::CleanUpRenderTarget()
@@ -68,6 +76,11 @@ void SceneEditorWindow::CleanUpRenderTarget()
 
 void SceneEditorWindow::Update()
 {
+    XMMATRIX view = m_Camera->View();
+    XMMATRIX proj = m_Camera->Proj();
+    XMMATRIX viewProj = m_Camera->ViewProj();
+    RenderManager::GetI()->cameraViewProjectionMatrix = view * proj;
+
     auto context = Application::GetI()->GetDeviceContext();
 
     // ±âÁ¸ ·»´õ Å¸°Ù ¹é¾÷
@@ -77,7 +90,7 @@ void SceneEditorWindow::Update()
     context->OMSetRenderTargets(1, &renderTargetView, nullptr);
 
     // ¾À ·»´õ
-    Application::GetI()->GetApp()->OnRender(renderTargetView);
+    Application::GetI()->GetApp()->OnEditorSceneRender(renderTargetView, m_Camera);
 
     if (oldRenderTarget == nullptr)
         return;

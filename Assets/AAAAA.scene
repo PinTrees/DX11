@@ -4,36 +4,42 @@
             "components": [
                 {
                     "_localPosition": [
-                        -7.199999809265137,
-                        0.0,
-                        0.0
+                        -5.699999809265137,
+                        1.5,
+                        -6.300000190734863
                     ],
                     "_localRotation": [
                         0.0,
-                        0.0,
+                        0.800000011920929,
                         0.0
                     ],
                     "_localScale": [
-                        1.0,
-                        1.0,
-                        1.0
+                        0.10000000149011612,
+                        0.10000000149011612,
+                        0.10000000149011612
                     ],
                     "_position": [
-                        -7.199999809265137,
-                        0.0,
-                        0.0
+                        -5.699999809265137,
+                        1.5,
+                        -6.300000190734863
                     ],
                     "_rotation": [
                         -0.0,
-                        1.2675908465098473e-06,
+                        0.800001323223114,
                         -0.0
                     ],
                     "_scale": [
-                        1.0,
-                        1.0,
-                        1.0
+                        0.10000000149011612,
+                        0.10000000149011612,
+                        0.10000000149011612
                     ],
                     "type": "Transform"
+                },
+                {
+                    "materialPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\Forest_Ground_scans\\Forest_ground_Scan_var1\\Forest_ground_Scan_var1.mat",
+                    "meshPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\Forest_Ground_scans\\Forest_ground_Scan_var1\\Forest_ground_scan_var1.fbx",
+                    "shaderPath": "",
+                    "type": "MeshRenderer"
                 }
             ],
             "name": "TestObject1"
@@ -42,8 +48,8 @@
             "components": [
                 {
                     "_localPosition": [
-                        -7.800000190734863,
-                        -0.8999999761581421,
+                        -7.699999809265137,
+                        1.899999976158142,
                         2.4000000953674316
                     ],
                     "_localRotation": [
@@ -57,8 +63,8 @@
                         0.20000000298023224
                     ],
                     "_position": [
-                        -7.800000190734863,
-                        -0.8999999761581421,
+                        -7.699999809265137,
+                        1.899999976158142,
                         2.4000000953674316
                     ],
                     "_rotation": [
@@ -80,42 +86,48 @@
                     "type": "MeshRenderer"
                 }
             ],
-            "name": "TestObject2"
+            "name": "Rock_1\u0000ect2"
         },
         {
             "components": [
                 {
                     "_localPosition": [
-                        0.0,
-                        5.099999904632568,
-                        0.0
+                        3.5,
+                        1.2999999523162842,
+                        0.4000000059604645
                     ],
                     "_localRotation": [
                         0.0,
-                        0.0,
+                        -0.30000001192092896,
                         0.0
                     ],
                     "_localScale": [
-                        1.0,
-                        1.0,
-                        1.0
+                        0.10000000149011612,
+                        0.10000000149011612,
+                        0.10000000149011612
                     ],
                     "_position": [
-                        0.0,
-                        5.099999904632568,
-                        0.0
+                        3.5,
+                        1.2999999523162842,
+                        0.4000000059604645
                     ],
                     "_rotation": [
-                        -0.0,
-                        1.2675908465098473e-06,
-                        -0.0
+                        0.0,
+                        -0.29999876022338867,
+                        0.0
                     ],
                     "_scale": [
-                        1.0,
-                        1.0,
-                        1.0
+                        0.10000000149011612,
+                        0.10000000149011612,
+                        0.10000000149011612
                     ],
                     "type": "Transform"
+                },
+                {
+                    "materialPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\Forest_Ground_scans\\Forest_ground_Scan_var1\\Forest_ground_Scan_var1.mat",
+                    "meshPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\Forest_Ground_scans\\Forest_ground_Scan_var1\\Forest_ground_scan_var1.fbx",
+                    "shaderPath": "",
+                    "type": "MeshRenderer"
                 }
             ],
             "name": "TestObject3"

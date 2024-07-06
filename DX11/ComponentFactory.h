@@ -9,7 +9,7 @@ class ComponentFactory
 private:
     ComponentFactory() = default;
     std::unordered_map<std::string, CreateComponentFn> m_FactoryMap;
-    std::vector<HMODULE> m_LoadedLibraries;
+    std::vector<HMODULE> m_LoadedLibraries;     // 나중에 사용 - 컴포넌트 dll
 
 public:
     static ComponentFactory& Instance()

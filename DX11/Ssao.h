@@ -3,15 +3,19 @@
 // Should we render AO at half resolution?
 
 class Camera;
+class EditorCamera;
 
 class Ssao
 {
 public:
+	Ssao();
 	Ssao(ComPtr<ID3D11Device> device, ComPtr<ID3D11DeviceContext> dc, int32 width, int32 height, float fovy, float farZ);
 	~Ssao();
 
 	ComPtr<ID3D11ShaderResourceView> NormalDepthSRV();
 	ComPtr<ID3D11ShaderResourceView> AmbientSRV();
+
+	void Init(int32 width, int32 height, float fovy, float farZ);
 
 	///<summary>
 	/// Call when the backbuffer is resized.  
@@ -33,6 +37,7 @@ public:
 	/// are disabled, as we do not need the depth buffer computing the Ambient map.
 	///</summary>
 	void ComputeSsao(const Camera& camera);
+	void ComputeSsao(const EditorCamera& camera);
 
 	///<summary>
 	/// Blurs the ambient map to smooth out the noise caused by only taking a

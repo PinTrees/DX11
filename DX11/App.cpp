@@ -57,6 +57,7 @@ int32 App::Run()
 		else
         {	
 			_timer.Tick();
+			// Global Update
 			TimeManager::GetI()->Update();
 			InputManager::GetI()->Update();
 
@@ -68,15 +69,24 @@ int32 App::Run()
 				CalculateFrameStats();
 
 				// Update
-				UpdateScene(_timer.DeltaTime());	
-				SceneManager::GetI()->UpdateScene();
-				PhysicsManager::GetI()->Update(_timer.DeltaTime());
+				if (Application::IsPlaying())
+				{
+					UpdateScene(_timer.DeltaTime()); 
+					SceneManager::GetI()->UpdateScene(); 
+					PhysicsManager::GetI()->Update(_timer.DeltaTime()); 
+				}
+
+				// Editor Update
+				SceneViewManager::GetI()->Update();
 				EditorGUIManager::GetI()->Update();
 
 				// Render
 				RenderApplication();
+
+				//Editor Render
 				EditorGUIManager::GetI()->RenderEditorWindows();
 
+				// Render End
 				HR(_swapChain->Present(0, 0)); 
 
 				// Last Frame
@@ -102,11 +112,14 @@ bool App::Init()
 
 	EditorSettingManager::Init();
 
+	RenderManager::GetI()->Init();
+	PostProcessingManager::GetI()->Init();
+
 	EditorGUIManager::GetI()->Init();
-	EditorGUIManager::GetI()->RegisterWindow(new InspectorEditorWindow);
 	EditorGUIManager::GetI()->RegisterWindow(new SceneHierachyEditorWindow);
-	EditorGUIManager::GetI()->RegisterWindow(new ProjectEditorWindow);
 	EditorGUIManager::GetI()->RegisterWindow(new SceneEditorWindow);
+	EditorGUIManager::GetI()->RegisterWindow(new InspectorEditorWindow);
+	EditorGUIManager::GetI()->RegisterWindow(new ProjectEditorWindow);
 
 	// Singleton Init
 	ResourceManager::GetI()->Init(_device);

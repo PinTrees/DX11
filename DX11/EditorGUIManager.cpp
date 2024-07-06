@@ -42,6 +42,42 @@ void EditorGUIManager::Update()
     ImGui_ImplWin32_NewFrame();
     ImGui::NewFrame();
 
+    // 상단에 플레이, 스탑, 한 프레임씩 넘기기 버튼 추가
+    ImGui::BeginMainMenuBar();
+    if (ImGui::Button("Play"))
+    {
+        Application::SetPlaying(true);
+    }
+    ImGui::SameLine();
+    if (ImGui::Button("Stop"))
+    {
+        Application::SetPlaying(false);
+    }
+    ImGui::SameLine();
+    if (ImGui::Button("Step"))
+    {
+    }
+    ImGui::EndMainMenuBar();
+
+    // 도킹 가능한 영역 설정
+    ImGuiViewport* viewport = ImGui::GetMainViewport(); 
+    ImGui::SetNextWindowPos(viewport->Pos); 
+    ImGui::SetNextWindowSize(viewport->Size);
+    ImGui::SetNextWindowViewport(viewport->ID);
+
+    ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking; 
+    window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
+    window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus; 
+     
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f); 
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+    ImGui::Begin("DockSpace Demo", NULL, window_flags); 
+    ImGui::PopStyleVar(2); 
+
+    ImGuiID dockspace_id = ImGui::GetID("MyDockspace"); 
+    ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_None); 
+    ImGui::End(); 
+
     for (auto& window : m_pEditorWindows)
     {
         window->Update();

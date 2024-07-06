@@ -8,7 +8,7 @@
 #include "Sky.h"
 #include "ShadowMap.h"
 #include "Ssao.h"
-
+#include "EditorCamera.h"
 
 MeshViewDemo::MeshViewDemo(HINSTANCE hInstance)
 	: App(hInstance)
@@ -18,7 +18,7 @@ MeshViewDemo::MeshViewDemo(HINSTANCE hInstance)
 	_lastMousePos.x = 0;
 	_lastMousePos.y = 0;
 
-	_camera.SetPosition(0.0f, 2.0f, -15.0f);
+	//_camera.SetPosition(0.0f, 2.0f, -15.0f);
 
 	_dirLights[0].Ambient = XMFLOAT4(0.6f, 0.6f, 0.6f, 1.0f);
 	_dirLights[0].Diffuse = XMFLOAT4(0.8f, 0.7f, 0.7f, 1.0f);
@@ -61,10 +61,10 @@ bool MeshViewDemo::Init()
 	_texMgr.Init(_device);
 
 	_sky = make_shared<Sky>(_device, L"../Resources/Textures/desertcube1024.dds", 5000.0f);
-	_smap = make_shared<ShadowMap>(_device, SMapSize, SMapSize);
+	//_smap = make_shared<ShadowMap>(_device, SMapSize, SMapSize);
 
-	_camera.SetLens(0.25f * MathHelper::Pi, AspectRatio(), 1.0f, 1000.0f);
-	_ssao = make_shared<class Ssao>(_device, _deviceContext, _clientWidth, _clientHeight, _camera.GetFovY(), _camera.GetFarZ());
+	//_camera.SetLens(0.25f * MathHelper::Pi, AspectRatio(), 1.0f, 1000.0f);
+	//_ssao = make_shared<class Ssao>(_device, _deviceContext, _clientWidth, _clientHeight, _camera.GetFovY(), _camera.GetFarZ());
 
 	BuildScreenQuadGeometryBuffers();
 
@@ -193,231 +193,250 @@ void MeshViewDemo::OnResize()
 {
 	App::OnResize();
 
-	_camera.SetLens(0.25f * MathHelper::Pi, AspectRatio(), 1.0f, 1000.0f);
+	//_camera.SetLens(0.25f * MathHelper::Pi, AspectRatio(), 1.0f, 1000.0f);
 
-	if (_ssao)
-	{
-		_ssao->OnSize(_clientWidth, _clientHeight, _camera.GetFovY(), _camera.GetFarZ());
-	}
+	//if (_ssao)
+	//{
+	//	_ssao->OnSize(_clientWidth, _clientHeight, _camera.GetFovY(), _camera.GetFarZ());
+	//}
 }
 
 void MeshViewDemo::UpdateScene(float dt)
 {
+	////
+	//// Control the camera.
+	////
+	//if (GetAsyncKeyState('W') & 0x8000)
+	//	_camera.Walk(10.0f * dt);
 	//
-	// Control the camera.
+	//if (GetAsyncKeyState('S') & 0x8000)
+	//	_camera.Walk(-10.0f * dt);
 	//
-	if (GetAsyncKeyState('W') & 0x8000)
-		_camera.Walk(10.0f * dt);
-
-	if (GetAsyncKeyState('S') & 0x8000)
-		_camera.Walk(-10.0f * dt);
-
-	if (GetAsyncKeyState('A') & 0x8000)
-		_camera.Strafe(-10.0f * dt);
-
-	if (GetAsyncKeyState('D') & 0x8000)
-		_camera.Strafe(10.0f * dt);
-
+	//if (GetAsyncKeyState('A') & 0x8000)
+	//	_camera.Strafe(-10.0f * dt);
 	//
-	// Animate the lights (and hence shadows).
+	//if (GetAsyncKeyState('D') & 0x8000)
+	//	_camera.Strafe(10.0f * dt);
 	//
-
-	BuildShadowTransform();
-
-	_camera.UpdateViewMatrix();
+	////
+	//// Animate the lights (and hence shadows).
+	////
+	//
+	//BuildShadowTransform();
+	//
+	//_camera.UpdateViewMatrix();
 }
 
 void MeshViewDemo::RenderApplication()
 {
+	////
+	//// Render the scene to the shadow map.
+	////
+	////_smap->BindDsvAndSetNullRenderTarget(_deviceContext);
 	//
-	// Render the scene to the shadow map.
+	//DrawSceneToShadowMap();
 	//
-	_smap->BindDsvAndSetNullRenderTarget(_deviceContext);
-
-	DrawSceneToShadowMap();
-
-	_deviceContext->RSSetState(0);
-
+	//_deviceContext->RSSetState(0);
 	//
-	// Render the view space normals and depths.  This render target has the
-	// same dimensions as the back buffer, so we can use the screen viewport.
-	// This render pass is needed to compute the ambient occlusion.
-	// Notice that we use the main depth/stencil buffer in this pass.  
+	////
+	//// Render the view space normals and depths.  This render target has the
+	//// same dimensions as the back buffer, so we can use the screen viewport.
+	//// This render pass is needed to compute the ambient occlusion.
+	//// Notice that we use the main depth/stencil buffer in this pass.  
+	////
 	//
-
-	_deviceContext->ClearDepthStencilView(_depthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
-	_deviceContext->RSSetViewports(1, &_viewport);
-	_ssao->SetNormalDepthRenderTarget(_depthStencilView.Get());
-
-	DrawSceneToSsaoNormalDepthMap();
-
+	//_deviceContext->ClearDepthStencilView(_depthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+	//_deviceContext->RSSetViewports(1, &_viewport);
+	////_ssao->SetNormalDepthRenderTarget(_depthStencilView.Get());
 	//
-	// Now compute the ambient occlusion.
+	//DrawSceneToSsaoNormalDepthMap();
 	//
-	_ssao->ComputeSsao(_camera);
-	_ssao->BlurAmbientMap(2);
-
+	////
+	//// Now compute the ambient occlusion.
+	////
+	////_ssao->ComputeSsao(_camera);
+	////_ssao->BlurAmbientMap(2);
 	//
-	// Restore the back and depth buffer and viewport to the OM stage.
+	////
+	//// Restore the back and depth buffer and viewport to the OM stage.
+	////
+	//ID3D11RenderTargetView* renderTargets[1] = { _renderTargetView.Get() };
+	//_deviceContext->OMSetRenderTargets(1, renderTargets, _depthStencilView.Get() );
+	//_deviceContext->RSSetViewports(1, &_viewport);
 	//
-	ID3D11RenderTargetView* renderTargets[1] = { _renderTargetView.Get() };
-	_deviceContext->OMSetRenderTargets(1, renderTargets, _depthStencilView.Get() );
-	_deviceContext->RSSetViewports(1, &_viewport);
-
-	_deviceContext->ClearRenderTargetView(_renderTargetView.Get(), reinterpret_cast<const float*>(&Colors::Silver));
-
-	// We already laid down scene depth to the depth buffer in the Normal/Depth map pass,
-	// so we can set the depth comparison test to “EQUALS.? This prevents any overdraw
-	// in this rendering pass, as only the nearest visible pixels will pass this depth
-	// comparison test.
-
-	_deviceContext->OMSetDepthStencilState(RenderStates::EqualsDSS.Get(), 0);
-
-	XMMATRIX view = _camera.View();
-	XMMATRIX proj = _camera.Proj();
-	XMMATRIX viewProj = _camera.ViewProj();
-
-	float blendFactor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
-
-	// Set per frame constants.
-	Effects::NormalMapFX->SetDirLights(_dirLights);
-	Effects::NormalMapFX->SetEyePosW(_camera.GetPosition());
-	Effects::NormalMapFX->SetCubeMap(_sky->CubeMapSRV().Get());
-	Effects::NormalMapFX->SetShadowMap(_smap->DepthMapSRV().Get());
-	Effects::NormalMapFX->SetSsaoMap(_ssao->AmbientSRV().Get());
-
-	ComPtr<ID3DX11EffectTechnique> tech = Effects::NormalMapFX->Light3TexTech;
-	ComPtr<ID3DX11EffectTechnique> alphaClippedTech = Effects::NormalMapFX->Light3TexAlphaClipTech;
-
-	_deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-	XMMATRIX world;
-	XMMATRIX worldInvTranspose;
-	XMMATRIX worldViewProj;
-
-	// Transform NDC space [-1,+1]^2 to texture space [0,1]^2
-	XMMATRIX toTexSpace(
-		0.5f, 0.0f, 0.0f, 0.0f,
-		0.0f, -0.5f, 0.0f, 0.0f,
-		0.0f, 0.0f, 1.0f, 0.0f,
-		0.5f, 0.5f, 0.0f, 1.0f);
-
-	XMMATRIX shadowTransform = XMLoadFloat4x4(&_shadowTransform);
-
-	if (GetAsyncKeyState('1') & 0x8000)
-		_deviceContext->RSSetState(RenderStates::WireframeRS.Get());
-
-	RenderManager::GetI()->shadowTransform = XMLoadFloat4x4(&_shadowTransform);
-	RenderManager::GetI()->cameraViewProjectionMatrix = view * proj;
-
-	uint32 stride = sizeof(Vertex::PosNormalTexTan);
-	uint32 offset = 0;
-
-	_deviceContext->IASetInputLayout(InputLayouts::PosNormalTexTan.Get());
-
-	SceneManager::GetI()->GetCurrentScene()->RenderScene();
-
+	//_deviceContext->ClearRenderTargetView(_renderTargetView.Get(), reinterpret_cast<const float*>(&Colors::Silver));
 	//
-	// Draw opaque objects.
+	//// We already laid down scene depth to the depth buffer in the Normal/Depth map pass,
+	//// so we can set the depth comparison test to “EQUALS.? This prevents any overdraw
+	//// in this rendering pass, as only the nearest visible pixels will pass this depth
+	//// comparison test.
 	//
-	D3DX11_TECHNIQUE_DESC techDesc;
-	tech->GetDesc(&techDesc);
-
-
-	for (uint32 p = 0; p < techDesc.Passes; ++p)
-	{
-		for (uint32 modelIndex = 0; modelIndex < _modelInstances.size(); ++modelIndex)
-		{
-			world = XMLoadFloat4x4(&_modelInstances[modelIndex].World);
-			worldInvTranspose = MathHelper::InverseTranspose(world);
-			worldViewProj = world * view * proj;
-
-			Effects::NormalMapFX->SetWorld(world);
-			Effects::NormalMapFX->SetWorldInvTranspose(worldInvTranspose);
-			Effects::NormalMapFX->SetWorldViewProj(worldViewProj);
-			Effects::NormalMapFX->SetWorldViewProjTex(worldViewProj * toTexSpace);
-			Effects::NormalMapFX->SetShadowTransform(world * shadowTransform);
-			Effects::NormalMapFX->SetTexTransform(XMMatrixScaling(1.0f, 1.0f, 1.0f));
-
-			for (uint32 subset = 0; subset < _modelInstances[modelIndex].Model->SubsetCount; ++subset)
-			{
-				Effects::NormalMapFX->SetMaterial(_modelInstances[modelIndex].Model->Mat[subset]);
-				Effects::NormalMapFX->SetDiffuseMap(_modelInstances[modelIndex].Model->DiffuseMapSRV[subset].Get());
-				Effects::NormalMapFX->SetNormalMap(_modelInstances[modelIndex].Model->NormalMapSRV[subset].Get());
-
-				tech->GetPassByIndex(p)->Apply(0, _deviceContext.Get());
-				_modelInstances[modelIndex].Model->ModelMesh.Draw(_deviceContext, subset);
-			}
-		}
-	}
-
-	// The alpha tested triangles are leaves, so render them double sided.
-	_deviceContext->RSSetState(RenderStates::NoCullRS.Get());
-	alphaClippedTech->GetDesc(&techDesc);
-	for (uint32 p = 0; p < techDesc.Passes; ++p)
-	{
-		for (uint32 modelIndex = 0; modelIndex < _alphaClippedModelInstances.size(); ++modelIndex)
-		{
-			world = XMLoadFloat4x4(&_alphaClippedModelInstances[modelIndex].World);
-			worldInvTranspose = MathHelper::InverseTranspose(world);
-			worldViewProj = world * view * proj;
-
-			Effects::NormalMapFX->SetWorld(world);
-			Effects::NormalMapFX->SetWorldInvTranspose(worldInvTranspose);
-			Effects::NormalMapFX->SetWorldViewProj(worldViewProj);
-			Effects::NormalMapFX->SetWorldViewProjTex(worldViewProj * toTexSpace);
-			Effects::NormalMapFX->SetShadowTransform(world * shadowTransform);
-			Effects::NormalMapFX->SetTexTransform(XMMatrixScaling(1.0f, 1.0f, 1.0f));
-
-			for (uint32 subset = 0; subset < _alphaClippedModelInstances[modelIndex].Model->SubsetCount; ++subset)
-			{
-				Effects::NormalMapFX->SetMaterial(_alphaClippedModelInstances[modelIndex].Model->Mat[subset]);
-				Effects::NormalMapFX->SetDiffuseMap(_alphaClippedModelInstances[modelIndex].Model->DiffuseMapSRV[subset].Get());
-				Effects::NormalMapFX->SetNormalMap(_alphaClippedModelInstances[modelIndex].Model->NormalMapSRV[subset].Get());
-
-				alphaClippedTech->GetPassByIndex(p)->Apply(0, _deviceContext.Get());
-				_alphaClippedModelInstances[modelIndex].Model->ModelMesh.Draw(_deviceContext, subset);
-			}
-		}
-	}
-
-	// Turn off wireframe.
-	_deviceContext->RSSetState(0);
-
-	// Restore from RenderStates::EqualsDSS
-	_deviceContext->OMSetDepthStencilState(0, 0);
-
-	// Debug view SSAO map.
-	//DrawScreenQuad(mSsao->AmbientSRV());
-
-	_sky->Draw(_deviceContext, _camera);
-
-	// restore default states, as the SkyFX changes them in the effect file.
-	_deviceContext->RSSetState(0);
-	_deviceContext->OMSetDepthStencilState(0, 0);
-
-	// Unbind shadow map and AmbientMap as a shader input because we are going to render
-	// to it next frame.  These textures can be at any slot, so clear all slots.
-	ID3D11ShaderResourceView* nullSRV[128] = { 0 };
-	_deviceContext->PSSetShaderResources(0, 128, nullSRV);
+	//_deviceContext->OMSetDepthStencilState(RenderStates::EqualsDSS.Get(), 0);
+	//
+	////XMMATRIX view = _camera.View();
+	//XMMATRIX proj = _camera.Proj();
+	//XMMATRIX viewProj = _camera.ViewProj();
+	//
+	//float blendFactor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
+	//
+	//// Set per frame constants.
+	//Effects::NormalMapFX->SetDirLights(_dirLights);
+	//Effects::NormalMapFX->SetEyePosW(_camera.GetPosition());
+	//Effects::NormalMapFX->SetCubeMap(_sky->CubeMapSRV().Get());
+	////Effects::NormalMapFX->SetShadowMap(_smap->DepthMapSRV().Get());
+	////Effects::NormalMapFX->SetSsaoMap(_ssao->AmbientSRV().Get());
+	//
+	//ComPtr<ID3DX11EffectTechnique> tech = Effects::NormalMapFX->Light3TexTech;
+	//ComPtr<ID3DX11EffectTechnique> alphaClippedTech = Effects::NormalMapFX->Light3TexAlphaClipTech;
+	//
+	//_deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	//
+	//XMMATRIX world;
+	//XMMATRIX worldInvTranspose;
+	//XMMATRIX worldViewProj;
+	//
+	//// Transform NDC space [-1,+1]^2 to texture space [0,1]^2
+	//XMMATRIX toTexSpace(
+	//	0.5f, 0.0f, 0.0f, 0.0f,
+	//	0.0f, -0.5f, 0.0f, 0.0f,
+	//	0.0f, 0.0f, 1.0f, 0.0f,
+	//	0.5f, 0.5f, 0.0f, 1.0f);
+	//
+	//XMMATRIX shadowTransform = XMLoadFloat4x4(&_shadowTransform);
+	//
+	//if (GetAsyncKeyState('1') & 0x8000)
+	//	_deviceContext->RSSetState(RenderStates::WireframeRS.Get());
+	//
+	//RenderManager::GetI()->shadowTransform = XMLoadFloat4x4(&_shadowTransform);
+	////RenderManager::GetI()->cameraViewProjectionMatrix = view * proj;
+	//
+	//uint32 stride = sizeof(Vertex::PosNormalTexTan);
+	//uint32 offset = 0;
+	//
+	//_deviceContext->IASetInputLayout(InputLayouts::PosNormalTexTan.Get());
+	//
+	//SceneManager::GetI()->GetCurrentScene()->RenderScene();
+	//
+	////
+	//// Draw opaque objects.
+	////
+	//D3DX11_TECHNIQUE_DESC techDesc;
+	//tech->GetDesc(&techDesc);
+	//
+	//
+	//for (uint32 p = 0; p < techDesc.Passes; ++p)
+	//{
+	//	for (uint32 modelIndex = 0; modelIndex < _modelInstances.size(); ++modelIndex)
+	//	{
+	//		world = XMLoadFloat4x4(&_modelInstances[modelIndex].World);
+	//		worldInvTranspose = MathHelper::InverseTranspose(world);
+	//		worldViewProj = world * view * proj;
+	//
+	//		Effects::NormalMapFX->SetWorld(world);
+	//		Effects::NormalMapFX->SetWorldInvTranspose(worldInvTranspose);
+	//		Effects::NormalMapFX->SetWorldViewProj(worldViewProj);
+	//		Effects::NormalMapFX->SetWorldViewProjTex(worldViewProj * toTexSpace);
+	//		Effects::NormalMapFX->SetShadowTransform(world * shadowTransform);
+	//		Effects::NormalMapFX->SetTexTransform(XMMatrixScaling(1.0f, 1.0f, 1.0f));
+	//
+	//		for (uint32 subset = 0; subset < _modelInstances[modelIndex].Model->SubsetCount; ++subset)
+	//		{
+	//			Effects::NormalMapFX->SetMaterial(_modelInstances[modelIndex].Model->Mat[subset]);
+	//			Effects::NormalMapFX->SetDiffuseMap(_modelInstances[modelIndex].Model->DiffuseMapSRV[subset].Get());
+	//			Effects::NormalMapFX->SetNormalMap(_modelInstances[modelIndex].Model->NormalMapSRV[subset].Get());
+	//
+	//			tech->GetPassByIndex(p)->Apply(0, _deviceContext.Get());
+	//			_modelInstances[modelIndex].Model->ModelMesh.Draw(_deviceContext, subset);
+	//		}
+	//	}
+	//}
+	//
+	//// The alpha tested triangles are leaves, so render them double sided.
+	//_deviceContext->RSSetState(RenderStates::NoCullRS.Get());
+	//alphaClippedTech->GetDesc(&techDesc);
+	//for (uint32 p = 0; p < techDesc.Passes; ++p)
+	//{
+	//	for (uint32 modelIndex = 0; modelIndex < _alphaClippedModelInstances.size(); ++modelIndex)
+	//	{
+	//		world = XMLoadFloat4x4(&_alphaClippedModelInstances[modelIndex].World);
+	//		worldInvTranspose = MathHelper::InverseTranspose(world);
+	//		worldViewProj = world * view * proj;
+	//
+	//		Effects::NormalMapFX->SetWorld(world);
+	//		Effects::NormalMapFX->SetWorldInvTranspose(worldInvTranspose);
+	//		Effects::NormalMapFX->SetWorldViewProj(worldViewProj);
+	//		Effects::NormalMapFX->SetWorldViewProjTex(worldViewProj * toTexSpace);
+	//		Effects::NormalMapFX->SetShadowTransform(world * shadowTransform);
+	//		Effects::NormalMapFX->SetTexTransform(XMMatrixScaling(1.0f, 1.0f, 1.0f));
+	//
+	//		for (uint32 subset = 0; subset < _alphaClippedModelInstances[modelIndex].Model->SubsetCount; ++subset)
+	//		{
+	//			Effects::NormalMapFX->SetMaterial(_alphaClippedModelInstances[modelIndex].Model->Mat[subset]);
+	//			Effects::NormalMapFX->SetDiffuseMap(_alphaClippedModelInstances[modelIndex].Model->DiffuseMapSRV[subset].Get());
+	//			Effects::NormalMapFX->SetNormalMap(_alphaClippedModelInstances[modelIndex].Model->NormalMapSRV[subset].Get());
+	//
+	//			alphaClippedTech->GetPassByIndex(p)->Apply(0, _deviceContext.Get());
+	//			_alphaClippedModelInstances[modelIndex].Model->ModelMesh.Draw(_deviceContext, subset);
+	//		}
+	//	}
+	//}
+	//
+	//// Turn off wireframe.
+	//_deviceContext->RSSetState(0);
+	//
+	//// Restore from RenderStates::EqualsDSS
+	//_deviceContext->OMSetDepthStencilState(0, 0);
+	//
+	//// Debug view SSAO map.
+	////DrawScreenQuad(mSsao->AmbientSRV());
+	//
+	//_sky->Draw(_deviceContext, _camera);
+	//
+	//// restore default states, as the SkyFX changes them in the effect file.
+	//_deviceContext->RSSetState(0);
+	//_deviceContext->OMSetDepthStencilState(0, 0);
+	//
+	//// Unbind shadow map and AmbientMap as a shader input because we are going to render
+	//// to it next frame.  These textures can be at any slot, so clear all slots.
+	//ID3D11ShaderResourceView* nullSRV[128] = { 0 };
+	//_deviceContext->PSSetShaderResources(0, 128, nullSRV);
 }
 
-void MeshViewDemo::OnRender(ID3D11RenderTargetView* renderTargetView)
+void MeshViewDemo::OnEditorSceneRender(ID3D11RenderTargetView* renderTargetView, EditorCamera* camera)
 {
-	_smap->BindDsvAndSetNullRenderTarget(_deviceContext);
+	BuildShadowTransform();
 
-	DrawSceneToShadowMap();
+	auto shadowMap = RenderManager::GetI()->editorShadowMap;
+	shadowMap->BindDsvAndSetNullRenderTarget(_deviceContext);
+
+	RenderManager::GetI()->directinalLightViewProjection = XMMatrixMultiply(XMLoadFloat4x4(&_lightView), XMLoadFloat4x4(&_lightProj));
+
+	Effects::BuildShadowMapFX->SetEyePosW(camera->GetPosition());
+	Effects::BuildShadowMapFX->SetViewProj(RenderManager::GetI()->directinalLightViewProjection);
+
+	// Draw Scene Objects
+	SceneManager::GetI()->GetCurrentScene()->RenderSceneShadow();
 
 	_deviceContext->RSSetState(0);
 
 	_deviceContext->ClearDepthStencilView(_depthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 	_deviceContext->RSSetViewports(1, &_viewport);
-	_ssao->SetNormalDepthRenderTarget(_depthStencilView.Get());
 
-	DrawSceneToSsaoNormalDepthMap();
+	// PostProcessing - SSAO
+	auto ssao = PostProcessingManager::GetI()->GetEditorSSAO();
+	ssao->SetNormalDepthRenderTarget(_depthStencilView.Get());
 
-	_ssao->ComputeSsao(_camera);
-	_ssao->BlurAmbientMap(10);
+	RenderManager::GetI()->cameraViewMatrix = camera->View(); 
+	RenderManager::GetI()->cameraProjectionMatrix = camera->Proj();
+	RenderManager::GetI()->cameraViewProjectionMatrix = XMMatrixMultiply(camera->View(), camera->Proj()); 
+
+	// Draw Scene Objects
+	SceneManager::GetI()->GetCurrentScene()->RenderSceneShadowNormal();
+
+	_deviceContext->RSSetState(0);
+
+	// PostProcessing - SSAO
+	PostProcessingManager::GetI()->RenderEditorSSAO(camera);
 
 	ID3D11RenderTargetView* renderTargets[1] = { renderTargetView };
 	_deviceContext->OMSetRenderTargets(1, renderTargets, _depthStencilView.Get());
@@ -426,36 +445,21 @@ void MeshViewDemo::OnRender(ID3D11RenderTargetView* renderTargetView)
 
 	_deviceContext->OMSetDepthStencilState(RenderStates::EqualsDSS.Get(), 0);
 
-	XMMATRIX view = _camera.View();
-	XMMATRIX proj = _camera.Proj();
-	XMMATRIX viewProj = _camera.ViewProj();
-
 	float blendFactor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
 
 	Effects::NormalMapFX->SetDirLights(_dirLights);
-	Effects::NormalMapFX->SetEyePosW(_camera.GetPosition());
+	Effects::NormalMapFX->SetEyePosW(camera->GetPosition());
 	Effects::NormalMapFX->SetCubeMap(_sky->CubeMapSRV().Get());
-	Effects::NormalMapFX->SetShadowMap(_smap->DepthMapSRV().Get());
-	Effects::NormalMapFX->SetSsaoMap(_ssao->AmbientSRV().Get());
+	Effects::NormalMapFX->SetShadowMap(shadowMap->DepthMapSRV().Get());
+	Effects::NormalMapFX->SetSsaoMap(ssao->AmbientSRV().Get());
 
-	ComPtr<ID3DX11EffectTechnique> tech = Effects::NormalMapFX->Light3TexTech;
-	ComPtr<ID3DX11EffectTechnique> alphaClippedTech = Effects::NormalMapFX->Light3TexAlphaClipTech;
-
-	_deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-	XMMATRIX world;
-	XMMATRIX worldInvTranspose;
-	XMMATRIX worldViewProj;
 	XMMATRIX toTexSpace(
 		0.5f, 0.0f, 0.0f, 0.0f,
 		0.0f, -0.5f, 0.0f, 0.0f,
 		0.0f, 0.0f, 1.0f, 0.0f,
 		0.5f, 0.5f, 0.0f, 1.0f);
 
-	XMMATRIX shadowTransform = XMLoadFloat4x4(&_shadowTransform);
-
 	RenderManager::GetI()->shadowTransform = XMLoadFloat4x4(&_shadowTransform);
-	RenderManager::GetI()->cameraViewProjectionMatrix = view * proj;
 
 	uint32 stride = sizeof(Vertex::PosNormalTexTan);
 	uint32 offset = 0;
@@ -464,71 +468,10 @@ void MeshViewDemo::OnRender(ID3D11RenderTargetView* renderTargetView)
 
 	SceneManager::GetI()->GetCurrentScene()->RenderScene();
 
-	D3DX11_TECHNIQUE_DESC techDesc;
-	tech->GetDesc(&techDesc);
-
-	for (uint32 p = 0; p < techDesc.Passes; ++p)
-	{
-		for (uint32 modelIndex = 0; modelIndex < _modelInstances.size(); ++modelIndex)
-		{
-			world = XMLoadFloat4x4(&_modelInstances[modelIndex].World);
-			worldInvTranspose = MathHelper::InverseTranspose(world);
-			worldViewProj = world * view * proj;
-
-			Effects::NormalMapFX->SetWorld(world);
-			Effects::NormalMapFX->SetWorldInvTranspose(worldInvTranspose);
-			Effects::NormalMapFX->SetWorldViewProj(worldViewProj);
-			Effects::NormalMapFX->SetWorldViewProjTex(worldViewProj * toTexSpace);
-			Effects::NormalMapFX->SetShadowTransform(world * shadowTransform);
-			Effects::NormalMapFX->SetTexTransform(XMMatrixScaling(1.0f, 1.0f, 1.0f));
-
-			for (uint32 subset = 0; subset < _modelInstances[modelIndex].Model->SubsetCount; ++subset)
-			{
-				Effects::NormalMapFX->SetMaterial(_modelInstances[modelIndex].Model->Mat[subset]);
-				Effects::NormalMapFX->SetDiffuseMap(_modelInstances[modelIndex].Model->DiffuseMapSRV[subset].Get());
-				Effects::NormalMapFX->SetNormalMap(_modelInstances[modelIndex].Model->NormalMapSRV[subset].Get());
-
-				tech->GetPassByIndex(p)->Apply(0, _deviceContext.Get());
-				_modelInstances[modelIndex].Model->ModelMesh.Draw(_deviceContext, subset);
-			}
-		}
-	}
-
-	// The alpha tested triangles are leaves, so render them double sided.
-	_deviceContext->RSSetState(RenderStates::NoCullRS.Get());
-	alphaClippedTech->GetDesc(&techDesc);
-
-	for (uint32 p = 0; p < techDesc.Passes; ++p)
-	{
-		for (uint32 modelIndex = 0; modelIndex < _alphaClippedModelInstances.size(); ++modelIndex)
-		{
-			world = XMLoadFloat4x4(&_alphaClippedModelInstances[modelIndex].World);
-			worldInvTranspose = MathHelper::InverseTranspose(world);
-			worldViewProj = world * view * proj;
-
-			Effects::NormalMapFX->SetWorld(world);
-			Effects::NormalMapFX->SetWorldInvTranspose(worldInvTranspose);
-			Effects::NormalMapFX->SetWorldViewProj(worldViewProj);
-			Effects::NormalMapFX->SetWorldViewProjTex(worldViewProj * toTexSpace);
-			Effects::NormalMapFX->SetShadowTransform(world * shadowTransform);
-			Effects::NormalMapFX->SetTexTransform(XMMatrixScaling(1.0f, 1.0f, 1.0f));
-
-			for (uint32 subset = 0; subset < _alphaClippedModelInstances[modelIndex].Model->SubsetCount; ++subset)
-			{
-				Effects::NormalMapFX->SetMaterial(_alphaClippedModelInstances[modelIndex].Model->Mat[subset]);
-				Effects::NormalMapFX->SetDiffuseMap(_alphaClippedModelInstances[modelIndex].Model->DiffuseMapSRV[subset].Get());
-				Effects::NormalMapFX->SetNormalMap(_alphaClippedModelInstances[modelIndex].Model->NormalMapSRV[subset].Get());
-
-				alphaClippedTech->GetPassByIndex(p)->Apply(0, _deviceContext.Get());
-				_alphaClippedModelInstances[modelIndex].Model->ModelMesh.Draw(_deviceContext, subset);
-			}
-		}
-	}
-
 	_deviceContext->RSSetState(0);
 	_deviceContext->OMSetDepthStencilState(0, 0);
 
-	_sky->Draw(_deviceContext, _camera);
+	//_sky->Draw(_deviceContext, _camera);
 
 	_deviceContext->RSSetState(0);
 	_deviceContext->OMSetDepthStencilState(0, 0);
@@ -558,8 +501,8 @@ void MeshViewDemo::OnMouseMove(WPARAM btnState, int32 x, int32 y)
 		float dx = XMConvertToRadians(0.25f * static_cast<float>(x - _lastMousePos.x));
 		float dy = XMConvertToRadians(0.25f * static_cast<float>(y - _lastMousePos.y));
 
-		_camera.Pitch(dy);
-		_camera.RotateY(dx);
+		//_camera.Pitch(dy);
+		//_camera.RotateY(dx);
 	}
 
 	_lastMousePos.x = x;
@@ -568,165 +511,165 @@ void MeshViewDemo::OnMouseMove(WPARAM btnState, int32 x, int32 y)
 
 void MeshViewDemo::DrawSceneToSsaoNormalDepthMap()
 {
-	XMMATRIX view = _camera.View();
-	XMMATRIX proj = _camera.Proj();
-	XMMATRIX viewProj = XMMatrixMultiply(view, proj);
-
-	RenderManager::GetI()->cameraViewMatrix = _camera.View();
-	RenderManager::GetI()->cameraProjectionMatrix = _camera.Proj();
-	RenderManager::GetI()->cameraViewProjectionMatrix = XMMatrixMultiply(view, proj);
-
-	ComPtr<ID3DX11EffectTechnique> tech = Effects::SsaoNormalDepthFX->NormalDepthTech;
-	ComPtr<ID3DX11EffectTechnique> alphaClippedTech = Effects::SsaoNormalDepthFX->NormalDepthAlphaClipTech;
-
-	XMMATRIX world;
-	XMMATRIX worldInvTranspose;
-	XMMATRIX worldView;
-	XMMATRIX worldInvTransposeView;
-	XMMATRIX worldViewProj;
-
-	_deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	_deviceContext->IASetInputLayout(InputLayouts::PosNormalTexTan.Get());
-
-	// Draw Scene Objects
-	SceneManager::GetI()->GetCurrentScene()->RenderSceneShadowNormal();
-
-	if (GetAsyncKeyState('1') & 0x8000)
-		_deviceContext->RSSetState(RenderStates::WireframeRS.Get());
-
-	D3DX11_TECHNIQUE_DESC techDesc;
-	tech->GetDesc(&techDesc);
-	for (uint32 p = 0; p < techDesc.Passes; ++p)
-	{
-		for (uint32 modelIndex = 0; modelIndex < _modelInstances.size(); ++modelIndex)
-		{
-			world = XMLoadFloat4x4(&_modelInstances[modelIndex].World);
-			worldInvTranspose = MathHelper::InverseTranspose(world);
-			worldView = world * view;
-			worldInvTransposeView = worldInvTranspose * view;
-			worldViewProj = world * view * proj;
-
-			Effects::SsaoNormalDepthFX->SetWorldView(worldView);
-			Effects::SsaoNormalDepthFX->SetWorldInvTransposeView(worldInvTransposeView);
-			Effects::SsaoNormalDepthFX->SetWorldViewProj(worldViewProj);
-			Effects::SsaoNormalDepthFX->SetTexTransform(XMMatrixScaling(1.0f, 1.0f, 1.0f));
-
-			tech->GetPassByIndex(p)->Apply(0, _deviceContext.Get());
-			for (uint32 subset = 0; subset < _modelInstances[modelIndex].Model->SubsetCount; ++subset)
-			{
-				_modelInstances[modelIndex].Model->ModelMesh.Draw(_deviceContext, subset);
-			}
-		}
-	}
-
-	// The alpha tested triangles are leaves, so render them double sided.
-	_deviceContext->RSSetState(RenderStates::NoCullRS.Get());
-	alphaClippedTech->GetDesc(&techDesc);
-
-	for (uint32 p = 0; p < techDesc.Passes; ++p)
-	{
-		for (uint32 modelIndex = 0; modelIndex < _alphaClippedModelInstances.size(); ++modelIndex)
-		{
-			world = XMLoadFloat4x4(&_alphaClippedModelInstances[modelIndex].World);
-			worldInvTranspose = MathHelper::InverseTranspose(world);
-			worldView = world * view;
-			worldInvTransposeView = worldInvTranspose * view;
-			worldViewProj = world * view * proj;
-
-			Effects::SsaoNormalDepthFX->SetWorldView(worldView);
-			Effects::SsaoNormalDepthFX->SetWorldInvTransposeView(worldInvTransposeView);
-			Effects::SsaoNormalDepthFX->SetWorldViewProj(worldViewProj);
-			Effects::SsaoNormalDepthFX->SetTexTransform(XMMatrixScaling(1.0f, 1.0f, 1.0f));
-
-			for (uint32 subset = 0; subset < _alphaClippedModelInstances[modelIndex].Model->SubsetCount; ++subset)
-			{
-				Effects::SsaoNormalDepthFX->SetDiffuseMap(_alphaClippedModelInstances[modelIndex].Model->DiffuseMapSRV[subset].Get());
-				alphaClippedTech->GetPassByIndex(p)->Apply(0, _deviceContext.Get());
-				_alphaClippedModelInstances[modelIndex].Model->ModelMesh.Draw(_deviceContext, subset);
-			}
-		}
-	}
-
-	_deviceContext->RSSetState(0);
+	//XMMATRIX view = _camera.View();
+	//XMMATRIX proj = _camera.Proj();
+	//XMMATRIX viewProj = XMMatrixMultiply(view, proj);
+	//
+	//RenderManager::GetI()->cameraViewMatrix = _camera.View();
+	//RenderManager::GetI()->cameraProjectionMatrix = _camera.Proj();
+	//RenderManager::GetI()->cameraViewProjectionMatrix = XMMatrixMultiply(view, proj);
+	//
+	//ComPtr<ID3DX11EffectTechnique> tech = Effects::SsaoNormalDepthFX->NormalDepthTech;
+	//ComPtr<ID3DX11EffectTechnique> alphaClippedTech = Effects::SsaoNormalDepthFX->NormalDepthAlphaClipTech;
+	//
+	//XMMATRIX world;
+	//XMMATRIX worldInvTranspose;
+	//XMMATRIX worldView;
+	//XMMATRIX worldInvTransposeView;
+	//XMMATRIX worldViewProj;
+	//
+	//_deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	//_deviceContext->IASetInputLayout(InputLayouts::PosNormalTexTan.Get());
+	//
+	//// Draw Scene Objects
+	//SceneManager::GetI()->GetCurrentScene()->RenderSceneShadowNormal();
+	//
+	//if (GetAsyncKeyState('1') & 0x8000)
+	//	_deviceContext->RSSetState(RenderStates::WireframeRS.Get());
+	//
+	//D3DX11_TECHNIQUE_DESC techDesc;
+	//tech->GetDesc(&techDesc);
+	//for (uint32 p = 0; p < techDesc.Passes; ++p)
+	//{
+	//	for (uint32 modelIndex = 0; modelIndex < _modelInstances.size(); ++modelIndex)
+	//	{
+	//		world = XMLoadFloat4x4(&_modelInstances[modelIndex].World);
+	//		worldInvTranspose = MathHelper::InverseTranspose(world);
+	//		worldView = world * view;
+	//		worldInvTransposeView = worldInvTranspose * view;
+	//		worldViewProj = world * view * proj;
+	//
+	//		Effects::SsaoNormalDepthFX->SetWorldView(worldView);
+	//		Effects::SsaoNormalDepthFX->SetWorldInvTransposeView(worldInvTransposeView);
+	//		Effects::SsaoNormalDepthFX->SetWorldViewProj(worldViewProj);
+	//		Effects::SsaoNormalDepthFX->SetTexTransform(XMMatrixScaling(1.0f, 1.0f, 1.0f));
+	//
+	//		tech->GetPassByIndex(p)->Apply(0, _deviceContext.Get());
+	//		for (uint32 subset = 0; subset < _modelInstances[modelIndex].Model->SubsetCount; ++subset)
+	//		{
+	//			_modelInstances[modelIndex].Model->ModelMesh.Draw(_deviceContext, subset);
+	//		}
+	//	}
+	//}
+	//
+	//// The alpha tested triangles are leaves, so render them double sided.
+	//_deviceContext->RSSetState(RenderStates::NoCullRS.Get());
+	//alphaClippedTech->GetDesc(&techDesc);
+	//
+	//for (uint32 p = 0; p < techDesc.Passes; ++p)
+	//{
+	//	for (uint32 modelIndex = 0; modelIndex < _alphaClippedModelInstances.size(); ++modelIndex)
+	//	{
+	//		world = XMLoadFloat4x4(&_alphaClippedModelInstances[modelIndex].World);
+	//		worldInvTranspose = MathHelper::InverseTranspose(world);
+	//		worldView = world * view;
+	//		worldInvTransposeView = worldInvTranspose * view;
+	//		worldViewProj = world * view * proj;
+	//
+	//		Effects::SsaoNormalDepthFX->SetWorldView(worldView);
+	//		Effects::SsaoNormalDepthFX->SetWorldInvTransposeView(worldInvTransposeView);
+	//		Effects::SsaoNormalDepthFX->SetWorldViewProj(worldViewProj);
+	//		Effects::SsaoNormalDepthFX->SetTexTransform(XMMatrixScaling(1.0f, 1.0f, 1.0f));
+	//
+	//		for (uint32 subset = 0; subset < _alphaClippedModelInstances[modelIndex].Model->SubsetCount; ++subset)
+	//		{
+	//			Effects::SsaoNormalDepthFX->SetDiffuseMap(_alphaClippedModelInstances[modelIndex].Model->DiffuseMapSRV[subset].Get());
+	//			alphaClippedTech->GetPassByIndex(p)->Apply(0, _deviceContext.Get());
+	//			_alphaClippedModelInstances[modelIndex].Model->ModelMesh.Draw(_deviceContext, subset);
+	//		}
+	//	}
+	//}
+	//
+	//_deviceContext->RSSetState(0);
 }
 
 void MeshViewDemo::DrawSceneToShadowMap()
 {
-	XMMATRIX view = XMLoadFloat4x4(&_lightView);
-	XMMATRIX proj = XMLoadFloat4x4(&_lightProj);
-	XMMATRIX viewProj = XMMatrixMultiply(view, proj);
-
-	RenderManager::GetI()->directinalLightViewProjection = XMMatrixMultiply(view, proj);
-
-	Effects::BuildShadowMapFX->SetEyePosW(_camera.GetPosition());
-	Effects::BuildShadowMapFX->SetViewProj(viewProj);
-
-	// Draw Scene Objects
-	SceneManager::GetI()->GetCurrentScene()->RenderSceneShadow();
-
-	ComPtr<ID3DX11EffectTechnique> tech = Effects::BuildShadowMapFX->BuildShadowMapTech;
-	ComPtr<ID3DX11EffectTechnique> alphaClippedTech = Effects::BuildShadowMapFX->BuildShadowMapAlphaClipTech;
-
-	_deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-	XMMATRIX world;
-	XMMATRIX worldInvTranspose;
-	XMMATRIX worldViewProj;
-
-	_deviceContext->IASetInputLayout(InputLayouts::PosNormalTexTan.Get());
-
-	if (GetAsyncKeyState('1') & 0x8000)
-		_deviceContext->RSSetState(RenderStates::WireframeRS.Get());
-
-	D3DX11_TECHNIQUE_DESC techDesc;
-	tech->GetDesc(&techDesc);
-
-	for (uint32 p = 0; p < techDesc.Passes; ++p)
-	{
-		for (uint32 modelIndex = 0; modelIndex < _modelInstances.size(); ++modelIndex)
-		{
-			world = XMLoadFloat4x4(&_modelInstances[modelIndex].World);
-			worldInvTranspose = MathHelper::InverseTranspose(world);
-			worldViewProj = world * view * proj;
-
-			Effects::BuildShadowMapFX->SetWorld(world);
-			Effects::BuildShadowMapFX->SetWorldInvTranspose(worldInvTranspose);
-			Effects::BuildShadowMapFX->SetWorldViewProj(worldViewProj);
-			Effects::BuildShadowMapFX->SetTexTransform(::XMMatrixScaling(1.0f, 1.0f, 1.0f));
-
-			tech->GetPassByIndex(p)->Apply(0, _deviceContext.Get());
-
-			for (uint32 subset = 0; subset < _modelInstances[modelIndex].Model->SubsetCount; ++subset)
-			{
-				_modelInstances[modelIndex].Model->ModelMesh.Draw(_deviceContext, subset);
-			}
-		}
-	}
-
-	alphaClippedTech->GetDesc(&techDesc);
-	for (uint32 p = 0; p < techDesc.Passes; ++p)
-	{
-		for (uint32 modelIndex = 0; modelIndex < _alphaClippedModelInstances.size(); ++modelIndex)
-		{
-			world = XMLoadFloat4x4(&_alphaClippedModelInstances[modelIndex].World);
-			worldInvTranspose = MathHelper::InverseTranspose(world);
-			worldViewProj = world * view * proj;
-
-			Effects::BuildShadowMapFX->SetWorld(world);
-			Effects::BuildShadowMapFX->SetWorldInvTranspose(worldInvTranspose);
-			Effects::BuildShadowMapFX->SetWorldViewProj(worldViewProj);
-			Effects::BuildShadowMapFX->SetTexTransform(XMMatrixScaling(1.0f, 1.0f, 1.0f));
-
-			for (uint32 subset = 0; subset < _alphaClippedModelInstances[modelIndex].Model->SubsetCount; ++subset)
-			{
-				Effects::BuildShadowMapFX->SetDiffuseMap(_alphaClippedModelInstances[modelIndex].Model->DiffuseMapSRV[subset].Get());
-				alphaClippedTech->GetPassByIndex(p)->Apply(0, _deviceContext.Get());
-				_alphaClippedModelInstances[modelIndex].Model->ModelMesh.Draw(_deviceContext, subset);
-			}
-		}
-	}
-
-	_deviceContext->RSSetState(0);
+	//XMMATRIX view = XMLoadFloat4x4(&_lightView);
+	//XMMATRIX proj = XMLoadFloat4x4(&_lightProj);
+	//XMMATRIX viewProj = XMMatrixMultiply(view, proj);
+	//
+	//RenderManager::GetI()->directinalLightViewProjection = XMMatrixMultiply(view, proj);
+	//
+	//Effects::BuildShadowMapFX->SetEyePosW(_camera.GetPosition());
+	//Effects::BuildShadowMapFX->SetViewProj(viewProj);
+	//
+	//// Draw Scene Objects
+	//SceneManager::GetI()->GetCurrentScene()->RenderSceneShadow();
+	//
+	//ComPtr<ID3DX11EffectTechnique> tech = Effects::BuildShadowMapFX->BuildShadowMapTech;
+	//ComPtr<ID3DX11EffectTechnique> alphaClippedTech = Effects::BuildShadowMapFX->BuildShadowMapAlphaClipTech;
+	//
+	//_deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	//
+	//XMMATRIX world;
+	//XMMATRIX worldInvTranspose;
+	//XMMATRIX worldViewProj;
+	//
+	//_deviceContext->IASetInputLayout(InputLayouts::PosNormalTexTan.Get());
+	//
+	//if (GetAsyncKeyState('1') & 0x8000)
+	//	_deviceContext->RSSetState(RenderStates::WireframeRS.Get());
+	//
+	//D3DX11_TECHNIQUE_DESC techDesc;
+	//tech->GetDesc(&techDesc);
+	//
+	//for (uint32 p = 0; p < techDesc.Passes; ++p)
+	//{
+	//	for (uint32 modelIndex = 0; modelIndex < _modelInstances.size(); ++modelIndex)
+	//	{
+	//		world = XMLoadFloat4x4(&_modelInstances[modelIndex].World);
+	//		worldInvTranspose = MathHelper::InverseTranspose(world);
+	//		worldViewProj = world * view * proj;
+	//
+	//		Effects::BuildShadowMapFX->SetWorld(world);
+	//		Effects::BuildShadowMapFX->SetWorldInvTranspose(worldInvTranspose);
+	//		Effects::BuildShadowMapFX->SetWorldViewProj(worldViewProj);
+	//		Effects::BuildShadowMapFX->SetTexTransform(::XMMatrixScaling(1.0f, 1.0f, 1.0f));
+	//
+	//		tech->GetPassByIndex(p)->Apply(0, _deviceContext.Get());
+	//
+	//		for (uint32 subset = 0; subset < _modelInstances[modelIndex].Model->SubsetCount; ++subset)
+	//		{
+	//			_modelInstances[modelIndex].Model->ModelMesh.Draw(_deviceContext, subset);
+	//		}
+	//	}
+	//}
+	//
+	//alphaClippedTech->GetDesc(&techDesc);
+	//for (uint32 p = 0; p < techDesc.Passes; ++p)
+	//{
+	//	for (uint32 modelIndex = 0; modelIndex < _alphaClippedModelInstances.size(); ++modelIndex)
+	//	{
+	//		world = XMLoadFloat4x4(&_alphaClippedModelInstances[modelIndex].World);
+	//		worldInvTranspose = MathHelper::InverseTranspose(world);
+	//		worldViewProj = world * view * proj;
+	//
+	//		Effects::BuildShadowMapFX->SetWorld(world);
+	//		Effects::BuildShadowMapFX->SetWorldInvTranspose(worldInvTranspose);
+	//		Effects::BuildShadowMapFX->SetWorldViewProj(worldViewProj);
+	//		Effects::BuildShadowMapFX->SetTexTransform(XMMatrixScaling(1.0f, 1.0f, 1.0f));
+	//
+	//		for (uint32 subset = 0; subset < _alphaClippedModelInstances[modelIndex].Model->SubsetCount; ++subset)
+	//		{
+	//			Effects::BuildShadowMapFX->SetDiffuseMap(_alphaClippedModelInstances[modelIndex].Model->DiffuseMapSRV[subset].Get());
+	//			alphaClippedTech->GetPassByIndex(p)->Apply(0, _deviceContext.Get());
+	//			_alphaClippedModelInstances[modelIndex].Model->ModelMesh.Draw(_deviceContext, subset);
+	//		}
+	//	}
+	//}
+	//
+	//_deviceContext->RSSetState(0);
 }
 
 void MeshViewDemo::DrawScreenQuad(ComPtr<ID3D11ShaderResourceView> srv)

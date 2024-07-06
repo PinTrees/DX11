@@ -4,6 +4,13 @@
 #include "Effects.h"
 #include "Vertex.h"
 #include "MathHelper.h"
+#include "EditorCamera.h"
+
+Ssao::Ssao()
+	:_device(nullptr),
+	_deviceContext(nullptr)
+{
+}
 
 Ssao::Ssao(ComPtr<ID3D11Device> device, ComPtr<ID3D11DeviceContext> dc, int32 width, int32 height, float fovy, float farZ)
 	: _device(device), _deviceContext(dc)
@@ -28,6 +35,18 @@ ComPtr<ID3D11ShaderResourceView> Ssao::NormalDepthSRV()
 ComPtr<ID3D11ShaderResourceView> Ssao::AmbientSRV()
 {
 	return _ambientSRV0;
+}
+
+void Ssao::Init(int32 width, int32 height, float fovy, float farZ)
+{
+	_device = Application::GetI()->GetDevice();
+	_deviceContext = Application::GetI()->GetDeviceContext();
+
+	OnSize(width, height, fovy, farZ);
+
+	BuildFullScreenQuad();
+	BuildOffsetVectors();
+	BuildRandomVectorTexture();
 }
 
 void Ssao::OnSize(int32 width, int32 height, float fovy, float farZ)
@@ -75,6 +94,51 @@ void Ssao::ComputeSsao(const Camera& camera)
 		0.5f, 0.5f, 0.0f, 1.0f);
 
 	XMMATRIX P = camera.Proj();
+	XMMATRIX PT = XMMatrixMultiply(P, T);
+
+	Effects::SsaoFX->SetViewToTexSpace(PT);
+	Effects::SsaoFX->SetOffsetVectors(_offsets);
+	Effects::SsaoFX->SetFrustumCorners(_frustumFarCorner);
+	Effects::SsaoFX->SetNormalDepthMap(_normalDepthSRV.Get());
+	Effects::SsaoFX->SetRandomVecMap(_randomVectorSRV.Get());
+
+	uint32 stride = sizeof(Vertex::Basic32);
+	uint32 offset = 0;
+
+	_deviceContext->IASetInputLayout(InputLayouts::Basic32.Get());
+	_deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	_deviceContext->IASetVertexBuffers(0, 1, _screenQuadVB.GetAddressOf(), &stride, &offset);
+	_deviceContext->IASetIndexBuffer(_screenQuadIB.Get(), DXGI_FORMAT_R16_UINT, 0);
+
+	ComPtr<ID3DX11EffectTechnique> tech = Effects::SsaoFX->SsaoTech;
+	D3DX11_TECHNIQUE_DESC techDesc;
+
+	tech->GetDesc(&techDesc);
+	for (uint32 p = 0; p < techDesc.Passes; ++p)
+	{
+		tech->GetPassByIndex(p)->Apply(0, _deviceContext.Get());
+		_deviceContext->DrawIndexed(6, 0, 0);
+	}
+}
+
+void Ssao::ComputeSsao(const EditorCamera& camera)
+{
+	// Bind the ambient map as the render target.  Observe that this pass does not bind 
+	// a depth/stencil buffer--it does not need it, and without one, no depth test is
+	// performed, which is what we want.
+	ID3D11RenderTargetView* renderTargets[1] = { _ambientRTV0.Get() };
+	_deviceContext->OMSetRenderTargets(1, renderTargets, 0);
+	_deviceContext->ClearRenderTargetView(_ambientRTV0.Get(), reinterpret_cast<const float*>(&Colors::Black));
+	_deviceContext->RSSetViewports(1, &_ambientMapViewport);
+
+	// Transform NDC space [-1,+1]^2 to texture space [0,1]^2
+	static const XMMATRIX T(
+		0.5f, 0.0f, 0.0f, 0.0f,
+		0.0f, -0.5f, 0.0f, 0.0f,
+		0.0f, 0.0f, 1.0f, 0.0f,
+		0.5f, 0.5f, 0.0f, 1.0f);
+
+	XMMATRIX P = camera.Proj(); 
 	XMMATRIX PT = XMMatrixMultiply(P, T);
 
 	Effects::SsaoFX->SetViewToTexSpace(PT);

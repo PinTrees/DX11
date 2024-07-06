@@ -1,6 +1,8 @@
 #pragma once
 #include "EditorWindow.h"
 
+class EditorCamera;
+
 class SceneEditorWindow
 	: public EditorWindow
 {
@@ -16,9 +18,14 @@ private:
 	UINT windowWidth;
 	UINT windowHeight;
 
+	EditorCamera* m_Camera;
+
 public:
 	SceneEditorWindow();
 	~SceneEditorWindow();
+
+public:
+	EditorCamera* GetSceneCamera() { return m_Camera; }
 
 public:
 	virtual void Update() override;

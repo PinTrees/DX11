@@ -18,11 +18,11 @@
 						}									\
 						private:							\
 								type();						\
-								~type();
+								~type();					\
 
 
 
-#define DT TimeManager::GetI()->GetDT();
+#define DT TimeManager::GetI()->GetDT()
 
 #define INPUT_CHECK(key , state) InputManager::GetI()->GetKeyState(key) == state
 #define INPUT_KEY_HOLD(key) INPUT_CHECK(key,KEY_STATE::HOLD)

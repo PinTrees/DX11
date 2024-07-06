@@ -206,6 +206,7 @@
     <ClInclude Include="Component.h" />
     <ClInclude Include="ComponentFactory.h" />
     <ClInclude Include="define.h" />
+    <ClInclude Include="EditorCamera.h" />
     <ClInclude Include="EditorGUIManager.h" />
     <ClInclude Include="EditorSettingManager.h" />
     <ClInclude Include="EditorUtility.h" />
@@ -237,6 +238,7 @@
     <ClInclude Include="ParticleSystem.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="PhysicsManager.h" />
+    <ClInclude Include="PostProcessingManager.h" />
     <ClInclude Include="ProjectEditorWindow.h" />
     <ClInclude Include="RenderManager.h" />
     <ClInclude Include="RenderStates.h" />
@@ -247,6 +249,7 @@
     <ClInclude Include="SceneEditorWindow.h" />
     <ClInclude Include="SceneHierachyEditorWindow.h" />
     <ClInclude Include="SceneManager.h" />
+    <ClInclude Include="SceneViewManager.h" />
     <ClInclude Include="SelectionManager.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="ShadowMap.h" />
@@ -309,6 +312,7 @@
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="ComponentFactory.cpp" />
     <ClCompile Include="define.cpp" />
+    <ClCompile Include="EditorCamera.cpp" />
     <ClCompile Include="EditorGUIManager.cpp" />
     <ClCompile Include="EditorSettingManager.cpp" />
     <ClCompile Include="EditorUtility.cpp" />
@@ -359,6 +363,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="PhysicsManager.cpp" />
+    <ClCompile Include="PostProcessingManager.cpp" />
     <ClCompile Include="ProjectEditorWindow.cpp" />
     <ClCompile Include="RenderManager.cpp" />
     <ClCompile Include="RenderStates.cpp" />
@@ -368,6 +373,7 @@
     <ClCompile Include="SceneEditorWindow.cpp" />
     <ClCompile Include="SceneHierachyEditorWindow.cpp" />
     <ClCompile Include="SceneManager.cpp" />
+    <ClCompile Include="SceneViewManager.cpp" />
     <ClCompile Include="SelectionManager.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="ShadowMap.cpp" />

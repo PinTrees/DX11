@@ -7,6 +7,8 @@ namespace fs = std::filesystem;
 
 SINGLE_BODY(Application)
 
+bool Application::isPlaying = false;
+
 Application::Application()
 	: m_pCurrApp(nullptr)
 {

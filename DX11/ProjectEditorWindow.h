@@ -11,6 +11,7 @@ public:
 	static wchar_t  newName[512];
 	static bool renaming;
 	static std::wstring renamingPath;
+	static vector<char> renameBuffVec;
 
 	static std::wstring solutionDirectory;
 	static std::wstring currentDirectory;

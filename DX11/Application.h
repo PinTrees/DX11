@@ -8,6 +8,9 @@ class Application
 	SINGLE_HEADER(Application)
 
 private:
+	static bool isPlaying;
+
+private:
 	App* m_pCurrApp;
 
 public:
@@ -22,5 +25,7 @@ public:
 
 public:
 	static wstring GetDataPath();
+	static void SetPlaying(bool active) { isPlaying = active; }
+	static bool IsPlaying() { return isPlaying; }
 };
 

@@ -4,6 +4,8 @@
 #include "GameTimer.h"
 #include <string>
 
+class EditorCamera;
+
 class App
 {
 public:
@@ -24,13 +26,14 @@ public:
 	virtual void OnResize(); 
 	virtual void UpdateScene(float dt) = 0;
 	virtual void RenderApplication();
+	virtual void OnEditorSceneRender(ID3D11RenderTargetView* renderTargetView, EditorCamera* camera) { }
+
 	virtual LRESULT MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 	virtual void OnMouseDown(WPARAM btnState, int32 x, int32 y){ }
 	virtual void OnMouseUp(WPARAM btnState, int32 x, int32 y)  { }
 	virtual void OnMouseMove(WPARAM btnState, int32 x, int32 y){ }
 
-	virtual void OnRender(ID3D11RenderTargetView* renderTargetView) { }
 	void SetScreenSize(UINT width, UINT height);
 
 protected:
@@ -72,7 +75,7 @@ protected:
 	// Etc
 	std::wstring _mainWindowCaption = L"DX11 Application";
 	D3D_DRIVER_TYPE _driverType = D3D_DRIVER_TYPE_HARDWARE;
-	int32 _clientWidth = 800;
-	int32 _clientHeight = 600;
+	int32 _clientWidth = 1024;
+	int32 _clientHeight = 800;
 	bool _enable4xMsaa = false;
 };

@@ -9,6 +9,8 @@ std::wstring ProjectEditorWindow::renamingPath = L"";
 std::wstring ProjectEditorWindow::solutionDirectory = L""; 
 std::wstring ProjectEditorWindow::currentDirectory = L"."; 
 
+vector<char> ProjectEditorWindow::renameBuffVec = {};
+
 std::string WStringToString(const std::wstring& wstr)
 {
     if (wstr.empty()) return std::string();
@@ -124,20 +126,36 @@ void ProjectEditorWindow::RenderFileEntry(const fs::directory_entry& entry, bool
         ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, { 0, 0 });
         ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
 
-        string aa = wstring_to_string(newName);
-        char* ss = (char*)aa.c_str();
+        //bool renameInputActive = ImGui::IsItemActive();
+        //
+        //// 커서가 있는지 확인하여 필요 시 포커스 설정
+        //if (!renameInputActive && !ImGui::IsAnyItemActive()) {
+        //    ImGui::SetKeyboardFocusHere();
+        //}
 
-        if (ImGui::InputText("##rename", ss, sizeof(ss)))
+        if (ImGui::InputText("##rename", renameBuffVec.data(), renameBuffVec.size(), ImGuiInputTextFlags_EnterReturnsTrue))
         {
-            RenameSelectedFile(renamingPath, string_to_wstring(ss));
+            std::wstring newNameWstring = string_to_wstring(std::string(renameBuffVec.data()));
+
+            fs::path renamingPathFs(renamingPath);
+            fs::rename(renamingPathFs, renamingPathFs.parent_path() / newNameWstring);
+            
             renaming = false;
         }
+
         if (ImGui::IsMouseClicked(0) && !ImGui::IsItemHovered())
         {
-            RenameSelectedFile(renamingPath, newName);
+            std::wstring newNameWstring = string_to_wstring(std::string(renameBuffVec.data())); 
+
+            fs::path renamingPathFs(renamingPath); 
+            fs::rename(renamingPathFs, renamingPathFs.parent_path() / newNameWstring); 
+            
             renaming = false;
         }
+
         ImGui::PopStyleVar();
+
+        return;
     }
     else
     {
@@ -148,7 +166,15 @@ void ProjectEditorWindow::RenderFileEntry(const fs::directory_entry& entry, bool
         if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(0))
         {
             SelectionManager::SetSelectedFile(entry.path().wstring());
-            renaming = false;
+            
+            if (renaming)
+            {
+                std::wstring newNameWstring = string_to_wstring(std::string(renameBuffVec.data()));
+
+                fs::path renamingPathFs(renamingPath);
+                fs::rename(renamingPathFs, renamingPathFs.parent_path() / newNameWstring);
+                renaming = false;
+            }
         }
 
         if (entry.is_directory())
@@ -192,19 +218,20 @@ void ProjectEditorWindow::RenderFileEntry(const fs::directory_entry& entry, bool
 
         if (isSelected && !renaming)
         {
-            if (ImGui::IsItemClicked())
+            if (ImGui::IsItemClicked() && !ImGui::IsMouseDoubleClicked(0))
             {
                 renaming = true;
                 renamingPath = entry.path().wstring();
-                // 기존 이름을 버퍼 크기만큼 복사, 안전하게 처리
+               
                 std::wstring wfilename = entry.path().filename().wstring();
                 size_t len = wfilename.length();
-                if (len >= sizeof(newName) / sizeof(newName[0]))
-                {
-                    len = sizeof(newName) / sizeof(newName[0]) - 1; // 최대 크기 조정
-                }
-                wcsncpy_s(newName, sizeof(newName) / sizeof(newName[0]), wfilename.c_str(), len);
+
+                wcsncpy_s(newName, wfilename.c_str(), len);
                 newName[len] = L'\0'; // Null-terminate the string
+
+                std::string renameBuffer = WStringToString(newName);
+                renameBuffVec.assign(renameBuffer.begin(), renameBuffer.end());
+                renameBuffVec.resize(512, '\0'); // Resize to 512 with null terminator
             }
         }
     }
