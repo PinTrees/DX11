@@ -7,6 +7,7 @@
 #include "SceneEditorWindow.h"
 #include "ProjectEditorWindow.h"
 #include "InspectorEditorWindow.h"
+#include "GameViewEditorWindow.h"
 
 namespace
 {
@@ -26,7 +27,7 @@ MainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 App::App(HINSTANCE hInstance)
 {
-	ZeroMemory(&_viewport, sizeof(D3D11_VIEWPORT));
+	//ZeroMemory(&_viewport, sizeof(D3D11_VIEWPORT));
 
 	// Get a pointer to the application object so we can forward 
 	// Windows messages to the object's window procedure through
@@ -116,14 +117,16 @@ bool App::Init()
 	PostProcessingManager::GetI()->Init();
 
 	EditorGUIManager::GetI()->Init();
-	EditorGUIManager::GetI()->RegisterWindow(new SceneHierachyEditorWindow);
 	EditorGUIManager::GetI()->RegisterWindow(new SceneEditorWindow);
+	EditorGUIManager::GetI()->RegisterWindow(new SceneHierachyEditorWindow);
 	EditorGUIManager::GetI()->RegisterWindow(new InspectorEditorWindow);
 	EditorGUIManager::GetI()->RegisterWindow(new ProjectEditorWindow);
+	EditorGUIManager::GetI()->RegisterWindow(new GameViewEditorWindow);
 
 	// Singleton Init
 	ResourceManager::GetI()->Init(_device);
 	InputManager::GetI()->Init();
+	PhysicsManager::GetI()->Init();
 
 	SceneManager::GetI()->Init();
 
@@ -155,14 +158,14 @@ void App::OnResize()
 	_deviceContext->OMSetRenderTargets(1, _renderTargetView.GetAddressOf(), _depthStencilView.Get());
 
 	// Set the viewport transform.
-	_viewport.TopLeftX = 0;
-	_viewport.TopLeftY = 0;
-	_viewport.Width    = static_cast<float>(_clientWidth);
-	_viewport.Height   = static_cast<float>(_clientHeight);
-	_viewport.MinDepth = 0.0f;
-	_viewport.MaxDepth = 1.0f;
+	//_viewport.TopLeftX = 0;
+	//_viewport.TopLeftY = 0;
+	//_viewport.Width    = static_cast<float>(_clientWidth);
+	//_viewport.Height   = static_cast<float>(_clientHeight);
+	//_viewport.MinDepth = 0.0f;
+	//_viewport.MaxDepth = 1.0f;
 
-	_deviceContext->RSSetViewports(1, &_viewport);
+	//_deviceContext->RSSetViewports(1, &_viewport);
 }
 
 void App::RenderApplication()

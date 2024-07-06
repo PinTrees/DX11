@@ -9,6 +9,7 @@ using std::static_pointer_cast;
 	
 class MonoBehaviour;
 class Component;
+class Transform;
 
 class GameObject
 {
@@ -26,6 +27,7 @@ private:
 
 	GameObject* m_pParentGameObject;
 	vector<GameObject*> m_pChildGameObjects;
+	Transform* m_pTransform;
 
 public:
 	GameObject();
@@ -36,6 +38,7 @@ public:
 	uint64 GetInstanceID() const { return m_InstanceID; }
 	const string& GetName() { return m_Name; }
 	vector<GameObject*> GetChildren() { return m_pChildGameObjects; }
+	Transform* GetTransform() { return m_pTransform; }
 	
 	void SetParent(GameObject* parent);
 

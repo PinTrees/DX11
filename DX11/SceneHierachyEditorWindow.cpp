@@ -39,6 +39,38 @@ void SceneHierachyEditorWindow::OnRender()
 		}
 		ImGui::EndDragDropTarget();
 	}
+
+	// 우클릭 메뉴 추가
+	if (ImGui::BeginPopupContextWindow("##SceneHierarchyContextMenu"))
+	{
+		if (ImGui::MenuItem("Add Camera"))
+		{
+			// 카메라 추가 로직
+			GameObject* newCamera = new GameObject("Camera");
+			currentScene->AddRootGameObject(newCamera);
+			//newCamera->AddComponent<CameraComponent>();
+			//currentScene->AddGameObject(newCamera);
+		}
+		if (ImGui::MenuItem("Add Directinal Light"))
+		{
+			// 라이트 추가 로직
+			GameObject* newLight = new GameObject("Directinal Light");
+			currentScene->AddRootGameObject(newLight);
+		}
+		if (ImGui::MenuItem("Add Empty GameObject"))
+		{
+			// 빈 게임 오브젝트 추가 로직
+			GameObject* newEmpty = new GameObject("GameObject");
+			currentScene->AddRootGameObject(newEmpty);
+		}
+		ImGui::EndPopup();
+	}
+
+	// 우클릭 감지하여 팝업 메뉴 열기
+	if (ImGui::IsMouseClicked(1) && ImGui::IsWindowHovered())
+	{
+		ImGui::OpenPopup("##SceneHierarchyContextMenu");
+	}
 }
 
 void SceneHierachyEditorWindow::OnRenderExit()

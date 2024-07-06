@@ -16,7 +16,7 @@ ParticlesDemo::ParticlesDemo(HINSTANCE hInstance)
 	_lastMousePos.x = 0;
 	_lastMousePos.y = 0;
 
-	_camera.SetPosition(0.0f, 2.0f, 100.0f);
+	_camera.GetGameObject()->GetTransform()->SetPosition(0.0f, 2.0f, 100.0f);
 
 	_dirLights[0].Ambient = XMFLOAT4(0.3f, 0.3f, 0.3f, 1.0f);
 	_dirLights[0].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
@@ -127,7 +127,7 @@ void ParticlesDemo::UpdateScene(float dt)
 	{
 		XMFLOAT3 camPos = _camera.GetPosition();
 		float y = _terrain.GetHeight(camPos.x, camPos.z);
-		_camera.SetPosition(camPos.x, y + 2.0f, camPos.z);
+		_camera.GetGameObject()->GetComponent<Transform>()->SetPosition(camPos.x, y + 2.0f, camPos.z);
 	}
 
 	//

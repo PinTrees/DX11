@@ -70,18 +70,6 @@
     <Filter Include="1. Engine\ImguiContainer\0. Core">
       <UniqueIdentifier>{a61e248d-b524-4276-9960-a0a7f19d9033}</UniqueIdentifier>
     </Filter>
-    <Filter Include="1. Engine\ImguiContainer\SceneHierarchyWindow">
-      <UniqueIdentifier>{a009764f-5f0b-4b42-9bc1-4bcf19eb46cc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="1. Engine\ImguiContainer\ProjectEditorWindow">
-      <UniqueIdentifier>{9cdf2c29-136c-436c-a9b0-b70b465778ad}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="1. Engine\ImguiContainer\SceneEditorWindow">
-      <UniqueIdentifier>{89d6f2cb-5cb6-4d9c-9451-591c104f1bdb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="1. Engine\ImguiContainer\InspectorEditorWindow">
-      <UniqueIdentifier>{32910d32-b0b7-478a-9151-c7a197ae73dc}</UniqueIdentifier>
-    </Filter>
     <Filter Include="2. Game\App">
       <UniqueIdentifier>{d4ee942b-ae43-4d32-9960-811c5058929a}</UniqueIdentifier>
     </Filter>
@@ -150,6 +138,27 @@
     </Filter>
     <Filter Include="1. Engine\Manager\PostProcessingManager">
       <UniqueIdentifier>{328db151-8bd3-41fa-9cde-815d234ceb98}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="1. Engine\ImguiContainer\0. Editor">
+      <UniqueIdentifier>{829e1245-bd97-4ef9-a3de-5d7765c7e85f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="1. Engine\ImguiContainer\0. Editor\InspectorEditorWindow">
+      <UniqueIdentifier>{32910d32-b0b7-478a-9151-c7a197ae73dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="1. Engine\ImguiContainer\0. Editor\ProjectEditorWindow">
+      <UniqueIdentifier>{9cdf2c29-136c-436c-a9b0-b70b465778ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="1. Engine\ImguiContainer\0. Editor\SceneEditorWindow">
+      <UniqueIdentifier>{89d6f2cb-5cb6-4d9c-9451-591c104f1bdb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="1. Engine\ImguiContainer\0. Editor\SceneHierarchyWindow">
+      <UniqueIdentifier>{a009764f-5f0b-4b42-9bc1-4bcf19eb46cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="1. Engine\ImguiContainer\GameViewEditorWindow">
+      <UniqueIdentifier>{4a9f6bbf-fa1e-4f20-a06e-54309e41c38a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="1. Engine\Component\Camera">
+      <UniqueIdentifier>{8402e162-9673-42ec-9ac8-be8e7475686f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -239,9 +248,6 @@
     </ClCompile>
     <ClCompile Include="19. InstancingAndCullingDemo.cpp">
       <Filter>2. Game\Demo</Filter>
-    </ClCompile>
-    <ClCompile Include="Camera.cpp">
-      <Filter>2. Game\01. Common</Filter>
     </ClCompile>
     <ClCompile Include="20. PickingDemo.cpp">
       <Filter>2. Game\Demo</Filter>
@@ -382,19 +388,19 @@
       <Filter>1. Engine\App</Filter>
     </ClCompile>
     <ClCompile Include="SceneHierachyEditorWindow.cpp">
-      <Filter>1. Engine\ImguiContainer\SceneHierarchyWindow</Filter>
+      <Filter>1. Engine\ImguiContainer\0. Editor\SceneHierarchyWindow</Filter>
     </ClCompile>
     <ClCompile Include="EditorWindow.cpp">
       <Filter>1. Engine\ImguiContainer\1. Base\EditorWindow</Filter>
     </ClCompile>
     <ClCompile Include="ProjectEditorWindow.cpp">
-      <Filter>1. Engine\ImguiContainer\ProjectEditorWindow</Filter>
+      <Filter>1. Engine\ImguiContainer\0. Editor\ProjectEditorWindow</Filter>
     </ClCompile>
     <ClCompile Include="SceneEditorWindow.cpp">
-      <Filter>1. Engine\ImguiContainer\SceneEditorWindow</Filter>
+      <Filter>1. Engine\ImguiContainer\0. Editor\SceneEditorWindow</Filter>
     </ClCompile>
     <ClCompile Include="InspectorEditorWindow.cpp">
-      <Filter>1. Engine\ImguiContainer\InspectorEditorWindow</Filter>
+      <Filter>1. Engine\ImguiContainer\0. Editor\InspectorEditorWindow</Filter>
     </ClCompile>
     <ClCompile Include="Main.cpp">
       <Filter>1. Engine</Filter>
@@ -458,6 +464,12 @@
     </ClCompile>
     <ClCompile Include="PostProcessingManager.cpp">
       <Filter>1. Engine\Manager\PostProcessingManager</Filter>
+    </ClCompile>
+    <ClCompile Include="GameViewEditorWindow.cpp">
+      <Filter>1. Engine\ImguiContainer\GameViewEditorWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>1. Engine\Component\Camera</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -547,9 +559,6 @@
     </ClInclude>
     <ClInclude Include="19. InstancingAndCullingDemo.h">
       <Filter>2. Game\Demo</Filter>
-    </ClInclude>
-    <ClInclude Include="Camera.h">
-      <Filter>2. Game\01. Common</Filter>
     </ClInclude>
     <ClInclude Include="20. PickingDemo.h">
       <Filter>2. Game\Demo</Filter>
@@ -694,19 +703,19 @@
       <Filter>1. Engine\App</Filter>
     </ClInclude>
     <ClInclude Include="SceneHierachyEditorWindow.h">
-      <Filter>1. Engine\ImguiContainer\SceneHierarchyWindow</Filter>
+      <Filter>1. Engine\ImguiContainer\0. Editor\SceneHierarchyWindow</Filter>
     </ClInclude>
     <ClInclude Include="EditorWindow.h">
       <Filter>1. Engine\ImguiContainer\1. Base\EditorWindow</Filter>
     </ClInclude>
     <ClInclude Include="ProjectEditorWindow.h">
-      <Filter>1. Engine\ImguiContainer\ProjectEditorWindow</Filter>
+      <Filter>1. Engine\ImguiContainer\0. Editor\ProjectEditorWindow</Filter>
     </ClInclude>
     <ClInclude Include="SceneEditorWindow.h">
-      <Filter>1. Engine\ImguiContainer\SceneEditorWindow</Filter>
+      <Filter>1. Engine\ImguiContainer\0. Editor\SceneEditorWindow</Filter>
     </ClInclude>
     <ClInclude Include="InspectorEditorWindow.h">
-      <Filter>1. Engine\ImguiContainer\InspectorEditorWindow</Filter>
+      <Filter>1. Engine\ImguiContainer\0. Editor\InspectorEditorWindow</Filter>
     </ClInclude>
     <ClInclude Include="29. MeshViewDemo.h">
       <Filter>2. Game\App</Filter>
@@ -770,6 +779,12 @@
     </ClInclude>
     <ClInclude Include="PostProcessingManager.h">
       <Filter>1. Engine\Manager\PostProcessingManager</Filter>
+    </ClInclude>
+    <ClInclude Include="GameViewEditorWindow.h">
+      <Filter>1. Engine\ImguiContainer\GameViewEditorWindow</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>1. Engine\Component\Camera</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

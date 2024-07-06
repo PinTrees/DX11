@@ -2,9 +2,12 @@
 #include "Gizmo.h"
 #include "Effects.h"
 #include "MathHelper.h"
+#include "SceneEditorWindow.h"
 
 void Gizmo::DrawCube(const XMMATRIX& worldMatrix, const Vec3& size)
 {
+    auto context = Application::GetI()->GetDeviceContext();
+
     // 박스의 8개의 꼭짓점 정의
     XMFLOAT3 halfSize = { size.x * 0.5f, size.y * 0.5f, size.z * 0.5f };
     XMFLOAT3 vertices[8] = {
@@ -22,6 +25,11 @@ void Gizmo::DrawCube(const XMMATRIX& worldMatrix, const Vec3& size)
     XMMATRIX viewProj = RenderManager::GetI()->cameraViewProjectionMatrix;
     XMMATRIX worldViewProj = worldMatrix * viewProj;
 
+    // 뷰포트 크기 가져오기
+    D3D11_VIEWPORT viewport;
+    UINT numViewports = 1;
+    context->RSGetViewports(&numViewports, &viewport); 
+
     // 꼭짓점을 스크린 좌표로 변환
     ImVec2 screenVertices[8];
     for (int i = 0; i < 8; ++i)
@@ -30,8 +38,8 @@ void Gizmo::DrawCube(const XMMATRIX& worldMatrix, const Vec3& size)
 
         // NDC to screen space conversion
         float x = (XMVectorGetX(pos) / XMVectorGetW(pos)) * 0.5f + 0.5f;
-        float y = 1.0f - ((XMVectorGetY(pos) / XMVectorGetW(pos)) * 0.5f + 0.5f);
-        screenVertices[i] = ImVec2(x * ImGui::GetIO().DisplaySize.x, y * ImGui::GetIO().DisplaySize.y);
+        float y = (XMVectorGetY(pos) / XMVectorGetW(pos)) * -0.5f + 0.5f;
+        screenVertices[i] = ImVec2(x * viewport.Width + viewport.TopLeftX, y * viewport.Height + viewport.TopLeftY);
     }
 
     // ImGui를 사용하여 박스의 엣지를 그림

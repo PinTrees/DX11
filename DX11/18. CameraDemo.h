@@ -3,7 +3,8 @@
 #include "Waves.h"
 #include "LightHelper.h"
 #include "BlurFilter.h"
-#include "Camera.h"
+
+class Camera;
 
 class CameraDemo : public App
 {

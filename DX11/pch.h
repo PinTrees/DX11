@@ -80,10 +80,13 @@ using namespace Microsoft::WRL;
 #include "Shader.h"
 #include "UMaterial.h"
 
+// Component
 #include "Mesh.h"
 #include "GameObject.h"
 #include "Transform.h"
 #include "MeshRenderer.h"
+#include "Camera.h"
+#include "RigidBody.h"
 
 #include "Scene.h"
 #include "SceneManager.h"

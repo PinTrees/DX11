@@ -16,7 +16,7 @@ DynamicCubeMapDemo::DynamicCubeMapDemo(HINSTANCE hInstance)
 	_lastMousePos.x = 0;
 	_lastMousePos.y = 0;
 
-	_camera.SetPosition(0.0f, 2.0f, -15.0f);
+	//_camera.SetPosition(0.0f, 2.0f, -15.0f);
 
 	BuildCubeFaceCamera(0.0f, 2.0f, 0.0f);
 

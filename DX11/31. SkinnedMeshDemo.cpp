@@ -19,7 +19,7 @@ SkinnedMeshDemo::SkinnedMeshDemo(HINSTANCE hInstance)
 	_lastMousePos.x = 0;
 	_lastMousePos.y = 0;
 
-	_camera.SetPosition(0.0f, 2.0f, -15.0f);
+	//_camera.SetPosition(0.0f, 2.0f, -15.0f);
 
 	// Estimate the scene bounding sphere manually since we know how the scene was constructed.
 	// The grid is the "widest object" with a width of 20 and depth of 30.0f, and centered at

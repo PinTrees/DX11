@@ -18,7 +18,7 @@ QuatDemo::QuatDemo(HINSTANCE hInstance)
 	_lastMousePos.y = 0;
 
 	_camera.Pitch(::XMConvertToRadians(25.0f));
-	_camera.SetPosition(0.0f, 8.0f, -20.0f);
+	//_camera.SetPosition(0.0f, 8.0f, -20.0f);
 
 	XMMATRIX I = ::XMMatrixIdentity();
 	::XMStoreFloat4x4(&_gridWorld, I);

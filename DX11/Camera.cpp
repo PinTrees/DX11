@@ -10,30 +10,22 @@ Camera::~Camera()
 {
 }
 
-XMVECTOR Camera::GetPositionXM()const
+XMVECTOR Camera::GetPositionXM()
 {
-	return ::XMLoadFloat3(&_position);
+	auto position = GetGameObject()->GetTransform()->GetPosition(); 
+	return ::XMLoadFloat3(&position);
 }
 
 XMFLOAT3 Camera::GetPosition()const
 {
-	return _position;
+	Transform* transform = m_pGameObject->GetComponent<Transform>();
+	return transform->GetPosition(); 
 }
 
-void Camera::SetPosition(float x, float y, float z)
-{
-	_position = XMFLOAT3(x, y, z);
-}
-
-void Camera::SetPosition(const XMFLOAT3& v)
-{
-	_position = v;
-}
-
-XMVECTOR Camera::GetRightXM()const
+XMVECTOR Camera::GetRightXM()const 
 {
 	return ::XMLoadFloat3(&_right);
-}
+} 
 
 XMFLOAT3 Camera::GetRight()const
 {
@@ -127,7 +119,9 @@ void Camera::LookAt(FXMVECTOR pos, FXMVECTOR target, FXMVECTOR worldUp)
 	XMVECTOR R = ::XMVector3Normalize(::XMVector3Cross(worldUp, L));
 	XMVECTOR U = ::XMVector3Cross(L, R);
 
-	::XMStoreFloat3(&_position, pos);
+	auto position = GetGameObject()->GetTransform()->GetPosition();
+
+	::XMStoreFloat3(&position, pos); 
 	::XMStoreFloat3(&_look, L);
 	::XMStoreFloat3(&_right, R);
 	::XMStoreFloat3(&_up, U);
@@ -159,20 +153,22 @@ XMMATRIX Camera::ViewProj()const
 
 void Camera::Strafe(float d)
 {
-	// mPosition += d*mRight
+	auto position = GetGameObject()->GetTransform()->GetPosition();
+
 	XMVECTOR s = ::XMVectorReplicate(d);
 	XMVECTOR r = ::XMLoadFloat3(&_right);
-	XMVECTOR p = ::XMLoadFloat3(&_position);
-	::XMStoreFloat3(&_position, XMVectorMultiplyAdd(s, r, p));
+	XMVECTOR p = ::XMLoadFloat3(&position);
+	::XMStoreFloat3(&position, XMVectorMultiplyAdd(s, r, p));
 }
 
 void Camera::Walk(float d)
 {
-	// mPosition += d*mLook
+	auto position = GetGameObject()->GetTransform()->GetPosition();
+
 	XMVECTOR s = ::XMVectorReplicate(d);
 	XMVECTOR l = ::XMLoadFloat3(&_look);
-	XMVECTOR p = ::XMLoadFloat3(&_position);
-	::XMStoreFloat3(&_position, ::XMVectorMultiplyAdd(s, l, p));
+	XMVECTOR p = ::XMLoadFloat3(&position);
+	::XMStoreFloat3(&position, XMVectorMultiplyAdd(s, l, p)); 
 }
 
 void Camera::Pitch(float angle)
@@ -198,14 +194,16 @@ void Camera::RotateY(float angle)
 
 void Camera::UpdateViewMatrix()
 {
-	XMVECTOR R = ::XMLoadFloat3(&_right);
+	auto position = GetGameObject()->GetTransform()->GetPosition();
+
+	XMVECTOR R = ::XMLoadFloat3(&_right); 
 	XMVECTOR U = ::XMLoadFloat3(&_up);
 	XMVECTOR L = ::XMLoadFloat3(&_look);
-	XMVECTOR P = ::XMLoadFloat3(&_position);
+	XMVECTOR P = ::XMLoadFloat3(&position); 
 
 	// Keep camera's axes orthogonal to each other and of unit length.
 	L = ::XMVector3Normalize(L);
-	U = ::XMVector3Normalize(::XMVector3Cross(L, R));
+	U = ::XMVector3Normalize(::XMVector3Cross(L, R)); 
 
 	// U, L already ortho-normal, so no need to normalize cross product.
 	R = ::XMVector3Cross(U, L);
@@ -240,3 +238,24 @@ void Camera::UpdateViewMatrix()
 	_view(3, 3) = 1.0f;
 }
 
+void Camera::Render()
+{
+
+}
+
+void Camera::OnInspectorGUI()
+{
+	ImGui::Text("Camera");
+}
+
+GENERATE_COMPONENT_FUNC_TOJSON(Camera)
+{
+	json j = {};
+	j["type"] = "Camera";
+	return j;
+}
+
+GENERATE_COMPONENT_FUNC_FROMJSON(Camera) 
+{
+
+}

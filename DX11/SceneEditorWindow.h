@@ -26,6 +26,7 @@ public:
 
 public:
 	EditorCamera* GetSceneCamera() { return m_Camera; }
+	ID3D11RenderTargetView* GetRenderTargetView() const { return renderTargetView; }  
 
 public:
 	virtual void Update() override;

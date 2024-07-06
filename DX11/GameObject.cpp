@@ -9,7 +9,7 @@ GameObject::GameObject()
 	m_LayerIndex(0),
 	m_pParentGameObject(nullptr)
 {
-    AddComponent<Transform>();
+    m_pTransform = AddComponent<Transform>();
 }
 
 GameObject::GameObject(const string& name)
@@ -18,7 +18,7 @@ GameObject::GameObject(const string& name)
 	m_LayerIndex(0),
 	m_pParentGameObject(nullptr)
 {
-	AddComponent<Transform>();
+    m_pTransform = AddComponent<Transform>();
 }
 
 GameObject::~GameObject()

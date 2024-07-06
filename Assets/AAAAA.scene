@@ -131,6 +131,139 @@
                 }
             ],
             "name": "TestObject3"
+        },
+        {
+            "components": [
+                {
+                    "_localPosition": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "_localRotation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "_localScale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "_position": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "_rotation": [
+                        -0.0,
+                        1.2675908465098473e-06,
+                        -0.0
+                    ],
+                    "_scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "type": "Transform"
+                },
+                {
+                    "type": "Camera"
+                }
+            ],
+            "name": "Camera"
+        },
+        {
+            "components": [
+                {
+                    "_localPosition": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "_localRotation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "_localScale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "_position": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "_rotation": [
+                        -0.0,
+                        1.2675908465098473e-06,
+                        -0.0
+                    ],
+                    "_scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "type": "Transform"
+                }
+            ],
+            "name": "Directinal Light"
+        },
+        {
+            "components": [
+                {
+                    "_localPosition": [
+                        0.0,
+                        34.099998474121094,
+                        0.0
+                    ],
+                    "_localRotation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "_localScale": [
+                        0.10000000149011612,
+                        0.10000000149011612,
+                        0.10000000149011612
+                    ],
+                    "_position": [
+                        0.0,
+                        34.099998474121094,
+                        0.0
+                    ],
+                    "_rotation": [
+                        -0.0,
+                        1.2675908465098473e-06,
+                        -0.0
+                    ],
+                    "_scale": [
+                        0.10000000149011612,
+                        0.10000000149011612,
+                        0.10000000149011612
+                    ],
+                    "type": "Transform"
+                },
+                {
+                    "elasticity": 0.5,
+                    "mass": 1.0,
+                    "type": "RigidBody",
+                    "velocity": [
+                        0.0,
+                        -62.26274871826172,
+                        0.0
+                    ]
+                },
+                {
+                    "materialPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\Rock\\RockMaterial.mat",
+                    "meshPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\Rock\\Mossy_rock_var8.fbx",
+                    "shaderPath": "",
+                    "type": "MeshRenderer"
+                }
+            ],
+            "name": "GameObject"
         }
     ]
 }

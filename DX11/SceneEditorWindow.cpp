@@ -50,6 +50,8 @@ void SceneEditorWindow::InitRenderTarget(UINT width, UINT height)
     float aspectRatio = static_cast<float>(width) / height;
     m_Camera->SetLens(0.25f * MathHelper::Pi, aspectRatio, 1.0f, 1000.0f);
     PostProcessingManager::GetI()->SetEditorSSAO(width, height, m_Camera);
+    
+    RenderManager::GetI()->SetEditorViewport(width, height);
 }
 
 void SceneEditorWindow::CleanUpRenderTarget()

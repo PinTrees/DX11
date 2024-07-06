@@ -14,6 +14,7 @@ public:
 	float GetGravity() const { return m_GravityAcceleration; }
 
 public:
+	void Init();
 	void Update(float deltaTime);
 };
 

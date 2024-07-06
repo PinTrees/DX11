@@ -6,6 +6,7 @@ class BoxCollider
 {
 private:
 	Vec3 m_Size;
+	Vec3 m_Offset;
 
 public:
 	BoxCollider();
@@ -23,3 +24,4 @@ public:
 	GENERATE_COMPONENT_BODY(BoxCollider)
 };
 
+REGISTER_COMPONENT(BoxCollider) 

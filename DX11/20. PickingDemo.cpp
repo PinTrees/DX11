@@ -15,7 +15,7 @@ PickingDemo::PickingDemo(HINSTANCE hInstance)
 	_lastMousePos.x = 0;
 	_lastMousePos.y = 0;
 
-	_camera.SetPosition(0.0f, 2.0f, -15.0f);
+	//_camera.SetPosition(0.0f, 2.0f, -15.0f);
 
 	XMMATRIX MeshScale = ::XMMatrixScaling(0.5f, 0.5f, 0.5f);
 	XMMATRIX MeshOffset = ::XMMatrixTranslation(0.0f, 1.0f, 0.0f);

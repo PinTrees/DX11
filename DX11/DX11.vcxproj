@@ -215,6 +215,7 @@
     <ClInclude Include="FBXLoader.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GameTimer.h" />
+    <ClInclude Include="GameViewEditorWindow.h" />
     <ClInclude Include="GeometryGenerator.h" />
     <ClInclude Include="Gizmo.h" />
     <ClInclude Include="imconfig.h" />
@@ -320,6 +321,7 @@
     <ClCompile Include="Effects.cpp" />
     <ClCompile Include="FBXLoader.cpp" />
     <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="GameViewEditorWindow.cpp" />
     <ClCompile Include="GeometryGenerator.cpp" />
     <ClCompile Include="Gizmo.cpp" />
     <ClCompile Include="imgui.cpp">

@@ -16,7 +16,7 @@ AmbientOcclusionDemo::AmbientOcclusionDemo(HINSTANCE hInstance)
 	_lastMousePos.x = 0;
 	_lastMousePos.y = 0;
 
-	_camera.SetPosition(0.0f, 5.0f, -5.0f);
+	//_camera.SetPosition(0.0f, 5.0f, -5.0f);
 	_camera.LookAt(
 		XMFLOAT3(-4.0f, 4.0f, -4.0f),
 		XMFLOAT3(0.0f, 2.2f, 0.0f),

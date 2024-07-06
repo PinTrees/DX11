@@ -1,16 +1,34 @@
 #pragma once
+#include "Component.h"
 
 class Camera
+	: public Component
 {
+private:
+	// Camera coordinate system with coordinates relative to world space.
+	XMFLOAT3 _right = { 1, 0, 0 };
+	XMFLOAT3 _up = { 0, 1, 0 };
+	XMFLOAT3 _look = { 0, 0, 1 };
+
+	// Cache frustum properties.
+	float _nearZ;
+	float _farZ;
+	float _aspect;
+	float _fovY;
+	float _nearWindowHeight;
+	float _farWindowHeight;
+
+	// Cache View/Proj matrices.
+	XMFLOAT4X4 _view;
+	XMFLOAT4X4 _proj;
+
 public:
 	Camera();
 	~Camera();
 
 	// Get/Set world camera position.
-	XMVECTOR GetPositionXM()const;
+	XMVECTOR GetPositionXM();
 	XMFLOAT3 GetPosition()const;
-	void SetPosition(float x, float y, float z);
-	void SetPosition(const XMFLOAT3& v);
 
 	// Get camera basis vectors.
 	XMVECTOR GetRightXM()const;
@@ -56,23 +74,11 @@ public:
 	// After modifying camera position/orientation, call to rebuild the view matrix.
 	void UpdateViewMatrix();
 
-private:
+public:
+	virtual void Render() override;
+	virtual void OnInspectorGUI() override;
 
-	// Camera coordinate system with coordinates relative to world space.
-	XMFLOAT3 _position = {0, 0, 0};
-	XMFLOAT3 _right = {1, 0, 0};
-	XMFLOAT3 _up = {0, 1, 0};
-	XMFLOAT3 _look = {0, 0, 1};
-
-	// Cache frustum properties.
-	float _nearZ;
-	float _farZ;
-	float _aspect;
-	float _fovY;
-	float _nearWindowHeight;
-	float _farWindowHeight;
-
-	// Cache View/Proj matrices.
-	XMFLOAT4X4 _view;
-	XMFLOAT4X4 _proj;
+	GENERATE_COMPONENT_BODY(Camera)
 };
+
+REGISTER_COMPONENT(Camera)

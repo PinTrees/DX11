@@ -409,6 +409,8 @@ void MeshViewDemo::OnEditorSceneRender(ID3D11RenderTargetView* renderTargetView,
 	auto shadowMap = RenderManager::GetI()->editorShadowMap;
 	shadowMap->BindDsvAndSetNullRenderTarget(_deviceContext);
 
+	auto viewport = RenderManager::GetI()->EditorViewport;
+
 	RenderManager::GetI()->directinalLightViewProjection = XMMatrixMultiply(XMLoadFloat4x4(&_lightView), XMLoadFloat4x4(&_lightProj));
 
 	Effects::BuildShadowMapFX->SetEyePosW(camera->GetPosition());
@@ -420,7 +422,7 @@ void MeshViewDemo::OnEditorSceneRender(ID3D11RenderTargetView* renderTargetView,
 	_deviceContext->RSSetState(0);
 
 	_deviceContext->ClearDepthStencilView(_depthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
-	_deviceContext->RSSetViewports(1, &_viewport);
+	_deviceContext->RSSetViewports(1, &viewport);
 
 	// PostProcessing - SSAO
 	auto ssao = PostProcessingManager::GetI()->GetEditorSSAO();
@@ -440,7 +442,7 @@ void MeshViewDemo::OnEditorSceneRender(ID3D11RenderTargetView* renderTargetView,
 
 	ID3D11RenderTargetView* renderTargets[1] = { renderTargetView };
 	_deviceContext->OMSetRenderTargets(1, renderTargets, _depthStencilView.Get());
-	_deviceContext->RSSetViewports(1, &_viewport);
+	_deviceContext->RSSetViewports(1, &viewport);
 	_deviceContext->ClearRenderTargetView(renderTargetView, reinterpret_cast<const float*>(&Colors::Silver));
 
 	_deviceContext->OMSetDepthStencilState(RenderStates::EqualsDSS.Get(), 0);

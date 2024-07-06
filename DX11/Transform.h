@@ -47,6 +47,7 @@ public:
 	void SetRotation(const Vec3& rotation);
 	Vec3 GetPosition() { return _position; }
 	void SetPosition(const Vec3& position);
+	void SetPosition(float x, float y, float z) { SetPosition(Vec3(x, y, z)); }  
 
 	Vec3 GetRight() { return _matWorld.Right(); }
 	Vec3 GetUp() { return _matWorld.Up(); }

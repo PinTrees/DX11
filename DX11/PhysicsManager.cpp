@@ -1,6 +1,5 @@
 #include "pch.h"
 #include "PhysicsManager.h"
-#include "RigidBody.h"
 
 SINGLE_BODY(PhysicsManager)
 
@@ -15,6 +14,11 @@ PhysicsManager::~PhysicsManager()
 
 }
 
+void PhysicsManager::Init()
+{
+	SetGravity(9.8f);
+}
+
 void PhysicsManager::Update(float deltaTime)
 {
 	const vector<GameObject*> gameObjects = SceneManager::GetI()->GetCurrentScene()->GetAllGameObjects();
@@ -26,7 +30,7 @@ void PhysicsManager::Update(float deltaTime)
 		if (rigidBody == nullptr)
 			continue;
 
-		//rigidBody->velocity.y += m_gravityAcceleration * deltaTime;
-		//gameObject->position.y += rigidBody->velocity.y * deltaTime + 0.5f * m_gravityAcceleration * deltaTime * deltaTime;
+		rigidBody->ApplyForce(Vec3(0.0f, -m_GravityAcceleration * rigidBody->GetMass(), 0.0f)); // 중력 적용 
+		rigidBody->Integrate(deltaTime);
 	}
 }

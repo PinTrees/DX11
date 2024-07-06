@@ -16,7 +16,7 @@ public:
 	HWND      MainWnd() { return _hMainWnd; }
 	ID3D11Device* GetDevice() { return  _device.Get(); }
 	ID3D11DeviceContext* GetDeviceContext() { return  _deviceContext.Get(); }
-	D3D11_VIEWPORT GetViewport() { return _viewport; }
+	//D3D11_VIEWPORT GetViewport() { return _viewport; }
 	
 	float     AspectRatio() { return static_cast<float>(_clientWidth) / _clientHeight; }
 	
