@@ -30,6 +30,9 @@ private:
 	static void RenderFileEntry(const std::filesystem::directory_entry& entry, bool isSelected);
 	static void RenameSelectedFile(const std::wstring& oldPath, const std::wstring& newName);
 
+	static void RenderFileEntry_Directory(const std::filesystem::directory_entry& entry, bool isSelected);
 	static void RenderFileEntry_FBX(const std::filesystem::directory_entry& entry, bool isSelected);
+	static void RenderFileEntry_PNG(const std::filesystem::directory_entry& entry, bool isSelected);
+	static void RenderFileEntry_MAT(const std::filesystem::directory_entry& entry, bool isSelected);
 };
 

@@ -68,109 +68,128 @@ bool MeshViewDemo::Init()
 
 	BuildScreenQuadGeometryBuffers();
 
-	_treeModel = make_shared<Mesh>(_device, _texMgr, "../Resources/Models/tree.m3d", L"../Resources/Textures/");
-	_baseModel = make_shared<Mesh>(_device, _texMgr, "../Resources/Models/base.m3d", L"../Resources/Textures/");
-	_stairsModel = make_shared<Mesh>(_device, _texMgr, "../Resources/Models/stairs.m3d", L"../Resources/Textures/");
-	_pillar1Model = make_shared<Mesh>(_device, _texMgr, "../Resources/Models/pillar1.m3d", L"../Resources/Textures/");
-	_pillar2Model = make_shared<Mesh>(_device, _texMgr, "../Resources/Models/pillar2.m3d", L"../Resources/Textures/");
-	_pillar3Model = make_shared<Mesh>(_device, _texMgr, "../Resources/Models/pillar5.m3d", L"../Resources/Textures/");
-	_pillar4Model = make_shared<Mesh>(_device, _texMgr, "../Resources/Models/pillar6.m3d", L"../Resources/Textures/");
-	_rockModel = make_shared<Mesh>(_device, _texMgr, "../Resources/Models/rock.m3d", L"../Resources/Textures/");
+	//_treeModel = make_shared<Mesh>(_device, _texMgr, "../Resources/Models/tree.m3d", L"../Resources/Textures/");
+	//_baseModel = make_shared<Mesh>(_device, _texMgr, "../Resources/Models/base.m3d", L"../Resources/Textures/");
+	//_stairsModel = make_shared<Mesh>(_device, _texMgr, "../Resources/Models/stairs.m3d", L"../Resources/Textures/");
+	//_pillar1Model = make_shared<Mesh>(_device, _texMgr, "../Resources/Models/pillar1.m3d", L"../Resources/Textures/");
+	//_pillar2Model = make_shared<Mesh>(_device, _texMgr, "../Resources/Models/pillar2.m3d", L"../Resources/Textures/");
+	//_pillar3Model = make_shared<Mesh>(_device, _texMgr, "../Resources/Models/pillar5.m3d", L"../Resources/Textures/");
+	//_pillar4Model = make_shared<Mesh>(_device, _texMgr, "../Resources/Models/pillar6.m3d", L"../Resources/Textures/");
+	//_rockModel = make_shared<Mesh>(_device, _texMgr, "../Resources/Models/rock.m3d", L"../Resources/Textures/");
 
-	MeshInstance treeInstance;
-	MeshInstance baseInstance;
-	MeshInstance stairsInstance;
-	MeshInstance pillar1Instance;
-	MeshInstance pillar2Instance;
-	MeshInstance pillar3Instance;
-	MeshInstance pillar4Instance;
-	MeshInstance rockInstance1;
-	MeshInstance rockInstance2;
-	MeshInstance rockInstance3;
-
-	treeInstance.Model = _treeModel;
-	baseInstance.Model = _baseModel;
-	stairsInstance.Model = _stairsModel;
-	pillar1Instance.Model = _pillar1Model;
-	pillar2Instance.Model = _pillar2Model;
-	pillar3Instance.Model = _pillar3Model;
-	pillar4Instance.Model = _pillar4Model;
-	rockInstance1.Model = _rockModel;
-	rockInstance2.Model = _rockModel;
-	rockInstance3.Model = _rockModel;
-
-	XMMATRIX modelScale = ::XMMatrixScaling(1.0f, 1.0f, 1.0f);
-	XMMATRIX modelRot = ::XMMatrixRotationY(0.0f);
-	XMMATRIX modelOffset = ::XMMatrixTranslation(0.0f, 0.0f, 0.0f);
-	::XMStoreFloat4x4(&treeInstance.World, modelScale * modelRot * modelOffset);
-	::XMStoreFloat4x4(&baseInstance.World, modelScale * modelRot * modelOffset);
-
-	modelRot = ::XMMatrixRotationY(0.5f * XM_PI);
-	modelOffset = ::XMMatrixTranslation(0.0f, -2.5f, -12.0f);
-	::XMStoreFloat4x4(&stairsInstance.World, modelScale * modelRot * modelOffset);
-
-	modelScale = ::XMMatrixScaling(0.8f, 0.8f, 0.8f);
-	modelOffset = ::XMMatrixTranslation(-5.0f, 1.5f, 5.0f);
-	::XMStoreFloat4x4(&pillar1Instance.World, modelScale * modelRot * modelOffset);
-
-	modelScale = ::XMMatrixScaling(0.8f, 0.8f, 0.8f);
-	modelOffset = ::XMMatrixTranslation(5.0f, 1.5f, 5.0f);
-	::XMStoreFloat4x4(&pillar2Instance.World, modelScale * modelRot * modelOffset);
-
-	modelScale = ::XMMatrixScaling(0.8f, 0.8f, 0.8f);
-	modelOffset = ::XMMatrixTranslation(5.0f, 1.5f, -5.0f);
-	::XMStoreFloat4x4(&pillar3Instance.World, modelScale * modelRot * modelOffset);
-
-	modelScale = ::XMMatrixScaling(1.0f, 1.0f, 1.0f);
-	modelOffset = ::XMMatrixTranslation(-5.0f, 1.0f, -5.0f);
-	::XMStoreFloat4x4(&pillar4Instance.World, modelScale * modelRot * modelOffset);
-
-	modelScale = ::XMMatrixScaling(0.8f, 0.8f, 0.8f);
-	modelOffset = ::XMMatrixTranslation(-1.0f, 1.4f, -7.0f);
-	::XMStoreFloat4x4(&rockInstance1.World, modelScale * modelRot * modelOffset);
-
-	modelScale = ::XMMatrixScaling(0.8f, 0.8f, 0.8f);
-	modelOffset = ::XMMatrixTranslation(5.0f, 1.2f, -2.0f);
-	::XMStoreFloat4x4(&rockInstance2.World, modelScale * modelRot * modelOffset);
-
-	modelScale = ::XMMatrixScaling(0.8f, 0.8f, 0.8f);
-	modelOffset = ::XMMatrixTranslation(-4.0f, 1.3f, 3.0f);
-	::XMStoreFloat4x4(&rockInstance3.World, modelScale * modelRot * modelOffset);
-
-	_alphaClippedModelInstances.push_back(treeInstance);
-
-	_modelInstances.push_back(baseInstance);
-	_modelInstances.push_back(stairsInstance);
-	_modelInstances.push_back(pillar1Instance);
-	_modelInstances.push_back(pillar2Instance);
-	_modelInstances.push_back(pillar3Instance);
-	_modelInstances.push_back(pillar4Instance);
-	_modelInstances.push_back(rockInstance1);
-	_modelInstances.push_back(rockInstance2);
-	_modelInstances.push_back(rockInstance3);
-
+	//MeshInstance treeInstance;
+	//MeshInstance baseInstance;
+	//MeshInstance stairsInstance;
+	//MeshInstance pillar1Instance;
+	//MeshInstance pillar2Instance;
+	//MeshInstance pillar3Instance;
+	//MeshInstance pillar4Instance;
+	//MeshInstance rockInstance1;
+	//MeshInstance rockInstance2;
+	//MeshInstance rockInstance3;
+	//
+	//treeInstance.Model = _treeModel;
+	//baseInstance.Model = _baseModel;
+	//stairsInstance.Model = _stairsModel;
+	//pillar1Instance.Model = _pillar1Model;
+	//pillar2Instance.Model = _pillar2Model;
+	//pillar3Instance.Model = _pillar3Model;
+	//pillar4Instance.Model = _pillar4Model;
+	//rockInstance1.Model = _rockModel;
+	//rockInstance2.Model = _rockModel;
+	//rockInstance3.Model = _rockModel;
+	//
+	//XMMATRIX modelScale = ::XMMatrixScaling(1.0f, 1.0f, 1.0f);
+	//XMMATRIX modelRot = ::XMMatrixRotationY(0.0f);
+	//XMMATRIX modelOffset = ::XMMatrixTranslation(0.0f, 0.0f, 0.0f);
+	//::XMStoreFloat4x4(&treeInstance.World, modelScale * modelRot * modelOffset);
+	//::XMStoreFloat4x4(&baseInstance.World, modelScale * modelRot * modelOffset);
+	//
+	//modelRot = ::XMMatrixRotationY(0.5f * XM_PI);
+	//modelOffset = ::XMMatrixTranslation(0.0f, -2.5f, -12.0f);
+	//::XMStoreFloat4x4(&stairsInstance.World, modelScale * modelRot * modelOffset);
+	//
+	//modelScale = ::XMMatrixScaling(0.8f, 0.8f, 0.8f);
+	//modelOffset = ::XMMatrixTranslation(-5.0f, 1.5f, 5.0f);
+	//::XMStoreFloat4x4(&pillar1Instance.World, modelScale * modelRot * modelOffset);
+	//
+	//modelScale = ::XMMatrixScaling(0.8f, 0.8f, 0.8f);
+	//modelOffset = ::XMMatrixTranslation(5.0f, 1.5f, 5.0f);
+	//::XMStoreFloat4x4(&pillar2Instance.World, modelScale * modelRot * modelOffset);
+	//
+	//modelScale = ::XMMatrixScaling(0.8f, 0.8f, 0.8f);
+	//modelOffset = ::XMMatrixTranslation(5.0f, 1.5f, -5.0f);
+	//::XMStoreFloat4x4(&pillar3Instance.World, modelScale * modelRot * modelOffset);
+	//
+	//modelScale = ::XMMatrixScaling(1.0f, 1.0f, 1.0f);
+	//modelOffset = ::XMMatrixTranslation(-5.0f, 1.0f, -5.0f);
+	//::XMStoreFloat4x4(&pillar4Instance.World, modelScale * modelRot * modelOffset);
+	//
+	//modelScale = ::XMMatrixScaling(0.8f, 0.8f, 0.8f);
+	//modelOffset = ::XMMatrixTranslation(-1.0f, 1.4f, -7.0f);
+	//::XMStoreFloat4x4(&rockInstance1.World, modelScale * modelRot * modelOffset);
+	//
+	//modelScale = ::XMMatrixScaling(0.8f, 0.8f, 0.8f);
+	//modelOffset = ::XMMatrixTranslation(5.0f, 1.2f, -2.0f);
+	//::XMStoreFloat4x4(&rockInstance2.World, modelScale * modelRot * modelOffset);
+	//
+	//modelScale = ::XMMatrixScaling(0.8f, 0.8f, 0.8f);
+	//modelOffset = ::XMMatrixTranslation(-4.0f, 1.3f, 3.0f);
+	//::XMStoreFloat4x4(&rockInstance3.World, modelScale * modelRot * modelOffset);
+	//
+	//_alphaClippedModelInstances.push_back(treeInstance);
+	//
+	//_modelInstances.push_back(baseInstance);
+	//_modelInstances.push_back(stairsInstance);
+	//_modelInstances.push_back(pillar1Instance);
+	//_modelInstances.push_back(pillar2Instance);
+	//_modelInstances.push_back(pillar3Instance);
+	//_modelInstances.push_back(pillar4Instance);
+	//_modelInstances.push_back(rockInstance1);
+	//_modelInstances.push_back(rockInstance2);
+	//_modelInstances.push_back(rockInstance3);
+	//
+	
+	
+	
 	//
 	// Compute scene bounding box.
 	//
+	Scene* scene = SceneManager::GetI()->GetCurrentScene();
 
 	XMFLOAT3 minPt(+MathHelper::Infinity, +MathHelper::Infinity, +MathHelper::Infinity);
 	XMFLOAT3 maxPt(-MathHelper::Infinity, -MathHelper::Infinity, -MathHelper::Infinity);
-	for (uint32 i = 0; i < _modelInstances.size(); ++i)
+
+	for (uint32 i = 0; i < scene->GetAllGameObjects().size(); ++i)
 	{
-		for (uint32 j = 0; j < _modelInstances[i].Model->Vertices.size(); ++j)
+		MeshRenderer* meshRenderer = scene->GetAllGameObjects()[i]->GetComponent<MeshRenderer>();
+		if (meshRenderer == nullptr)
+			continue;
+
+		Transform* transform = meshRenderer->GetGameObject()->GetTransform();
+
+		auto ssss = transform->GetWorldMatrix();
+		XMMATRIX world = XMLoadFloat4x4(&ssss);
+
+		for (uint32 j = 0; j < meshRenderer->GetMesh()->Vertices.size(); ++j)
 		{
-			XMFLOAT3 P = _modelInstances[i].Model->Vertices[j].pos;
+			XMFLOAT3 localPos = meshRenderer->GetMesh()->Vertices[j].pos;
+			XMVECTOR localPosVec = XMLoadFloat3(&localPos);
+			XMVECTOR worldPosVec = XMVector3TransformCoord(localPosVec, world);
 
-			minPt.x = MathHelper::Min(minPt.x, P.x);
-			minPt.y = MathHelper::Min(minPt.x, P.x);
-			minPt.z = MathHelper::Min(minPt.x, P.x);
+			XMFLOAT3 worldPos;
+			XMStoreFloat3(&worldPos, worldPosVec);
 
-			maxPt.x = MathHelper::Max(maxPt.x, P.x);
-			maxPt.y = MathHelper::Max(maxPt.x, P.x);
-			maxPt.z = MathHelper::Max(maxPt.x, P.x);
+			minPt.x = MathHelper::Min(minPt.x, worldPos.x);
+			minPt.y = MathHelper::Min(minPt.y, worldPos.y);
+			minPt.z = MathHelper::Min(minPt.z, worldPos.z);
+
+			maxPt.x = MathHelper::Max(maxPt.x, worldPos.x);
+			maxPt.y = MathHelper::Max(maxPt.y, worldPos.y);
+			maxPt.z = MathHelper::Max(maxPt.z, worldPos.z);
 		}
 	}
-
+	
 	//
 	// Derive scene bounding sphere from bounding box.
 	//
@@ -178,12 +197,12 @@ bool MeshViewDemo::Init()
 		0.5f * (minPt.x + maxPt.x),
 		0.5f * (minPt.y + maxPt.y),
 		0.5f * (minPt.z + maxPt.z));
-
+	
 	XMFLOAT3 extent(
 		0.5f * (maxPt.x - minPt.x),
 		0.5f * (maxPt.y - minPt.y),
 		0.5f * (maxPt.z - minPt.z));
-
+	
 	_sceneBounds.Radius = sqrtf(extent.x * extent.x + extent.y * extent.y + extent.z * extent.z);
 
 	return true;

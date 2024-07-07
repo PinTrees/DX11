@@ -11,16 +11,6 @@ std::wstring ProjectEditorWindow::currentDirectory = L".";
 
 vector<char> ProjectEditorWindow::renameBuffVec = {};
 
-std::string WStringToString(const std::wstring& wstr)
-{
-    if (wstr.empty()) return std::string();
-    int size_needed = WideCharToMultiByte(CP_UTF8, 0, &wstr[0], (int)wstr.size(), NULL, 0, NULL, NULL);
-    std::string strTo(size_needed, 0);
-    WideCharToMultiByte(CP_UTF8, 0, &wstr[0], (int)wstr.size(), &strTo[0], size_needed, NULL, NULL);
-    return strTo;
-}
-
-
 ProjectEditorWindow::ProjectEditorWindow()
     : EditorWindow("Project")
 {
@@ -118,7 +108,7 @@ void ProjectEditorWindow::DisplayDirectoryContents(const std::wstring& directory
 
 void ProjectEditorWindow::RenderFileEntry(const fs::directory_entry& entry, bool isSelected)
 {
-    std::string filename = WStringToString(entry.path().filename().wstring());
+    std::string filename = wstring_to_string(entry.path().filename().wstring());
 
     //if (renaming && renamingPath == entry.path().wstring() && isSelected)
     //{
@@ -162,55 +152,42 @@ void ProjectEditorWindow::RenderFileEntry(const fs::directory_entry& entry, bool
 
         if (entry.is_directory())
         {
-            if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(0)) 
-            {
-                currentDirectory = entry.path().wstring(); 
-            }
+            RenderFileEntry_Directory(entry, isSelected);
         }
         else if (extention == ".fbx" || extention == ".FBX")
         {
             RenderFileEntry_FBX(entry, isSelected);
+        }
+        else if (extention == ".png" || extention == ".PNG")
+        {
+            RenderFileEntry_PNG(entry, isSelected);
+        }
+        else if (extention == ".mat" || extention == ".MAT")
+        {
+            RenderFileEntry_MAT(entry, isSelected);
         }
         else
         {
             if (ImGui::Selectable(filename.c_str(), isSelected)) 
             {
             } 
-            
-            else
-            {
-                if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(0))
-                {
-                    if (entry.path().extension() == ".png")
-                    {
-                        std::string command = "rundll32.exe \"%ProgramFiles%\\Windows Photo Viewer\\PhotoViewer.dll\", ImageView_Fullscreen " + entry.path().string();
-                        system(command.c_str());
-                    }
-                    else
-                    {
-                        currentDirectory = entry.path().parent_path().wstring();
-                    }
-                }
-
-                if (entry.path().extension() == ".mat")
-                {
-                    // Handle .mat files if necessary
-                }
-            }
         }
 
-        if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(0) && !isSelected)
+        if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(0) 
+            && !isSelected
+            && !ImGui::IsMouseDragging(ImGuiMouseButton_Left)
+            && !ImGui::IsMouseDoubleClicked(0))
         {
             SelectionManager::SetSelectedFile(entry.path().wstring());
 
-            if (renaming)
-            {
-                std::wstring newNameWstring = string_to_wstring(std::string(renameBuffVec.data()));
-
-                fs::path renamingPathFs(renamingPath);
-                fs::rename(renamingPathFs, renamingPathFs.parent_path() / newNameWstring);
-                renaming = false;
-            }
+            //if (renaming)
+            //{
+            //    std::wstring newNameWstring = string_to_wstring(std::string(renameBuffVec.data()));
+            //
+            //    fs::path renamingPathFs(renamingPath);
+            //    fs::rename(renamingPathFs, renamingPathFs.parent_path() / newNameWstring);
+            //    renaming = false;
+            //}
         }
 
         //if (isSelected && !renaming)
@@ -250,6 +227,24 @@ void ProjectEditorWindow::RenameSelectedFile(const std::wstring& oldPath, const 
     }
 }
 
+
+
+
+
+
+void ProjectEditorWindow::RenderFileEntry_Directory(const fs::directory_entry& entry, bool isSelected)
+{
+    wstring filename = entry.path().filename().wstring();
+
+    if (ImGui::Selectable(wstring_to_string(filename).c_str(), isSelected))
+    {
+    }
+
+    if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(0))
+    {
+        currentDirectory = entry.path().wstring();
+    }
+}
  
 void ProjectEditorWindow::RenderFileEntry_FBX(const fs::directory_entry& entry, bool isSelected) 
 {
@@ -261,7 +256,7 @@ void ProjectEditorWindow::RenderFileEntry_FBX(const fs::directory_entry& entry, 
         return;
 
     // 트리 노드의 상태를 관리하기 위한 고유 ID 생성
-    ImGui::PushID(wstring_to_string(filename).c_str());  
+    //ImGui::PushID(filename.c_str());
 
     auto treeFlag = ImGuiTreeNodeFlags_OpenOnArrow
         | ImGuiTreeNodeFlags_SpanAvailWidth 
@@ -272,11 +267,11 @@ void ProjectEditorWindow::RenderFileEntry_FBX(const fs::directory_entry& entry, 
     bool treeNodeOpened = ImGui::TreeNodeEx(wstring_to_string(filename).c_str(), treeFlag);
 
     // 트리 노드에 대한 드래그 앤 드롭 소스 설정
-    if (ImGui::IsItemActive() && ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
+    if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
     {
         const std::wstring filePath = entry.path().wstring(); 
         ImGui::SetDragDropPayload("FBX_FILE", filePath.c_str(), filePath.size() + 1); 
-        ImGui::Text("Dragging %s", wstring_to_string(filename).c_str());
+        ImGui::Text("Dragging %s", filename.c_str()); 
         ImGui::EndDragDropSource();
     }
 
@@ -308,5 +303,58 @@ void ProjectEditorWindow::RenderFileEntry_FBX(const fs::directory_entry& entry, 
         ImGui::TreePop();
     }
 
-    ImGui::PopID();
+    //ImGui::PopID();
+}
+
+void ProjectEditorWindow::RenderFileEntry_PNG(const fs::directory_entry& entry, bool isSelected)
+{
+    wstring filename = entry.path().filename().wstring(); 
+     
+    if (ImGui::Selectable(wstring_to_string(filename).c_str(), isSelected))
+    {
+
+    }
+
+    if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(0))
+    {
+        std::string command = "rundll32.exe \"%ProgramFiles%\\Windows Photo Viewer\\PhotoViewer.dll\", ImageView_Fullscreen " + entry.path().string();
+        system(command.c_str());
+    }
+}
+
+void ProjectEditorWindow::RenderFileEntry_MAT(const fs::directory_entry& entry, bool isSelected)
+{
+    wstring filename = entry.path().filename().wstring();
+
+    //ImGui::PushID(filename.c_str());
+
+    ImGui::Selectable(wstring_to_string(filename).c_str(), isSelected);
+
+    if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(0) && ImGui::IsMouseDragging(ImGuiMouseButton_Left))
+    {
+        // 더블 클릭 처리
+        int a = 0;
+    }
+
+    if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)) 
+    {
+        const std::wstring filePath = entry.path().wstring();
+        std::string filePathStr = wstring_to_string(filePath); // 드래그 앤 드롭 페이로드를 위한 변환
+        ImGui::SetDragDropPayload("MAT_FILE", filePathStr.c_str(), filePathStr.size() + 1);
+        ImGui::Text("Dragging %s", wstring_to_string(filename).c_str());
+        ImGui::EndDragDropSource();
+    }
+
+    // 디버깅: 마우스 상태 출력
+    //if (ImGui::IsMouseDown(ImGuiMouseButton_Left))
+    //{
+    //    ImGui::Text("Mouse button is down");
+    //}
+    //
+    //if (ImGui::IsMouseDragging(ImGuiMouseButton_Left))
+    //{
+    //    ImGui::Text("Mouse button is dragging");
+    //}
+
+    //ImGui::PopID();
 }
