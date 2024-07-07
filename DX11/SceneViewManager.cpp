@@ -25,16 +25,16 @@ void SceneViewManager::Update()
 		return;
 
 	if (INPUT_KEY_HOLD(KEY::W))
-		sceneCamera->Walk(15.0f * DT);
+		sceneCamera->Walk(25.0f * DT);
 
 	if (INPUT_KEY_HOLD(KEY::S))
-		sceneCamera->Walk(-15.0f * DT);
+		sceneCamera->Walk(-25.0f * DT);
 
 	if (INPUT_KEY_HOLD(KEY::A))
-		sceneCamera->Strafe(-15.0f * DT);
+		sceneCamera->Strafe(-25.0f * DT);
 
 	if (INPUT_KEY_HOLD(KEY::D))
-		sceneCamera->Strafe(15.0f * DT);
+		sceneCamera->Strafe(25.0f * DT);
 
 	if (INPUT_KEY_DOWN(KEY::Mouse1))
 	{

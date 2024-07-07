@@ -86,7 +86,7 @@ void UMaterial::OnInspectorGUI()
 	{
 		if (ImGui::ImageButton((void*)BaseMapSRV.Get(), ImVec2(64, 64)))
 		{
-			std::wstring filePath = EditorUtility::OpenFileDialog(m_ResourcePath);
+			std::wstring filePath = EditorUtility::OpenTextureFileDialog(m_ResourcePath);
 			if (!filePath.empty())
 			{
 				BaseMapSRV = ResourceManager::GetI()->LoadTexture(filePath);
@@ -99,7 +99,7 @@ void UMaterial::OnInspectorGUI()
 	{
 		if (ImGui::Button("Load Base Map##image", ImVec2(64, 64)))
 		{
-			std::wstring filePath = EditorUtility::OpenFileDialog(m_ResourcePath);
+			std::wstring filePath = EditorUtility::OpenTextureFileDialog(m_ResourcePath);
 			if (!filePath.empty()) 
 			{
 				BaseMapSRV = ResourceManager::GetI()->LoadTexture(filePath);
@@ -113,7 +113,7 @@ void UMaterial::OnInspectorGUI()
 	{
 		if (ImGui::ImageButton((void*)NormalMapSRV.Get(), ImVec2(64, 64)))
 		{
-			std::wstring filePath = EditorUtility::OpenFileDialog(m_ResourcePath);
+			std::wstring filePath = EditorUtility::OpenTextureFileDialog(m_ResourcePath);
 			if (!filePath.empty())
 			{
 				NormalMapSRV = ResourceManager::GetI()->LoadTexture(filePath);
@@ -126,7 +126,7 @@ void UMaterial::OnInspectorGUI()
 	{
 		if (ImGui::Button("Load Normal Map##image", ImVec2(64, 64)))
 		{
-			std::wstring filePath = EditorUtility::OpenFileDialog(m_ResourcePath);
+			std::wstring filePath = EditorUtility::OpenTextureFileDialog(m_ResourcePath);
 			if (!filePath.empty())
 			{
 				NormalMapSRV = ResourceManager::GetI()->LoadTexture(filePath);

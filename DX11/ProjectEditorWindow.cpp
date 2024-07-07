@@ -120,53 +120,89 @@ void ProjectEditorWindow::RenderFileEntry(const fs::directory_entry& entry, bool
 {
     std::string filename = WStringToString(entry.path().filename().wstring());
 
-    if (renaming && renamingPath == entry.path().wstring() && isSelected)
+    //if (renaming && renamingPath == entry.path().wstring() && isSelected)
+    //{
+    //    // 이름 변경 UI 표시
+    //    ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, { 0, 0 });
+    //    ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
+    //
+    //    //bool renameInputActive = ImGui::IsItemActive();
+    //    //
+    //    //// 커서가 있는지 확인하여 필요 시 포커스 설정
+    //    //if (!renameInputActive && !ImGui::IsAnyItemActive()) {
+    //    //    ImGui::SetKeyboardFocusHere();
+    //    //}
+    //
+    //    if (ImGui::InputText("##rename", renameBuffVec.data(), renameBuffVec.size(), ImGuiInputTextFlags_EnterReturnsTrue))
+    //    {
+    //        std::wstring newNameWstring = string_to_wstring(std::string(renameBuffVec.data()));
+    //
+    //        fs::path renamingPathFs(renamingPath);
+    //        fs::rename(renamingPathFs, renamingPathFs.parent_path() / newNameWstring);
+    //        
+    //        renaming = false;
+    //    }
+    //
+    //    if (ImGui::IsMouseClicked(0) && !ImGui::IsItemHovered())
+    //    {
+    //        std::wstring newNameWstring = string_to_wstring(std::string(renameBuffVec.data())); 
+    //
+    //        fs::path renamingPathFs(renamingPath); 
+    //        fs::rename(renamingPathFs, renamingPathFs.parent_path() / newNameWstring); 
+    //        
+    //        renaming = false;
+    //    }
+    //
+    //    ImGui::PopStyleVar();
+    //
+    //    return;
+    //}
     {
-        // 이름 변경 UI 표시
-        ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, { 0, 0 });
-        ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
+        string extention = entry.path().extension().string();
 
-        //bool renameInputActive = ImGui::IsItemActive();
-        //
-        //// 커서가 있는지 확인하여 필요 시 포커스 설정
-        //if (!renameInputActive && !ImGui::IsAnyItemActive()) {
-        //    ImGui::SetKeyboardFocusHere();
-        //}
-
-        if (ImGui::InputText("##rename", renameBuffVec.data(), renameBuffVec.size(), ImGuiInputTextFlags_EnterReturnsTrue))
+        if (entry.is_directory())
         {
-            std::wstring newNameWstring = string_to_wstring(std::string(renameBuffVec.data()));
-
-            fs::path renamingPathFs(renamingPath);
-            fs::rename(renamingPathFs, renamingPathFs.parent_path() / newNameWstring);
+            if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(0)) 
+            {
+                currentDirectory = entry.path().wstring(); 
+            }
+        }
+        else if (extention == ".fbx" || extention == ".FBX")
+        {
+            RenderFileEntry_FBX(entry, isSelected);
+        }
+        else
+        {
+            if (ImGui::Selectable(filename.c_str(), isSelected)) 
+            {
+            } 
             
-            renaming = false;
+            else
+            {
+                if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(0))
+                {
+                    if (entry.path().extension() == ".png")
+                    {
+                        std::string command = "rundll32.exe \"%ProgramFiles%\\Windows Photo Viewer\\PhotoViewer.dll\", ImageView_Fullscreen " + entry.path().string();
+                        system(command.c_str());
+                    }
+                    else
+                    {
+                        currentDirectory = entry.path().parent_path().wstring();
+                    }
+                }
+
+                if (entry.path().extension() == ".mat")
+                {
+                    // Handle .mat files if necessary
+                }
+            }
         }
 
-        if (ImGui::IsMouseClicked(0) && !ImGui::IsItemHovered())
-        {
-            std::wstring newNameWstring = string_to_wstring(std::string(renameBuffVec.data())); 
-
-            fs::path renamingPathFs(renamingPath); 
-            fs::rename(renamingPathFs, renamingPathFs.parent_path() / newNameWstring); 
-            
-            renaming = false;
-        }
-
-        ImGui::PopStyleVar();
-
-        return;
-    }
-    else
-    {
-        if (ImGui::Selectable(filename.c_str(), isSelected))
-        {
-        }
-
-        if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(0))
+        if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(0) && !isSelected)
         {
             SelectionManager::SetSelectedFile(entry.path().wstring());
-            
+
             if (renaming)
             {
                 std::wstring newNameWstring = string_to_wstring(std::string(renameBuffVec.data()));
@@ -177,63 +213,24 @@ void ProjectEditorWindow::RenderFileEntry(const fs::directory_entry& entry, bool
             }
         }
 
-        if (entry.is_directory())
-        {
-            if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(0))
-            {
-                currentDirectory = entry.path().wstring();
-            }
-        }
-        else
-        {
-            if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(0))
-            {
-                if (entry.path().extension() == ".png")
-                {
-                    std::string command = "rundll32.exe \"%ProgramFiles%\\Windows Photo Viewer\\PhotoViewer.dll\", ImageView_Fullscreen " + entry.path().string();
-                    system(command.c_str());
-                }
-                else
-                {
-                    currentDirectory = entry.path().parent_path().wstring();
-                }
-            }
-
-            if (entry.path().extension() == ".fbx")
-            {
-                if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
-                {
-                    const std::string filePath = entry.path().string();
-                    ImGui::SetDragDropPayload("FBX_FILE", filePath.c_str(), filePath.size() + 1);
-                    ImGui::Text("Dragging %s", filename.c_str());
-                    ImGui::EndDragDropSource();
-                }
-            }
-
-            if (entry.path().extension() == ".mat")
-            {
-                // Handle .mat files if necessary
-            }
-        }
-
-        if (isSelected && !renaming)
-        {
-            if (ImGui::IsItemClicked() && !ImGui::IsMouseDoubleClicked(0))
-            {
-                renaming = true;
-                renamingPath = entry.path().wstring();
-               
-                std::wstring wfilename = entry.path().filename().wstring();
-                size_t len = wfilename.length();
-
-                wcsncpy_s(newName, wfilename.c_str(), len);
-                newName[len] = L'\0'; // Null-terminate the string
-
-                std::string renameBuffer = WStringToString(newName);
-                renameBuffVec.assign(renameBuffer.begin(), renameBuffer.end());
-                renameBuffVec.resize(512, '\0'); // Resize to 512 with null terminator
-            }
-        }
+        //if (isSelected && !renaming)
+        //{
+        //    if (ImGui::IsItemClicked() && !ImGui::IsMouseDoubleClicked(0))
+        //    {
+        //        renaming = true;
+        //        renamingPath = entry.path().wstring();
+        //       
+        //        std::wstring wfilename = entry.path().filename().wstring();
+        //        size_t len = wfilename.length();
+        //
+        //        wcsncpy_s(newName, wfilename.c_str(), len);
+        //        newName[len] = L'\0'; // Null-terminate the string
+        //
+        //        std::string renameBuffer = WStringToString(newName);
+        //        renameBuffVec.assign(renameBuffer.begin(), renameBuffer.end());
+        //        renameBuffVec.resize(512, '\0'); // Resize to 512 with null terminator
+        //    }
+        //}
     }
 }
 
@@ -251,4 +248,65 @@ void ProjectEditorWindow::RenameSelectedFile(const std::wstring& oldPath, const 
     {
         std::cerr << "Error renaming file: " << e.what() << std::endl;
     }
+}
+
+ 
+void ProjectEditorWindow::RenderFileEntry_FBX(const fs::directory_entry& entry, bool isSelected) 
+{
+    wstring filename = entry.path().filename().wstring();  
+
+    shared_ptr<Mesh> mesh_fbx = ResourceManager::GetI()->LoadMesh(entry.path().wstring());
+
+    if (mesh_fbx == nullptr)
+        return;
+
+    // 트리 노드의 상태를 관리하기 위한 고유 ID 생성
+    ImGui::PushID(wstring_to_string(filename).c_str());  
+
+    auto treeFlag = ImGuiTreeNodeFlags_OpenOnArrow
+        | ImGuiTreeNodeFlags_SpanAvailWidth 
+        | (isSelected ? ImGuiTreeNodeFlags_DefaultOpen : 0) 
+        | (isSelected ? ImGuiTreeNodeFlags_Selected : 0);
+
+    // TreeNode의 상태를 관리
+    bool treeNodeOpened = ImGui::TreeNodeEx(wstring_to_string(filename).c_str(), treeFlag);
+
+    // 트리 노드에 대한 드래그 앤 드롭 소스 설정
+    if (ImGui::IsItemActive() && ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
+    {
+        const std::wstring filePath = entry.path().wstring(); 
+        ImGui::SetDragDropPayload("FBX_FILE", filePath.c_str(), filePath.size() + 1); 
+        ImGui::Text("Dragging %s", wstring_to_string(filename).c_str());
+        ImGui::EndDragDropSource();
+    }
+
+    if (treeNodeOpened)
+    {
+        for (size_t i = 0; i < mesh_fbx->Subsets.size(); ++i)
+        {
+            const auto& subset = mesh_fbx->Subsets[i];
+            std::wstring subsetName = string_to_wstring(subset.Name) + std::to_wstring(i + 1);
+
+            bool isSubsetSelected = (SelectionManager::GetSelectedFile() == (filename + L"\\" + subsetName));
+            ImGui::PushID(static_cast<int>(i));
+            if (ImGui::Selectable(wstring_to_string(subsetName).c_str(), isSubsetSelected))
+            {
+                SelectionManager::SetSelectedFile(filename + L"\\" + subsetName);
+            }
+
+            // 서브셋에 대한 드래그 앤 드롭 소스 설정
+            if (ImGui::IsItemActive() && ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
+            {
+                const std::string subsetPath = entry.path().string() + "\\" + std::to_string(i);
+                ImGui::SetDragDropPayload("FBX_SUBSET", subsetPath.c_str(), subsetPath.size() + 1);
+                ImGui::Text("Dragging %s", wstring_to_string(subsetName).c_str());
+                ImGui::EndDragDropSource();
+            }
+
+            ImGui::PopID();
+        }
+        ImGui::TreePop();
+    }
+
+    ImGui::PopID();
 }

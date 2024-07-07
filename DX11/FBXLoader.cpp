@@ -137,9 +137,9 @@ void FBXLoader::ProcessNode(
     for (UINT i = 0; i < node->mNumMeshes; ++i)
     {
         aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-        MeshGeometry::Subset subset;
-        ProcessMesh(mesh, scene, vertices, indices, subset);
-        subsets.push_back(subset);
+        MeshGeometry::Subset subset; 
+        ProcessMesh(mesh, scene, vertices, indices, subset); 
+        subsets.push_back(subset); 
     }
 
     for (UINT i = 0; i < node->mNumChildren; ++i)
@@ -155,6 +155,7 @@ void FBXLoader::ProcessMesh(
     vector<USHORT>& indices,
     MeshGeometry::Subset& subset)
 {
+    subset.Name = mesh->mName.C_Str();
     subset.VertexStart = vertices.size();
     subset.FaceStart = indices.size() / 3;
     subset.VertexCount = mesh->mNumVertices;

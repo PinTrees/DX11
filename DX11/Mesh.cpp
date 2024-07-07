@@ -73,7 +73,7 @@ Mesh::Mesh(ComPtr<ID3D11Device> device, const std::string& modelFilename)
 {
 	std::string fileExtension = GetFileExtension(modelFilename);
 
-	if (fileExtension == "fbx")
+	if (fileExtension == "fbx" || fileExtension == "FBX")
 	{
 		std::vector<FbxMaterial> mats;
 

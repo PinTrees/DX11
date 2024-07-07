@@ -13,6 +13,7 @@ public:
 		{
 		}
 
+		string Name; 
 		uint32 Id;
 		uint32 VertexStart;
 		uint32 VertexCount;

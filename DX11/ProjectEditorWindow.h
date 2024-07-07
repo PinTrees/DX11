@@ -29,5 +29,7 @@ private:
 	static void DisplayDirectoryContents(const std::wstring& directory);
 	static void RenderFileEntry(const std::filesystem::directory_entry& entry, bool isSelected);
 	static void RenameSelectedFile(const std::wstring& oldPath, const std::wstring& newName);
+
+	static void RenderFileEntry_FBX(const std::filesystem::directory_entry& entry, bool isSelected);
 };
 

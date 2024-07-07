@@ -3,8 +3,8 @@
 class EditorUtility
 {
 public:
-	static std::wstring OpenFileDialog();
-	static std::wstring OpenFileDialog(const std::string& initialPath);
+	static std::wstring OpenTextureFileDialog();
+	static std::wstring OpenTextureFileDialog(const std::string& initialPath);
 	static std::wstring OpenFileDialog(const std::wstring& initialPath, const string title="Select File", const vector<string> filters = {"txt"});
 	static std::wstring OpenFileDialog(const std::wstring& initialPath, const wstring title = L"Select File", const vector<wstring> filters = { L"txt" });
 

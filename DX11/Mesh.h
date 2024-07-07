@@ -14,6 +14,8 @@ public:
 	uint32 SubsetCount;
 
 	std::vector<Material> Mat;
+
+	// 사용하지 않음 - 제거 예정 - UMaterial로 이전
 	std::vector<ComPtr<ID3D11ShaderResourceView>> DiffuseMapSRV;
 	std::vector<ComPtr<ID3D11ShaderResourceView>> NormalMapSRV;
 
@@ -25,6 +27,7 @@ public:
 	MeshGeometry ModelMesh;
 };
 
+// 사용하지 않음 - 제거
 struct MeshInstance
 {
 	shared_ptr<class Mesh> Model;

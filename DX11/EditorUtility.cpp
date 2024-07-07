@@ -4,7 +4,7 @@
 
 namespace fs = std::filesystem;
 
-std::wstring EditorUtility::OpenFileDialog()
+std::wstring EditorUtility::OpenTextureFileDialog()
 {
     OPENFILENAME ofn;
     wchar_t szFile[260] = { 0 };   
@@ -25,7 +25,7 @@ std::wstring EditorUtility::OpenFileDialog()
     return L"";
 }
 
-std::wstring EditorUtility::OpenFileDialog(const std::string& initialPath)
+std::wstring EditorUtility::OpenTextureFileDialog(const std::string& initialPath)
 {
     fs::path resourcePath(initialPath);
     fs::path directoryPath = resourcePath.parent_path();
@@ -38,7 +38,7 @@ std::wstring EditorUtility::OpenFileDialog(const std::string& initialPath)
     ofn.hwndOwner = NULL;
     ofn.lpstrFile = szFile;
     ofn.nMaxFile = sizeof(szFile) / sizeof(wchar_t);
-    ofn.lpstrFilter = L"Image Files\0*.png;*.jpg\0All Files\0*.*\0";
+    ofn.lpstrFilter = L"Image Files\0*.png;*.jpg;*.tga;*.TGA\0All Files\0*.*\0";
     ofn.nFilterIndex = 1;
     ofn.lpstrInitialDir = directoryPathW.c_str();  // 초기 경로 설정
     ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;

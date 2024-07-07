@@ -117,11 +117,11 @@ bool App::Init()
 	PostProcessingManager::GetI()->Init();
 
 	EditorGUIManager::GetI()->Init();
-	EditorGUIManager::GetI()->RegisterWindow(new SceneEditorWindow);
+	EditorGUIManager::GetI()->RegisterWindow(new SceneEditorWindow);  
 	EditorGUIManager::GetI()->RegisterWindow(new SceneHierachyEditorWindow);
-	EditorGUIManager::GetI()->RegisterWindow(new InspectorEditorWindow);
-	EditorGUIManager::GetI()->RegisterWindow(new ProjectEditorWindow);
+	EditorGUIManager::GetI()->RegisterWindow(new InspectorEditorWindow); 
 	EditorGUIManager::GetI()->RegisterWindow(new GameViewEditorWindow);
+	EditorGUIManager::GetI()->RegisterWindow(new ProjectEditorWindow);
 
 	// Singleton Init
 	ResourceManager::GetI()->Init(_device);

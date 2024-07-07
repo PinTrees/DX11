@@ -26,8 +26,10 @@ SelectionManager::~SelectionManager()
 
 void SelectionManager::ClearSelection()
 {
-	m_SelectedType = SelectionType::NONE;
-	m_SelectedSubType = SelectionSubType::NONE;
+	m_SelectedType = SelectionType::NONE; 
+	m_SelectedSubType = SelectionSubType::NONE; 
+	m_SelectedGameObject = nullptr; 
+	m_SelectedFile_Material = nullptr;
 }
 
 void SelectionManager::SetSelectedFile(const std::wstring& filePath)
