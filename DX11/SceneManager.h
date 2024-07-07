@@ -22,6 +22,8 @@ public:
 
 public:
 	void HandleSaveScene();
+	void HandlePlay();
+	void HandleStop();
 
 private:
 	void CreateScene();

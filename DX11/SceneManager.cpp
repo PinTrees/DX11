@@ -82,6 +82,33 @@ void SceneManager::HandleSaveScene()
 	}
 }
 
+void SceneManager::HandlePlay()
+{
+	if (m_pCurrScene == nullptr) 
+		return;
+
+	Scene::Save(m_pCurrScene); 
+}
+
+void SceneManager::HandleStop()
+{
+	if (m_pCurrScene == nullptr)
+		return;
+
+	wstring scenePath = m_pCurrScene->GetScenePath();
+	Scene* scene = Scene::Load(scenePath); 
+
+	m_pCurrScene = nullptr;
+
+	if (m_Scenes.find(scenePath) != m_Scenes.end())  
+	{
+		delete m_Scenes[scenePath];
+		m_Scenes[scenePath] = scene;
+	}
+
+	m_pCurrScene = scene;
+}
+
 void SceneManager::CreateScene()
 {
 	m_pCurrScene = new Scene;

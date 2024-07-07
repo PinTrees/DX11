@@ -30,6 +30,8 @@ private:
     static UMaterial* m_SelectedFile_Material;
 
 public:
+    static void ClearSelection();
+
     static void SetSelectedFile(const std::wstring& filePath);
     static const std::wstring& GetSelectedFile() { return m_SelectedFilePath; }
 

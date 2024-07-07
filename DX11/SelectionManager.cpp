@@ -24,6 +24,12 @@ SelectionManager::~SelectionManager()
 
 }
 
+void SelectionManager::ClearSelection()
+{
+	m_SelectedType = SelectionType::NONE;
+	m_SelectedSubType = SelectionSubType::NONE;
+}
+
 void SelectionManager::SetSelectedFile(const std::wstring& filePath)
 {
 	m_SelectedFilePath = filePath;

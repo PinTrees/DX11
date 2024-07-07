@@ -47,11 +47,14 @@ void EditorGUIManager::Update()
     if (ImGui::Button("Play"))
     {
         Application::SetPlaying(true);
+        SceneManager::GetI()->HandlePlay();
     }
     ImGui::SameLine();
     if (ImGui::Button("Stop"))
     {
         Application::SetPlaying(false);
+        SelectionManager::ClearSelection(); 
+        SceneManager::GetI()->HandleStop(); 
     }
     ImGui::SameLine();
     if (ImGui::Button("Step"))
