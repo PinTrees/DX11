@@ -241,3 +241,15 @@ void EditorCamera::UpdateViewMatrix()
 	_view(3, 3) = 1.0f;
 }
 
+XMMATRIX EditorCamera::GetWorldMatrix()
+{
+	// Create the world matrix using the camera's position and orientation vectors
+	XMFLOAT4X4 world;
+	world._11 = _right.x; world._12 = _right.y; world._13 = _right.z; world._14 = 0.0f;
+	world._21 = _up.x; world._22 = _up.y; world._23 = _up.z; world._24 = 0.0f;
+	world._31 = _look.x; world._32 = _look.y; world._33 = _look.z; world._34 = 0.0f;
+	world._41 = _position.x; world._42 = _position.y; world._43 = _position.z; world._44 = 1.0f;
+
+	return XMLoadFloat4x4(&world); 
+}
+

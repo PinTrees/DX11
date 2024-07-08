@@ -160,6 +160,9 @@
     <Filter Include="1. Engine\Component\Camera">
       <UniqueIdentifier>{8402e162-9673-42ec-9ac8-be8e7475686f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="1. Engine\Component\Collider\SphereCollider">
+      <UniqueIdentifier>{313dbb1f-4adf-4442-a154-a8a1371bab1b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="01. InitDemo.cpp">
@@ -470,6 +473,9 @@
     </ClCompile>
     <ClCompile Include="Camera.cpp">
       <Filter>1. Engine\Component\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="SphereCollider.cpp">
+      <Filter>1. Engine\Component\Collider\SphereCollider</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -785,6 +791,9 @@
     </ClInclude>
     <ClInclude Include="Camera.h">
       <Filter>1. Engine\Component\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="SphereCollider.h">
+      <Filter>1. Engine\Component\Collider\SphereCollider</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

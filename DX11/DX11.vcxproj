@@ -259,6 +259,7 @@
     <ClInclude Include="SkinnedMesh.h" />
     <ClInclude Include="SkinnedModel.h" />
     <ClInclude Include="Sky.h" />
+    <ClInclude Include="SphereCollider.h" />
     <ClInclude Include="Ssao.h" />
     <ClInclude Include="Terrain.h" />
     <ClInclude Include="TextureMgr.h" />
@@ -384,6 +385,7 @@
     <ClCompile Include="SkinnedMesh.cpp" />
     <ClCompile Include="SkinnedModel.cpp" />
     <ClCompile Include="Sky.cpp" />
+    <ClCompile Include="SphereCollider.cpp" />
     <ClCompile Include="Ssao.cpp" />
     <ClCompile Include="Terrain.cpp" />
     <ClCompile Include="TextureMgr.cpp" />

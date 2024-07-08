@@ -24,17 +24,19 @@ void SceneViewManager::Update()
 	if (sceneCamera == nullptr)
 		return;
 
+	float camSpeed = 50;
+
 	if (INPUT_KEY_HOLD(KEY::W))
-		sceneCamera->Walk(25.0f * DT);
+		sceneCamera->Walk(camSpeed * DT);
 
 	if (INPUT_KEY_HOLD(KEY::S))
-		sceneCamera->Walk(-25.0f * DT);
+		sceneCamera->Walk(-camSpeed * DT);
 
 	if (INPUT_KEY_HOLD(KEY::A))
-		sceneCamera->Strafe(-25.0f * DT);
+		sceneCamera->Strafe(-camSpeed * DT);
 
 	if (INPUT_KEY_HOLD(KEY::D))
-		sceneCamera->Strafe(25.0f * DT);
+		sceneCamera->Strafe(camSpeed * DT);
 
 	if (INPUT_KEY_DOWN(KEY::Mouse1))
 	{

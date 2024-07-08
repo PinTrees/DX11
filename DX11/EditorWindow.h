@@ -16,7 +16,9 @@ public:
 	virtual void Update() {}
 
 protected:
+	virtual void PushStyle() {}
 	virtual void OnRender() {}
 	virtual void OnRenderExit() {}
+	virtual void PopStyle() {}
 };
 

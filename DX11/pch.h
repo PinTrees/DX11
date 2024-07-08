@@ -87,6 +87,7 @@ using namespace Microsoft::WRL;
 #include "MeshRenderer.h"
 #include "Camera.h"
 #include "RigidBody.h"
+#include "SphereCollider.h"
 
 #include "Scene.h"
 #include "SceneManager.h"

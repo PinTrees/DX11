@@ -56,6 +56,8 @@ public:
 	// After modifying camera position/orientation, call to rebuild the view matrix.
 	void UpdateViewMatrix();
 
+	XMMATRIX GetWorldMatrix();
+
 private:
 
 	// Camera coordinate system with coordinates relative to world space.

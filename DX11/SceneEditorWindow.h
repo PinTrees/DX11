@@ -33,11 +33,14 @@ public:
 
 protected:
 
+	virtual void PushStyle() override;
+	virtual void PopStyle() override;
 	virtual void OnRender() override;
 	virtual void OnRenderExit() override;
 
 private:
 	void InitRenderTarget(UINT width, UINT height);
 	void CleanUpRenderTarget();
+	void RenderScene();
 };
 

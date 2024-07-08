@@ -71,6 +71,122 @@ void Gizmo::DrawCube(const XMMATRIX& worldMatrix, const Vec3& size)
     }
 }
 
+
+void Gizmo::DrawSphere(const XMMATRIX& worldMatrix, float radius)
+{
+    auto context = Application::GetI()->GetDeviceContext();
+
+    const int circleSegments = 40;  // 원을 구성하는 세그먼트 수
+
+    std::vector<XMFLOAT3> vertices;
+    vertices.reserve(circleSegments + 1);
+
+    // 카메라의 뷰 프로젝션 행렬 가져오기
+    XMMATRIX viewProj = RenderManager::GetI()->cameraViewProjectionMatrix;
+    XMMATRIX worldViewProj = worldMatrix * viewProj;
+
+    // 뷰포트 크기 가져오기
+    D3D11_VIEWPORT viewport;
+    UINT numViewports = 1;
+    context->RSGetViewports(&numViewports, &viewport);
+
+    // 현재 창의 위치와 크기를 가져옴
+    ImVec2 windowPos = ImGui::GetWindowPos();
+    ImVec2 contentRegionMin = ImGui::GetWindowContentRegionMin();
+    ImVec2 contentRegionMax = ImGui::GetWindowContentRegionMax();
+    ImVec2 offset = ImVec2(contentRegionMin.x + windowPos.x, contentRegionMin.y + windowPos.y);
+
+    auto WorldToScreen = [&](const XMFLOAT3& worldPos) -> ImVec2
+        {
+            XMVECTOR pos = XMVector3TransformCoord(XMLoadFloat3(&worldPos), worldViewProj);
+            float x = (XMVectorGetX(pos) / XMVectorGetW(pos)) * 0.5f + 0.5f;
+            float y = (XMVectorGetY(pos) / XMVectorGetW(pos)) * -0.5f + 0.5f;
+            return ImVec2(x * viewport.Width + viewport.TopLeftX + offset.x, y * viewport.Height + viewport.TopLeftY + offset.y);
+        };
+
+    const ImU32 color = IM_COL32(0, 255, 0, 255);
+    const float thickness = 1.0f;
+
+    auto DrawCircle = [&](const XMFLOAT3& center, const XMFLOAT3& up, const XMFLOAT3& right)
+        {
+            vertices.clear();
+            for (int i = 0; i <= circleSegments; ++i)
+            {
+                float theta = i * XM_2PI / circleSegments;
+                XMFLOAT3 pos;
+                pos.x = center.x + radius * (right.x * cosf(theta) + up.x * sinf(theta));
+                pos.y = center.y + radius * (right.y * cosf(theta) + up.y * sinf(theta));
+                pos.z = center.z + radius * (right.z * cosf(theta) + up.z * sinf(theta));
+                vertices.push_back(pos);
+            }
+
+            for (int i = 0; i < circleSegments; ++i)
+            {
+                ImGui::GetWindowDrawList()->AddLine(WorldToScreen(vertices[i]), WorldToScreen(vertices[i + 1]), color, thickness);
+            }
+        };
+
+    // 각 축에 대해 원을 그림
+    XMFLOAT3 center(0.0f, 0.0f, 0.0f);
+
+    XMVECTOR right = XMVector3TransformNormal(XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f), worldMatrix);
+    XMVECTOR up = XMVector3TransformNormal(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f), worldMatrix);
+    XMVECTOR forward = XMVector3TransformNormal(XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f), worldMatrix);
+
+    XMFLOAT3 rightF, upF, forwardF;
+    XMStoreFloat3(&rightF, right);
+    XMStoreFloat3(&upF, up);
+    XMStoreFloat3(&forwardF, forward);
+
+    DrawCircle(center, upF, rightF);  // XY 평면 
+    DrawCircle(center, forwardF, rightF);  // XZ 평면 
+    DrawCircle(center, upF, forwardF);  // YZ 평면 
+     
+  
+
+    //// 현재 오브젝트와 카메라 위치를 이용하여 평면을 정의하고 원을 그림
+    //EditorCamera* sceneViewCamera = SceneViewManager::GetI()->m_LastActiveSceneEditorWindow->GetSceneCamera();
+    //XMFLOAT3 objectPosition;
+    //XMStoreFloat3(&objectPosition, worldMatrix.r[3]);  // 월드 매트릭스에서 오브젝트의 위치 추출
+
+    //// 카메라의 방향 벡터를 구함
+    //XMFLOAT3 cameraPosition = sceneViewCamera->GetPosition();
+    //XMFLOAT3 direction;
+    //direction.x = objectPosition.x - cameraPosition.x;
+    //direction.y = objectPosition.y - cameraPosition.y;
+    //direction.z = objectPosition.z - cameraPosition.z;
+
+    //// 방향 벡터를 정규화
+    //XMVECTOR directionVec = XMLoadFloat3(&direction);
+    //directionVec = XMVector3Normalize(directionVec);
+    //XMStoreFloat3(&direction, directionVec);
+
+    //// up 벡터를 정의
+    //XMFLOAT3 upC(0.0f, 1.0f, 0.0f);
+    //XMVECTOR upVec = XMLoadFloat3(&upC);
+
+    //// right 벡터를 구하기 위해 cross product를 사용
+    //XMVECTOR rightVec = XMVector3Cross(directionVec, upVec);
+    //XMFLOAT3 rightC;
+    //XMStoreFloat3(&rightC, rightVec);
+
+    EditorCamera* sceneViewCamera = SceneViewManager::GetI()->m_LastActiveSceneEditorWindow->GetSceneCamera();
+    XMMATRIX camWorldMatrix = sceneViewCamera->GetWorldMatrix();  
+
+    XMFLOAT3 camRight = sceneViewCamera->GetRight();
+    XMFLOAT3 camUp = sceneViewCamera->GetUp();
+    XMFLOAT3 camRightF, camUpF;
+
+    XMVECTOR camRightV = XMVector3TransformNormal(XMVectorSet(camRight.x, camRight.y, camRight.z, 0.0f), worldMatrix); 
+    XMVECTOR camUpV = XMVector3TransformNormal(XMVectorSet(camUp.x, camUp.y, camUp.z, 0.0f), worldMatrix);
+
+    XMStoreFloat3(&camRightF, camRightV);
+    XMStoreFloat3(&camUpF, camUpV);
+
+    DrawCircle(center, camUpF, camRightF);  // XY 평면 
+}
+
+
 void Gizmo::DrawTransformHandler(Transform* transform)
 {
     EditorCamera* sceneViewCamera = SceneViewManager::GetI()->m_LastActiveSceneEditorWindow->GetSceneCamera();

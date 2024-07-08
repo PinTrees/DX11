@@ -64,6 +64,16 @@ void Scene::RenderSceneShadowNormal()
 
 void Scene::RenderSceneGizmos()
 {
+    if (SelectionManager::GetSelectedObjectType() == SelectionType::GAMEOBJECT)
+    {
+        GameObject* gameObject = SelectionManager::GetSelectedGameObject();
+
+        if (gameObject)
+        {
+            Gizmo::DrawTransformHandler(gameObject->GetTransform());
+        }
+    }
+
     for (auto& gameObject : m_arrGameObjects[0])
     {
         for (auto& component : gameObject->GetComponents())

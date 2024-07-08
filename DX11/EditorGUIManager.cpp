@@ -74,8 +74,9 @@ void EditorGUIManager::Update()
      
     ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f); 
     ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
     ImGui::Begin("DockSpace Demo", NULL, window_flags); 
-    ImGui::PopStyleVar(2); 
+    ImGui::PopStyleVar(3);
 
     ImGuiID dockspace_id = ImGui::GetID("MyDockspace"); 
     ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_None); 
