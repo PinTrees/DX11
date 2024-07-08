@@ -129,7 +129,7 @@ void Gizmo::DrawSphere(const XMMATRIX& worldMatrix, float radius)
     // 각 축에 대해 원을 그림
     XMFLOAT3 center(0.0f, 0.0f, 0.0f);
 
-    XMVECTOR right = XMVector3TransformNormal(XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f), worldMatrix);
+    XMVECTOR right = XMVector3TransformNormal(XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f), worldMatrix); 
     XMVECTOR up = XMVector3TransformNormal(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f), worldMatrix);
     XMVECTOR forward = XMVector3TransformNormal(XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f), worldMatrix);
 
@@ -142,34 +142,6 @@ void Gizmo::DrawSphere(const XMMATRIX& worldMatrix, float radius)
     DrawCircle(center, forwardF, rightF);  // XZ 평면 
     DrawCircle(center, upF, forwardF);  // YZ 평면 
      
-  
-
-    //// 현재 오브젝트와 카메라 위치를 이용하여 평면을 정의하고 원을 그림
-    //EditorCamera* sceneViewCamera = SceneViewManager::GetI()->m_LastActiveSceneEditorWindow->GetSceneCamera();
-    //XMFLOAT3 objectPosition;
-    //XMStoreFloat3(&objectPosition, worldMatrix.r[3]);  // 월드 매트릭스에서 오브젝트의 위치 추출
-
-    //// 카메라의 방향 벡터를 구함
-    //XMFLOAT3 cameraPosition = sceneViewCamera->GetPosition();
-    //XMFLOAT3 direction;
-    //direction.x = objectPosition.x - cameraPosition.x;
-    //direction.y = objectPosition.y - cameraPosition.y;
-    //direction.z = objectPosition.z - cameraPosition.z;
-
-    //// 방향 벡터를 정규화
-    //XMVECTOR directionVec = XMLoadFloat3(&direction);
-    //directionVec = XMVector3Normalize(directionVec);
-    //XMStoreFloat3(&direction, directionVec);
-
-    //// up 벡터를 정의
-    //XMFLOAT3 upC(0.0f, 1.0f, 0.0f);
-    //XMVECTOR upVec = XMLoadFloat3(&upC);
-
-    //// right 벡터를 구하기 위해 cross product를 사용
-    //XMVECTOR rightVec = XMVector3Cross(directionVec, upVec);
-    //XMFLOAT3 rightC;
-    //XMStoreFloat3(&rightC, rightVec);
-
     EditorCamera* sceneViewCamera = SceneViewManager::GetI()->m_LastActiveSceneEditorWindow->GetSceneCamera();
     XMMATRIX camWorldMatrix = sceneViewCamera->GetWorldMatrix();  
 

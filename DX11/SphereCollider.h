@@ -12,6 +12,9 @@ public:
 	~SphereCollider();
 
 public:
+	float GetRadius() { return m_Radius; }
+
+public:
 	virtual void OnDrawGizmos() override;
 	virtual void OnInspectorGUI() override;
 

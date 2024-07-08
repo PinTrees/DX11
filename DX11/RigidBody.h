@@ -24,9 +24,13 @@ public:
 	float GetMass() const { return m_Mass; }
 
 	void SetElasticity(float elasticity) { m_Elasticity = elasticity; }
-	float GetElasticity() const { return m_Elasticity; }
+	float GetInverseMass() const { return (m_Mass == 0) ? 0 : 1.0f / m_Mass; }
+	float GetRestitution() const { return m_Elasticity; }
 
 	void ApplyForce(const Vec3& force);
+	void ApplyImpulse(const Vec3& impulse);
+	
+
 	void Integrate(float deltaTime);
 
 public:

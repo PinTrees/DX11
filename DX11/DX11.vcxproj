@@ -205,6 +205,8 @@
     <ClInclude Include="Collider.h" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="ComponentFactory.h" />
+    <ClInclude Include="ConsoleEditorWindow.h" />
+    <ClInclude Include="Debug.h" />
     <ClInclude Include="define.h" />
     <ClInclude Include="EditorCamera.h" />
     <ClInclude Include="EditorGUIManager.h" />
@@ -313,6 +315,8 @@
     <ClCompile Include="Collider.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="ComponentFactory.cpp" />
+    <ClCompile Include="ConsoleEditorWindow.cpp" />
+    <ClCompile Include="Debug.cpp" />
     <ClCompile Include="define.cpp" />
     <ClCompile Include="EditorCamera.cpp" />
     <ClCompile Include="EditorGUIManager.cpp" />

@@ -1,8 +1,9 @@
 #pragma  once
-
 #include "Utils.h"
 #include "GameTimer.h"
 #include <string>
+
+#define _DEBUG 
 
 class EditorCamera;
 

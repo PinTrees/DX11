@@ -13,155 +13,164 @@
     <Filter Include="2. Game\00. Headers">
       <UniqueIdentifier>{aa2018b1-d353-4cf5-8acd-08e2a67dd6be}</UniqueIdentifier>
     </Filter>
-    <Filter Include="1. Engine">
-      <UniqueIdentifier>{2c8d9d8c-d25c-4cad-92d9-772e50adeed7}</UniqueIdentifier>
-    </Filter>
     <Filter Include="2. Game\01. Common">
       <UniqueIdentifier>{37de27df-36d8-409f-ae96-16b637d22eb8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="1. Engine\Component">
-      <UniqueIdentifier>{0b6109b7-e243-47aa-a0ee-0c1579320cf0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="1. Engine\Component\Transform">
-      <UniqueIdentifier>{8baf53a0-6769-4d79-9a36-f02b52059779}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="1. Engine\Component\0. Base">
-      <UniqueIdentifier>{bbf8b30a-36f1-43f2-8961-015eaca623f4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="1. Engine\GameObject">
-      <UniqueIdentifier>{64dba578-83fa-437f-93d1-7331eed8b124}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="1. Engine\Shader">
-      <UniqueIdentifier>{6f371416-cc11-4eed-8da7-e8414a34a94a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="1. Engine\Shader\NormalMapSkinned">
-      <UniqueIdentifier>{50d9ed23-6322-42bf-a07b-de2933342a97}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="1. Engine\Mesh">
-      <UniqueIdentifier>{f361951b-ac9d-439a-ba8d-ce4e092a2f11}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="1. Engine\Mesh\0. Base">
-      <UniqueIdentifier>{dc3edd8b-10fc-4be8-8bcd-1a5693b16035}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="1. Engine\Mesh\97. Model">
-      <UniqueIdentifier>{b17c13cc-9cf4-4e46-b42c-e6ceef0ddb80}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="1. Engine\Mesh\SkinnedMesh">
-      <UniqueIdentifier>{7fbb894e-5caa-4ceb-9109-4328a848cc7d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="1. Engine\Mesh\Mesh">
-      <UniqueIdentifier>{65164ee6-eab6-4db4-b2ea-503a225c10a9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="1. Engine\Scene">
-      <UniqueIdentifier>{553b740f-09ad-4fca-860c-5fb7bfcc62ae}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="1. Engine\Scene\0. Base">
-      <UniqueIdentifier>{3c1ba7dd-4dfc-4cd6-9346-8b65232f8488}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="1. Engine\00. Header">
-      <UniqueIdentifier>{f2a3dc45-2565-4286-9b16-4b20e9602121}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="1. Engine\App">
-      <UniqueIdentifier>{158a70d6-54a8-4d5c-ae5f-981775ec3523}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="1. Engine\ImguiContainer">
-      <UniqueIdentifier>{6335fedd-5f53-4747-b4af-e9793084429a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="1. Engine\ImguiContainer\0. Core">
-      <UniqueIdentifier>{a61e248d-b524-4276-9960-a0a7f19d9033}</UniqueIdentifier>
     </Filter>
     <Filter Include="2. Game\App">
       <UniqueIdentifier>{d4ee942b-ae43-4d32-9960-811c5058929a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="1. Engine\98. Utils">
-      <UniqueIdentifier>{861c456f-060b-45fd-a1c8-ee2f466bf87a}</UniqueIdentifier>
+    <Filter Include="1. Editor">
+      <UniqueIdentifier>{7d66924e-4e0f-47c7-a9a9-1dd8621e487d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="1. Engine\ImguiContainer\1. Base">
-      <UniqueIdentifier>{d56871c5-4795-4c3c-85b3-268d778c81bf}</UniqueIdentifier>
+    <Filter Include="0. Engine">
+      <UniqueIdentifier>{2c8d9d8c-d25c-4cad-92d9-772e50adeed7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="1. Engine\ImguiContainer\1. Base\EditorWindow">
-      <UniqueIdentifier>{ee80240f-f446-403f-9348-b6bcc6a9ba5b}</UniqueIdentifier>
+    <Filter Include="0. Engine\Component">
+      <UniqueIdentifier>{0b6109b7-e243-47aa-a0ee-0c1579320cf0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="1. Engine\Component\MeshRenderer">
+    <Filter Include="0. Engine\Component\Transform">
+      <UniqueIdentifier>{8baf53a0-6769-4d79-9a36-f02b52059779}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="0. Engine\Component\0. Base">
+      <UniqueIdentifier>{bbf8b30a-36f1-43f2-8961-015eaca623f4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="0. Engine\Component\MeshRenderer">
       <UniqueIdentifier>{eb1a1ad1-bab8-46b3-a863-c00453045ab6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="1. Engine\Manager">
-      <UniqueIdentifier>{c94e3105-beff-449c-b378-f8c60e06adff}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="1. Engine\Manager\RenderManager">
-      <UniqueIdentifier>{43ad6e07-5c80-40c4-9310-e67e2a2d935e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="1. Engine\Manager\PhysicsManager">
-      <UniqueIdentifier>{12d75b60-5376-4662-97b8-098756f516b6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="1. Engine\Component\RigidBody">
+    <Filter Include="0. Engine\Component\RigidBody">
       <UniqueIdentifier>{d1556633-cadd-4c30-9d2a-3c53c423e46e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="1. Engine\Manager\TimeManager">
-      <UniqueIdentifier>{55973ca5-fcc5-4012-aff8-78d199739482}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="1. Engine\Component\Collider">
+    <Filter Include="0. Engine\Component\Collider">
       <UniqueIdentifier>{3cdd5ec9-5503-45ca-9d70-48788ebd1c3b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="1. Engine\Component\Collider\BoxCollider">
+    <Filter Include="0. Engine\Component\Collider\BoxCollider">
       <UniqueIdentifier>{06af4196-39f7-4b6d-921c-41850b00ceab}</UniqueIdentifier>
     </Filter>
-    <Filter Include="1. Engine\Shader\Material">
-      <UniqueIdentifier>{5228a916-4096-4730-8e48-9bc69cd498d7}</UniqueIdentifier>
+    <Filter Include="0. Engine\Component\Collider\SphereCollider">
+      <UniqueIdentifier>{313dbb1f-4adf-4442-a154-a8a1371bab1b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="1. Engine\Manager\Editor">
-      <UniqueIdentifier>{e466edc6-b8da-483a-a747-4b2623887009}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="1. Engine\Manager\Editor\SelectionManager">
-      <UniqueIdentifier>{4784bdb0-d89b-49c2-b8c1-2ee3022ff4ec}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="1. Engine\98. Utils\EditorUtility">
-      <UniqueIdentifier>{834d5b16-c2c5-45b6-986c-cd9a5ef54e76}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="1. Engine\Manager\ResourceManager">
-      <UniqueIdentifier>{5e07e780-7225-4fb7-a258-5093a21de822}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="1. Engine\Manager\InputManager">
-      <UniqueIdentifier>{2fab3b4d-24e3-4fbe-8094-a14cf4306e3d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="1. Engine\Manager\Editor\EditorSettingManager">
-      <UniqueIdentifier>{bfa631b1-4b7d-400d-ae02-53ce10fb6d0e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="1. Engine\Manager\Editor\SceneViewManager">
-      <UniqueIdentifier>{938a1da5-237c-470e-885e-bf5771588abd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="1. Engine\Component\0. Editor">
+    <Filter Include="0. Engine\Component\0. Editor">
       <UniqueIdentifier>{b4dce466-c5d9-4805-ac8d-4fbab6d7564a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="1. Engine\Component\0. Editor\EditorCamera">
+    <Filter Include="0. Engine\Component\0. Editor\EditorCamera">
       <UniqueIdentifier>{499fa586-e293-4a99-a718-4c610c8d2e11}</UniqueIdentifier>
     </Filter>
-    <Filter Include="1. Engine\Manager\PostProcessingManager">
-      <UniqueIdentifier>{328db151-8bd3-41fa-9cde-815d234ceb98}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="1. Engine\ImguiContainer\0. Editor">
-      <UniqueIdentifier>{829e1245-bd97-4ef9-a3de-5d7765c7e85f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="1. Engine\ImguiContainer\0. Editor\InspectorEditorWindow">
-      <UniqueIdentifier>{32910d32-b0b7-478a-9151-c7a197ae73dc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="1. Engine\ImguiContainer\0. Editor\ProjectEditorWindow">
-      <UniqueIdentifier>{9cdf2c29-136c-436c-a9b0-b70b465778ad}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="1. Engine\ImguiContainer\0. Editor\SceneEditorWindow">
-      <UniqueIdentifier>{89d6f2cb-5cb6-4d9c-9451-591c104f1bdb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="1. Engine\ImguiContainer\0. Editor\SceneHierarchyWindow">
-      <UniqueIdentifier>{a009764f-5f0b-4b42-9bc1-4bcf19eb46cc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="1. Engine\ImguiContainer\GameViewEditorWindow">
-      <UniqueIdentifier>{4a9f6bbf-fa1e-4f20-a06e-54309e41c38a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="1. Engine\Component\Camera">
+    <Filter Include="0. Engine\Component\Camera">
       <UniqueIdentifier>{8402e162-9673-42ec-9ac8-be8e7475686f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="1. Engine\Component\Collider\SphereCollider">
-      <UniqueIdentifier>{313dbb1f-4adf-4442-a154-a8a1371bab1b}</UniqueIdentifier>
+    <Filter Include="0. Engine\GameObject">
+      <UniqueIdentifier>{64dba578-83fa-437f-93d1-7331eed8b124}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="0. Engine\Shader">
+      <UniqueIdentifier>{6f371416-cc11-4eed-8da7-e8414a34a94a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="0. Engine\Shader\NormalMapSkinned">
+      <UniqueIdentifier>{50d9ed23-6322-42bf-a07b-de2933342a97}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="0. Engine\Shader\Material">
+      <UniqueIdentifier>{5228a916-4096-4730-8e48-9bc69cd498d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="0. Engine\Mesh">
+      <UniqueIdentifier>{f361951b-ac9d-439a-ba8d-ce4e092a2f11}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="0. Engine\Mesh\0. Base">
+      <UniqueIdentifier>{dc3edd8b-10fc-4be8-8bcd-1a5693b16035}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="0. Engine\Mesh\97. Model">
+      <UniqueIdentifier>{b17c13cc-9cf4-4e46-b42c-e6ceef0ddb80}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="0. Engine\Mesh\SkinnedMesh">
+      <UniqueIdentifier>{7fbb894e-5caa-4ceb-9109-4328a848cc7d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="0. Engine\Mesh\Mesh">
+      <UniqueIdentifier>{65164ee6-eab6-4db4-b2ea-503a225c10a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="0. Engine\Scene">
+      <UniqueIdentifier>{553b740f-09ad-4fca-860c-5fb7bfcc62ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="0. Engine\Scene\0. Base">
+      <UniqueIdentifier>{3c1ba7dd-4dfc-4cd6-9346-8b65232f8488}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="0. Engine\00. Header">
+      <UniqueIdentifier>{f2a3dc45-2565-4286-9b16-4b20e9602121}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="0. Engine\App">
+      <UniqueIdentifier>{158a70d6-54a8-4d5c-ae5f-981775ec3523}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="0. Engine\ImguiContainer">
+      <UniqueIdentifier>{6335fedd-5f53-4747-b4af-e9793084429a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="0. Engine\ImguiContainer\0. Core">
+      <UniqueIdentifier>{a61e248d-b524-4276-9960-a0a7f19d9033}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="0. Engine\ImguiContainer\1. Base">
+      <UniqueIdentifier>{d56871c5-4795-4c3c-85b3-268d778c81bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="0. Engine\ImguiContainer\1. Base\EditorWindow">
+      <UniqueIdentifier>{ee80240f-f446-403f-9348-b6bcc6a9ba5b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="0. Engine\ImguiContainer\0. Editor">
+      <UniqueIdentifier>{829e1245-bd97-4ef9-a3de-5d7765c7e85f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="0. Engine\ImguiContainer\0. Editor\InspectorEditorWindow">
+      <UniqueIdentifier>{32910d32-b0b7-478a-9151-c7a197ae73dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="0. Engine\ImguiContainer\0. Editor\ProjectEditorWindow">
+      <UniqueIdentifier>{9cdf2c29-136c-436c-a9b0-b70b465778ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="0. Engine\ImguiContainer\0. Editor\SceneEditorWindow">
+      <UniqueIdentifier>{89d6f2cb-5cb6-4d9c-9451-591c104f1bdb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="0. Engine\ImguiContainer\0. Editor\SceneHierarchyWindow">
+      <UniqueIdentifier>{a009764f-5f0b-4b42-9bc1-4bcf19eb46cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="0. Engine\ImguiContainer\0. Editor\ConsoleEditorWindow">
+      <UniqueIdentifier>{60e6a2ee-9abf-43bc-b205-3d829eb44405}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="0. Engine\ImguiContainer\GameViewEditorWindow">
+      <UniqueIdentifier>{4a9f6bbf-fa1e-4f20-a06e-54309e41c38a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="0. Engine\98. Utils">
+      <UniqueIdentifier>{861c456f-060b-45fd-a1c8-ee2f466bf87a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="0. Engine\98. Utils\EditorUtility">
+      <UniqueIdentifier>{834d5b16-c2c5-45b6-986c-cd9a5ef54e76}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="0. Engine\Manager">
+      <UniqueIdentifier>{c94e3105-beff-449c-b378-f8c60e06adff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="0. Engine\Manager\RenderManager">
+      <UniqueIdentifier>{43ad6e07-5c80-40c4-9310-e67e2a2d935e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="0. Engine\Manager\PhysicsManager">
+      <UniqueIdentifier>{12d75b60-5376-4662-97b8-098756f516b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="0. Engine\Manager\TimeManager">
+      <UniqueIdentifier>{55973ca5-fcc5-4012-aff8-78d199739482}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="0. Engine\Manager\Editor">
+      <UniqueIdentifier>{e466edc6-b8da-483a-a747-4b2623887009}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="0. Engine\Manager\Editor\SelectionManager">
+      <UniqueIdentifier>{4784bdb0-d89b-49c2-b8c1-2ee3022ff4ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="0. Engine\Manager\Editor\EditorSettingManager">
+      <UniqueIdentifier>{bfa631b1-4b7d-400d-ae02-53ce10fb6d0e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="0. Engine\Manager\Editor\SceneViewManager">
+      <UniqueIdentifier>{938a1da5-237c-470e-885e-bf5771588abd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="0. Engine\Manager\ResourceManager">
+      <UniqueIdentifier>{5e07e780-7225-4fb7-a258-5093a21de822}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="0. Engine\Manager\InputManager">
+      <UniqueIdentifier>{2fab3b4d-24e3-4fbe-8094-a14cf4306e3d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="0. Engine\Manager\PostProcessingManager">
+      <UniqueIdentifier>{328db151-8bd3-41fa-9cde-815d234ceb98}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="1. Editor\Debug">
+      <UniqueIdentifier>{e8eebb58-eba0-4d85-b7e5-2911df7dd6fd}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -205,10 +214,10 @@
       <Filter>2. Game\Demo</Filter>
     </ClCompile>
     <ClCompile Include="Effects.cpp">
-      <Filter>1. Engine\98. Utils</Filter>
+      <Filter>0. Engine\98. Utils</Filter>
     </ClCompile>
     <ClCompile Include="Vertex.cpp">
-      <Filter>1. Engine\98. Utils</Filter>
+      <Filter>0. Engine\98. Utils</Filter>
     </ClCompile>
     <ClCompile Include="09. TexturedHillsAndWavesDemo.cpp">
       <Filter>2. Game\Demo</Filter>
@@ -223,10 +232,10 @@
       <Filter>2. Game\Demo</Filter>
     </ClCompile>
     <ClCompile Include="Utils.cpp">
-      <Filter>1. Engine\98. Utils</Filter>
+      <Filter>0. Engine\98. Utils</Filter>
     </ClCompile>
     <ClCompile Include="RenderStates.cpp">
-      <Filter>1. Engine\98. Utils</Filter>
+      <Filter>0. Engine\98. Utils</Filter>
     </ClCompile>
     <ClCompile Include="13. VecAddDemo.cpp">
       <Filter>2. Game\Demo</Filter>
@@ -235,7 +244,7 @@
       <Filter>2. Game\Demo</Filter>
     </ClCompile>
     <ClCompile Include="BlurFilter.cpp">
-      <Filter>1. Engine\98. Utils</Filter>
+      <Filter>0. Engine\98. Utils</Filter>
     </ClCompile>
     <ClCompile Include="15. BasicTessellation.cpp">
       <Filter>2. Game\Demo</Filter>
@@ -298,184 +307,190 @@
       <Filter>2. Game\01. Common</Filter>
     </ClCompile>
     <ClCompile Include="MeshGeometry.cpp">
-      <Filter>1. Engine\Mesh\97. Model</Filter>
+      <Filter>0. Engine\Mesh\97. Model</Filter>
     </ClCompile>
     <ClCompile Include="TextureMgr.cpp">
-      <Filter>1. Engine\Mesh\97. Model</Filter>
+      <Filter>0. Engine\Mesh\97. Model</Filter>
     </ClCompile>
     <ClCompile Include="30. QuatDemo.cpp">
       <Filter>2. Game\Demo</Filter>
     </ClCompile>
     <ClCompile Include="AnimationHelper.cpp">
-      <Filter>1. Engine\98. Utils</Filter>
+      <Filter>0. Engine\98. Utils</Filter>
     </ClCompile>
     <ClCompile Include="31. SkinnedMeshDemo.cpp">
       <Filter>2. Game\Demo</Filter>
     </ClCompile>
     <ClCompile Include="Transform.cpp">
-      <Filter>1. Engine\Component\Transform</Filter>
+      <Filter>0. Engine\Component\Transform</Filter>
     </ClCompile>
     <ClCompile Include="Component.cpp">
-      <Filter>1. Engine\Component\0. Base</Filter>
+      <Filter>0. Engine\Component\0. Base</Filter>
     </ClCompile>
     <ClCompile Include="GameObject.cpp">
-      <Filter>1. Engine\GameObject</Filter>
+      <Filter>0. Engine\GameObject</Filter>
     </ClCompile>
     <ClCompile Include="MeshRenderer.cpp">
-      <Filter>1. Engine\Component\MeshRenderer</Filter>
+      <Filter>0. Engine\Component\MeshRenderer</Filter>
     </ClCompile>
     <ClCompile Include="Shader.cpp">
-      <Filter>1. Engine\Shader</Filter>
+      <Filter>0. Engine\Shader</Filter>
     </ClCompile>
     <ClCompile Include="NormalMapSkinnedShader.cpp">
-      <Filter>1. Engine\Shader\NormalMapSkinned</Filter>
+      <Filter>0. Engine\Shader\NormalMapSkinned</Filter>
     </ClCompile>
     <ClCompile Include="FBXLoader.cpp">
-      <Filter>1. Engine\Mesh\0. Base</Filter>
+      <Filter>0. Engine\Mesh\0. Base</Filter>
     </ClCompile>
     <ClCompile Include="LoadM3d.cpp">
-      <Filter>1. Engine\Mesh\0. Base</Filter>
+      <Filter>0. Engine\Mesh\0. Base</Filter>
     </ClCompile>
     <ClCompile Include="SkinnedData.cpp">
-      <Filter>1. Engine\Mesh\SkinnedMesh</Filter>
+      <Filter>0. Engine\Mesh\SkinnedMesh</Filter>
     </ClCompile>
     <ClCompile Include="SkinnedModel.cpp">
-      <Filter>1. Engine\Mesh\SkinnedMesh</Filter>
+      <Filter>0. Engine\Mesh\SkinnedMesh</Filter>
     </ClCompile>
     <ClCompile Include="SkinnedMesh.cpp">
-      <Filter>1. Engine\Mesh\SkinnedMesh</Filter>
+      <Filter>0. Engine\Mesh\SkinnedMesh</Filter>
     </ClCompile>
     <ClCompile Include="Mesh.cpp">
-      <Filter>1. Engine\Mesh\Mesh</Filter>
+      <Filter>0. Engine\Mesh\Mesh</Filter>
     </ClCompile>
     <ClCompile Include="Scene.cpp">
-      <Filter>1. Engine\Scene\0. Base</Filter>
+      <Filter>0. Engine\Scene\0. Base</Filter>
     </ClCompile>
     <ClCompile Include="SceneManager.cpp">
-      <Filter>1. Engine\Scene\0. Base</Filter>
+      <Filter>0. Engine\Scene\0. Base</Filter>
     </ClCompile>
     <ClCompile Include="vector_ex.cpp">
-      <Filter>1. Engine\00. Header</Filter>
+      <Filter>0. Engine\00. Header</Filter>
     </ClCompile>
     <ClCompile Include="define.cpp">
-      <Filter>1. Engine\00. Header</Filter>
+      <Filter>0. Engine\00. Header</Filter>
     </ClCompile>
     <ClCompile Include="App.cpp">
-      <Filter>1. Engine\App</Filter>
+      <Filter>0. Engine\App</Filter>
     </ClCompile>
     <ClCompile Include="EditorGUIManager.cpp">
-      <Filter>1. Engine\ImguiContainer\1. Base</Filter>
+      <Filter>0. Engine\ImguiContainer\1. Base</Filter>
     </ClCompile>
     <ClCompile Include="imgui.cpp">
-      <Filter>1. Engine\ImguiContainer\0. Core</Filter>
+      <Filter>0. Engine\ImguiContainer\0. Core</Filter>
     </ClCompile>
     <ClCompile Include="imgui_demo.cpp">
-      <Filter>1. Engine\ImguiContainer\0. Core</Filter>
+      <Filter>0. Engine\ImguiContainer\0. Core</Filter>
     </ClCompile>
     <ClCompile Include="imgui_draw.cpp">
-      <Filter>1. Engine\ImguiContainer\0. Core</Filter>
+      <Filter>0. Engine\ImguiContainer\0. Core</Filter>
     </ClCompile>
     <ClCompile Include="imgui_impl_dx11.cpp">
-      <Filter>1. Engine\ImguiContainer\0. Core</Filter>
+      <Filter>0. Engine\ImguiContainer\0. Core</Filter>
     </ClCompile>
     <ClCompile Include="imgui_impl_win32.cpp">
-      <Filter>1. Engine\ImguiContainer\0. Core</Filter>
+      <Filter>0. Engine\ImguiContainer\0. Core</Filter>
     </ClCompile>
     <ClCompile Include="imgui_tables.cpp">
-      <Filter>1. Engine\ImguiContainer\0. Core</Filter>
+      <Filter>0. Engine\ImguiContainer\0. Core</Filter>
     </ClCompile>
     <ClCompile Include="imgui_widgets.cpp">
-      <Filter>1. Engine\ImguiContainer\0. Core</Filter>
+      <Filter>0. Engine\ImguiContainer\0. Core</Filter>
     </ClCompile>
     <ClCompile Include="Application.cpp">
-      <Filter>1. Engine\App</Filter>
+      <Filter>0. Engine\App</Filter>
     </ClCompile>
     <ClCompile Include="SceneHierachyEditorWindow.cpp">
-      <Filter>1. Engine\ImguiContainer\0. Editor\SceneHierarchyWindow</Filter>
+      <Filter>0. Engine\ImguiContainer\0. Editor\SceneHierarchyWindow</Filter>
     </ClCompile>
     <ClCompile Include="EditorWindow.cpp">
-      <Filter>1. Engine\ImguiContainer\1. Base\EditorWindow</Filter>
+      <Filter>0. Engine\ImguiContainer\1. Base\EditorWindow</Filter>
     </ClCompile>
     <ClCompile Include="ProjectEditorWindow.cpp">
-      <Filter>1. Engine\ImguiContainer\0. Editor\ProjectEditorWindow</Filter>
+      <Filter>0. Engine\ImguiContainer\0. Editor\ProjectEditorWindow</Filter>
     </ClCompile>
     <ClCompile Include="SceneEditorWindow.cpp">
-      <Filter>1. Engine\ImguiContainer\0. Editor\SceneEditorWindow</Filter>
+      <Filter>0. Engine\ImguiContainer\0. Editor\SceneEditorWindow</Filter>
     </ClCompile>
     <ClCompile Include="InspectorEditorWindow.cpp">
-      <Filter>1. Engine\ImguiContainer\0. Editor\InspectorEditorWindow</Filter>
+      <Filter>0. Engine\ImguiContainer\0. Editor\InspectorEditorWindow</Filter>
     </ClCompile>
     <ClCompile Include="Main.cpp">
-      <Filter>1. Engine</Filter>
+      <Filter>0. Engine</Filter>
     </ClCompile>
     <ClCompile Include="29. MeshViewDemo.cpp">
       <Filter>2. Game\App</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp">
-      <Filter>1. Engine\00. Header</Filter>
+      <Filter>0. Engine\00. Header</Filter>
     </ClCompile>
     <ClCompile Include="SimpleMath.cpp">
-      <Filter>1. Engine\00. Header</Filter>
+      <Filter>0. Engine\00. Header</Filter>
     </ClCompile>
     <ClCompile Include="RenderManager.cpp">
-      <Filter>1. Engine\Manager\RenderManager</Filter>
+      <Filter>0. Engine\Manager\RenderManager</Filter>
     </ClCompile>
     <ClCompile Include="PhysicsManager.cpp">
-      <Filter>1. Engine\Manager\PhysicsManager</Filter>
+      <Filter>0. Engine\Manager\PhysicsManager</Filter>
     </ClCompile>
     <ClCompile Include="RigidBody.cpp">
-      <Filter>1. Engine\Component\RigidBody</Filter>
+      <Filter>0. Engine\Component\RigidBody</Filter>
     </ClCompile>
     <ClCompile Include="TimeManager.cpp">
-      <Filter>1. Engine\Manager\TimeManager</Filter>
+      <Filter>0. Engine\Manager\TimeManager</Filter>
     </ClCompile>
     <ClCompile Include="BoxCollider.cpp">
-      <Filter>1. Engine\Component\Collider\BoxCollider</Filter>
+      <Filter>0. Engine\Component\Collider\BoxCollider</Filter>
     </ClCompile>
     <ClCompile Include="Collider.cpp">
-      <Filter>1. Engine\Component\Collider</Filter>
+      <Filter>0. Engine\Component\Collider</Filter>
     </ClCompile>
     <ClCompile Include="Gizmo.cpp">
-      <Filter>1. Engine\98. Utils</Filter>
+      <Filter>0. Engine\98. Utils</Filter>
     </ClCompile>
     <ClCompile Include="UMaterial.cpp">
-      <Filter>1. Engine\Shader\Material</Filter>
+      <Filter>0. Engine\Shader\Material</Filter>
     </ClCompile>
     <ClCompile Include="SelectionManager.cpp">
-      <Filter>1. Engine\Manager\Editor\SelectionManager</Filter>
+      <Filter>0. Engine\Manager\Editor\SelectionManager</Filter>
     </ClCompile>
     <ClCompile Include="EditorUtility.cpp">
-      <Filter>1. Engine\98. Utils\EditorUtility</Filter>
+      <Filter>0. Engine\98. Utils\EditorUtility</Filter>
     </ClCompile>
     <ClCompile Include="ResourceManager.cpp">
-      <Filter>1. Engine\Manager\ResourceManager</Filter>
+      <Filter>0. Engine\Manager\ResourceManager</Filter>
     </ClCompile>
     <ClCompile Include="InputManager.cpp">
-      <Filter>1. Engine\Manager\InputManager</Filter>
+      <Filter>0. Engine\Manager\InputManager</Filter>
     </ClCompile>
     <ClCompile Include="EditorSettingManager.cpp">
-      <Filter>1. Engine\Manager\Editor\EditorSettingManager</Filter>
+      <Filter>0. Engine\Manager\Editor\EditorSettingManager</Filter>
     </ClCompile>
     <ClCompile Include="ComponentFactory.cpp">
-      <Filter>1. Engine\Component\0. Base</Filter>
+      <Filter>0. Engine\Component\0. Base</Filter>
     </ClCompile>
     <ClCompile Include="SceneViewManager.cpp">
-      <Filter>1. Engine\Manager\Editor\SceneViewManager</Filter>
+      <Filter>0. Engine\Manager\Editor\SceneViewManager</Filter>
     </ClCompile>
     <ClCompile Include="EditorCamera.cpp">
-      <Filter>1. Engine\Component\0. Editor\EditorCamera</Filter>
+      <Filter>0. Engine\Component\0. Editor\EditorCamera</Filter>
     </ClCompile>
     <ClCompile Include="PostProcessingManager.cpp">
-      <Filter>1. Engine\Manager\PostProcessingManager</Filter>
+      <Filter>0. Engine\Manager\PostProcessingManager</Filter>
     </ClCompile>
     <ClCompile Include="GameViewEditorWindow.cpp">
-      <Filter>1. Engine\ImguiContainer\GameViewEditorWindow</Filter>
+      <Filter>0. Engine\ImguiContainer\GameViewEditorWindow</Filter>
     </ClCompile>
     <ClCompile Include="Camera.cpp">
-      <Filter>1. Engine\Component\Camera</Filter>
+      <Filter>0. Engine\Component\Camera</Filter>
     </ClCompile>
     <ClCompile Include="SphereCollider.cpp">
-      <Filter>1. Engine\Component\Collider\SphereCollider</Filter>
+      <Filter>0. Engine\Component\Collider\SphereCollider</Filter>
+    </ClCompile>
+    <ClCompile Include="ConsoleEditorWindow.cpp">
+      <Filter>0. Engine\ImguiContainer\0. Editor\ConsoleEditorWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug.cpp">
+      <Filter>1. Editor\Debug</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -519,10 +534,10 @@
       <Filter>2. Game\Demo</Filter>
     </ClInclude>
     <ClInclude Include="Effects.h">
-      <Filter>1. Engine\98. Utils</Filter>
+      <Filter>0. Engine\98. Utils</Filter>
     </ClInclude>
     <ClInclude Include="Vertex.h">
-      <Filter>1. Engine\98. Utils</Filter>
+      <Filter>0. Engine\98. Utils</Filter>
     </ClInclude>
     <ClInclude Include="09. TexturedHillsAndWavesDemo.h">
       <Filter>2. Game\Demo</Filter>
@@ -537,10 +552,10 @@
       <Filter>2. Game\Demo</Filter>
     </ClInclude>
     <ClInclude Include="Utils.h">
-      <Filter>1. Engine\98. Utils</Filter>
+      <Filter>0. Engine\98. Utils</Filter>
     </ClInclude>
     <ClInclude Include="RenderStates.h">
-      <Filter>1. Engine\98. Utils</Filter>
+      <Filter>0. Engine\98. Utils</Filter>
     </ClInclude>
     <ClInclude Include="13. VecAddDemo.h">
       <Filter>2. Game\Demo</Filter>
@@ -549,7 +564,7 @@
       <Filter>2. Game\Demo</Filter>
     </ClInclude>
     <ClInclude Include="BlurFilter.h">
-      <Filter>1. Engine\98. Utils</Filter>
+      <Filter>0. Engine\98. Utils</Filter>
     </ClInclude>
     <ClInclude Include="15. BasicTessellation.h">
       <Filter>2. Game\Demo</Filter>
@@ -612,188 +627,194 @@
       <Filter>2. Game\01. Common</Filter>
     </ClInclude>
     <ClInclude Include="MeshGeometry.h">
-      <Filter>1. Engine\Mesh\97. Model</Filter>
+      <Filter>0. Engine\Mesh\97. Model</Filter>
     </ClInclude>
     <ClInclude Include="TextureMgr.h">
-      <Filter>1. Engine\Mesh\97. Model</Filter>
+      <Filter>0. Engine\Mesh\97. Model</Filter>
     </ClInclude>
     <ClInclude Include="30. QuatDemo.h">
       <Filter>2. Game\Demo</Filter>
     </ClInclude>
     <ClInclude Include="AnimationHelper.h">
-      <Filter>1. Engine\98. Utils</Filter>
+      <Filter>0. Engine\98. Utils</Filter>
     </ClInclude>
     <ClInclude Include="31. SkinnedMeshDemo.h">
       <Filter>2. Game\Demo</Filter>
     </ClInclude>
     <ClInclude Include="Transform.h">
-      <Filter>1. Engine\Component\Transform</Filter>
+      <Filter>0. Engine\Component\Transform</Filter>
     </ClInclude>
     <ClInclude Include="Component.h">
-      <Filter>1. Engine\Component\0. Base</Filter>
+      <Filter>0. Engine\Component\0. Base</Filter>
     </ClInclude>
     <ClInclude Include="GameObject.h">
-      <Filter>1. Engine\GameObject</Filter>
+      <Filter>0. Engine\GameObject</Filter>
     </ClInclude>
     <ClInclude Include="MeshRenderer.h">
-      <Filter>1. Engine\Component\MeshRenderer</Filter>
+      <Filter>0. Engine\Component\MeshRenderer</Filter>
     </ClInclude>
     <ClInclude Include="Shader.h">
-      <Filter>1. Engine\Shader</Filter>
+      <Filter>0. Engine\Shader</Filter>
     </ClInclude>
     <ClInclude Include="NormalMapSkinnedShader.h">
-      <Filter>1. Engine\Shader\NormalMapSkinned</Filter>
+      <Filter>0. Engine\Shader\NormalMapSkinned</Filter>
     </ClInclude>
     <ClInclude Include="FBXLoader.h">
-      <Filter>1. Engine\Mesh\0. Base</Filter>
+      <Filter>0. Engine\Mesh\0. Base</Filter>
     </ClInclude>
     <ClInclude Include="LoadM3d.h">
-      <Filter>1. Engine\Mesh\0. Base</Filter>
+      <Filter>0. Engine\Mesh\0. Base</Filter>
     </ClInclude>
     <ClInclude Include="resource.h" />
     <ClInclude Include="SkinnedData.h">
-      <Filter>1. Engine\Mesh\SkinnedMesh</Filter>
+      <Filter>0. Engine\Mesh\SkinnedMesh</Filter>
     </ClInclude>
     <ClInclude Include="SkinnedModel.h">
-      <Filter>1. Engine\Mesh\SkinnedMesh</Filter>
+      <Filter>0. Engine\Mesh\SkinnedMesh</Filter>
     </ClInclude>
     <ClInclude Include="SkinnedMesh.h">
-      <Filter>1. Engine\Mesh\SkinnedMesh</Filter>
+      <Filter>0. Engine\Mesh\SkinnedMesh</Filter>
     </ClInclude>
     <ClInclude Include="Mesh.h">
-      <Filter>1. Engine\Mesh\Mesh</Filter>
+      <Filter>0. Engine\Mesh\Mesh</Filter>
     </ClInclude>
     <ClInclude Include="Scene.h">
-      <Filter>1. Engine\Scene\0. Base</Filter>
+      <Filter>0. Engine\Scene\0. Base</Filter>
     </ClInclude>
     <ClInclude Include="SceneManager.h">
-      <Filter>1. Engine\Scene\0. Base</Filter>
+      <Filter>0. Engine\Scene\0. Base</Filter>
     </ClInclude>
     <ClInclude Include="vector_ex.h">
-      <Filter>1. Engine\00. Header</Filter>
+      <Filter>0. Engine\00. Header</Filter>
     </ClInclude>
     <ClInclude Include="define.h">
-      <Filter>1. Engine\00. Header</Filter>
+      <Filter>0. Engine\00. Header</Filter>
     </ClInclude>
     <ClInclude Include="App.h">
-      <Filter>1. Engine\App</Filter>
+      <Filter>0. Engine\App</Filter>
     </ClInclude>
     <ClInclude Include="EditorGUIManager.h">
-      <Filter>1. Engine\ImguiContainer\1. Base</Filter>
+      <Filter>0. Engine\ImguiContainer\1. Base</Filter>
     </ClInclude>
     <ClInclude Include="imconfig.h">
-      <Filter>1. Engine\ImguiContainer\0. Core</Filter>
+      <Filter>0. Engine\ImguiContainer\0. Core</Filter>
     </ClInclude>
     <ClInclude Include="imgui.h">
-      <Filter>1. Engine\ImguiContainer\0. Core</Filter>
+      <Filter>0. Engine\ImguiContainer\0. Core</Filter>
     </ClInclude>
     <ClInclude Include="imgui_impl_dx11.h">
-      <Filter>1. Engine\ImguiContainer\0. Core</Filter>
+      <Filter>0. Engine\ImguiContainer\0. Core</Filter>
     </ClInclude>
     <ClInclude Include="imgui_impl_win32.h">
-      <Filter>1. Engine\ImguiContainer\0. Core</Filter>
+      <Filter>0. Engine\ImguiContainer\0. Core</Filter>
     </ClInclude>
     <ClInclude Include="imgui_internal.h">
-      <Filter>1. Engine\ImguiContainer\0. Core</Filter>
+      <Filter>0. Engine\ImguiContainer\0. Core</Filter>
     </ClInclude>
     <ClInclude Include="imstb_rectpack.h">
-      <Filter>1. Engine\ImguiContainer\0. Core</Filter>
+      <Filter>0. Engine\ImguiContainer\0. Core</Filter>
     </ClInclude>
     <ClInclude Include="imstb_textedit.h">
-      <Filter>1. Engine\ImguiContainer\0. Core</Filter>
+      <Filter>0. Engine\ImguiContainer\0. Core</Filter>
     </ClInclude>
     <ClInclude Include="imstb_truetype.h">
-      <Filter>1. Engine\ImguiContainer\0. Core</Filter>
+      <Filter>0. Engine\ImguiContainer\0. Core</Filter>
     </ClInclude>
     <ClInclude Include="Application.h">
-      <Filter>1. Engine\App</Filter>
+      <Filter>0. Engine\App</Filter>
     </ClInclude>
     <ClInclude Include="SceneHierachyEditorWindow.h">
-      <Filter>1. Engine\ImguiContainer\0. Editor\SceneHierarchyWindow</Filter>
+      <Filter>0. Engine\ImguiContainer\0. Editor\SceneHierarchyWindow</Filter>
     </ClInclude>
     <ClInclude Include="EditorWindow.h">
-      <Filter>1. Engine\ImguiContainer\1. Base\EditorWindow</Filter>
+      <Filter>0. Engine\ImguiContainer\1. Base\EditorWindow</Filter>
     </ClInclude>
     <ClInclude Include="ProjectEditorWindow.h">
-      <Filter>1. Engine\ImguiContainer\0. Editor\ProjectEditorWindow</Filter>
+      <Filter>0. Engine\ImguiContainer\0. Editor\ProjectEditorWindow</Filter>
     </ClInclude>
     <ClInclude Include="SceneEditorWindow.h">
-      <Filter>1. Engine\ImguiContainer\0. Editor\SceneEditorWindow</Filter>
+      <Filter>0. Engine\ImguiContainer\0. Editor\SceneEditorWindow</Filter>
     </ClInclude>
     <ClInclude Include="InspectorEditorWindow.h">
-      <Filter>1. Engine\ImguiContainer\0. Editor\InspectorEditorWindow</Filter>
+      <Filter>0. Engine\ImguiContainer\0. Editor\InspectorEditorWindow</Filter>
     </ClInclude>
     <ClInclude Include="29. MeshViewDemo.h">
       <Filter>2. Game\App</Filter>
     </ClInclude>
     <ClInclude Include="pch.h">
-      <Filter>1. Engine\00. Header</Filter>
+      <Filter>0. Engine\00. Header</Filter>
     </ClInclude>
     <ClInclude Include="SimpleMath.h">
-      <Filter>1. Engine\00. Header</Filter>
+      <Filter>0. Engine\00. Header</Filter>
     </ClInclude>
     <ClInclude Include="Types.h">
-      <Filter>1. Engine\00. Header</Filter>
+      <Filter>0. Engine\00. Header</Filter>
     </ClInclude>
     <ClInclude Include="RenderManager.h">
-      <Filter>1. Engine\Manager\RenderManager</Filter>
+      <Filter>0. Engine\Manager\RenderManager</Filter>
     </ClInclude>
     <ClInclude Include="PhysicsManager.h">
-      <Filter>1. Engine\Manager\PhysicsManager</Filter>
+      <Filter>0. Engine\Manager\PhysicsManager</Filter>
     </ClInclude>
     <ClInclude Include="RigidBody.h">
-      <Filter>1. Engine\Component\RigidBody</Filter>
+      <Filter>0. Engine\Component\RigidBody</Filter>
     </ClInclude>
     <ClInclude Include="TimeManager.h">
-      <Filter>1. Engine\Manager\TimeManager</Filter>
+      <Filter>0. Engine\Manager\TimeManager</Filter>
     </ClInclude>
     <ClInclude Include="BoxCollider.h">
-      <Filter>1. Engine\Component\Collider\BoxCollider</Filter>
+      <Filter>0. Engine\Component\Collider\BoxCollider</Filter>
     </ClInclude>
     <ClInclude Include="Collider.h">
-      <Filter>1. Engine\Component\Collider</Filter>
+      <Filter>0. Engine\Component\Collider</Filter>
     </ClInclude>
     <ClInclude Include="Gizmo.h">
-      <Filter>1. Engine\98. Utils</Filter>
+      <Filter>0. Engine\98. Utils</Filter>
     </ClInclude>
     <ClInclude Include="UMaterial.h">
-      <Filter>1. Engine\Shader\Material</Filter>
+      <Filter>0. Engine\Shader\Material</Filter>
     </ClInclude>
     <ClInclude Include="SelectionManager.h">
-      <Filter>1. Engine\Manager\Editor\SelectionManager</Filter>
+      <Filter>0. Engine\Manager\Editor\SelectionManager</Filter>
     </ClInclude>
     <ClInclude Include="EditorUtility.h">
-      <Filter>1. Engine\98. Utils\EditorUtility</Filter>
+      <Filter>0. Engine\98. Utils\EditorUtility</Filter>
     </ClInclude>
     <ClInclude Include="ResourceManager.h">
-      <Filter>1. Engine\Manager\ResourceManager</Filter>
+      <Filter>0. Engine\Manager\ResourceManager</Filter>
     </ClInclude>
     <ClInclude Include="InputManager.h">
-      <Filter>1. Engine\Manager\InputManager</Filter>
+      <Filter>0. Engine\Manager\InputManager</Filter>
     </ClInclude>
     <ClInclude Include="EditorSettingManager.h">
-      <Filter>1. Engine\Manager\Editor\EditorSettingManager</Filter>
+      <Filter>0. Engine\Manager\Editor\EditorSettingManager</Filter>
     </ClInclude>
     <ClInclude Include="ComponentFactory.h">
-      <Filter>1. Engine\Component\0. Base</Filter>
+      <Filter>0. Engine\Component\0. Base</Filter>
     </ClInclude>
     <ClInclude Include="SceneViewManager.h">
-      <Filter>1. Engine\Manager\Editor\SceneViewManager</Filter>
+      <Filter>0. Engine\Manager\Editor\SceneViewManager</Filter>
     </ClInclude>
     <ClInclude Include="EditorCamera.h">
-      <Filter>1. Engine\Component\0. Editor\EditorCamera</Filter>
+      <Filter>0. Engine\Component\0. Editor\EditorCamera</Filter>
     </ClInclude>
     <ClInclude Include="PostProcessingManager.h">
-      <Filter>1. Engine\Manager\PostProcessingManager</Filter>
+      <Filter>0. Engine\Manager\PostProcessingManager</Filter>
     </ClInclude>
     <ClInclude Include="GameViewEditorWindow.h">
-      <Filter>1. Engine\ImguiContainer\GameViewEditorWindow</Filter>
+      <Filter>0. Engine\ImguiContainer\GameViewEditorWindow</Filter>
     </ClInclude>
     <ClInclude Include="Camera.h">
-      <Filter>1. Engine\Component\Camera</Filter>
+      <Filter>0. Engine\Component\Camera</Filter>
     </ClInclude>
     <ClInclude Include="SphereCollider.h">
-      <Filter>1. Engine\Component\Collider\SphereCollider</Filter>
+      <Filter>0. Engine\Component\Collider\SphereCollider</Filter>
+    </ClInclude>
+    <ClInclude Include="ConsoleEditorWindow.h">
+      <Filter>0. Engine\ImguiContainer\0. Editor\ConsoleEditorWindow</Filter>
+    </ClInclude>
+    <ClInclude Include="Debug.h">
+      <Filter>1. Editor\Debug</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -887,7 +908,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="SimpleMath.inl">
-      <Filter>1. Engine\00. Header</Filter>
+      <Filter>0. Engine\00. Header</Filter>
     </None>
   </ItemGroup>
 </Project>

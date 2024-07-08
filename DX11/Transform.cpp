@@ -130,8 +130,22 @@ void Transform::OnInspectorGUI()
 	ImGui::Text("Position");
 	positionChanged = ImGui::DragFloat3("##Position", reinterpret_cast<float*>(&_localPosition), 0.1f);
 
+	// Convert radians to degrees
+	Vec3 angles;
+	angles.x = XMConvertToDegrees(_localRotation.x);
+	angles.y = XMConvertToDegrees(_localRotation.y);
+	angles.z = XMConvertToDegrees(_localRotation.z);
+
 	ImGui::Text("Rotation");
-	rotationChanged = ImGui::DragFloat3("##Rotation", reinterpret_cast<float*>(&_localRotation), 0.1f);
+	if (ImGui::DragFloat3("##Rotation", reinterpret_cast<float*>(&angles), 0.1f))
+	{
+		rotationChanged = true;
+		Vec3 a;
+		a.x = XMConvertToRadians(angles.x);
+		a.y = XMConvertToRadians(angles.y);
+		a.z = XMConvertToRadians(angles.z);
+		SetLocalRotation(a);
+	}
 
 	ImGui::Text("Scale");
 	scaleChanged = ImGui::DragFloat3("##Scale", reinterpret_cast<float*>(&_localScale), 0.1f);

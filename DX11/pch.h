@@ -12,6 +12,7 @@
 #include <vector>
 #include <list>
 #include <map>
+#include <deque>
 #include <set>
 #include <unordered_map>
 #include <unordered_set>
