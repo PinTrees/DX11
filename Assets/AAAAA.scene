@@ -5,7 +5,7 @@
                 {
                     "_localPosition": [
                         -5.699999809265137,
-                        1.5,
+                        1.2000000476837158,
                         -6.300000190734863
                     ],
                     "_localRotation": [
@@ -20,7 +20,7 @@
                     ],
                     "_position": [
                         -5.699999809265137,
-                        1.5,
+                        1.2000000476837158,
                         -6.300000190734863
                     ],
                     "_rotation": [
@@ -39,6 +39,7 @@
                     "materialPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\Forest_Ground_scans\\Forest_ground_Scan_var1\\Forest_ground_Scan_var1.mat",
                     "meshPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\Forest_Ground_scans\\Forest_ground_Scan_var1\\Forest_ground_scan_var1.fbx",
                     "shaderPath": "",
+                    "subsetIndex": 0,
                     "type": "MeshRenderer"
                 }
             ],
@@ -83,6 +84,7 @@
                     "materialPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\Rock\\RockMaterial.mat",
                     "meshPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\Rock\\Mossy_rock_var8.fbx",
                     "shaderPath": "",
+                    "subsetIndex": 0,
                     "type": "MeshRenderer"
                 }
             ],
@@ -127,6 +129,7 @@
                     "materialPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\Forest_Ground_scans\\Forest_ground_Scan_var1\\Forest_ground_Scan_var1.mat",
                     "meshPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\Forest_Ground_scans\\Forest_ground_Scan_var1\\Forest_ground_scan_var1.fbx",
                     "shaderPath": "",
+                    "subsetIndex": 0,
                     "type": "MeshRenderer"
                 }
             ],
@@ -215,7 +218,7 @@
             "components": [
                 {
                     "_localPosition": [
-                        0.0,
+                        -0.5,
                         34.099998474121094,
                         0.0
                     ],
@@ -230,7 +233,7 @@
                         0.10000000149011612
                     ],
                     "_position": [
-                        0.0,
+                        -0.5,
                         34.099998474121094,
                         0.0
                     ],
@@ -260,10 +263,11 @@
                     "materialPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\Rock\\RockMaterial.mat",
                     "meshPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\Rock\\Mossy_rock_var8.fbx",
                     "shaderPath": "",
+                    "subsetIndex": 2,
                     "type": "MeshRenderer"
                 }
             ],
-            "name": "GameObject"
+            "name": "Rock_2\u0000ect"
         },
         {
             "components": [
@@ -304,6 +308,7 @@
                     "materialPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\AssetStore\\ScanFactory\\AbandonedFactory\\Meshes\\sm_en_ConcretePlates_01\\New Material.mat",
                     "meshPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\AssetStore\\ScanFactory\\AbandonedFactory\\Meshes\\sm_en_ConcretePlates_01\\sm_en_ConcretePlates_01.FBX",
                     "shaderPath": "",
+                    "subsetIndex": 0,
                     "type": "MeshRenderer"
                 },
                 {

@@ -19,6 +19,7 @@ private:
 
 	shared_ptr<Mesh>	m_Mesh;
 	wstring				m_MeshPath;
+	int					m_MeshSubsetIndex;
 
 	UMaterial*	m_pMaterial;
 	wstring		m_MaterialPath;
