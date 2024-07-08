@@ -7,6 +7,7 @@ MeshRenderer::MeshRenderer()
 	: m_pMaterial(nullptr),
 	m_MeshSubsetIndex(0)
 {
+	m_InspectorTitleName = "MeshRenderer";
 }
 
 MeshRenderer::~MeshRenderer()
@@ -151,65 +152,64 @@ void MeshRenderer::RenderShadowNormal()
 
 void MeshRenderer::OnInspectorGUI()
 {
-	if (ImGui::CollapsingHeader("Mesh Renderer", ImGuiTreeNodeFlags_DefaultOpen))
+	ImGui::Text("%s", m_Mesh ? "Mesh" : "None");
+
+	ImGui::SameLine();
+	if (ImGui::Button("Select##Mesh"))
 	{
-		ImGui::Text("%s", m_Mesh ? "Mesh" : "None");
-
-		ImGui::SameLine();
-		if (ImGui::Button("Select##Mesh"))
+		std::wstring filePath = EditorUtility::OpenFileDialog(Application::GetDataPath(), L"Mesh", { L"fbx" });
+		if (!filePath.empty())
 		{
-			std::wstring filePath = EditorUtility::OpenFileDialog(Application::GetDataPath(), L"Mesh", { L"fbx" });
-			if (!filePath.empty())
+			m_Mesh = ResourceManager::GetI()->LoadMesh(filePath);
+			if (m_Mesh)
 			{
-				m_Mesh = ResourceManager::GetI()->LoadMesh(filePath);
-				if (m_Mesh)
-				{
-					m_MeshPath = filePath;
-					m_MeshSubsetIndex = 0; // Reset subset index
-				}
+				m_MeshPath = filePath;
+				m_MeshSubsetIndex = 0; // Reset subset index
 			}
 		}
+	}
 
-		if (m_Mesh != nullptr)
+	if (m_Mesh != nullptr)
+	{
+		// 서브셋 선택 드롭다운 구현
+		if (ImGui::BeginCombo("Subset", m_Mesh->Subsets[m_MeshSubsetIndex].Name.c_str())) // The second parameter is the previewed value
 		{
-			// 서브셋 선택 드롭다운 구현
-			if (ImGui::BeginCombo("Subset", m_Mesh->Subsets[m_MeshSubsetIndex].Name.c_str())) // The second parameter is the previewed value
+			for (int n = 0; n < m_Mesh->Subsets.size(); n++)
 			{
-				for (int n = 0; n < m_Mesh->Subsets.size(); n++)
-				{
-					bool is_selected = (m_MeshSubsetIndex == n); // You can store your selection somewhere
-					if (ImGui::Selectable(m_Mesh->Subsets[n].Name.c_str(), is_selected))
-						m_MeshSubsetIndex = n;
-					if (is_selected)
-						ImGui::SetItemDefaultFocus(); // Set the initial focus when opening the combo (scrolling + for keyboard navigation support)
-				}
-				ImGui::EndCombo();
+				bool is_selected = (m_MeshSubsetIndex == n); // You can store your selection somewhere
+				if (ImGui::Selectable(m_Mesh->Subsets[n].Name.c_str(), is_selected))
+					m_MeshSubsetIndex = n;
+				if (is_selected)
+					ImGui::SetItemDefaultFocus(); // Set the initial focus when opening the combo (scrolling + for keyboard navigation support)
 			}
+			ImGui::EndCombo();
 		}
-		else
-		{
-			ImGui::Text("No Mesh selected");
-		}
+	}
+	else
+	{
+		ImGui::Text("No Mesh selected");
+	}
 
-		if (m_pMaterial)
-		{
-			ImGui::Text("Selected Material: %s", wstring_to_string(m_MaterialPath));
-		}
-		else
-		{
-			ImGui::Text("Selected Material: None");
-		}
+	if (m_pMaterial)
+	{
+		ImGui::Text("Material: %s", m_pMaterial->GetName().c_str());
+	}
+	else
+	{
+		ImGui::Text("Material: None");
+	}
 
-		if (ImGui::Button("Select Material"))
+	ImGui::SameLine();
+
+	if (ImGui::Button("+"))
+	{
+		std::wstring filePath = EditorUtility::OpenFileDialog(L"", L"Material", { L"mat" });
+		if (!filePath.empty())
 		{
-			std::wstring filePath = EditorUtility::OpenFileDialog(L"", L"Material", { L"mat" });
-			if (!filePath.empty())
+			m_pMaterial = ResourceManager::GetI()->LoadMaterial(wstring_to_string(filePath));
+			if (m_pMaterial)
 			{
-				m_pMaterial = ResourceManager::GetI()->LoadMaterial(wstring_to_string(filePath));
-				if (m_pMaterial)
-				{
-					m_MaterialPath = filePath;
-				}
+				m_MaterialPath = filePath;
 			}
 		}
 	}

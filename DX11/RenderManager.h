@@ -15,11 +15,13 @@ public:
 
 	XMMATRIX directinalLightViewProjection;
 
+	// Editor Only
 public:
 	static const int SMapSize = 2048;
 	shared_ptr<class ShadowMap> editorShadowMap;
 
 	D3D11_VIEWPORT EditorViewport;
+	bool WireFrameMode;
 
 public:
 	void Init();

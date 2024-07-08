@@ -17,7 +17,7 @@ public:
 	Vec3 GetSize() const { return m_Size; }
 
 public:
-	virtual void Render() override;
+	virtual void OnDrawGizmos() override;
 	virtual void OnInspectorGUI() override;
 
 public:

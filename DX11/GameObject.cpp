@@ -75,8 +75,7 @@ void GameObject::OnInspectorGUI()
 
     for (const auto& component : m_Components)
     {
-        component->OnInspectorGUI();
-        ImGui::Separator();
+        component->RenderInspectorGUI();
     }
 
     if (ImGui::Button("Add Component"))

@@ -107,6 +107,37 @@ void SceneEditorWindow::Update()
 void SceneEditorWindow::OnRender()
 {
     ImVec2 windowSize = ImGui::GetContentRegionAvail();
+
+    // 왼쪽에 세로로 탭 메뉴 배치
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
+    ImGui::BeginChild("LeftPanel", ImVec2(28, windowSize.y), false, ImGuiWindowFlags_NoDecoration); // 테두리 제거
+    ImGui::PopStyleVar(); // 패딩 설정 복원
+
+    bool isWireframeMode = RenderManager::GetI()->WireFrameMode;
+
+    if (isWireframeMode)
+    {
+        ImGui::PushStyleColor(ImGuiCol_Button, ImGui::GetStyleColorVec4(ImGuiCol_ButtonHovered)); // 선택된 버튼 색상
+    }
+
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
+    if (ImGui::Button("W", ImVec2(28, 28)))
+    {
+        RenderManager::GetI()->WireFrameMode = !RenderManager::GetI()->WireFrameMode;
+    }
+    ImGui::PopStyleVar();
+
+    if (isWireframeMode)
+    {
+        ImGui::PopStyleColor(); // 변경된 색상 복원
+    }
+
+    // 다른 버튼들 추가 가능
+    ImGui::EndChild();
+
+    ImGui::SameLine();
+
+    windowSize = ImGui::GetContentRegionAvail();
     if (windowWidth != windowSize.x || windowHeight != windowSize.y)
     {
         windowWidth = static_cast<UINT>(windowSize.x);
@@ -116,8 +147,21 @@ void SceneEditorWindow::OnRender()
 
     // ImGui 창에 렌더 타겟 텍스처를 표시
     ImGui::Image(reinterpret_cast<void*>(shaderResourceView), windowSize);
+
+    if (SelectionManager::GetSelectedObjectType() == SelectionType::GAMEOBJECT)
+    {
+        GameObject* gameObject = SelectionManager::GetSelectedGameObject();
+
+        if (gameObject)
+        {
+            Gizmo::DrawTransformHandler(gameObject->GetTransform());
+        }
+    }
+
+    SceneManager::GetI()->GetCurrentScene()->RenderSceneGizmos(); 
 }
 
 void SceneEditorWindow::OnRenderExit()
 {
+    
 }

@@ -62,6 +62,17 @@ void Scene::RenderSceneShadowNormal()
     }
 }
 
+void Scene::RenderSceneGizmos()
+{
+    for (auto& gameObject : m_arrGameObjects[0])
+    {
+        for (auto& component : gameObject->GetComponents())
+        {
+            component->OnDrawGizmos();
+        }
+    }
+}
+
 void Scene::LastFramUpdate()
 {
     for (auto& gameObject : m_arrGameObjects[0])

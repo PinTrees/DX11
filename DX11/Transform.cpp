@@ -4,7 +4,7 @@
 
 Transform::Transform()
 {
-
+	m_InspectorTitleName = "Transform";
 }
 
 Transform::~Transform()

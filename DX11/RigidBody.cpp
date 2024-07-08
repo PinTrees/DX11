@@ -6,6 +6,7 @@ RigidBody::RigidBody()
 	m_Mass(1.0f),
 	m_Elasticity(0.5f)
 {
+	m_InspectorTitleName = "RigidBody";
 }
 
 RigidBody::~RigidBody()

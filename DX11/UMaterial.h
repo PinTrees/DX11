@@ -29,6 +29,9 @@ public:
 	~UMaterial();
 
 public:
+	string GetName();
+
+public:
 	static void Create(string fullPath);
 	static UMaterial* Load(string fullPath);
 	static void Save(UMaterial* material);

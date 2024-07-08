@@ -3,6 +3,7 @@
 
 Camera::Camera()
 {
+	m_InspectorTitleName = "Camera";
 	SetLens(0.25f * XM_PI, 1.0f, 1.0f, 1000.0f);
 }
 
@@ -245,7 +246,7 @@ void Camera::Render()
 
 void Camera::OnInspectorGUI()
 {
-	ImGui::Text("Camera");
+
 }
 
 GENERATE_COMPONENT_FUNC_TOJSON(Camera)

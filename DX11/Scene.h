@@ -29,6 +29,8 @@ public:
 	void RenderSceneShadow();
 	void RenderSceneShadowNormal();
 
+	// Editor Only
+	void RenderSceneGizmos();
 	void LastFramUpdate();
 
 public:

@@ -6,8 +6,8 @@ namespace fs = std::filesystem;
 
 SINGLE_BODY(SelectionManager)
 
-SelectionType SelectionManager::m_SelectedType = SelectionType::GAMEOBJECT;
-SelectionSubType SelectionManager::m_SelectedSubType = SelectionSubType::MATERIAL;
+SelectionType SelectionManager::m_SelectedType = SelectionType::NONE;
+SelectionSubType SelectionManager::m_SelectedSubType = SelectionSubType::NONE;
 
 wstring SelectionManager::m_SelectedFilePath = L"";
 GameObject* SelectionManager::m_SelectedGameObject = nullptr;

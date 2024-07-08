@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "UMaterial.h"
+#include <filesystem>
 
 UMaterial::UMaterial()
 	: m_ResourcePath("")
@@ -8,6 +9,11 @@ UMaterial::UMaterial()
 
 UMaterial::~UMaterial()
 {
+}
+
+string UMaterial::GetName()
+{
+	return filesystem::path(m_ResourcePath).filename().string();
 }
 
 void UMaterial::Create(string fullPath)

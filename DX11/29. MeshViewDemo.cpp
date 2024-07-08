@@ -435,6 +435,9 @@ void MeshViewDemo::OnEditorSceneRender(ID3D11RenderTargetView* renderTargetView,
 	Effects::BuildShadowMapFX->SetEyePosW(camera->GetPosition());
 	Effects::BuildShadowMapFX->SetViewProj(RenderManager::GetI()->directinalLightViewProjection);
 
+	if (RenderManager::GetI()->WireFrameMode)
+		_deviceContext->RSSetState(RenderStates::WireframeRS.Get());
+
 	// Draw Scene Objects
 	SceneManager::GetI()->GetCurrentScene()->RenderSceneShadow();
 
@@ -450,6 +453,9 @@ void MeshViewDemo::OnEditorSceneRender(ID3D11RenderTargetView* renderTargetView,
 	RenderManager::GetI()->cameraViewMatrix = camera->View(); 
 	RenderManager::GetI()->cameraProjectionMatrix = camera->Proj();
 	RenderManager::GetI()->cameraViewProjectionMatrix = XMMatrixMultiply(camera->View(), camera->Proj()); 
+
+	if (RenderManager::GetI()->WireFrameMode)
+		_deviceContext->RSSetState(RenderStates::WireframeRS.Get());
 
 	// Draw Scene Objects
 	SceneManager::GetI()->GetCurrentScene()->RenderSceneShadowNormal();
@@ -486,6 +492,9 @@ void MeshViewDemo::OnEditorSceneRender(ID3D11RenderTargetView* renderTargetView,
 	uint32 offset = 0;
 
 	_deviceContext->IASetInputLayout(InputLayouts::PosNormalTexTan.Get());
+
+	if (RenderManager::GetI()->WireFrameMode)
+		_deviceContext->RSSetState(RenderStates::WireframeRS.Get());
 
 	SceneManager::GetI()->GetCurrentScene()->RenderScene();
 

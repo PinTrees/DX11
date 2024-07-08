@@ -9,6 +9,7 @@ class Component
 {
 protected:
 	GameObject* m_pGameObject;
+	string m_InspectorTitleName = "";
 
 public:
 	Component();
@@ -21,7 +22,10 @@ public:
 	virtual void FixedUpdate() { }
 	virtual void Render() { }
 
+	// Editor Only
+	void RenderInspectorGUI();
 	virtual void OnInspectorGUI() { }
+	virtual void OnDrawGizmos() { }
 
 public:
 	GameObject* GetGameObject() { return m_pGameObject; }
