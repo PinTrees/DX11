@@ -251,6 +251,7 @@
                 },
                 {
                     "airResistance": 0.10000000149011612,
+                    "angularDamping": 0.05000000074505806,
                     "elasticity": 0.10000000149011612,
                     "friction": 0.5,
                     "isKinematic": false,
@@ -267,7 +268,7 @@
                     "type": "MeshRenderer"
                 },
                 {
-                    "radius": 259.0,
+                    "radius": 191.0,
                     "type": "SphereCollider"
                 }
             ],
@@ -330,6 +331,7 @@
                 },
                 {
                     "airResistance": 0.10000000149011612,
+                    "angularDamping": 0.05000000074505806,
                     "elasticity": 0.5,
                     "friction": 0.5,
                     "isKinematic": true,
@@ -378,8 +380,9 @@
                 },
                 {
                     "airResistance": 0.10000000149011612,
-                    "elasticity": 0.10000000149011612,
-                    "friction": 1.0,
+                    "angularDamping": 0.5,
+                    "elasticity": 0.5,
+                    "friction": 2.0,
                     "isKinematic": false,
                     "isMovable": true,
                     "mass": 60.0,
@@ -404,7 +407,7 @@
             "components": [
                 {
                     "_localPosition": [
-                        -24.700000762939453,
+                        -21.299999237060547,
                         29.100000381469727,
                         6.699999809265137
                     ],
@@ -419,7 +422,7 @@
                         0.20000000298023224
                     ],
                     "_position": [
-                        -24.700000762939453,
+                        -21.299999237060547,
                         29.100000381469727,
                         6.699999809265137
                     ],
@@ -437,6 +440,7 @@
                 },
                 {
                     "airResistance": 1.0,
+                    "angularDamping": 0.05000000074505806,
                     "elasticity": 0.5,
                     "friction": 1.0,
                     "isKinematic": false,
@@ -459,9 +463,9 @@
                         0.0
                     ],
                     "size": [
-                        106.0,
-                        23.0,
-                        65.0
+                        72.0,
+                        34.0,
+                        53.0
                     ],
                     "type": "BoxCollider"
                 }
@@ -505,6 +509,7 @@
                 },
                 {
                     "airResistance": 1.0,
+                    "angularDamping": 0.05000000074505806,
                     "elasticity": 1.0,
                     "friction": 1.0,
                     "isKinematic": false,
@@ -592,12 +597,13 @@
                     "type": "BoxCollider"
                 },
                 {
-                    "airResistance": 0.10000000149011612,
+                    "airResistance": 1.0,
+                    "angularDamping": 0.05000000074505806,
                     "elasticity": 0.10000000149011612,
-                    "friction": 0.5,
+                    "friction": 1.0,
                     "isKinematic": true,
                     "isMovable": true,
-                    "mass": 247.0,
+                    "mass": 65.0,
                     "sleep": false,
                     "type": "RigidBody"
                 }
@@ -661,6 +667,7 @@
                 },
                 {
                     "airResistance": 0.0,
+                    "angularDamping": 0.05000000074505806,
                     "elasticity": 0.5,
                     "friction": 0.0,
                     "isKinematic": true,
@@ -671,6 +678,75 @@
                 }
             ],
             "name": "Ground_3\u0000t"
+        },
+        {
+            "components": [
+                {
+                    "_localPosition": [
+                        -25.200000762939453,
+                        22.600000381469727,
+                        20.299999237060547
+                    ],
+                    "_localRotation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "_localScale": [
+                        0.10000000149011612,
+                        0.10000000149011612,
+                        0.10000000149011612
+                    ],
+                    "_position": [
+                        -25.200000762939453,
+                        22.600000381469727,
+                        20.299999237060547
+                    ],
+                    "_rotation": [
+                        -0.0,
+                        1.2675908465098473e-06,
+                        -0.0
+                    ],
+                    "_scale": [
+                        0.10000000149011612,
+                        0.10000000149011612,
+                        0.10000000149011612
+                    ],
+                    "type": "Transform"
+                },
+                {
+                    "materialPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\Rock\\RockMaterial.mat",
+                    "meshPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\Rock\\Mossy_rock_var8.fbx",
+                    "shaderPath": "",
+                    "subsetIndex": 0,
+                    "type": "MeshRenderer"
+                },
+                {
+                    "offset": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "size": [
+                        31.0,
+                        37.0,
+                        52.0
+                    ],
+                    "type": "BoxCollider"
+                },
+                {
+                    "airResistance": 0.20000000298023224,
+                    "angularDamping": 0.5,
+                    "elasticity": 0.5,
+                    "friction": 1.0,
+                    "isKinematic": false,
+                    "isMovable": false,
+                    "mass": 1.0,
+                    "sleep": false,
+                    "type": "RigidBody"
+                }
+            ],
+            "name": "Rock_6\u0000ect"
         }
     ]
 }

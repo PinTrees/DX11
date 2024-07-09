@@ -15,11 +15,16 @@ union COLLIDER_ID
 
 struct Contact
 {
-	Vec3 point;				// 충돌 지점
-	Vec3 normal;			// 충돌 면의 법선 벡터
-	float penetrationDepth; // 침투 깊이
+	RigidBody* bodies[2];		// Pointers to the involved rigid bodies
+	Vec3 normal;				// Normal at the point of contact
+	Vec3 contactPoint[2];		// Contact points on each body
+	float penetration;			// Depth of penetration
+	float restitution;			// Restitution coefficient
+	float friction;				// Friction coefficient
+	float normalImpulseSum;		// Accumulated normal impulse
+	float tangentImpulseSum1;	// Accumulated tangential impulse for the first tangent
+	float tangentImpulseSum2;	// Accumulated tangential impulse for the second tangent
 };
-
 
 class PhysicsManager
 {
@@ -28,6 +33,7 @@ class PhysicsManager
 private:
 	float m_GravityAcceleration;
 	map<ULONGLONG, bool>	mMapColInfo;	// 충돌체 간의 이전 프레임 충돌 정보 
+	vector<Contact*> m_Contacts;
 
 public:
 	void SetGravity(float gravity) { m_GravityAcceleration = gravity; }
@@ -46,5 +52,8 @@ private:
 	void HandleCollision(GameObject* obj1, GameObject* obj2, COLLIDER_ID colliderID);
 
 	void ResolveCollision(GameObject* obj1, GameObject* obj2, const Contact& contact);
+
+	void ResolveCollision(std::vector<Contact*>& contacts, float deltaTime);
+	void sequentialImpulse(Contact* contact, float deltaTime);
 };
 

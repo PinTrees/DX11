@@ -55,10 +55,11 @@ public:
 
 	void Translate(const Vec3& position) { SetPosition(GetPosition() + position); }
 
+	Vec3 GetAxis(int index) const;
 	Vec3 GetRight() { return _matWorld.Right(); }
 	Vec3 GetUp() { return _matWorld.Up(); }
 	Vec3 GetLook() { return _matWorld.Backward(); }
-
+	Vec3 GetForward() { return _matWorld.Forward(); } 
 	Matrix GetWorldMatrix() { return _matWorld; }
 
 	// °èÃþ °ü°è

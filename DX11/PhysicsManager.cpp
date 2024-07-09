@@ -31,6 +31,7 @@ void PhysicsManager::Init()
 
 void PhysicsManager::Update(float deltaTime)
 {
+	/* 물체들을 적분한다 */
 	auto gameObjects = SceneManager::GetI()->GetCurrentScene()->GetAllGameObjects();
 	for (auto& gameObject : gameObjects)
 	{
@@ -39,15 +40,19 @@ void PhysicsManager::Update(float deltaTime)
 		if (rigidBody == nullptr)
 			continue;
 
-		rigidBody->ApplyForce(Vec3(0.0f, -m_GravityAcceleration * rigidBody->GetMass(), 0.0f)); // 중력 적용 
 		rigidBody->Integrate(deltaTime);
 	}
 
+	/* 충돌들을 처리한다 */
 	UpdateCollision();
+
+	ResolveCollision(m_Contacts, deltaTime);
+	m_Contacts.clear();
 }
 
 void PhysicsManager::UpdateCollision()
 {
+	m_Contacts.clear();
 	mMapColInfo.clear();
 	map<ULONGLONG, bool>::iterator iter;
 
@@ -84,22 +89,19 @@ void PhysicsManager::UpdateCollision()
 
 			Contact contact;
 
-			// Sphere-Sphere collision
-			//if (sphere1 && sphere2)
-			//{
-			//	if (CheckSphereSphereCollision(sphere1, sphere2, contact))
-			//	{
-			//		ResolveCollision(obj1, obj2, contact);
-			//		HandleCollision(obj1, obj2, colliderID);
-			//	}
-			//}
+			if (sphere1 && sphere2)
+			{
+				if (CheckSphereSphereCollision(sphere1, sphere2, contact))
+				{
+					HandleCollision(obj1, obj2, colliderID);
+				}
+			}
 
 			// Sphere-Box collision
 			if (sphere1 && box2)
 			{
 				if (CheckSphereBoxCollision(sphere1, box2, contact))
 				{
-					ResolveCollision(obj1, obj2, contact);
 					HandleCollision(obj1, obj2, colliderID);
 				}
 			}
@@ -109,7 +111,6 @@ void PhysicsManager::UpdateCollision()
 			{
 				if (CheckSphereBoxCollision(sphere2, box1, contact))
 				{
-					ResolveCollision(obj1, obj2, contact);
 					HandleCollision(obj1, obj2, colliderID);
 				}
 			}
@@ -119,7 +120,6 @@ void PhysicsManager::UpdateCollision()
 			{
 				if (CheckBoxBoxCollision(box1, box2, contact))
 				{
-					ResolveCollision(obj1, obj2, contact); 
 					HandleCollision(obj1, obj2, colliderID); 
 				}
 			}
@@ -127,29 +127,47 @@ void PhysicsManager::UpdateCollision()
 	}
 }
 
+float friction = 0.6f;
+float objectRestitution = 0.3f;
+
 bool PhysicsManager::CheckSphereSphereCollision(SphereCollider* sphere1, SphereCollider* sphere2, Contact& contact)
 {
 	Transform* sphere1Tr = sphere1->GetGameObject()->GetTransform();
 	Transform* sphere2Tr = sphere2->GetGameObject()->GetTransform();
 
-	XMVECTOR sphere1Position = sphere1Tr->GetPosition();
-	XMVECTOR sphere2Position = sphere2Tr->GetPosition();
-	XMVECTOR diff = XMVectorSubtract(sphere1Position, sphere2Position);
+	RigidBody* sphere1Rb = sphere1->GetGameObject()->GetComponent<RigidBody>();
+	RigidBody* sphere2Rb = sphere2->GetGameObject()->GetComponent<RigidBody>();
 
-	float distanceSquared = XMVectorGetX(XMVector3LengthSq(diff));
-	float radius1 = sphere1->GetRadius() * sphere1Tr->GetScale().x * 0.5f;
-	float radius2 = sphere2->GetRadius() * sphere2Tr->GetScale().x * 0.5f;
-	float radiusSum = radius1 + radius2;
+	/* 두 구 사이의 거리를 구한다 */
+	float distanceSquared =
+		(sphere1Tr->GetPosition() - sphere2Tr->GetPosition()).LengthSquared();
 
-	if (distanceSquared <= radiusSum * radiusSum)
+	/* 두 구 사이의 거리가 두 구의 반지름의 합보다 작다면 충돌이 발생한 것이다 */
+	float radiusSum = sphere1->GetRadius() + sphere2->GetRadius();
+	if (distanceSquared < radiusSum * radiusSum)
 	{
-		float distance = std::sqrt(distanceSquared);
-		contact.point = XMVectorAdd(sphere1Position, XMVectorScale(diff, radius1 / radiusSum));
-		contact.normal = XMVector3Normalize(diff);
-		contact.penetrationDepth = radiusSum - distance;
+		Vector3 centerToCenter = sphere1Tr->GetPosition() - sphere2Tr->GetPosition();
+		centerToCenter.Normalize();
+
+		/* 충돌 정보를 생성한다 */
+		Contact* newContact = new Contact;
+		newContact->bodies[0] = sphere1Rb;
+		newContact->bodies[1] = sphere2Rb;
+		newContact->normal = centerToCenter;
+		newContact->contactPoint[0] = Vector3(sphere1Tr->GetPosition() - centerToCenter * sphere1->GetRadius());
+		newContact->contactPoint[1] = Vector3(sphere2Tr->GetPosition() + centerToCenter * sphere2->GetRadius());
+		newContact->penetration = radiusSum - sqrtf(distanceSquared);
+		newContact->restitution = objectRestitution;
+		newContact->friction = friction;
+		newContact->normalImpulseSum = 0.0f;
+		newContact->tangentImpulseSum1 = 0.0f;
+		newContact->tangentImpulseSum2 = 0.0f;
+
+		m_Contacts.push_back(newContact);
 		return true;
 	}
-	return false;
+	else
+		return false;
 }
 
 bool PhysicsManager::CheckSphereBoxCollision(SphereCollider* sphere, BoxCollider* box, Contact& contact)
@@ -157,35 +175,63 @@ bool PhysicsManager::CheckSphereBoxCollision(SphereCollider* sphere, BoxCollider
 	Transform* sphereTr = sphere->GetGameObject()->GetTransform();
 	Transform* boxTr = box->GetGameObject()->GetTransform();
 
-	XMVECTOR spherePosition = sphereTr->GetPosition();
-	XMVECTOR boxPosition = boxTr->GetPosition();
-	XMVECTOR boxScale = boxTr->GetScale();
-	XMVECTOR boxHalfSize = box->GetSize() * 0.5f;
+	/* 구의 중심을 직육면체의 로컬 좌표계로 변환한다 */
+	Matrix boxWorld = box->GetGameObject()->GetTransform()->GetWorldMatrix();
+	Matrix worldToLocal = box->GetGameObject()->GetTransform()->GetWorldMatrix().Invert(); 
+	Vec3 sphereInBoxLocal = Vec3::Transform(sphere->GetGameObject()->GetTransform()->GetPosition(), worldToLocal);
+	Vec3 boxHalfSize = box->GetSize() / 2;
 
-	// 박스의 로컬 좌표로 구의 위치를 변환
-	XMVECTOR boxRotationEuler = boxTr->GetLocalRotation(); // 오일러 각 (라디안 단위)
-	XMMATRIX boxRotation = XMMatrixRotationRollPitchYawFromVector(boxRotationEuler);
-	XMMATRIX boxWorld = XMMatrixScalingFromVector(boxScale) * boxRotation * XMMatrixTranslationFromVector(boxPosition);
-	XMMATRIX boxWorldInverse = XMMatrixInverse(nullptr, boxWorld);
-	XMVECTOR localSpherePosition = XMVector3TransformCoord(spherePosition, boxWorldInverse);
+	/* 구의 중심과 가장 가까운 직육면체 위의 점을 찾는다 */
+	Vec3 closestPoint;
+	/* x 축 성분 비교 */
+	if (sphereInBoxLocal.x > boxHalfSize.x)
+		closestPoint.x = boxHalfSize.x;
+	else if (sphereInBoxLocal.x < -boxHalfSize.x)
+		closestPoint.x = -boxHalfSize.x;
+	else
+		closestPoint.x = sphereInBoxLocal.x;
+	/* y 축 성분 비교 */
+	if (sphereInBoxLocal.y > boxHalfSize.y)
+		closestPoint.y = boxHalfSize.y;
+	else if (sphereInBoxLocal.y < -boxHalfSize.y)
+		closestPoint.y = -boxHalfSize.y;
+	else
+		closestPoint.y = sphereInBoxLocal.y;
+	/* z 축 성분 비교 */
+	if (sphereInBoxLocal.z > boxHalfSize.z)
+		closestPoint.z = boxHalfSize.z;
+	else if (sphereInBoxLocal.z < -boxHalfSize.z)
+		closestPoint.z = -boxHalfSize.z;
+	else
+		closestPoint.z = sphereInBoxLocal.z;
 
-	// 박스의 로컬 좌표에서 구의 위치와 가장 가까운 점 찾기 
-	XMVECTOR closestPoint = XMVectorClamp(localSpherePosition, XMVectorNegate(boxHalfSize), boxHalfSize);
-
-	XMVECTOR diff = XMVectorSubtract(localSpherePosition, closestPoint);
-	float distanceSquared = XMVectorGetX(XMVector3LengthSq(diff));
-	float sphereRadius = sphere->GetRadius() * XMVectorGetX(sphereTr->GetScale()) * 0.5f;
-
-	if (distanceSquared <= sphereRadius * sphereRadius)
+	/* 위의 결과와 구의 중심 사이의 거리가 구의 반지름보다 작다면 충돌이 발생한 것이다 */
+	float distanceSquared = (closestPoint - sphereInBoxLocal).LengthSquared(); 
+	if (distanceSquared < sphere->GetRadius() * sphere->GetRadius())
 	{
-		float distance = std::sqrt(distanceSquared);
-		// 충돌 지점을 월드 좌표로 변환
-		contact.point = XMVector3TransformCoord(closestPoint, boxWorld);
-		contact.normal = XMVector3Normalize(XMVector3TransformNormal(diff, boxRotation));
-		contact.penetrationDepth = sphereRadius - distance;
+		/* 구에 가장 가까운 직육면체 위의 점을 월드 좌표계로 변환한다 */
+		Vector3 closestPointWorld = Vec3::Transform(closestPoint, boxWorld); 
+
+		/* 충돌 정보를 생성한다 */
+		Contact* newContact = new Contact;
+		newContact->bodies[0] = sphere->GetGameObject()->GetComponent<RigidBody>();
+		newContact->bodies[1] = box->GetGameObject()->GetComponent<RigidBody>();
+		newContact->normal = sphere->GetGameObject()->GetTransform()->GetPosition() - closestPointWorld;
+		newContact->normal.Normalize();
+		newContact->contactPoint[0] = Vec3(sphereTr->GetPosition() - newContact->normal * sphere->GetRadius());
+		newContact->contactPoint[1] = Vec3(closestPointWorld);
+		newContact->penetration = sphere->GetRadius() - sqrtf(distanceSquared);
+		newContact->restitution = objectRestitution;
+		newContact->friction = friction;
+		newContact->normalImpulseSum = 0.0f;
+		newContact->tangentImpulseSum1 = 0.0f;
+		newContact->tangentImpulseSum2 = 0.0f;
+
+		m_Contacts.push_back(newContact);
 		return true;
 	}
-	return false;
+	else
+		return false;
 }
 
 bool PhysicsManager::CheckBoxBoxCollision(BoxCollider* box1, BoxCollider* box2, Contact& contact)
@@ -193,111 +239,80 @@ bool PhysicsManager::CheckBoxBoxCollision(BoxCollider* box1, BoxCollider* box2, 
 	Transform* box1Tr = box1->GetGameObject()->GetTransform();
 	Transform* box2Tr = box2->GetGameObject()->GetTransform();
 
-	Vec3 box1Center = box1Tr->GetPosition();
-	Vec3 box2Center = box2Tr->GetPosition();
+	RigidBody* box1Rb = box1->GetGameObject()->GetComponent<RigidBody>();
+	RigidBody* box2Rb = box2->GetGameObject()->GetComponent<RigidBody>();
 
-	// 박스 콜라이더의 사이즈에 트랜스폼의 스케일을 반영하여 실제 크기를 계산합니다.
-	Vec3 box1Size = box1->GetSize() * box1Tr->GetScale();
-	Vec3 box2Size = box2->GetSize() * box2Tr->GetScale();
+	/* 겹침 검사의 기준이 될 축 저장 */
+	std::vector<Vector3> axes;
 
-	Matrix box1World = box1Tr->GetWorldMatrix();
-	Matrix box2World = box2Tr->GetWorldMatrix();
+	/* box1 의 세 축 저장 */
+	for (int i = 0; i < 3; ++i)
+		axes.push_back(box1.body->getAxis(i));
 
-	// 각 박스의 로컬 축을 추출하고 정규화합니다.
-	Vec3 box1Axes[3] = {
-	   Normalize(Vec3(box1World._11, box1World._12, box1World._13)), 
-	   Normalize(Vec3(box1World._21, box1World._22, box1World._23)), 
-	   Normalize(Vec3(box1World._31, box1World._32, box1World._33)) 
-	};
+	/* box2 의 세 축 저장 */
+	for (int i = 0; i < 3; ++i)
+		axes.push_back(box2.body->getAxis(i));
 
-	Vec3 box2Axes[3] = {
-		Normalize(Vec3(box2World._11, box2World._12, box2World._13)), 
-		Normalize(Vec3(box2World._21, box2World._22, box2World._23)), 
-		Normalize(Vec3(box2World._31, box2World._32, box2World._33)) 
-	};
-
-	// 두 박스의 중심 간의 번역 벡터를 계산합니다.
-	Vec3 translation = box2Center - box1Center; 
-
-	// 번역 벡터를 첫 번째 박스의 로컬 축에 투영하여 로컬 좌표로 변환합니다.
-	float translationLocal[3] = {
-		Dot(translation, box1Axes[0]), 
-		Dot(translation, box1Axes[1]), 
-		Dot(translation, box1Axes[2]) 
-	};
-
-	// 각 박스의 절반 크기를 계산합니다.
-	float box1Extents[3] = {
-		box1Size.x / 2.0f,
-		box1Size.y / 2.0f,
-		box1Size.z / 2.0f
-	};
-	float box2Extents[3] = {
-		box2Size.x / 2.0f,
-		box2Size.y / 2.0f,
-		box2Size.z / 2.0f
-	};
-
-	// 두 박스의 축 간의 내적을 계산하고 절대값을 구합니다.
-	float R[3][3];
-	float AbsR[3][3];
-
-	for (int i = 0; i < 3; ++i) { 
-		for (int j = 0; j < 3; ++j) { 
-			R[i][j] = Dot(box1Axes[i], box2Axes[j]); 
-			AbsR[i][j] = fabs(R[i][j]) + FLT_EPSILON; 
+	/* 각 축 사이의 외적 저장 */
+	for (int i = 0; i < 3; ++i)
+	{
+		for (int j = 0; j < 3; ++j)
+		{
+			Vector3 crossProduct = axes[i].Cross(axes[3 + j]);
+			crossProduct.Normalize();
+			axes.push_back(crossProduct);
 		}
 	}
 
-	// SAT를 사용하여 충돌을 검사합니다.
 	float minPenetration = FLT_MAX;
-	Vec3 bestAxis; 
+	int minAxisIdx = 0;
 
-	// 첫 번째 박스의 축을 기준으로 충돌을 검사합니다.
-	for (int i = 0; i < 3; ++i) {
-		float penetration = box1Extents[i] + box2Extents[0] * AbsR[i][0] + box2Extents[1] * AbsR[i][1]
-			+ box2Extents[2] * AbsR[i][2] - fabs(translationLocal[i]);
-		if (penetration < 0) return false;
-		if (penetration < minPenetration) {
+	/* 모든 축에 대해 겹침 검사 */
+	for (int i = 0; i < axes.size(); ++i)
+	{
+		float penetration = calcPenetration(box1, box2, axes[i]);
+
+		/* 한 축이라도 겹치지 않으면 충돌이 발생하지 않은 것이다 */
+		if (penetration <= 0.0f)
+			return false;
+
+		/* 가장 적게 겹치는 정도와 그때의 기준 축을 추적한다 */
+		if (penetration <= minPenetration)
+		{
 			minPenetration = penetration;
-			bestAxis = box1Axes[i];
+			minAxisIdx = i;
 		}
 	}
 
-	// 두 번째 박스의 축을 기준으로 충돌을 검사합니다.
-	for (int j = 0; j < 3; ++j) {
-		float penetration = box1Extents[0] * AbsR[0][j] + box1Extents[1] * AbsR[1][j]
-			+ box1Extents[2] * AbsR[2][j] + box2Extents[j] - fabs(Dot(translation, box2Axes[j]));
-		if (penetration < 0) return false;
-		if (penetration < minPenetration) {
-			minPenetration = penetration;
-			bestAxis = box2Axes[j];
-		}
+	/* 모든 축에 걸쳐 겹침이 감지됐다면 충돌이 발생한 것이다 */
+	Contact* newContact = new Contact;
+	newContact->bodies[0] = box1Rb;
+	newContact->bodies[1] = box2Rb;
+	newContact->penetration = minPenetration;
+	newContact->restitution = objectRestitution;
+	newContact->friction = friction;
+	newContact->normalImpulseSum = 0.0f;
+	newContact->tangentImpulseSum1 = 0.0f;
+	newContact->tangentImpulseSum2 = 0.0f;
+
+	/* 충돌 법선을 방향에 유의하여 설정한다 */
+	Vector3 centerToCenter = box1Tr->GetPosition() - box2Tr->GetPosition();
+	if (axes[minAxisIdx].Dot(centerToCenter) > 0)
+		newContact->normal = axes[minAxisIdx] * -1.0f;
+	else
+		newContact->normal = axes[minAxisIdx];
+
+	/* 충돌 지점을 찾는다 */
+	if (minAxisIdx < 6) // 면-점 접촉일 때
+	{
+		calcContactPointOnPlane(box1, box2, minAxisIdx, newContact);
+	}
+	else // 선-선 접촉일 때
+	{
+		calcContactPointOnLine(box1, box2, minAxisIdx, newContact);
 	}
 
-	// 교차 축을 기준으로 충돌을 검사합니다.
-	for (int i = 0; i < 3; ++i) {
-		for (int j = 0; j < 3; ++j) {
-			Vec3 axis = Cross(box1Axes[i], box2Axes[j]);
-			float ra = box1Extents[(i + 1) % 3] * AbsR[(i + 2) % 3][j] + box1Extents[(i + 2) % 3] * AbsR[(i + 1) % 3][j];
-			float rb = box2Extents[(j + 1) % 3] * AbsR[i][(j + 2) % 3] + box2Extents[(j + 2) % 3] * AbsR[i][(j + 1) % 3];
-			float penetration = ra + rb - fabs(Dot(translation, axis));
-			if (penetration < 0) return false;
-			if (penetration < minPenetration) {
-				minPenetration = penetration;
-				bestAxis = axis;
-			}
-		}
-	}
-
-	// 충돌이 발생한 경우 충돌 지점과 법선 벡터, 침투 깊이를 계산합니다.
-	contact.normal = Normalize(bestAxis);
-	contact.penetrationDepth = minPenetration;
-	contact.point = box1Center + contact.normal * (minPenetration / 2.0f);
-
-	Debug::Log("Contact Point: " + ToString(contact.point));
-	Debug::Log("Contact PenetrationDepth: " + to_string(contact.penetrationDepth)); 
-
+	m_Contacts.push_back(newContact);
 	return true;
 }
 
@@ -311,89 +326,217 @@ void PhysicsManager::HandleCollision(GameObject* obj1, GameObject* obj2, COLLIDE
 	}
 }
 
-void PhysicsManager::ResolveCollision(GameObject* obj1, GameObject* obj2, const Contact& contact)
+void PhysicsManager::ResolveCollision(std::vector<Contact*>& contacts, float deltaTime)
 {
-	RigidBody* rb1 = obj1->GetComponent<RigidBody>();
-	RigidBody* rb2 = obj2->GetComponent<RigidBody>();
-
-	// 두 객체 모두 리지드바디 컴포넌트가 없다면 함수를 종료합니다.
-	if (rb1 == nullptr && rb2 == nullptr)
-		return;
-
-	// 두 객체 모두 키네틱 상태라면 함수를 종료합니다. 
-	if ((rb1 && rb1->IsKinematic()) && (rb2 && rb2->IsKinematic()))
-		return;
-
-	// 상대 속도 계산: 두 객체 모두 리지드바디가 있다면 차이를, 하나만 있다면 해당 리지드바디의 속도를 사용합니다.
-	Vec3 relativeVelocity;
-	if (rb1 && rb2) relativeVelocity = rb2->GetVelocity() - rb1->GetVelocity();
-	else if (rb1) relativeVelocity = -rb1->GetVelocity();
-	else if (rb2) relativeVelocity = rb2->GetVelocity();
-
-	// 역질량 계산: 각 객체에 리지드바디가 있다면 역질량을, 없다면 0을 사용합니다.
-	float invMass1 = (rb1 && !rb1->IsKinematic()) ? rb1->GetInverseMass() : 0.0f;
-	float invMass2 = (rb2 && !rb2->IsKinematic()) ? rb2->GetInverseMass() : 0.0f;
-
-	// 복원 계수 계산: 두 객체 모두 리지드바디가 있다면 최소 복원 계수를, 하나만 있다면 해당 리지드바디의 복원 계수를 사용합니다.
-	float restitution = 0.0f;
-	if (rb1 && rb2) restitution = min(rb1->GetRestitution(), rb2->GetRestitution());
-	else if (rb1) restitution = rb1->GetRestitution();
-	else if (rb2) restitution = rb2->GetRestitution();
-
-	// 충돌 정규에 따른 속도 계산
-	float velocityAlongNormal = relativeVelocity.Dot(contact.normal);
-	// 두 객체가 서로 멀어지는 경우, 충돌 해결을 진행하지 않습니다.
-	if (velocityAlongNormal > 0)
-		return;
-
-	// 충격량 계산
-	float j = -(1 + restitution) * velocityAlongNormal;
-	j /= invMass1 + invMass2;
-
-	// 충격량 적용
-	Vec3 impulse = contact.normal * j;
-	if (rb1 && !rb1->IsKinematic()) rb1->ApplyImpulse(-impulse);
-	if (rb2 && !rb2->IsKinematic()) rb2->ApplyImpulse(impulse);
-
-	// 토크 적용
-	Vec3 r1 = contact.point - obj1->GetTransform()->GetPosition();
-	Vec3 r2 = contact.point - obj2->GetTransform()->GetPosition();
-	Vec3 torque1 = Cross(r1, -impulse);
-	Vec3 torque2 = Cross(r2, impulse);
-	if (rb1 && !rb1->IsKinematic()) rb1->ApplyTorque(torque1);
-	if (rb2 && !rb2->IsKinematic()) rb2->ApplyTorque(torque2);
-
-	// 위치 보정
-	const float percent = 0.2f;     // usually 20% to 80%
-	const float slop = 0.01f;       // usually small like 0.01 to 0.1
-
-	float penetrationCorrection = max(contact.penetrationDepth - slop, 0.0f) / (invMass1 + invMass2) * percent;
-	Vec3 correction = contact.normal * penetrationCorrection;
-
-	if (rb1 && !rb1->IsKinematic()) obj1->GetTransform()->Translate(-correction * invMass1);
-	if (rb2 && !rb2->IsKinematic()) obj2->GetTransform()->Translate(correction * invMass2);
-
-	// 마찰력 적용
-	Vec3 tangent = relativeVelocity - (contact.normal * velocityAlongNormal);
-	tangent = Normalize(tangent);
-	float jt = -relativeVelocity.Dot(tangent);
-	jt /= invMass1 + invMass2;
-
-	// 마찰 계수
-	float friction = rb1 ? rb1->GetFriction() : 0.0f;
-	if (rb2) friction = min(friction, rb2->GetFriction());
-
-	// 마찰력 적용
-	Vec3 frictionImpulse;
-	if (abs(jt) < j * friction)
+	for (int i = 0; i < 10; ++i)
 	{
-		frictionImpulse = tangent * jt;
+		for (auto& contact : contacts)
+		{
+			sequentialImpulse(contact, deltaTime);
+		}
 	}
-	else
-	{
-		frictionImpulse = tangent * -j * friction;
-	}
-
-	if (rb1 && !rb1->IsKinematic()) rb1->ApplyImpulse(-frictionImpulse); 
-	if (rb2 && !rb2->IsKinematic()) rb2->ApplyImpulse(frictionImpulse); 
 }
+
+float penetrationTolerance = 0.0005f;
+float closingSpeedTolerance = 0.005f;
+
+void PhysicsManager::sequentialImpulse(Contact* contact, float deltaTime)
+{
+	float effectiveMass;
+
+	float totalInvMass = contact->bodies[0]->GetInverseMass();
+	if (contact->bodies[1] != nullptr)
+		totalInvMass += contact->bodies[1]->GetInverseMass();
+	if (totalInvMass == 0.0f)
+		return;
+
+	Vec3 contactPointFromCenter1 = contact->contactPoint[0] - contact->bodies[0]->GetGameObject()->GetTransform()->GetPosition();
+	Vector3 contactPointFromCenter2;
+	if (contact->bodies[1] != nullptr)
+		contactPointFromCenter2 = contact->contactPoint[1] - contact->bodies[1]->GetGameObject()->GetTransform()->GetPosition();
+
+	Vec3 termInDenominator1 = Vec3::Transform(contactPointFromCenter1.Cross(contact->normal), contact->bodies[0]->GetInverseInertiaTensorWorld())
+		.Cross(contactPointFromCenter1);
+
+	Vec3 termInDenominator2;
+	if (contact->bodies[1] != nullptr) {
+		termInDenominator2 = Vec3::Transform(contactPointFromCenter2.Cross(contact->normal), contact->bodies[1]->GetInverseInertiaTensorWorld())
+			.Cross(contactPointFromCenter2); 
+	}
+	effectiveMass = totalInvMass + (termInDenominator1 + termInDenominator2).Dot(contact->normal);
+	if (effectiveMass == 0.0f)
+		return;
+
+	float closingSpeed = contact->normal.Dot(contact->bodies[0]->GetVelocity())
+		+ contact->bodies[0]->GetGameObject()->GetTransform()->GetRotation().Dot(contactPointFromCenter1.Cross(contact->normal));
+	if (contact->bodies[1] != nullptr)
+	{
+		closingSpeed -= contact->normal.Dot(contact->bodies[1]->GetVelocity())
+			+ contact->bodies[1]->GetGameObject()->GetTransform()->GetRotation().Dot(contactPointFromCenter2.Cross(contact->normal));
+	}
+
+	/* bias 계산 */
+	float bias = 0.0f;
+	/* Baumgarte Stabilization */
+	float baumgarte = 0.0f;
+	if (contact->penetration > penetrationTolerance)
+		baumgarte = (-0.1f / deltaTime) * (contact->penetration - penetrationTolerance);
+	bias += baumgarte;
+
+	/* bias 에 restitution term 추가 */
+	float restitutionTerm = 0.0f;
+	if (closingSpeed > closingSpeedTolerance)
+		restitutionTerm = contact->restitution * (closingSpeed - closingSpeedTolerance);
+	bias -= restitutionTerm;
+
+	float impulse = -(closingSpeed + bias) / effectiveMass;
+	if (isnan(impulse) != 0)
+	{
+		std::cout << "ERROR::CollisionResolver::sequentialImpulse()::impulse is nan" << std::endl;
+		return;
+	}
+
+	/* 충격량의 누적값을 clamp */
+	float prevImpulseSum = contact->normalImpulseSum; 
+	contact->normalImpulseSum += impulse; 
+	if (contact->normalImpulseSum < 0.0f) 
+		contact->normalImpulseSum = 0.0f; 
+	impulse = contact->normalImpulseSum - prevImpulseSum;
+
+	/* 속도 & 각속도 변화 */
+	Vector3 linearImpulse = contact->normal * impulse;
+	Vector3 angularImpulse1 = contactPointFromCenter1.Cross(contact->normal) * impulse;
+	Vector3 angularImpulse2 = contactPointFromCenter2.Cross(contact->normal) * impulse;
+
+	contact->bodies[0]->SetVelocity(
+		contact->bodies[0]->GetVelocity() + linearImpulse * contact->bodies[0]->GetInverseMass()
+	);
+	contact->bodies[0]->GetGameObject()->GetTransform()->SetRotation( 
+		contact->bodies[0]->GetGameObject()->GetTransform()->GetRotation() + Vector3::Transform(angularImpulse1, contact->bodies[0]->GetInverseInertiaTensorWorld())
+	); 
+
+	if (contact->bodies[1] != nullptr)
+	{
+		contact->bodies[1]->SetVelocity(
+			contact->bodies[1]->GetVelocity() - linearImpulse * contact->bodies[1]->GetInverseMass()
+		);
+		contact->bodies[1]->GetGameObject()->GetTransform()->SetRotation(
+			contact->bodies[1]->GetGameObject()->GetTransform()->GetRotation() - Vector3::Transform(angularImpulse2, contact->bodies[1]->GetInverseInertiaTensorWorld())
+		);
+	}
+
+	/* 충돌 법선에 수직하는 벡터 찾기(erin catto 방법) */
+	Vector3 tangent1, tangent2;
+	if (contact->normal.x >= 0.57735f)
+		tangent1 = Vector3(contact->normal.y, -contact->normal.x, 0.0f);
+	else
+		tangent1 = Vector3(0.0f, contact->normal.z, -contact->normal.y);
+	tangent2 = contact->normal.Cross(tangent1);
+
+	/* tangent1 벡터에 대한 마찰 계산 */
+	Vec3 termInDenominator1 = Vector3::Transform(contactPointFromCenter1.Cross(tangent1), contact->bodies[0]->GetInverseInertiaTensorWorld()).Cross(contactPointFromCenter1);
+	if (contact->bodies[1] != nullptr) {
+		termInDenominator2 = Vector3::Transform(contactPointFromCenter2.Cross(tangent1), contact->bodies[1]->GetInverseInertiaTensorWorld()).Cross(contactPointFromCenter2);
+	}
+
+	effectiveMass = totalInvMass + (termInDenominator1 + termInDenominator2).Dot(tangent1);
+
+	closingSpeed = tangent1.Dot(contact->bodies[0]->GetVelocity())
+		+ contact->bodies[0]->GetGameObject()->GetTransform()->GetRotation().Dot(contactPointFromCenter1.Cross(tangent1));
+	if (contact->bodies[1] != nullptr)
+	{
+		closingSpeed -= tangent1.Dot(contact->bodies[1]->GetVelocity())
+			+ contact->bodies[1]->GetGameObject()->GetTransform()->GetRotation().Dot(contactPointFromCenter2.Cross(tangent1));
+	}
+	impulse = -closingSpeed / effectiveMass;
+	if (isnan(impulse) != 0)
+	{
+		std::cout << "ERROR::CollisionResolver::sequentialImpulse()::tangential impulse1 is nan" << std::endl;
+		return;
+	}
+
+	/* 충격량의 누적값을 clamp */
+	prevImpulseSum = contact->tangentImpulseSum1;
+	contact->tangentImpulseSum1 += impulse;
+	if (contact->tangentImpulseSum1 < (-contact->friction * contact->normalImpulseSum))
+		contact->tangentImpulseSum1 = -contact->friction * contact->normalImpulseSum;
+	else if (contact->tangentImpulseSum1 > (contact->friction * contact->normalImpulseSum))
+		contact->tangentImpulseSum1 = contact->friction * contact->normalImpulseSum;
+	impulse = contact->tangentImpulseSum1 - prevImpulseSum;
+
+	/* 속도 & 각속도 변화 */
+	linearImpulse = tangent1 * impulse;
+	angularImpulse1 = contactPointFromCenter1.Cross(tangent1) * impulse;
+	angularImpulse2 = contactPointFromCenter2.Cross(tangent1) * impulse;
+
+	contact->bodies[0]->SetVelocity(
+		contact->bodies[0]->GetVelocity() + linearImpulse * contact->bodies[0]->GetInverseMass()
+	);
+	contact->bodies[0]->GetGameObject()->GetTransform()->SetRotation(
+    contact->bodies[0]->GetGameObject()->GetTransform()->GetRotation() + Vector3::Transform(angularImpulse1, contact->bodies[0]->GetInverseInertiaTensorWorld())
+);
+	if (contact->bodies[1] != nullptr)
+	{
+		contact->bodies[1]->SetVelocity(
+			contact->bodies[1]->GetVelocity() - linearImpulse * contact->bodies[1]->GetInverseMass()
+		);
+		contact->bodies[1]->GetGameObject()->GetTransform()->SetRotation(
+			contact->bodies[1]->GetGameObject()->GetTransform()->GetRotation() - Vec3::Transform(angularImpulse2, contact->bodies[1]->GetInverseInertiaTensorWorld())
+		);
+	}
+
+	/* tangent2 벡터에 대한 마찰 계산 */
+	termInDenominator1 = Vec3::Transform(contactPointFromCenter1.Cross(tangent2), contact->bodies[0]->GetInverseInertiaTensorWorld()).Cross(contactPointFromCenter1);
+	if (contact->bodies[1] != nullptr) {
+		termInDenominator2 = Vec3::Transform(contactPointFromCenter2.Cross(tangent2),
+			contact->bodies[1]->GetInverseInertiaTensorWorld()).Cross(contactPointFromCenter2);
+	}
+	effectiveMass = totalInvMass + (termInDenominator1 + termInDenominator2).Dot(tangent2);
+
+	closingSpeed = tangent2.Dot(contact->bodies[0]->GetVelocity())
+		+ contact->bodies[0]->GetGameObject()->GetTransform()->GetRotation().Dot(contactPointFromCenter1.Cross(tangent2));
+	if (contact->bodies[1] != nullptr)
+	{
+		closingSpeed -= tangent2.Dot(contact->bodies[1]->GetVelocity())
+			+ contact->bodies[1]->GetGameObject()->GetTransform()->GetRotation().Dot(contactPointFromCenter2.Cross(tangent2));
+	}
+	impulse = -closingSpeed / effectiveMass;
+	if (isnan(impulse) != 0)
+	{
+		std::cout << "ERROR::CollisionResolver::sequentialImpulse()::tangential impulse2 is nan" << std::endl;
+		return;
+	}
+
+	/* 충격량의 누적값을 clamp */
+	prevImpulseSum = contact->tangentImpulseSum2;
+	contact->tangentImpulseSum2 += impulse;
+	if (contact->tangentImpulseSum2 < (-contact->friction * contact->normalImpulseSum))
+		contact->tangentImpulseSum2 = -contact->friction * contact->normalImpulseSum;
+	else if (contact->tangentImpulseSum2 > (contact->friction * contact->normalImpulseSum))
+		contact->tangentImpulseSum2 = contact->friction * contact->normalImpulseSum;
+	impulse = contact->tangentImpulseSum2 - prevImpulseSum;
+
+	/* 속도 & 각속도 변화 */
+	linearImpulse = tangent2 * impulse;
+	angularImpulse1 = contactPointFromCenter1.Cross(tangent2) * impulse;
+	angularImpulse2 = contactPointFromCenter2.Cross(tangent2) * impulse;
+
+	contact->bodies[0]->SetVelocity(
+		contact->bodies[0]->GetVelocity() + linearImpulse * contact->bodies[0]->GetInverseMass()
+	);
+	contact->bodies[0]->SetRotation(
+		contact->bodies[0]->GetRotation() + Vec3::Transform(angularImpulse1, contact->bodies[0]->GetInverseInertiaTensorWorld())
+	);
+	if (contact->bodies[1] != nullptr)
+	{
+		contact->bodies[1]->SetVelocity(
+			contact->bodies[1]->GetVelocity() - linearImpulse * contact->bodies[1]->GetInverseMass()
+		);
+		contact->bodies[1]->SetRotation(
+			contact->bodies[1]->GetRotation() - Vec3::Transform(angularImpulse2, contact->bodies[1]->GetInverseInertiaTensorWorld())
+		);
+	}
+}
+
+
+

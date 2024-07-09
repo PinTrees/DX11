@@ -6,7 +6,6 @@ RigidBody::RigidBody()
 	: m_Velocity(0.0f, 0.0f, 0.0f),
 	m_Acceleration(0.0f, 0.0f, 0.0f),
 	m_Mass(1.0f),
-	m_Elasticity(0.5f),
 	m_IsKinematic(false)
 {
 	m_InspectorTitleName = "RigidBody";
@@ -21,13 +20,13 @@ RigidBody::~RigidBody()
 {
 }
 
+Vec3 RigidBody::GetCenterOfMass()
+{
+	return GetGameObject()->GetTransform()->GetPosition();
+}
+
 void RigidBody::ApplyTorque(const Vec3& torque)
 {
-	if (m_IsKinematic) return; // 키네틱이면 토크를 적용하지 않음
-
-	// 각가속도 업데이트
-	Vec3 angularAcceleration = Vec3::Transform(torque, m_InverseInertiaTensor); 
-	m_AngularAcceleration += angularAcceleration;
 }
 
 void RigidBody::ApplyForce(const Vec3& force)
@@ -44,66 +43,99 @@ void RigidBody::ApplyImpulse(const Vec3& impulse)
 	m_Velocity += impulse / m_Mass;
 }
 
+Vec3 RigidBody::GetRotation()
+{
+	return GetGameObject()->GetTransform()->GetRotation();
+}
+
+void RigidBody::SetRotation(const Vec3& rotation)
+{
+	GetGameObject()->GetTransform()->SetRotation(rotation);
+}
+
+void RigidBody::TransformInertiaTensor()
+{
+	Matrix worldMatrix = GetGameObject()->GetTransform()->GetWorldMatrix();
+
+	// Extract the rotation matrix (3x3) from the world matrix (4x4)
+	Matrix rotationMatrix = Matrix::CreateFromYawPitchRoll(
+		GetGameObject()->GetTransform()->GetRotation().y,
+		GetGameObject()->GetTransform()->GetRotation().x,
+		GetGameObject()->GetTransform()->GetRotation().z
+	);
+
+	// Transform inertia tensor from local space to world space
+	m_InverseInertiaTensorWorld = rotationMatrix * m_InverseInertiaTensor * rotationMatrix.Transpose(); 
+}
+
 void RigidBody::Integrate(float deltaTime)
 {
-	if (m_IsKinematic)
+	if (m_IsKinematic) 
 		return;
 
-	if (m_IsKinematic || m_Sleep) return; // 키네틱이면 물리 계산을 하지 않음
+	/* 강체의 질량이 무한대라면 적분을 하지 않는다 */
+	if (GetInverseMass() == 0.0f) 
+		return;
 
-	// 공기 저항 적용
-	Vec3 airResistanceForce = -m_AirResistance * m_Velocity;
-	ApplyForce(airResistanceForce);
+	/* 가속도를 계산한다 */
+	m_PrevAcceleration = m_Acceleration;
+	m_PrevAcceleration += m_Force * GetInverseMass(); 
 
-	// 선속도 업데이트: v = u + at
-	m_Velocity += m_Acceleration * deltaTime;
+	/* 각가속도를 계산한다 */
+	Vec3 angularAcceleration = Vec3::Transform(m_Torque, m_InverseInertiaTensorWorld); 
 
-	// 각속도 업데이트: w = w + αt
-	m_AngularVelocity += m_AngularAcceleration * deltaTime;
+	/* 속도 & 각속도를 업데이트한다 */
+	m_Velocity += m_PrevAcceleration * deltaTime;
+	m_RotationVelocity += angularAcceleration * deltaTime;
 
-	// 위치 업데이트: s = s + vt
-	GetGameObject()->GetTransform()->Translate(m_Velocity * deltaTime);
+	/* 드래그를 적용한다 */
+	m_Velocity *= powf(m_LinearDamping, deltaTime);
+	m_RotationVelocity *= powf(m_AngularDamping, deltaTime);
 
-	// 회전 업데이트
-	Quaternion rotation = GetGameObject()->GetTransform()->GetRotationQ();  
-	Quaternion deltaRotation = Quaternion::CreateFromYawPitchRoll(m_AngularVelocity.y * deltaTime, m_AngularVelocity.x * deltaTime, m_AngularVelocity.z * deltaTime); 
-	rotation = rotation * deltaRotation; 
-	rotation.Normalize();
-	GetGameObject()->GetTransform()->SetRotationQ(rotation);
+	/* 회전 업데이트를 위한 사원수 */
+	Quaternion orientation = GetGameObject()->GetTransform()->GetRotationQ();
+	Quaternion deltaRotation = Quaternion::CreateFromAxisAngle(m_RotationVelocity, m_RotationVelocity.Length() * deltaTime * 0.5f);
+	orientation = Quaternion::Concatenate(orientation, deltaRotation); 
 
-	// 가속도 초기화 (한 프레임 동안만 적용)
-	m_Acceleration = Vec3::Zero;
-	m_AngularAcceleration = Vec3::Zero;
+	/* 사원수를 정규화한다 */
+	orientation.Normalize(); 
+
+	/* 업데이트 된 회전을 트랜스폼에 설정 */
+	GetGameObject()->GetTransform()->SetRotationQ(orientation); 
+
+	/* 월드 좌표계 기준의 관성 텐서를 업데이트한다 */
+	TransformInertiaTensor();
+
+	/* 강체에 적용된 힘과 토크는 제거한다 */
+	m_Force = Vec3::Zero;
+	m_Torque = Vec3::Zero;
 } 
 
 void RigidBody::OnDrawGizmos()
 {
 	Transform* tr = GetGameObject()->GetTransform();
 	Gizmo::DrawVector(tr->GetWorldMatrix(), m_Velocity);
+	Gizmo::DrawVector(tr->GetWorldMatrix(), m_RotationVelocity);
+	//Gizmo::DrawVector(tr->GetWorldMatrix(), m_Force);
+	//Gizmo::DrawVector(tr->GetWorldMatrix(), m_Torque);
 }
 
 void RigidBody::OnInspectorGUI()
 {
-	ImGui::DragFloat("Mass", &m_Mass);
-	ImGui::DragFloat("Elasticity", &m_Elasticity);
-	ImGui::DragFloat("Air Resistance", &m_AirResistance);
-	ImGui::DragFloat("Friction", &m_Friction);
+	ImGui::DragFloat("Mass", &m_Mass); 
+	ImGui::DragFloat("Linear Damping", &m_LinearDamping); 
+	ImGui::DragFloat("Angular Damping", &m_AngularDamping);
 	ImGui::Checkbox("Is Kinematic", &m_IsKinematic);
-	ImGui::Checkbox("Is Movable", &m_IsMovable);
-	ImGui::Checkbox("Sleep", &m_Sleep);
-}
+}	
 
 GENERATE_COMPONENT_FUNC_TOJSON(RigidBody)
 {
 	json j = {};
 	j["type"] = "RigidBody";
 	j["mass"] = m_Mass;
-	j["elasticity"] = m_Elasticity;
-	j["airResistance"] = m_AirResistance;
-	j["friction"] = m_Friction;
+	j["m_LinearDamping"] = m_LinearDamping;
+	j["angularDamping"] = m_AngularDamping;
 	j["isKinematic"] = m_IsKinematic;
-	j["isMovable"] = m_IsMovable;
-	j["sleep"] = m_Sleep;
 
 	// Dont save velocity
 	return j;
@@ -112,10 +144,11 @@ GENERATE_COMPONENT_FUNC_TOJSON(RigidBody)
 GENERATE_COMPONENT_FUNC_FROMJSON(RigidBody)
 {
 	m_Mass = j.value("mass", 1.0f);
-	m_Elasticity = j.value("elasticity", 0.3f);
-	m_AirResistance = j.value("airResistance", 0.1f);
-	m_Friction = j.value("friction", 0.5f);
+	m_LinearDamping = j.value("m_LinearDamping", 0.05f);
+	m_AngularDamping = j.value("angularDamping", 0.05f);
 	m_IsKinematic = j.value("isKinematic", false);
-	m_IsMovable = j.value("isMovable", true);
-	m_Sleep = j.value("sleep", false);
+
+	// Initialize inertia tensor
+	m_InverseInertiaTensor = Matrix::Identity;
+	m_InverseInertiaTensorWorld = Matrix::Identity;
 }

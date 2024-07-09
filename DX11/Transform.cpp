@@ -125,6 +125,21 @@ void Transform::SetPosition(const Vec3& worldPosition)
 	}
 }
 
+Vec3 Transform::GetAxis(int index) const
+{
+	switch (index)
+	{
+	case 0:
+		return _matWorld.Right();
+	case 1:
+		return _matWorld.Up();
+	case 2:
+		return _matWorld.Backward();
+	default:
+		return Vec3::Zero;
+	}
+}
+
 void Transform::OnInspectorGUI()
 {
 	ImGui::Text("Transform");
