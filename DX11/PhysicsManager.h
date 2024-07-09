@@ -1,6 +1,8 @@
 #pragma once
 
 class GameObject;
+class CollisionDetector;
+class CollisionResolver;
 
 union COLLIDER_ID
 {
@@ -34,6 +36,8 @@ private:
 	float m_GravityAcceleration;
 	map<ULONGLONG, bool>	mMapColInfo;	// 충돌체 간의 이전 프레임 충돌 정보 
 	vector<Contact*> m_Contacts;
+	CollisionDetector* m_Detector; 
+	CollisionResolver* m_Resolver;
 
 public:
 	void SetGravity(float gravity) { m_GravityAcceleration = gravity; }
@@ -44,16 +48,5 @@ public:
 	void Update(float deltaTime);
 
 private:
-	void UpdateCollision();
-
-	bool CheckSphereSphereCollision(SphereCollider* sphere1, SphereCollider* sphere2, Contact& contact);
-	bool CheckSphereBoxCollision(SphereCollider* sphere, BoxCollider* box, Contact& contact);
-	bool CheckBoxBoxCollision(BoxCollider* box1, BoxCollider* box2, Contact& contact);
-	void HandleCollision(GameObject* obj1, GameObject* obj2, COLLIDER_ID colliderID);
-
-	void ResolveCollision(GameObject* obj1, GameObject* obj2, const Contact& contact);
-
-	void ResolveCollision(std::vector<Contact*>& contacts, float deltaTime);
-	void sequentialImpulse(Contact* contact, float deltaTime);
 };
 

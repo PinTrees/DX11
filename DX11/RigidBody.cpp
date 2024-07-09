@@ -94,8 +94,13 @@ void RigidBody::Integrate(float deltaTime)
 
 	/* 회전 업데이트를 위한 사원수 */
 	Quaternion orientation = GetGameObject()->GetTransform()->GetRotationQ();
-	Quaternion deltaRotation = Quaternion::CreateFromAxisAngle(m_RotationVelocity, m_RotationVelocity.Length() * deltaTime * 0.5f);
-	orientation = Quaternion::Concatenate(orientation, deltaRotation); 
+	if (m_RotationVelocity.LengthSquared() > FLT_EPSILON) // Check if the length of the rotation velocity is not zero
+	{
+		Quaternion deltaRotation = Quaternion::CreateFromAxisAngle(m_RotationVelocity, m_RotationVelocity.Length() * deltaTime * 0.5f);
+		orientation = Quaternion::Concatenate(orientation, deltaRotation);
+		orientation.Normalize();
+		GetGameObject()->GetTransform()->SetRotationQ(orientation);
+	}
 
 	/* 사원수를 정규화한다 */
 	orientation.Normalize(); 
@@ -114,8 +119,8 @@ void RigidBody::Integrate(float deltaTime)
 void RigidBody::OnDrawGizmos()
 {
 	Transform* tr = GetGameObject()->GetTransform();
-	Gizmo::DrawVector(tr->GetWorldMatrix(), m_Velocity);
-	Gizmo::DrawVector(tr->GetWorldMatrix(), m_RotationVelocity);
+	//Gizmo::DrawVector(tr->GetWorldMatrix(), m_Velocity);
+	//Gizmo::DrawVector(tr->GetWorldMatrix(), m_RotationVelocity);
 	//Gizmo::DrawVector(tr->GetWorldMatrix(), m_Force);
 	//Gizmo::DrawVector(tr->GetWorldMatrix(), m_Torque);
 }
@@ -143,7 +148,7 @@ GENERATE_COMPONENT_FUNC_TOJSON(RigidBody)
 
 GENERATE_COMPONENT_FUNC_FROMJSON(RigidBody)
 {
-	m_Mass = j.value("mass", 1.0f);
+	m_Mass = j.value("mass", 5.0f);
 	m_LinearDamping = j.value("m_LinearDamping", 0.05f);
 	m_AngularDamping = j.value("angularDamping", 0.05f);
 	m_IsKinematic = j.value("isKinematic", false);
@@ -151,4 +156,8 @@ GENERATE_COMPONENT_FUNC_FROMJSON(RigidBody)
 	// Initialize inertia tensor
 	m_InverseInertiaTensor = Matrix::Identity;
 	m_InverseInertiaTensorWorld = Matrix::Identity;
+
+	m_Acceleration = Vec3(0.0f, -9.8f, 0.0f);
+
+	if (m_Mass == 0) m_Mass = 5.0f;
 }

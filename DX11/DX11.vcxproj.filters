@@ -142,9 +142,6 @@
     <Filter Include="0. Engine\Manager\RenderManager">
       <UniqueIdentifier>{43ad6e07-5c80-40c4-9310-e67e2a2d935e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="0. Engine\Manager\PhysicsManager">
-      <UniqueIdentifier>{12d75b60-5376-4662-97b8-098756f516b6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="0. Engine\Manager\TimeManager">
       <UniqueIdentifier>{55973ca5-fcc5-4012-aff8-78d199739482}</UniqueIdentifier>
     </Filter>
@@ -174,6 +171,18 @@
     </Filter>
     <Filter Include="0. Engine\98. Utils\Vector">
       <UniqueIdentifier>{2078ef67-5851-4b31-b627-37310c9884a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="0. Engine\Physics">
+      <UniqueIdentifier>{64e1e28d-0ff6-4f16-b121-862f195acf4c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="0. Engine\Physics\PhysicsManager">
+      <UniqueIdentifier>{12d75b60-5376-4662-97b8-098756f516b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="0. Engine\Physics\CollisionDetector">
+      <UniqueIdentifier>{b5d95a05-de8f-4de3-bb76-cef1509a6f30}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="0. Engine\Physics\CollisionResolver">
+      <UniqueIdentifier>{f9ad989b-3a91-45dc-ac76-fcb8427959f2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -433,7 +442,7 @@
       <Filter>0. Engine\Manager\RenderManager</Filter>
     </ClCompile>
     <ClCompile Include="PhysicsManager.cpp">
-      <Filter>0. Engine\Manager\PhysicsManager</Filter>
+      <Filter>0. Engine\Physics\PhysicsManager</Filter>
     </ClCompile>
     <ClCompile Include="RigidBody.cpp">
       <Filter>0. Engine\Component\RigidBody</Filter>
@@ -497,6 +506,12 @@
     </ClCompile>
     <ClCompile Include="VectorUtils.cpp">
       <Filter>0. Engine\98. Utils\Vector</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionDetector.cpp">
+      <Filter>0. Engine\Physics\CollisionDetector</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionResolver.cpp">
+      <Filter>0. Engine\Physics\CollisionResolver</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -760,7 +775,7 @@
       <Filter>0. Engine\Manager\RenderManager</Filter>
     </ClInclude>
     <ClInclude Include="PhysicsManager.h">
-      <Filter>0. Engine\Manager\PhysicsManager</Filter>
+      <Filter>0. Engine\Physics\PhysicsManager</Filter>
     </ClInclude>
     <ClInclude Include="RigidBody.h">
       <Filter>0. Engine\Component\RigidBody</Filter>
@@ -824,6 +839,12 @@
     </ClInclude>
     <ClInclude Include="VectorUtils.h">
       <Filter>0. Engine\98. Utils\Vector</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionDetector.h">
+      <Filter>0. Engine\Physics\CollisionDetector</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionResolver.h">
+      <Filter>0. Engine\Physics\CollisionResolver</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

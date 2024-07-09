@@ -250,14 +250,10 @@
                     "type": "Transform"
                 },
                 {
-                    "airResistance": 0.10000000149011612,
                     "angularDamping": 0.05000000074505806,
-                    "elasticity": 0.10000000149011612,
-                    "friction": 0.5,
                     "isKinematic": false,
-                    "isMovable": true,
+                    "m_LinearDamping": 0.05000000074505806,
                     "mass": 34.0,
-                    "sleep": false,
                     "type": "RigidBody"
                 },
                 {
@@ -279,33 +275,33 @@
                 {
                     "_localPosition": [
                         -19.899999618530273,
-                        0.10000000149011612,
+                        -20.600000381469727,
                         8.699999809265137
                     ],
                     "_localRotation": [
-                        1.1780623197555542,
+                        1.5707963705062866,
                         0.3089231252670288,
                         0.0
                     ],
                     "_localScale": [
-                        0.5,
-                        0.800000011920929,
-                        0.4000000059604645
+                        1.0,
+                        1.0,
+                        1.0
                     ],
                     "_position": [
                         -19.899999618530273,
-                        0.10000000149011612,
+                        -20.600000381469727,
                         8.699999809265137
                     ],
                     "_rotation": [
-                        1.1780623197555542,
+                        1.5707963705062866,
                         0.30892443656921387,
-                        1.56416106733559e-08
+                        -1.56416106733559e-08
                     ],
                     "_scale": [
-                        0.5,
-                        0.8000000715255737,
-                        0.40000003576278687
+                        1.0,
+                        0.9999998807907104,
+                        0.9999998807907104
                     ],
                     "type": "Transform"
                 },
@@ -330,14 +326,10 @@
                     "type": "BoxCollider"
                 },
                 {
-                    "airResistance": 0.10000000149011612,
                     "angularDamping": 0.05000000074505806,
-                    "elasticity": 0.5,
-                    "friction": 0.5,
                     "isKinematic": true,
-                    "isMovable": true,
+                    "m_LinearDamping": 0.05000000074505806,
                     "mass": 180.0,
-                    "sleep": false,
                     "type": "RigidBody"
                 }
             ],
@@ -379,14 +371,10 @@
                     "type": "Transform"
                 },
                 {
-                    "airResistance": 0.10000000149011612,
                     "angularDamping": 0.5,
-                    "elasticity": 0.5,
-                    "friction": 2.0,
                     "isKinematic": false,
-                    "isMovable": true,
+                    "m_LinearDamping": 0.05000000074505806,
                     "mass": 60.0,
-                    "sleep": false,
                     "type": "RigidBody"
                 },
                 {
@@ -439,14 +427,10 @@
                     "type": "Transform"
                 },
                 {
-                    "airResistance": 1.0,
-                    "angularDamping": 0.05000000074505806,
-                    "elasticity": 0.5,
-                    "friction": 1.0,
+                    "angularDamping": 1.0,
                     "isKinematic": false,
-                    "isMovable": true,
+                    "m_LinearDamping": 1.0,
                     "mass": 10.0,
-                    "sleep": false,
                     "type": "RigidBody"
                 },
                 {
@@ -508,14 +492,10 @@
                     "type": "Transform"
                 },
                 {
-                    "airResistance": 1.0,
                     "angularDamping": 0.05000000074505806,
-                    "elasticity": 1.0,
-                    "friction": 1.0,
                     "isKinematic": false,
-                    "isMovable": true,
+                    "m_LinearDamping": 0.05000000074505806,
                     "mass": 27.0,
-                    "sleep": false,
                     "type": "RigidBody"
                 },
                 {
@@ -597,14 +577,10 @@
                     "type": "BoxCollider"
                 },
                 {
-                    "airResistance": 1.0,
                     "angularDamping": 0.05000000074505806,
-                    "elasticity": 0.10000000149011612,
-                    "friction": 1.0,
                     "isKinematic": true,
-                    "isMovable": true,
+                    "m_LinearDamping": 0.05000000074505806,
                     "mass": 65.0,
-                    "sleep": false,
                     "type": "RigidBody"
                 }
             ],
@@ -615,7 +591,7 @@
                 {
                     "_localPosition": [
                         -38.5,
-                        3.9000000953674316,
+                        5.300000190734863,
                         13.199999809265137
                     ],
                     "_localRotation": [
@@ -630,7 +606,7 @@
                     ],
                     "_position": [
                         -38.5,
-                        3.9000000953674316,
+                        5.300000190734863,
                         13.199999809265137
                     ],
                     "_rotation": [
@@ -666,14 +642,10 @@
                     "type": "BoxCollider"
                 },
                 {
-                    "airResistance": 0.0,
                     "angularDamping": 0.05000000074505806,
-                    "elasticity": 0.5,
-                    "friction": 0.0,
                     "isKinematic": true,
-                    "isMovable": false,
+                    "m_LinearDamping": 0.05000000074505806,
                     "mass": 1.0,
-                    "sleep": false,
                     "type": "RigidBody"
                 }
             ],
@@ -735,14 +707,10 @@
                     "type": "BoxCollider"
                 },
                 {
-                    "airResistance": 0.20000000298023224,
                     "angularDamping": 0.5,
-                    "elasticity": 0.5,
-                    "friction": 1.0,
                     "isKinematic": false,
-                    "isMovable": false,
+                    "m_LinearDamping": 0.05000000074505806,
                     "mass": 1.0,
-                    "sleep": false,
                     "type": "RigidBody"
                 }
             ],
