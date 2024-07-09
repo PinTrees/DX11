@@ -10,6 +10,7 @@ public:
 	static int activeAxis;
 
 public:
+	static void DrawVector(const Matrix worldMatrix, const Vec3 vector);
 	static void DrawCube(const XMMATRIX& worldMatrix, const Vec3& size);
 	static void DrawSphere(const XMMATRIX& worldMatrix, float radius);
 	static void DrawTransformHandler(Transform* transform);

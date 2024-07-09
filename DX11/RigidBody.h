@@ -34,6 +34,7 @@ public:
 	void Integrate(float deltaTime);
 
 public:
+	virtual void OnDrawGizmos() override;
 	virtual void OnInspectorGUI() override;
 
 	GENERATE_COMPONENT_BODY(RigidBody) 

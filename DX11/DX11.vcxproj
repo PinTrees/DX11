@@ -270,6 +270,7 @@
     <ClInclude Include="Types.h" />
     <ClInclude Include="UMaterial.h" />
     <ClInclude Include="Utils.h" />
+    <ClInclude Include="VectorUtils.h" />
     <ClInclude Include="vector_ex.h" />
     <ClInclude Include="Vertex.h" />
     <ClInclude Include="Waves.h" />
@@ -397,6 +398,7 @@
     <ClCompile Include="Transform.cpp" />
     <ClCompile Include="UMaterial.cpp" />
     <ClCompile Include="Utils.cpp" />
+    <ClCompile Include="VectorUtils.cpp" />
     <ClCompile Include="vector_ex.cpp" />
     <ClCompile Include="Vertex.cpp" />
     <ClCompile Include="Waves.cpp" />

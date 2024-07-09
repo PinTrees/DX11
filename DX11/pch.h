@@ -99,6 +99,7 @@ using namespace Microsoft::WRL;
 #include "TimeManager.h"
 
 #include "Gizmo.h"
+#include "VectorUtils.h"
 
 // SHADER
 #include "NormalMapSkinnedShader.h"

@@ -9,6 +9,60 @@ bool Gizmo::isDragging = false;
 ImVec2 Gizmo::lastMousePos = ImVec2(0, 0);
 int Gizmo::activeAxis = 0;
 
+void Gizmo::DrawVector(const Matrix worldMatrix, const Vec3 vector)
+{
+    auto context = Application::GetI()->GetDeviceContext();
+
+    // 카메라의 뷰 프로젝션 행렬 가져오기
+    Matrix viewProj = RenderManager::GetI()->cameraViewProjectionMatrix;
+    Matrix worldViewProj = worldMatrix * viewProj;
+
+    // 뷰포트 크기 가져오기
+    D3D11_VIEWPORT viewport;
+    UINT numViewports = 1;
+    context->RSGetViewports(&numViewports, &viewport);
+
+    // 카메라의 위치를 가져오기
+    EditorCamera* sceneViewCamera = SceneViewManager::GetI()->m_LastActiveSceneEditorWindow->GetSceneCamera();
+    Vec3 cameraPosition = sceneViewCamera->GetPosition();
+    Vec3 position = Vec3(worldMatrix._41, worldMatrix._42, worldMatrix._43);
+
+    // 카메라와 오브젝트 간의 거리 계산
+    float distance = (position - cameraPosition).Length();
+    distance = max(distance, 0.1f); // 최소 거리 제한
+
+    // 거리 기반 스케일링 팩터 계산
+    float scale = distance / 7.0f;
+
+    // 현재 창의 위치와 크기를 가져옴
+    ImVec2 windowPos = ImGui::GetWindowPos();
+    ImVec2 contentRegionMin = ImGui::GetWindowContentRegionMin();
+    ImVec2 contentRegionMax = ImGui::GetWindowContentRegionMax();
+    ImVec2 offset = ImVec2(contentRegionMin.x + windowPos.x, contentRegionMin.y + windowPos.y);
+
+    auto WorldToScreen = [&](const Vec3& worldPos) -> ImVec2
+        {
+            Vec3 pos = Vector3::Transform(worldPos, worldViewProj);
+            float x = (pos.x / pos.z) * 0.5f + 0.5f;
+            float y = (pos.y / pos.z) * -0.5f + 0.5f;
+            return ImVec2(x * viewport.Width + viewport.TopLeftX + offset.x, y * viewport.Height + viewport.TopLeftY + offset.y);
+        };
+
+    const ImU32 color = IM_COL32(255, 0, 0, 255);
+    const float thickness = 2.0f;
+
+    // 시작점 및 끝점 계산
+    Vec3 start = Vector3::Transform(Vec3::Zero, worldMatrix);
+    Vec3 end = Vector3::Transform(vector * scale, worldMatrix);
+
+    // 화면 좌표로 변환
+    ImVec2 startScreen = WorldToScreen(start);
+    ImVec2 endScreen = WorldToScreen(end);
+
+    // 벡터 그리기
+    ImGui::GetWindowDrawList()->AddLine(startScreen, endScreen, color, thickness);
+}
+
 void Gizmo::DrawCube(const XMMATRIX& worldMatrix, const Vec3& size)
 {
     auto context = Application::GetI()->GetDeviceContext();

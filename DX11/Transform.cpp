@@ -132,9 +132,9 @@ void Transform::OnInspectorGUI()
 
 	// Convert radians to degrees
 	Vec3 angles;
-	angles.x = XMConvertToDegrees(_localRotation.x);
-	angles.y = XMConvertToDegrees(_localRotation.y);
-	angles.z = XMConvertToDegrees(_localRotation.z);
+	angles.x = XMConvertToDegrees(_localRotation.x); 
+	angles.y = XMConvertToDegrees(_localRotation.y); 
+	angles.z = XMConvertToDegrees(_localRotation.z); 
 
 	ImGui::Text("Rotation");
 	if (ImGui::DragFloat3("##Rotation", reinterpret_cast<float*>(&angles), 0.1f))

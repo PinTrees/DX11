@@ -4,6 +4,7 @@
 
 RigidBody::RigidBody()
 	: m_Velocity(0.0f, 0.0f, 0.0f),
+	m_Acceleration(0.0f, 0.0f, 0.0f),
 	m_Mass(1.0f),
 	m_Elasticity(0.5f)
 {
@@ -44,6 +45,12 @@ void RigidBody::Integrate(float deltaTime)
 
 	int a = 0;
 } 
+
+void RigidBody::OnDrawGizmos()
+{
+	Transform* tr = GetGameObject()->GetTransform();
+	Gizmo::DrawVector(tr->GetWorldMatrix(), m_Velocity);
+}
 
 void RigidBody::OnInspectorGUI()
 {

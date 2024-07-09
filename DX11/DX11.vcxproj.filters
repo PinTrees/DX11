@@ -172,6 +172,9 @@
     <Filter Include="1. Editor\Debug">
       <UniqueIdentifier>{e8eebb58-eba0-4d85-b7e5-2911df7dd6fd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="0. Engine\98. Utils\Vector">
+      <UniqueIdentifier>{2078ef67-5851-4b31-b627-37310c9884a2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="01. InitDemo.cpp">
@@ -491,6 +494,9 @@
     </ClCompile>
     <ClCompile Include="Debug.cpp">
       <Filter>1. Editor\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="VectorUtils.cpp">
+      <Filter>0. Engine\98. Utils\Vector</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -815,6 +821,9 @@
     </ClInclude>
     <ClInclude Include="Debug.h">
       <Filter>1. Editor\Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="VectorUtils.h">
+      <Filter>0. Engine\98. Utils\Vector</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
