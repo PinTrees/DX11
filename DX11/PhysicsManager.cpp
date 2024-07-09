@@ -2,6 +2,15 @@
 #include "PhysicsManager.h"
 #include "Debug.h"
 
+// SAT(Separating Axis Theorem)
+// GJK / EPA(Gilbert - Johnson - Keerthi / Expanding Polytope Algorithm)
+
+// 충돌 시 적용되는 힘 계산.
+// 침투 깊이(Penetration Depth) 및 충돌 법선 벡터(Contact Normal) 계산.
+// Impulse 기반 : 직관적인 방식.
+// Constraint 기반 : LCP Solver 사용.
+// 위치 보정 : 침투 깊이만큼 물체를 밀어내는 위치 보정.
+
 SINGLE_BODY(PhysicsManager)
 
 PhysicsManager::PhysicsManager()
@@ -22,8 +31,7 @@ void PhysicsManager::Init()
 
 void PhysicsManager::Update(float deltaTime)
 {
-	const vector<GameObject*> gameObjects = SceneManager::GetI()->GetCurrentScene()->GetAllGameObjects();
-
+	auto gameObjects = SceneManager::GetI()->GetCurrentScene()->GetAllGameObjects();
 	for (auto& gameObject : gameObjects)
 	{
 		auto rigidBody = gameObject->GetComponent<RigidBody>();
@@ -285,7 +293,7 @@ bool PhysicsManager::CheckBoxBoxCollision(BoxCollider* box1, BoxCollider* box2, 
 	// 충돌이 발생한 경우 충돌 지점과 법선 벡터, 침투 깊이를 계산합니다.
 	contact.normal = Normalize(bestAxis);
 	contact.penetrationDepth = minPenetration;
-	contact.point = box1Center + bestAxis * (minPenetration / 2.0f);
+	contact.point = box1Center + contact.normal * (minPenetration / 2.0f);
 
 	Debug::Log("Contact Point: " + ToString(contact.point));
 	Debug::Log("Contact PenetrationDepth: " + to_string(contact.penetrationDepth)); 
@@ -305,17 +313,17 @@ void PhysicsManager::HandleCollision(GameObject* obj1, GameObject* obj2, COLLIDE
 
 void PhysicsManager::ResolveCollision(GameObject* obj1, GameObject* obj2, const Contact& contact)
 {
-	RigidBody* rb1 = obj1->GetComponent<RigidBody>(); 
-	RigidBody* rb2 = obj2->GetComponent<RigidBody>(); 
+	RigidBody* rb1 = obj1->GetComponent<RigidBody>();
+	RigidBody* rb2 = obj2->GetComponent<RigidBody>();
 
 	// 두 객체 모두 리지드바디 컴포넌트가 없다면 함수를 종료합니다.
 	if (rb1 == nullptr && rb2 == nullptr)
 		return;
 
 	// 두 객체 모두 키네틱 상태라면 함수를 종료합니다. 
-	if ((rb1 && rb1->IsKinematic()) && (rb2 && rb2->IsKinematic())) 
+	if ((rb1 && rb1->IsKinematic()) && (rb2 && rb2->IsKinematic()))
 		return;
-	 
+
 	// 상대 속도 계산: 두 객체 모두 리지드바디가 있다면 차이를, 하나만 있다면 해당 리지드바디의 속도를 사용합니다.
 	Vec3 relativeVelocity;
 	if (rb1 && rb2) relativeVelocity = rb2->GetVelocity() - rb1->GetVelocity();
@@ -327,16 +335,16 @@ void PhysicsManager::ResolveCollision(GameObject* obj1, GameObject* obj2, const 
 	float invMass2 = (rb2 && !rb2->IsKinematic()) ? rb2->GetInverseMass() : 0.0f;
 
 	// 복원 계수 계산: 두 객체 모두 리지드바디가 있다면 최소 복원 계수를, 하나만 있다면 해당 리지드바디의 복원 계수를 사용합니다.
-	float restitution = 0.0f; 
+	float restitution = 0.0f;
 	if (rb1 && rb2) restitution = min(rb1->GetRestitution(), rb2->GetRestitution());
 	else if (rb1) restitution = rb1->GetRestitution();
 	else if (rb2) restitution = rb2->GetRestitution();
-	
+
 	// 충돌 정규에 따른 속도 계산
 	float velocityAlongNormal = relativeVelocity.Dot(contact.normal);
 	// 두 객체가 서로 멀어지는 경우, 충돌 해결을 진행하지 않습니다.
 	if (velocityAlongNormal > 0)
-		return; //velocityAlongNormal = 0;
+		return;
 
 	// 충격량 계산
 	float j = -(1 + restitution) * velocityAlongNormal;
@@ -346,14 +354,46 @@ void PhysicsManager::ResolveCollision(GameObject* obj1, GameObject* obj2, const 
 	Vec3 impulse = contact.normal * j;
 	if (rb1 && !rb1->IsKinematic()) rb1->ApplyImpulse(-impulse);
 	if (rb2 && !rb2->IsKinematic()) rb2->ApplyImpulse(impulse);
-	
+
+	// 토크 적용
+	Vec3 r1 = contact.point - obj1->GetTransform()->GetPosition();
+	Vec3 r2 = contact.point - obj2->GetTransform()->GetPosition();
+	Vec3 torque1 = Cross(r1, -impulse);
+	Vec3 torque2 = Cross(r2, impulse);
+	if (rb1 && !rb1->IsKinematic()) rb1->ApplyTorque(torque1);
+	if (rb2 && !rb2->IsKinematic()) rb2->ApplyTorque(torque2);
+
 	// 위치 보정
-	const float percent = 0.3f;		// usually 20% to 80%
-	const float slop = 0.01f;		// usually small like 0.01 to 0.1
+	const float percent = 0.2f;     // usually 20% to 80%
+	const float slop = 0.01f;       // usually small like 0.01 to 0.1
 
 	float penetrationCorrection = max(contact.penetrationDepth - slop, 0.0f) / (invMass1 + invMass2) * percent;
 	Vec3 correction = contact.normal * penetrationCorrection;
 
 	if (rb1 && !rb1->IsKinematic()) obj1->GetTransform()->Translate(-correction * invMass1);
 	if (rb2 && !rb2->IsKinematic()) obj2->GetTransform()->Translate(correction * invMass2);
+
+	// 마찰력 적용
+	Vec3 tangent = relativeVelocity - (contact.normal * velocityAlongNormal);
+	tangent = Normalize(tangent);
+	float jt = -relativeVelocity.Dot(tangent);
+	jt /= invMass1 + invMass2;
+
+	// 마찰 계수
+	float friction = rb1 ? rb1->GetFriction() : 0.0f;
+	if (rb2) friction = min(friction, rb2->GetFriction());
+
+	// 마찰력 적용
+	Vec3 frictionImpulse;
+	if (abs(jt) < j * friction)
+	{
+		frictionImpulse = tangent * jt;
+	}
+	else
+	{
+		frictionImpulse = tangent * -j * friction;
+	}
+
+	if (rb1 && !rb1->IsKinematic()) rb1->ApplyImpulse(-frictionImpulse); 
+	if (rb2 && !rb2->IsKinematic()) rb2->ApplyImpulse(frictionImpulse); 
 }

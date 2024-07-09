@@ -61,9 +61,8 @@ void Transform::UpdateTransform()
 		_matWorld = _matLocal;
 	}
 
-	Quaternion quat;
-	_matWorld.Decompose(_scale, quat, _position);
-	_rotation = ToEulerAngles(quat);
+	_matWorld.Decompose(_scale, m_Rotation, _position);
+	_rotation = ToEulerAngles(m_Rotation);
 
 	// Children
 	for (const shared_ptr<Transform>& child : _children)
@@ -100,6 +99,13 @@ void Transform::SetRotation(const Vec3& worldRotation)
 	}
 	else
 		SetLocalRotation(worldRotation);
+}
+
+void Transform::SetRotationQ(Quaternion q)
+{
+	m_Rotation = q;
+	_rotation = ToEulerAngles(q);
+	SetRotation(_rotation);
 }
 
 void Transform::SetPosition(const Vec3& worldPosition)

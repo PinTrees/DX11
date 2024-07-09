@@ -21,6 +21,8 @@ private:
 	Vec3 _rotation;
 	Vec3 _position;
 
+	Quaternion m_Rotation;
+
 public:
 	Transform();
 	~Transform();
@@ -45,6 +47,8 @@ public:
 	void SetScale(const Vec3& scale);
 	Vec3 GetRotation() { return _rotation; }
 	void SetRotation(const Vec3& rotation);
+	Quaternion GetRotationQ() { return m_Rotation; }
+	void SetRotationQ(Quaternion q);
 	Vec3 GetPosition() { return _position; }
 	void SetPosition(const Vec3& position);
 	void SetPosition(float x, float y, float z) { SetPosition(Vec3(x, y, z)); }  

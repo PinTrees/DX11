@@ -5,13 +5,13 @@
                 {
                     "_localPosition": [
                         -12.100000381469727,
-                        0.6000000238418579,
+                        -6.900000095367432,
                         -12.399999618530273
                     ],
                     "_localRotation": [
-                        0.0,
+                        -0.48869213461875916,
                         0.699999988079071,
-                        0.0
+                        -0.2076941728591919
                     ],
                     "_localScale": [
                         0.20000000298023224,
@@ -20,13 +20,13 @@
                     ],
                     "_position": [
                         -12.100000381469727,
-                        0.6000000238418579,
+                        -6.900000095367432,
                         -12.399999618530273
                     ],
                     "_rotation": [
-                        -0.0,
+                        -0.48869210481643677,
                         0.7000012397766113,
-                        -0.0
+                        -0.2076941579580307
                     ],
                     "_scale": [
                         0.20000000298023224,
@@ -94,14 +94,14 @@
             "components": [
                 {
                     "_localPosition": [
-                        8.300000190734863,
-                        0.6000000238418579,
+                        -35.0,
+                        -5.699999809265137,
                         -1.600000023841858
                     ],
                     "_localRotation": [
-                        0.0,
-                        -6.900000095367432,
-                        0.0
+                        -0.4468042850494385,
+                        -6.899999141693115,
+                        0.37175512313842773
                     ],
                     "_localScale": [
                         0.20000000298023224,
@@ -109,14 +109,14 @@
                         0.20000000298023224
                     ],
                     "_position": [
-                        8.300000190734863,
-                        0.6000000238418579,
+                        -35.0,
+                        -5.699999809265137,
                         -1.600000023841858
                     ],
                     "_rotation": [
-                        0.0,
-                        -0.6168133616447449,
-                        0.0
+                        -0.44680434465408325,
+                        -0.616812527179718,
+                        0.3717551529407501
                     ],
                     "_scale": [
                         0.20000000298023224,
@@ -218,9 +218,9 @@
             "components": [
                 {
                     "_localPosition": [
-                        -26.27899932861328,
-                        1.9889999628067017,
-                        3.4700000286102295
+                        -29.29400062561035,
+                        0.7350000143051147,
+                        -22.100000381469727
                     ],
                     "_localRotation": [
                         0.03999999910593033,
@@ -233,9 +233,9 @@
                         0.10000000149011612
                     ],
                     "_position": [
-                        -26.27899932861328,
-                        1.9889999628067017,
-                        3.4700000286102295
+                        -29.29400062561035,
+                        0.7350000143051147,
+                        -22.100000381469727
                     ],
                     "_rotation": [
                         0.03999998793005943,
@@ -250,9 +250,13 @@
                     "type": "Transform"
                 },
                 {
+                    "airResistance": 0.10000000149011612,
                     "elasticity": 0.10000000149011612,
+                    "friction": 0.5,
                     "isKinematic": false,
+                    "isMovable": true,
                     "mass": 34.0,
+                    "sleep": false,
                     "type": "RigidBody"
                 },
                 {
@@ -320,14 +324,18 @@
                     "size": [
                         143.0,
                         151.0,
-                        8.0
+                        3.0
                     ],
                     "type": "BoxCollider"
                 },
                 {
+                    "airResistance": 0.10000000149011612,
                     "elasticity": 0.5,
+                    "friction": 0.5,
                     "isKinematic": true,
+                    "isMovable": true,
                     "mass": 180.0,
+                    "sleep": false,
                     "type": "RigidBody"
                 }
             ],
@@ -337,9 +345,9 @@
             "components": [
                 {
                     "_localPosition": [
-                        -7.238999843597412,
-                        23.5049991607666,
-                        36.617000579833984
+                        -56.06100082397461,
+                        -4.236000061035156,
+                        -17.698999404907227
                     ],
                     "_localRotation": [
                         0.10471975803375244,
@@ -352,9 +360,9 @@
                         0.20000000298023224
                     ],
                     "_position": [
-                        -7.238999843597412,
-                        23.5049991607666,
-                        36.617000579833984
+                        -56.06100082397461,
+                        -4.236000061035156,
+                        -17.698999404907227
                     ],
                     "_rotation": [
                         -3.0368728637695313,
@@ -369,9 +377,13 @@
                     "type": "Transform"
                 },
                 {
+                    "airResistance": 0.10000000149011612,
                     "elasticity": 0.10000000149011612,
+                    "friction": 1.0,
                     "isKinematic": false,
+                    "isMovable": true,
                     "mass": 60.0,
+                    "sleep": false,
                     "type": "RigidBody"
                 },
                 {
@@ -424,9 +436,13 @@
                     "type": "Transform"
                 },
                 {
-                    "elasticity": 1.5,
-                    "isKinematic": true,
-                    "mass": 30.0,
+                    "airResistance": 1.0,
+                    "elasticity": 0.5,
+                    "friction": 1.0,
+                    "isKinematic": false,
+                    "isMovable": true,
+                    "mass": 10.0,
+                    "sleep": false,
                     "type": "RigidBody"
                 },
                 {
@@ -456,9 +472,9 @@
             "components": [
                 {
                     "_localPosition": [
-                        -13.600000381469727,
-                        35.400001525878906,
-                        5.900000095367432
+                        -9.699999809265137,
+                        45.400001525878906,
+                        -5.599999904632568
                     ],
                     "_localRotation": [
                         0.0,
@@ -471,9 +487,9 @@
                         0.10000000149011612
                     ],
                     "_position": [
-                        -13.600000381469727,
-                        35.400001525878906,
-                        5.900000095367432
+                        -9.699999809265137,
+                        45.400001525878906,
+                        -5.599999904632568
                     ],
                     "_rotation": [
                         -0.0,
@@ -488,9 +504,13 @@
                     "type": "Transform"
                 },
                 {
-                    "elasticity": 0.5,
+                    "airResistance": 1.0,
+                    "elasticity": 1.0,
+                    "friction": 1.0,
                     "isKinematic": false,
-                    "mass": 1.0,
+                    "isMovable": true,
+                    "mass": 27.0,
+                    "sleep": false,
                     "type": "RigidBody"
                 },
                 {
@@ -515,6 +535,142 @@
                 }
             ],
             "name": "Rock_5\u0000\u0000\u0000\u0000"
+        },
+        {
+            "components": [
+                {
+                    "_localPosition": [
+                        -3.299999952316284,
+                        9.699999809265137,
+                        0.0
+                    ],
+                    "_localRotation": [
+                        1.8238508701324463,
+                        0.4241323471069336,
+                        0.17976891994476318
+                    ],
+                    "_localScale": [
+                        0.20000000298023224,
+                        0.20000000298023224,
+                        0.10000000149011612
+                    ],
+                    "_position": [
+                        -3.299999952316284,
+                        9.699999809265137,
+                        0.0
+                    ],
+                    "_rotation": [
+                        1.8238507509231567,
+                        0.4241335093975067,
+                        0.179768905043602
+                    ],
+                    "_scale": [
+                        0.20000000298023224,
+                        0.20000001788139343,
+                        0.10000000149011612
+                    ],
+                    "type": "Transform"
+                },
+                {
+                    "materialPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\AssetStore\\ScanFactory\\AbandonedFactory\\Meshes\\sm_en_ConcretePlates_01\\New Material.mat",
+                    "meshPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\AssetStore\\ScanFactory\\AbandonedFactory\\Meshes\\sm_en_ConcretePlates_01\\sm_en_ConcretePlates_01.FBX",
+                    "shaderPath": "",
+                    "subsetIndex": 0,
+                    "type": "MeshRenderer"
+                },
+                {
+                    "offset": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "size": [
+                        173.0,
+                        141.0,
+                        13.0
+                    ],
+                    "type": "BoxCollider"
+                },
+                {
+                    "airResistance": 0.10000000149011612,
+                    "elasticity": 0.10000000149011612,
+                    "friction": 0.5,
+                    "isKinematic": true,
+                    "isMovable": true,
+                    "mass": 247.0,
+                    "sleep": false,
+                    "type": "RigidBody"
+                }
+            ],
+            "name": "Ground_2\u0000t"
+        },
+        {
+            "components": [
+                {
+                    "_localPosition": [
+                        -38.5,
+                        3.9000000953674316,
+                        13.199999809265137
+                    ],
+                    "_localRotation": [
+                        1.6877156496047974,
+                        0.7871434688568115,
+                        -0.25656330585479736
+                    ],
+                    "_localScale": [
+                        0.20000000298023224,
+                        0.10000000149011612,
+                        0.10000000149011612
+                    ],
+                    "_position": [
+                        -38.5,
+                        3.9000000953674316,
+                        13.199999809265137
+                    ],
+                    "_rotation": [
+                        1.6877154111862183,
+                        0.7871446013450623,
+                        -0.25656333565711975
+                    ],
+                    "_scale": [
+                        0.20000000298023224,
+                        0.10000000149011612,
+                        0.09999999403953552
+                    ],
+                    "type": "Transform"
+                },
+                {
+                    "materialPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\AssetStore\\ScanFactory\\AbandonedFactory\\Meshes\\sm_en_ConcretePlates_01\\New Material.mat",
+                    "meshPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\AssetStore\\ScanFactory\\AbandonedFactory\\Meshes\\sm_en_ConcretePlates_01\\sm_en_ConcretePlates_01.FBX",
+                    "shaderPath": "",
+                    "subsetIndex": 0,
+                    "type": "MeshRenderer"
+                },
+                {
+                    "offset": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "size": [
+                        133.0,
+                        163.0,
+                        27.0
+                    ],
+                    "type": "BoxCollider"
+                },
+                {
+                    "airResistance": 0.0,
+                    "elasticity": 0.5,
+                    "friction": 0.0,
+                    "isKinematic": true,
+                    "isMovable": false,
+                    "mass": 1.0,
+                    "sleep": false,
+                    "type": "RigidBody"
+                }
+            ],
+            "name": "Ground_3\u0000t"
         }
     ]
 }
