@@ -11,12 +11,16 @@ private:
 	Vec3 m_Acceleration;	// 가속도
 	float m_Mass;			// 질량
 	float m_Elasticity;		// 반발 계수
+	bool m_IsKinematic;     // 키네틱 여부 (true면 물리 계산 제외)
 
 public:
 	RigidBody();
 	~RigidBody();
 
 public:
+	void SetKinematic(bool isKinematic) { m_IsKinematic = isKinematic; }
+	bool IsKinematic() const { return m_IsKinematic; }
+
 	void SetVelocity(const Vec3& velocity) { m_Velocity = velocity; }
 	Vec3 GetVelocity() const { return m_Velocity; }
 
