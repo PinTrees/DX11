@@ -130,7 +130,7 @@ void Gizmo::DrawSphere(const XMMATRIX& worldMatrix, float radius)
 {
     auto context = Application::GetI()->GetDeviceContext();
 
-    const int circleSegments = 40;  // 원을 구성하는 세그먼트 수
+    const int circleSegments = 25;  // 원을 구성하는 세그먼트 수
 
     std::vector<XMFLOAT3> vertices;
     vertices.reserve(circleSegments + 1);
@@ -212,6 +212,62 @@ void Gizmo::DrawSphere(const XMMATRIX& worldMatrix, float radius)
     DrawCircle(center, camUpF, camRightF);  // XY 평면 
 }
 
+void Gizmo::DrawArrow(Vector3 position, Vec3 dir, ImVec4 color) 
+{
+    EditorCamera* sceneViewCamera = SceneViewManager::GetI()->m_LastActiveSceneEditorWindow->GetSceneCamera();
+
+    // World Matrix 가져오기
+    Matrix worldMatrix = Matrix::CreateTranslation(position);
+
+    auto context = Application::GetI()->GetDeviceContext();
+    Matrix viewProj = RenderManager::GetI()->cameraViewProjectionMatrix;
+
+    // 위치를 추출
+    Vector3 pos = position;
+
+    // 카메라의 위치를 가져오기
+    Vector3 cameraPosition = sceneViewCamera->GetPosition();
+
+    // 카메라와 오브젝트 간의 거리 계산
+    float distance = Vector3::Distance(pos, cameraPosition);
+    distance = max(distance, 0.1f); // 최소 거리 제한
+
+    // 거리 기반 스케일링 팩터 계산
+    float scale = distance / 10;
+
+    // 3D에서 2D로 투영
+    D3D11_VIEWPORT viewport;
+    UINT numViewports = 1;
+    context->RSGetViewports(&numViewports, &viewport);
+
+    // 현재 창의 위치와 크기를 가져옴
+    ImVec2 windowPos = ImGui::GetWindowPos();
+    ImVec2 contentRegionMin = ImGui::GetWindowContentRegionMin();
+    ImVec2 contentRegionMax = ImGui::GetWindowContentRegionMax();
+    ImVec2 offset = ImVec2(contentRegionMin.x + windowPos.x, contentRegionMin.y + windowPos.y);
+
+    auto WorldToScreen = [&](const Vector3& worldPos) -> Vec2
+        {
+            DirectX::XMFLOAT4 projectedPos; 
+            DirectX::XMStoreFloat4(&projectedPos, DirectX::XMVector3TransformCoord(worldPos, viewProj)); 
+
+            if (projectedPos.w <= 0.0f)
+            {
+                return Vec2(-1000.0f, -1000.0f);
+            }
+
+            Vec2 screenPos;
+            screenPos.x = (projectedPos.x / projectedPos.w * 0.5f + 0.5f) * (contentRegionMax.x - contentRegionMin.x) + offset.x;
+            screenPos.y = (1.0f - (projectedPos.y / projectedPos.w * 0.5f + 0.5f)) * (contentRegionMax.y - contentRegionMin.y) + offset.y;
+            return screenPos;
+        };
+
+    Vec2 handlePos = WorldToScreen(pos);
+    Vec2 endPos = WorldToScreen(pos + dir * scale); 
+
+    // 핸들 그리기
+    DrawwPoinVector(handlePos, endPos, color);
+}
 
 void Gizmo::DrawTransformHandler(Transform* transform)
 {
@@ -333,4 +389,30 @@ void Gizmo::DrawAxisHandle(const ImVec2& pos, const ImVec2& dir, const ImVec4& c
 {
     ImGui::GetWindowDrawList()->AddLine(pos, dir, ImGui::GetColorU32(color), 2.0f);
     ImGui::GetWindowDrawList()->AddCircleFilled(dir, 5.0f, ImGui::GetColorU32(color));
+}
+
+void Gizmo::DrawwPoinVector(const Vec2& pos, const Vec2& dir, const ImVec4& color)
+{
+    ImGui::GetWindowDrawList()->AddLine(ImVec2(pos.x, pos.y), ImVec2(dir.x, dir.y), ImGui::GetColorU32(color), 1.0f);
+    ImGui::GetWindowDrawList()->AddCircleFilled(ImVec2(pos.x, pos.y), 3.0f, ImGui::GetColorU32(color));
+
+    // 방향 벡터 계산
+    Vec2 direction = dir - pos;
+    float length = sqrtf(direction.x * direction.y + direction.y * direction.y); 
+
+    // 삼각형의 다른 두 점을 계산
+    Vec2 directionNorm = direction / length;
+    Vec2 orthogonal(-directionNorm.y, directionNorm.x); // orthogonal 벡터 
+
+    float arrowSize = 10.0f; // 삼각형의 크기를 조정하기 위한 값 
+    Vec2 p1 = dir;
+    Vec2 p2 = dir - directionNorm * arrowSize + orthogonal * arrowSize * 0.5f;  
+    Vec2 p3 = dir - directionNorm * arrowSize - orthogonal * arrowSize * 0.5f;  
+
+    // 삼각형 그리기
+    ImGui::GetWindowDrawList()->AddTriangleFilled(
+        ImVec2(p1.x, p1.y), 
+        ImVec2(p2.x, p2.y), 
+        ImVec2(p3.x, p3.y), 
+        ImGui::GetColorU32(color));
 }

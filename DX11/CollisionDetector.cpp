@@ -39,6 +39,48 @@ void CollisionDetector::DetectCollision(std::vector<Contact*>& contacts, vector<
     }
 }
 
+void CollisionDetector::DetectCollision(std::vector<Contact*>& contacts, std::unordered_map<unsigned int, Collider*>& colliders)
+{
+	for (auto i = colliders.begin(); i != colliders.end(); ++i)
+	{
+		Collider* colliderPtrI = i->second;
+		for (auto j = std::next(i, 1); j != colliders.end(); ++j)
+		{
+			Collider* colliderPtrJ = j->second;
+			if (typeid(*colliderPtrI) == typeid(SphereCollider))
+			{
+				SphereCollider* collider1 = static_cast<SphereCollider*>(colliderPtrI);
+				if (typeid(*colliderPtrJ) == typeid(SphereCollider)) // 구 - 구 충돌
+				{
+					SphereCollider* collider2 = static_cast<SphereCollider*>(colliderPtrJ);
+					CheckSphereSphereCollision(contacts, collider1, collider2);
+				}
+				else if (typeid(*colliderPtrJ) == typeid(BoxCollider)) // 구 - 직육면체 충돌
+				{
+					BoxCollider* collider2 = static_cast<BoxCollider*>(colliderPtrJ);
+					CheckSphereBoxCollision(contacts, collider1, collider2);
+				}
+			}
+			else if (typeid(*colliderPtrI) == typeid(BoxCollider))
+			{
+				BoxCollider* collider1 = static_cast<BoxCollider*>(colliderPtrI);
+				if (typeid(*colliderPtrJ) == typeid(SphereCollider)) // 구 - 직육면체 충돌
+				{
+					SphereCollider* collider2 = static_cast<SphereCollider*>(colliderPtrJ);
+					CheckSphereBoxCollision(contacts, collider2, collider1);
+				}
+				else if (typeid(*colliderPtrJ) == typeid(BoxCollider)) // 직육면체 - 직육면체 충돌
+				{
+					BoxCollider* collider2 = static_cast<BoxCollider*>(colliderPtrJ);
+					CheckBoxBoxCollision(contacts, collider1, collider2);
+				}
+			}
+		}
+
+		/* 지면과의 충돌 검사 */
+	}
+}
+
 
 bool CollisionDetector::CheckSphereSphereCollision(std::vector<Contact*>& contacts, SphereCollider* sphere1, SphereCollider* sphere2)
 {
@@ -82,20 +124,20 @@ bool CollisionDetector::CheckSphereSphereCollision(std::vector<Contact*>& contac
 
 bool CollisionDetector::CheckSphereBoxCollision(std::vector<Contact*>& contacts, SphereCollider* sphere, BoxCollider* box)
 {
-	Transform* sphereTr = sphere->GetGameObject()->GetTransform();
-	Transform* boxTr = box->GetGameObject()->GetTransform();
+	Transform* sphereTr = sphere->GetGameObject()->GetTransform(); 
+	Transform* boxTr = box->GetGameObject()->GetTransform(); 
 
-	RigidBody* sphereRb = sphere->GetGameObject()->GetComponent<RigidBody>();
-	RigidBody* boxRb = box->GetGameObject()->GetComponent<RigidBody>();
+	RigidBody* sphereRb = sphere->GetGameObject()->GetComponent<RigidBody>(); 
+	RigidBody* boxRb = box->GetGameObject()->GetComponent<RigidBody>(); 
 
 	/* 구의 중심을 직육면체의 로컬 좌표계로 변환한다 */
-	Matrix boxWorld = box->GetGameObject()->GetTransform()->GetWorldMatrix();
-	Matrix worldToLocal = box->GetGameObject()->GetTransform()->GetWorldMatrix().Invert();
-	Vec3 sphereInBoxLocal = Vec3::Transform(sphere->GetGameObject()->GetTransform()->GetPosition(), worldToLocal);
-	Vec3 boxHalfSize = box->GetSize() / 2;
+	Matrix worldToLocal = box->GetGameObject()->GetTransform()->GetWorldMatrix().Invert(); 
+	Vec3 sphereInBoxLocal = Vec3XMatrix(worldToLocal, sphereTr->GetPosition());
+
+	Vec3 boxHalfSize = box->GetSize() / 2.0f;
 
 	/* 구의 중심과 가장 가까운 직육면체 위의 점을 찾는다 */
-	Vec3 closestPoint;
+	Vector3 closestPoint;
 	/* x 축 성분 비교 */
 	if (sphereInBoxLocal.x > boxHalfSize.x)
 		closestPoint.x = boxHalfSize.x;
@@ -118,18 +160,19 @@ bool CollisionDetector::CheckSphereBoxCollision(std::vector<Contact*>& contacts,
 	else
 		closestPoint.z = sphereInBoxLocal.z;
 
-	/* 위의 결과와 구의 중심 사이의 거리가 구의 반지름보다 작다면 충돌이 발생한 것이다 */
+	/* 위의 결과와 구의 중심 사이의 거리가
+		구의 반지름보다 작다면 충돌이 발생한 것이다 */
 	float distanceSquared = (closestPoint - sphereInBoxLocal).LengthSquared();
 	if (distanceSquared < sphere->GetRadius() * sphere->GetRadius())
 	{
 		/* 구에 가장 가까운 직육면체 위의 점을 월드 좌표계로 변환한다 */
-		Vector3 closestPointWorld = Vec3::Transform(closestPoint, boxWorld);
+		Vector3 closestPointWorld = Vec3XMatrix(boxTr->GetWorldMatrix(), closestPoint);
 
 		/* 충돌 정보를 생성한다 */
 		Contact* newContact = new Contact;
-		newContact->bodies[0] = sphereRb; 
-		newContact->bodies[1] = boxRb; 
-		newContact->normal = sphere->GetGameObject()->GetTransform()->GetPosition() - closestPointWorld;
+		newContact->bodies[0] = sphereRb;
+		newContact->bodies[1] = boxRb;
+		newContact->normal = sphereTr->GetPosition() - closestPointWorld;
 		newContact->normal.Normalize();
 		newContact->contactPoint[0] = Vec3(sphereTr->GetPosition() - newContact->normal * sphere->GetRadius());
 		newContact->contactPoint[1] = Vec3(closestPointWorld);

@@ -184,6 +184,9 @@
     <Filter Include="0. Engine\Physics\CollisionResolver">
       <UniqueIdentifier>{f9ad989b-3a91-45dc-ac76-fcb8427959f2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="0. Engine\98. Utils\Type">
+      <UniqueIdentifier>{2ffa6689-c7cb-43df-8778-73505b9e4123}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="01. InitDemo.cpp">
@@ -512,6 +515,9 @@
     </ClCompile>
     <ClCompile Include="CollisionResolver.cpp">
       <Filter>0. Engine\Physics\CollisionResolver</Filter>
+    </ClCompile>
+    <ClCompile Include="Matrix3.cpp">
+      <Filter>0. Engine\98. Utils\Type</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -845,6 +851,9 @@
     </ClInclude>
     <ClInclude Include="CollisionResolver.h">
       <Filter>0. Engine\Physics\CollisionResolver</Filter>
+    </ClInclude>
+    <ClInclude Include="Matrix3.h">
+      <Filter>0. Engine\98. Utils\Type</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

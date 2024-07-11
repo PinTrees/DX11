@@ -49,11 +49,14 @@ public:
 	void SetRotation(const Vec3& rotation);
 	Quaternion GetRotationQ() { return m_Rotation; }
 	void SetRotationQ(Quaternion q);
+	void SetLookRotation(Quaternion q);
+
 	Vec3 GetPosition() { return _position; }
 	void SetPosition(const Vec3& position);
 	void SetPosition(float x, float y, float z) { SetPosition(Vec3(x, y, z)); }  
 
 	void Translate(const Vec3& position) { SetPosition(GetPosition() + position); }
+	void Rotate(const Vec3& angle) { SetRotation(GetRotation() + angle); }
 
 	Vec3 GetAxis(int index) const;
 	Vec3 GetRight() { return m_WorldMatrix.Right(); }

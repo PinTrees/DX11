@@ -9,25 +9,24 @@ RigidBody::RigidBody()
 	m_IsKinematic(false)
 {
 	m_InspectorTitleName = "RigidBody";
-
-	// 초기화 시 회전관성 텐서와 그 역행렬을 설정
-	m_InverseInertiaTensor = Matrix::Identity;
-	m_CenterOfMass = Vec3::Zero;
 }
 
 RigidBody::~RigidBody()
 {
 }
 
-void RigidBody::SetInertiaTensor(Matrix mat)
+// Fixed
+void RigidBody::SetInertiaTensor(const Matrix3 mat) 
 {
-	m_InverseInertiaTensor = mat.Invert(); 
-	TransformInertiaTensor(); 
+	m_InverseInertiaTensor = mat.inverse(); 
+	TransformInertiaTensor();
 }
 
-Vec3 RigidBody::GetCenterOfMass()
+// Fixed
+void RigidBody::SetInverseInertiaTensor(const Matrix3& mat)
 {
-	return GetGameObject()->GetTransform()->GetPosition();
+	m_InverseInertiaTensor = mat;
+	TransformInertiaTensor();
 }
 
 void RigidBody::ApplyTorque(const Vec3& torque)
@@ -51,7 +50,17 @@ void RigidBody::ApplyImpulse(const Vec3& impulse)
 
 Vec3 RigidBody::GetRotationVelocity()
 {
-	return m_RotationVelocity;
+	Transform* tr = GetGameObject()->GetTransform(); 
+	Matrix worldMatrix = tr->GetWorldMatrix(); 
+
+	Matrix3 rotationMatrix;
+	// transformMatrix의 상단 3x3 부분을 가져옵니다.
+	for (int i = 0; i < 3; ++i)
+		for (int j = 0; j < 3; ++j)
+			rotationMatrix.entries[3 * i + j] = tr->GetWorldMatrix().m[i][j];
+
+	// 로컬 회전 속도를 월드 회전 속도로 변환
+	return rotationMatrix * m_RotationVelocity;
 }
 
 void RigidBody::SetRotationVelocity(const Vec3& vec)
@@ -60,26 +69,32 @@ void RigidBody::SetRotationVelocity(const Vec3& vec)
 	Matrix worldMatrix = tr->GetWorldMatrix(); 
 
 	// transformMatrix의 상단 3x3 부분을 가져옵니다.
-	Matrix rotationMatrix( 
-		worldMatrix._11, worldMatrix._12, worldMatrix._13, 0.0f,
-		worldMatrix._21, worldMatrix._22, worldMatrix._23, 0.0f,
-		worldMatrix._31, worldMatrix._32, worldMatrix._33, 0.0f,
-		0.0f, 0.0f, 0.0f, 1.0f
-	); 
+	Matrix3 rotationMatrix;
+	for (int i = 0; i < 3; ++i)
+		for (int j = 0; j < 3; ++j)
+			rotationMatrix.entries[3 * i + j] = tr->GetWorldMatrix().m[i][j];
 
 	// 변환 행렬의 전치 행렬을 곱합니다.
-	m_RotationVelocity = Vector3::Transform(vec, rotationMatrix.Transpose()); 
+	m_RotationVelocity = rotationMatrix.transpose() * vec;
+}
+
+void RigidBody::SetMass(float mass)
+{
+	m_Mass = mass;
+	if (m_Mass > 0)
+		m_InverseMass = 1.0f / m_Mass;
 }
 
 void RigidBody::TransformInertiaTensor()
 {
-	Matrix worldMatrix = GetGameObject()->GetTransform()->GetWorldMatrix();
-	Matrix rotationMatrix = Matrix::CreateFromYawPitchRoll(
-		GetGameObject()->GetTransform()->GetRotation().y,
-		GetGameObject()->GetTransform()->GetRotation().x,
-		GetGameObject()->GetTransform()->GetRotation().z
-	);
-	m_InverseInertiaTensorWorld = rotationMatrix * m_InverseInertiaTensor * rotationMatrix.Transpose();
+	Transform* tr = GetGameObject()->GetTransform();
+	/* 변환 행렬 중 회전 변환 행렬만 뽑아낸다 */ 
+	Matrix3 rotationMatrix;
+	for (int i = 0; i < 3; ++i)
+		for (int j = 0; j < 3; ++j)
+			rotationMatrix.entries[3 * i + j] = tr->GetWorldMatrix().m[i][j];
+
+	m_InverseInertiaTensorWorld = (rotationMatrix * m_InverseInertiaTensorWorld) * rotationMatrix.transpose();
 }
 
 void RigidBody::Integrate(float deltaTime)
@@ -96,7 +111,7 @@ void RigidBody::Integrate(float deltaTime)
 	m_PrevAcceleration += m_Force * GetInverseMass();
 
 	/* 각가속도를 계산한다 */
-	Vec3 angularAcceleration = Vec3::Transform(m_Torque, m_InverseInertiaTensorWorld);
+	Vec3 angularAcceleration = m_InverseInertiaTensorWorld * m_Torque;
 
 	/* 속도 & 각속도를 업데이트한다 */
 	m_Velocity += m_PrevAcceleration * deltaTime;
@@ -108,22 +123,14 @@ void RigidBody::Integrate(float deltaTime)
 
 	/* 위치 업데이트 */
 	GetGameObject()->GetTransform()->Translate(m_Velocity * deltaTime);
+	GetGameObject()->GetTransform()->Rotate(m_RotationVelocity * deltaTime / 2.0f);
 
-	/* 회전 업데이트를 위한 사원수 */
-	Quaternion orientation = GetGameObject()->GetTransform()->GetRotationQ();
-	if (m_RotationVelocity.LengthSquared() > FLT_EPSILON)
-	{
-		Quaternion deltaRotation = Quaternion::CreateFromAxisAngle(m_RotationVelocity, m_RotationVelocity.Length() * deltaTime);
-		orientation = Quaternion::Concatenate(orientation, deltaRotation);
-	}
-
-	//m_Orientation += m_Orientation.RotateByScaledVector(rotation, duration / 2.0f);
-
-	/* 사원수를 정규화한다 */
-	orientation.Normalize();
+	/* 방향을 업데이트한다 */
+	//m_Orientation += RotateByScaledVector(m_Orientation, m_RotationVelocity, deltaTime / 2.0f);
+	//m_Orientation.Normalize();
 
 	/* 업데이트 된 회전을 트랜스폼에 설정 */
-	GetGameObject()->GetTransform()->SetRotationQ(orientation);
+	//GetGameObject()->GetTransform()->SetLookRotation(m_Orientation);
 
 	/* 월드 좌표계 기준의 관성 텐서를 업데이트한다 */
 	TransformInertiaTensor();
@@ -140,11 +147,15 @@ void RigidBody::OnDrawGizmos()
 	//Gizmo::DrawVector(tr->GetWorldMatrix(), m_RotationVelocity);
 	//Gizmo::DrawVector(tr->GetWorldMatrix(), m_Force);
 	//Gizmo::DrawVector(tr->GetWorldMatrix(), m_Torque);
+	Gizmo::DrawArrow(tr->GetPosition(), m_Velocity, ImVec4(0, 0, 255, 255));
 }
 
 void RigidBody::OnInspectorGUI()
 {
-	ImGui::DragFloat("Mass", &m_Mass); 
+	if (ImGui::DragFloat("Mass", &m_Mass))
+	{
+		if(m_Mass > 0) m_InverseMass = 1.0f / m_Mass;
+	}
 	ImGui::DragFloat("Linear Damping", &m_LinearDamping); 
 	ImGui::DragFloat("Angular Damping", &m_AngularDamping);
 	ImGui::Checkbox("Is Kinematic", &m_IsKinematic);
@@ -170,11 +181,6 @@ GENERATE_COMPONENT_FUNC_FROMJSON(RigidBody)
 	m_AngularDamping = j.value("angularDamping", 0.05f);
 	m_IsKinematic = j.value("isKinematic", false);
 
-	// Initialize inertia tensor
-	m_InverseInertiaTensor = Matrix::Identity;
-	m_InverseInertiaTensorWorld = Matrix::Identity;
-
-	m_Acceleration = Vec3(0.0f, -9.8f, 0.0f);
-
-	if (m_Mass == 0) m_Mass = 5.0f;
+	if (m_Mass > 0)
+		m_InverseMass = 1.0f / m_Mass;
 }

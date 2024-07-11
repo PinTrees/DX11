@@ -108,6 +108,13 @@ void Transform::SetRotationQ(Quaternion q)
 	SetRotation(_rotation);
 }
 
+void Transform::SetLookRotation(Quaternion q)
+{
+	m_Rotation = q;  
+	_rotation = ToEulerAngles(q);  
+	SetRotation(_rotation); 
+}
+
 void Transform::SetPosition(const Vec3& worldPosition)
 {
 	if (HasParent())
@@ -125,6 +132,7 @@ void Transform::SetPosition(const Vec3& worldPosition)
 	}
 }
 
+/* 월드 좌표계의 x, y, z 축 중 하나를 단위 벡터화하여 반환한다. */
 Vec3 Transform::GetAxis(int index) const
 {
 	/* 입력값 검사 */

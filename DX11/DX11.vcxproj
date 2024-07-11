@@ -235,6 +235,7 @@
     <ClInclude Include="LightHelper.h" />
     <ClInclude Include="LoadM3d.h" />
     <ClInclude Include="MathHelper.h" />
+    <ClInclude Include="Matrix3.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MeshGeometry.h" />
     <ClInclude Include="MeshRenderer.h" />
@@ -362,6 +363,7 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="GameTimer.cpp" />
     <ClCompile Include="MathHelper.cpp" />
+    <ClCompile Include="Matrix3.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="MeshGeometry.cpp" />
     <ClCompile Include="MeshRenderer.cpp" />

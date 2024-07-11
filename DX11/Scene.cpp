@@ -20,6 +20,7 @@ void Scene::Enter()
 
 void Scene::Exit()
 {
+    PhysicsManager::GetI()->Exit(); 
 }
 
 void Scene::RenderScene()
@@ -82,6 +83,8 @@ void Scene::RenderSceneGizmos()
             component->OnDrawGizmos();
         }
     }
+
+    PhysicsManager::GetI()->DebugRender();
 }
 
 void Scene::LastFramUpdate()

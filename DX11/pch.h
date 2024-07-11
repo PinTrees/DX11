@@ -3,6 +3,7 @@
 
 #include "Types.h"
 #include "define.h"
+#include "Matrix3.h"
 
 // STL
 #include <memory>

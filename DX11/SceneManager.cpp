@@ -96,6 +96,8 @@ void SceneManager::HandleStop()
 	if (m_pCurrScene == nullptr)
 		return;
 
+	m_pCurrScene->Exit();
+
 	wstring scenePath = m_pCurrScene->GetScenePath();
 	Scene* scene = Scene::Load(scenePath); 
 

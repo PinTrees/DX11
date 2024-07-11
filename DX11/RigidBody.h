@@ -8,11 +8,12 @@ class RigidBody
 {
 private:
 	float m_Mass;						// 질량
-	//float m_InverseMass;				// 질량의 역수. - 적분식에 활용
+	float m_InverseMass;				// 질량의 역수. - 적분식에 활용
 
+	// Fixed
 	/* 관성 모멘트 역텐서 */
-	Matrix m_InverseInertiaTensor;		// 역회전관성 로컬 좌표계 기준
-	Matrix m_InverseInertiaTensorWorld;	// 역회전관성 월드 좌표계 기준
+	Matrix3 m_InverseInertiaTensor;			// 로컬 좌표계 기준
+	Matrix3 m_InverseInertiaTensorWorld;	// 월드 좌표계 기준
 
 	/* 강체가 바라보는 방향 */
 	Quaternion m_Orientation;
@@ -20,7 +21,7 @@ private:
 	Vec3 m_Velocity;				// 선속도
 	Vec3 m_RotationVelocity;		// 각속도
 
-	Vec3 m_Acceleration;			// 가속도
+	Vec3 m_Acceleration;			// 가속도 - 중력
 	Vec3 m_PrevAcceleration;		// 직전 프레임에서 강체의 가속도 - 중력 가속도 + 외부 힘에 의한 가속도를 저장한다
 
 	float m_LinearDamping;			// 선속도 댐핑
@@ -32,19 +33,20 @@ private:
 	
 	bool m_IsKinematic;				// 키네틱 여부
 
-	Vec3 m_CenterOfMass;			// 무게 중심
-
 public:
 	RigidBody();
 	~RigidBody();
 
 public:
-	void SetInertiaTensor(Matrix mat);
-	Matrix GetInverseInertiaTensor() const { return m_InverseInertiaTensor; }
-	Matrix GetInverseInertiaTensorWorld() const { return m_InverseInertiaTensorWorld; }
+	void SetInertiaTensor(const Matrix3 mat);
+	void SetInverseInertiaTensor(const Matrix3& mat); 
+	Matrix3 GetInverseInertiaTensor() const { return m_InverseInertiaTensor; }   
+	Matrix3 GetInverseInertiaTensorWorld() const { return m_InverseInertiaTensorWorld; }  
 
 	void SetKinematic(bool isKinematic) { m_IsKinematic = isKinematic; }
 	bool IsKinematic() const { return m_IsKinematic; }
+
+	void SetAcceleration(Vec3 vec) { m_Acceleration = vec; }
 
 	void SetVelocity(const Vec3& velocity) { m_Velocity = velocity; }
 	Vec3 GetVelocity() const { return m_Velocity; }
@@ -52,12 +54,10 @@ public:
 	Vec3 GetRotationVelocity();
 	void SetRotationVelocity(const Vec3& rotation);
 
-	void SetMass(float mass) { m_Mass = mass; }
+	void SetMass(float mass);
 	float GetMass() const { return m_Mass; }
 
-	Vec3 GetCenterOfMass();
-
-	float GetInverseMass() const { return (m_Mass == 0) ? 0 : 1.0f / m_Mass; } 
+	float GetInverseMass() const { return m_InverseMass; }
 
 	void ApplyTorque(const Vec3& torque);
 	void ApplyForce(const Vec3& force);
