@@ -14,7 +14,7 @@ public:
 
 public:
 	void SetSize(Vec3 size) { m_Size = size; }
-	Vec3 GetSize() const { return m_Size; }
+	Vec3 GetSize();
 
 public:
 	virtual void OnDrawGizmos() override;

@@ -15,6 +15,7 @@ Scene::~Scene()
 
 void Scene::Enter()
 {
+    PhysicsManager::GetI()->Start();
 }
 
 void Scene::Exit()

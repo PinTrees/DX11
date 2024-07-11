@@ -8,14 +8,14 @@ class Transform : public Component
 private:
 	shared_ptr<Transform> _parent;
 	vector<shared_ptr<Transform>> _children;
-
+	
 	Vec3 _localScale = { 1.f, 1.f, 1.f };
 	Vec3 _localRotation = { 0.f, 0.f, 0.f };
 	Vec3 _localPosition = { 0.f, 0.f, 0.f };
 
 	// Cache
 	Matrix _matLocal = Matrix::Identity;
-	Matrix _matWorld = Matrix::Identity;
+	Matrix m_WorldMatrix = Matrix::Identity;
 
 	Vec3 _scale;
 	Vec3 _rotation;
@@ -56,11 +56,11 @@ public:
 	void Translate(const Vec3& position) { SetPosition(GetPosition() + position); }
 
 	Vec3 GetAxis(int index) const;
-	Vec3 GetRight() { return _matWorld.Right(); }
-	Vec3 GetUp() { return _matWorld.Up(); }
-	Vec3 GetLook() { return _matWorld.Backward(); }
-	Vec3 GetForward() { return _matWorld.Forward(); } 
-	Matrix GetWorldMatrix() { return _matWorld; }
+	Vec3 GetRight() { return m_WorldMatrix.Right(); }
+	Vec3 GetUp() { return m_WorldMatrix.Up(); }
+	Vec3 GetLook() { return m_WorldMatrix.Backward(); }
+	Vec3 GetForward() { return m_WorldMatrix.Forward(); } 
+	Matrix GetWorldMatrix() { return m_WorldMatrix; }
 
 	// °èÃþ °ü°è
 	bool HasParent() { return _parent != nullptr; }

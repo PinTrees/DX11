@@ -13,6 +13,11 @@ BoxCollider::~BoxCollider()
 
 }
 
+Vec3 BoxCollider::GetSize()
+{
+    return m_Size * GetGameObject()->GetTransform()->GetScale();
+}
+
 void BoxCollider::OnDrawGizmos()
 {
     Gizmo::DrawCube(m_pGameObject->GetComponent<Transform>()->GetWorldMatrix(), m_Size);

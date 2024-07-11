@@ -18,3 +18,4 @@ find_package(nlohmann_json CONFIG REQUIRED)
 
 # nlohmann/json 라이브러리 링크
 target_link_libraries(DX11 PRIVATE nlohmann_json::nlohmann_json)
+

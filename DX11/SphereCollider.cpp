@@ -11,6 +11,11 @@ SphereCollider::~SphereCollider()
 {
 }
 
+float SphereCollider::GetRadius()
+{
+    return m_Radius * GetGameObject()->GetTransform()->GetScale().x;
+}
+
 void SphereCollider::OnDrawGizmos()
 {
 	Transform* transform = m_pGameObject->GetTransform();

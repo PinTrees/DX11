@@ -3,9 +3,12 @@
 
 void CollisionResolver::ResolveCollision(std::vector<Contact*>& contacts, float deltaTime)
 {
-    for (auto& contact : contacts)
+    for (int i = 0; i < 30; ++i)
     {
-        sequentialImpulse(contact, deltaTime);
+        for (auto& contact : contacts)
+        {
+            sequentialImpulse(contact, deltaTime);
+        }
     }
 }
 
@@ -37,11 +40,11 @@ void CollisionResolver::sequentialImpulse(Contact* contact, float deltaTime)
         return;
 
     float closingSpeed = contact->normal.Dot(contact->bodies[0]->GetVelocity())
-        + contact->bodies[0]->GetRotation().Dot(contactPointFromCenter1.Cross(contact->normal));
+        + contact->bodies[0]->GetRotationVelocity().Dot(contactPointFromCenter1.Cross(contact->normal));
     if (contact->bodies[1] != nullptr)
     {
         closingSpeed -= contact->normal.Dot(contact->bodies[1]->GetVelocity())
-            + contact->bodies[1]->GetRotation().Dot(contactPointFromCenter2.Cross(contact->normal));
+            + contact->bodies[1]->GetRotationVelocity().Dot(contactPointFromCenter2.Cross(contact->normal));
     }
 
     /* bias °è»ê */
@@ -80,16 +83,16 @@ void CollisionResolver::sequentialImpulse(Contact* contact, float deltaTime)
     contact->bodies[0]->SetVelocity(
         contact->bodies[0]->GetVelocity() + linearImpulse * contact->bodies[0]->GetInverseMass()
     );
-    contact->bodies[0]->SetRotation(
-        contact->bodies[0]->GetRotation() + Vec3::Transform(angularImpulse1, contact->bodies[0]->GetInverseInertiaTensorWorld())
+    contact->bodies[0]->SetRotationVelocity(
+        contact->bodies[0]->GetRotationVelocity() + Vec3::Transform(angularImpulse1, contact->bodies[0]->GetInverseInertiaTensorWorld())
     );
     if (contact->bodies[1] != nullptr)
     {
         contact->bodies[1]->SetVelocity(
             contact->bodies[1]->GetVelocity() - linearImpulse * contact->bodies[1]->GetInverseMass()
         );
-        contact->bodies[1]->SetRotation(
-            contact->bodies[1]->GetRotation() - Vec3::Transform(angularImpulse2, contact->bodies[1]->GetInverseInertiaTensorWorld())
+        contact->bodies[1]->SetRotationVelocity(
+            contact->bodies[1]->GetRotationVelocity() - Vec3::Transform(angularImpulse2, contact->bodies[1]->GetInverseInertiaTensorWorld())
         );
     }
 
@@ -112,11 +115,11 @@ void CollisionResolver::sequentialImpulse(Contact* contact, float deltaTime)
     effectiveMass = totalInvMass + (termInDenominator1 + termInDenominator2).Dot(tangent1);
 
     closingSpeed = tangent1.Dot(contact->bodies[0]->GetVelocity())
-        + contact->bodies[0]->GetRotation().Dot(contactPointFromCenter1.Cross(tangent1));
+        + contact->bodies[0]->GetRotationVelocity().Dot(contactPointFromCenter1.Cross(tangent1));
     if (contact->bodies[1] != nullptr)
     {
         closingSpeed -= tangent1.Dot(contact->bodies[1]->GetVelocity())
-            + contact->bodies[1]->GetRotation().Dot(contactPointFromCenter2.Cross(tangent1));
+            + contact->bodies[1]->GetRotationVelocity().Dot(contactPointFromCenter2.Cross(tangent1));
     }
     impulse = -closingSpeed / effectiveMass;
     if (isnan(impulse) != 0)
@@ -142,16 +145,16 @@ void CollisionResolver::sequentialImpulse(Contact* contact, float deltaTime)
     contact->bodies[0]->SetVelocity(
         contact->bodies[0]->GetVelocity() + linearImpulse * contact->bodies[0]->GetInverseMass()
     );
-    contact->bodies[0]->SetRotation(
-        contact->bodies[0]->GetRotation() + Vec3::Transform(angularImpulse1, contact->bodies[0]->GetInverseInertiaTensorWorld())
+    contact->bodies[0]->SetRotationVelocity(
+        contact->bodies[0]->GetRotationVelocity() + Vec3::Transform(angularImpulse1, contact->bodies[0]->GetInverseInertiaTensorWorld())
     );
     if (contact->bodies[1] != nullptr)
     {
         contact->bodies[1]->SetVelocity(
             contact->bodies[1]->GetVelocity() - linearImpulse * contact->bodies[1]->GetInverseMass()
         );
-        contact->bodies[1]->SetRotation(
-            contact->bodies[1]->GetRotation() - Vec3::Transform(angularImpulse2, contact->bodies[1]->GetInverseInertiaTensorWorld())
+        contact->bodies[1]->SetRotationVelocity(
+            contact->bodies[1]->GetRotationVelocity() - Vec3::Transform(angularImpulse2, contact->bodies[1]->GetInverseInertiaTensorWorld())
         );
     }
 
@@ -166,11 +169,11 @@ void CollisionResolver::sequentialImpulse(Contact* contact, float deltaTime)
     effectiveMass = totalInvMass + (termInDenominator1 + termInDenominator2).Dot(tangent2);
 
     closingSpeed = tangent2.Dot(contact->bodies[0]->GetVelocity())
-        + contact->bodies[0]->GetRotation().Dot(contactPointFromCenter1.Cross(tangent2));
+        + contact->bodies[0]->GetRotationVelocity().Dot(contactPointFromCenter1.Cross(tangent2));
     if (contact->bodies[1] != nullptr)
     {
         closingSpeed -= tangent2.Dot(contact->bodies[1]->GetVelocity())
-            + contact->bodies[1]->GetRotation().Dot(contactPointFromCenter2.Cross(tangent2));
+            + contact->bodies[1]->GetRotationVelocity().Dot(contactPointFromCenter2.Cross(tangent2));
     }
     impulse = -closingSpeed / effectiveMass;
     if (isnan(impulse) != 0)
@@ -196,16 +199,16 @@ void CollisionResolver::sequentialImpulse(Contact* contact, float deltaTime)
     contact->bodies[0]->SetVelocity(
         contact->bodies[0]->GetVelocity() + linearImpulse * contact->bodies[0]->GetInverseMass()
     );
-    contact->bodies[0]->SetRotation(
-        contact->bodies[0]->GetRotation() + Vec3::Transform(angularImpulse1, contact->bodies[0]->GetInverseInertiaTensorWorld())
+    contact->bodies[0]->SetRotationVelocity(
+        contact->bodies[0]->GetRotationVelocity() + Vec3::Transform(angularImpulse1, contact->bodies[0]->GetInverseInertiaTensorWorld())
     );
     if (contact->bodies[1] != nullptr)
     {
         contact->bodies[1]->SetVelocity(
             contact->bodies[1]->GetVelocity() - linearImpulse * contact->bodies[1]->GetInverseMass()
         );
-        contact->bodies[1]->SetRotation(
-            contact->bodies[1]->GetRotation() - Vec3::Transform(angularImpulse2, contact->bodies[1]->GetInverseInertiaTensorWorld())
+        contact->bodies[1]->SetRotationVelocity(
+            contact->bodies[1]->GetRotationVelocity() - Vec3::Transform(angularImpulse2, contact->bodies[1]->GetInverseInertiaTensorWorld())
         );
     }
 }

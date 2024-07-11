@@ -79,13 +79,12 @@ void MeshRenderer::RenderShadow()
 	ComPtr<ID3DX11EffectTechnique> tech = Effects::BuildShadowMapFX->BuildShadowMapTech;
 	ComPtr<ID3DX11EffectTechnique> alphaClippedTech = Effects::BuildShadowMapFX->BuildShadowMapAlphaClipTech;
 
-	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
 	XMMATRIX world;
 	XMMATRIX worldInvTranspose;
 	XMMATRIX worldViewProj;
 
-	deviceContext->IASetInputLayout(InputLayouts::PosNormalTexTan.Get());
+	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST); 
+	deviceContext->IASetInputLayout(InputLayouts::PosNormalTexTan.Get()); 
 
 	D3DX11_TECHNIQUE_DESC techDesc;
 	tech->GetDesc(&techDesc);

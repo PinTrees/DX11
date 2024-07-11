@@ -480,12 +480,6 @@ void MeshViewDemo::OnEditorSceneRender(ID3D11RenderTargetView* renderTargetView,
 	Effects::NormalMapFX->SetShadowMap(shadowMap->DepthMapSRV().Get());
 	Effects::NormalMapFX->SetSsaoMap(ssao->AmbientSRV().Get());
 
-	XMMATRIX toTexSpace(
-		0.5f, 0.0f, 0.0f, 0.0f,
-		0.0f, -0.5f, 0.0f, 0.0f,
-		0.0f, 0.0f, 1.0f, 0.0f,
-		0.5f, 0.5f, 0.0f, 1.0f);
-
 	RenderManager::GetI()->shadowTransform = XMLoadFloat4x4(&_shadowTransform);
 
 	uint32 stride = sizeof(Vertex::PosNormalTexTan);

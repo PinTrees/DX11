@@ -11,13 +11,18 @@ RigidBody::RigidBody()
 	m_InspectorTitleName = "RigidBody";
 
 	// 초기화 시 회전관성 텐서와 그 역행렬을 설정
-	m_InertiaTensor = Matrix::Identity;
 	m_InverseInertiaTensor = Matrix::Identity;
 	m_CenterOfMass = Vec3::Zero;
 }
 
 RigidBody::~RigidBody()
 {
+}
+
+void RigidBody::SetInertiaTensor(Matrix mat)
+{
+	m_InverseInertiaTensor = mat.Invert(); 
+	TransformInertiaTensor(); 
 }
 
 Vec3 RigidBody::GetCenterOfMass()
@@ -27,12 +32,13 @@ Vec3 RigidBody::GetCenterOfMass()
 
 void RigidBody::ApplyTorque(const Vec3& torque)
 {
+	m_Torque += torque;
 }
 
 void RigidBody::ApplyForce(const Vec3& force)
 {
-	Vec3 acceleration = force / m_Mass; 
-	m_Acceleration += acceleration; 
+	Vec3 acceleration = force / m_Mass;
+	m_Acceleration += acceleration;
 }
 
 void RigidBody::ApplyImpulse(const Vec3& impulse)
@@ -43,46 +49,54 @@ void RigidBody::ApplyImpulse(const Vec3& impulse)
 	m_Velocity += impulse / m_Mass;
 }
 
-Vec3 RigidBody::GetRotation()
+Vec3 RigidBody::GetRotationVelocity()
 {
-	return GetGameObject()->GetTransform()->GetRotation();
+	return m_RotationVelocity;
 }
 
-void RigidBody::SetRotation(const Vec3& rotation)
+void RigidBody::SetRotationVelocity(const Vec3& vec)
 {
-	GetGameObject()->GetTransform()->SetRotation(rotation);
+	Transform* tr = GetGameObject()->GetTransform(); 
+	Matrix worldMatrix = tr->GetWorldMatrix(); 
+
+	// transformMatrix의 상단 3x3 부분을 가져옵니다.
+	Matrix rotationMatrix( 
+		worldMatrix._11, worldMatrix._12, worldMatrix._13, 0.0f,
+		worldMatrix._21, worldMatrix._22, worldMatrix._23, 0.0f,
+		worldMatrix._31, worldMatrix._32, worldMatrix._33, 0.0f,
+		0.0f, 0.0f, 0.0f, 1.0f
+	); 
+
+	// 변환 행렬의 전치 행렬을 곱합니다.
+	m_RotationVelocity = Vector3::Transform(vec, rotationMatrix.Transpose()); 
 }
 
 void RigidBody::TransformInertiaTensor()
 {
 	Matrix worldMatrix = GetGameObject()->GetTransform()->GetWorldMatrix();
-
-	// Extract the rotation matrix (3x3) from the world matrix (4x4)
 	Matrix rotationMatrix = Matrix::CreateFromYawPitchRoll(
 		GetGameObject()->GetTransform()->GetRotation().y,
 		GetGameObject()->GetTransform()->GetRotation().x,
 		GetGameObject()->GetTransform()->GetRotation().z
 	);
-
-	// Transform inertia tensor from local space to world space
-	m_InverseInertiaTensorWorld = rotationMatrix * m_InverseInertiaTensor * rotationMatrix.Transpose(); 
+	m_InverseInertiaTensorWorld = rotationMatrix * m_InverseInertiaTensor * rotationMatrix.Transpose();
 }
 
 void RigidBody::Integrate(float deltaTime)
 {
-	if (m_IsKinematic) 
+	if (m_IsKinematic)
 		return;
 
 	/* 강체의 질량이 무한대라면 적분을 하지 않는다 */
-	if (GetInverseMass() == 0.0f) 
+	if (GetInverseMass() == 0.0f)
 		return;
 
 	/* 가속도를 계산한다 */
 	m_PrevAcceleration = m_Acceleration;
-	m_PrevAcceleration += m_Force * GetInverseMass(); 
+	m_PrevAcceleration += m_Force * GetInverseMass();
 
 	/* 각가속도를 계산한다 */
-	Vec3 angularAcceleration = Vec3::Transform(m_Torque, m_InverseInertiaTensorWorld); 
+	Vec3 angularAcceleration = Vec3::Transform(m_Torque, m_InverseInertiaTensorWorld);
 
 	/* 속도 & 각속도를 업데이트한다 */
 	m_Velocity += m_PrevAcceleration * deltaTime;
@@ -92,21 +106,24 @@ void RigidBody::Integrate(float deltaTime)
 	m_Velocity *= powf(m_LinearDamping, deltaTime);
 	m_RotationVelocity *= powf(m_AngularDamping, deltaTime);
 
+	/* 위치 업데이트 */
+	GetGameObject()->GetTransform()->Translate(m_Velocity * deltaTime);
+
 	/* 회전 업데이트를 위한 사원수 */
 	Quaternion orientation = GetGameObject()->GetTransform()->GetRotationQ();
-	if (m_RotationVelocity.LengthSquared() > FLT_EPSILON) // Check if the length of the rotation velocity is not zero
+	if (m_RotationVelocity.LengthSquared() > FLT_EPSILON)
 	{
-		Quaternion deltaRotation = Quaternion::CreateFromAxisAngle(m_RotationVelocity, m_RotationVelocity.Length() * deltaTime * 0.5f);
+		Quaternion deltaRotation = Quaternion::CreateFromAxisAngle(m_RotationVelocity, m_RotationVelocity.Length() * deltaTime);
 		orientation = Quaternion::Concatenate(orientation, deltaRotation);
-		orientation.Normalize();
-		GetGameObject()->GetTransform()->SetRotationQ(orientation);
 	}
 
+	//m_Orientation += m_Orientation.RotateByScaledVector(rotation, duration / 2.0f);
+
 	/* 사원수를 정규화한다 */
-	orientation.Normalize(); 
+	orientation.Normalize();
 
 	/* 업데이트 된 회전을 트랜스폼에 설정 */
-	GetGameObject()->GetTransform()->SetRotationQ(orientation); 
+	GetGameObject()->GetTransform()->SetRotationQ(orientation);
 
 	/* 월드 좌표계 기준의 관성 텐서를 업데이트한다 */
 	TransformInertiaTensor();

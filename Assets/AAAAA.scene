@@ -264,7 +264,7 @@
                     "type": "MeshRenderer"
                 },
                 {
-                    "radius": 191.0,
+                    "radius": 230.0,
                     "type": "SphereCollider"
                 }
             ],
@@ -321,15 +321,15 @@
                     "size": [
                         143.0,
                         151.0,
-                        3.0
+                        12.0
                     ],
                     "type": "BoxCollider"
                 },
                 {
-                    "angularDamping": 0.05000000074505806,
+                    "angularDamping": 0.0,
                     "isKinematic": true,
-                    "m_LinearDamping": 0.05000000074505806,
-                    "mass": 180.0,
+                    "m_LinearDamping": 0.0,
+                    "mass": 1.0,
                     "type": "RigidBody"
                 }
             ],
@@ -339,9 +339,9 @@
             "components": [
                 {
                     "_localPosition": [
-                        -56.06100082397461,
-                        -4.236000061035156,
-                        -17.698999404907227
+                        -31.56100082397461,
+                        32.16400146484375,
+                        48.20100021362305
                     ],
                     "_localRotation": [
                         0.10471975803375244,
@@ -354,9 +354,9 @@
                         0.20000000298023224
                     ],
                     "_position": [
-                        -56.06100082397461,
-                        -4.236000061035156,
-                        -17.698999404907227
+                        -31.56100082397461,
+                        32.16400146484375,
+                        48.20100021362305
                     ],
                     "_rotation": [
                         -3.0368728637695313,
@@ -385,7 +385,7 @@
                     "type": "MeshRenderer"
                 },
                 {
-                    "radius": 91.0,
+                    "radius": 106.0,
                     "type": "SphereCollider"
                 }
             ],
@@ -427,9 +427,9 @@
                     "type": "Transform"
                 },
                 {
-                    "angularDamping": 1.0,
+                    "angularDamping": 0.5,
                     "isKinematic": false,
-                    "m_LinearDamping": 1.0,
+                    "m_LinearDamping": 0.5,
                     "mass": 10.0,
                     "type": "RigidBody"
                 },
@@ -525,9 +525,9 @@
             "components": [
                 {
                     "_localPosition": [
-                        -3.299999952316284,
+                        -13.800000190734863,
                         9.699999809265137,
-                        0.0
+                        20.200000762939453
                     ],
                     "_localRotation": [
                         1.8238508701324463,
@@ -540,9 +540,9 @@
                         0.10000000149011612
                     ],
                     "_position": [
-                        -3.299999952316284,
+                        -13.800000190734863,
                         9.699999809265137,
-                        0.0
+                        20.200000762939453
                     ],
                     "_rotation": [
                         1.8238507509231567,
@@ -577,8 +577,8 @@
                     "type": "BoxCollider"
                 },
                 {
-                    "angularDamping": 0.05000000074505806,
-                    "isKinematic": true,
+                    "angularDamping": 1.0,
+                    "isKinematic": false,
                     "m_LinearDamping": 0.05000000074505806,
                     "mass": 65.0,
                     "type": "RigidBody"
@@ -643,7 +643,7 @@
                 },
                 {
                     "angularDamping": 0.05000000074505806,
-                    "isKinematic": true,
+                    "isKinematic": false,
                     "m_LinearDamping": 0.05000000074505806,
                     "mass": 1.0,
                     "type": "RigidBody"
@@ -715,6 +715,62 @@
                 }
             ],
             "name": "Rock_6\u0000ect"
+        },
+        {
+            "components": [
+                {
+                    "_localPosition": [
+                        -69.5999984741211,
+                        1.899999976158142,
+                        0.0
+                    ],
+                    "_localRotation": [
+                        0.0,
+                        -1.3857914209365845,
+                        0.0
+                    ],
+                    "_localScale": [
+                        0.6000000238418579,
+                        0.800000011920929,
+                        1.0
+                    ],
+                    "_position": [
+                        -69.5999984741211,
+                        1.899999976158142,
+                        0.0
+                    ],
+                    "_rotation": [
+                        0.0,
+                        -1.3857896327972412,
+                        0.0
+                    ],
+                    "_scale": [
+                        0.5999999642372131,
+                        0.800000011920929,
+                        0.9999999403953552
+                    ],
+                    "type": "Transform"
+                },
+                {
+                    "materialPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\Rock\\RockMaterial.mat",
+                    "meshPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\Rock\\Mossy_rock_var8.fbx",
+                    "shaderPath": "",
+                    "subsetIndex": 1,
+                    "type": "MeshRenderer"
+                },
+                {
+                    "radius": 15.0,
+                    "type": "SphereCollider"
+                },
+                {
+                    "angularDamping": 0.10000000149011612,
+                    "isKinematic": false,
+                    "m_LinearDamping": 0.10000000149011612,
+                    "mass": 1.0,
+                    "type": "RigidBody"
+                }
+            ],
+            "name": "Rock\u0000bject"
         }
     ]
 }

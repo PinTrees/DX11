@@ -45,6 +45,7 @@ public:
 
 public:
 	void Init();
+	void Start();
 	void Update(float deltaTime);
 
 private:

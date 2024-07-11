@@ -14,6 +14,9 @@ private:
 	Matrix m_InverseInertiaTensor;		// 역회전관성 로컬 좌표계 기준
 	Matrix m_InverseInertiaTensorWorld;	// 역회전관성 월드 좌표계 기준
 
+	/* 강체가 바라보는 방향 */
+	Quaternion m_Orientation;
+
 	Vec3 m_Velocity;				// 선속도
 	Vec3 m_RotationVelocity;		// 각속도
 
@@ -28,7 +31,6 @@ private:
 	Vec3 m_Torque;
 	
 	bool m_IsKinematic;				// 키네틱 여부
-	Matrix m_InertiaTensor;			// 회전관성		(Inertia Tensor)
 
 	Vec3 m_CenterOfMass;			// 무게 중심
 
@@ -37,15 +39,18 @@ public:
 	~RigidBody();
 
 public:
-	/* getter */
-	Matrix GetInverseInertiaTensor() const { return m_InverseInertiaTensor; };
-	Matrix GetInverseInertiaTensorWorld() const { return m_InverseInertiaTensorWorld; };
-	
+	void SetInertiaTensor(Matrix mat);
+	Matrix GetInverseInertiaTensor() const { return m_InverseInertiaTensor; }
+	Matrix GetInverseInertiaTensorWorld() const { return m_InverseInertiaTensorWorld; }
+
 	void SetKinematic(bool isKinematic) { m_IsKinematic = isKinematic; }
 	bool IsKinematic() const { return m_IsKinematic; }
 
 	void SetVelocity(const Vec3& velocity) { m_Velocity = velocity; }
 	Vec3 GetVelocity() const { return m_Velocity; }
+
+	Vec3 GetRotationVelocity();
+	void SetRotationVelocity(const Vec3& rotation);
 
 	void SetMass(float mass) { m_Mass = mass; }
 	float GetMass() const { return m_Mass; }
@@ -53,16 +58,12 @@ public:
 	Vec3 GetCenterOfMass();
 
 	float GetInverseMass() const { return (m_Mass == 0) ? 0 : 1.0f / m_Mass; } 
-	//float GetRestitution() const { return m_Elasticity; } 
-	//float GetFriction() const { return m_Friction; }
 
 	void ApplyTorque(const Vec3& torque);
 	void ApplyForce(const Vec3& force);
 	void ApplyImpulse(const Vec3& impulse);
 	
 	// 오버라이드
-	Vec3 GetRotation();
-	void SetRotation(const Vec3& rotation);
 	void TransformInertiaTensor();
 
 	void Integrate(float deltaTime);

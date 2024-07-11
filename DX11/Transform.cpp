@@ -54,14 +54,14 @@ void Transform::UpdateTransform()
 
 	if (HasParent())
 	{
-		_matWorld = _matLocal * _parent->GetWorldMatrix();
+		m_WorldMatrix = _matLocal * _parent->GetWorldMatrix();
 	}
 	else
 	{
-		_matWorld = _matLocal;
+		m_WorldMatrix = _matLocal;
 	}
 
-	_matWorld.Decompose(_scale, m_Rotation, _position);
+	m_WorldMatrix.Decompose(_scale, m_Rotation, _position);
 	_rotation = ToEulerAngles(m_Rotation);
 
 	// Children
@@ -127,17 +127,20 @@ void Transform::SetPosition(const Vec3& worldPosition)
 
 Vec3 Transform::GetAxis(int index) const
 {
-	switch (index)
+	/* 입력값 검사 */
+	if (index < 0 || index > 3)
 	{
-	case 0:
-		return _matWorld.Right();
-	case 1:
-		return _matWorld.Up();
-	case 2:
-		return _matWorld.Backward();
-	default:
 		return Vec3::Zero;
 	}
+
+	Vec3 result(
+		m_WorldMatrix(index, 0),
+		m_WorldMatrix(index, 1),
+		m_WorldMatrix(index, 2)
+	);
+	result.Normalize();
+
+	return result;
 }
 
 void Transform::OnInspectorGUI()

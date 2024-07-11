@@ -34,6 +34,39 @@ void PhysicsManager::Init()
 	m_Resolver = new CollisionResolver;
 }
 
+void PhysicsManager::Start()
+{
+	auto gameObjects = SceneManager::GetI()->GetCurrentScene()->GetAllGameObjects();
+	for (auto& gameObject : gameObjects)
+	{
+		auto rigidBody = gameObject->GetComponent<RigidBody>();
+
+		if (rigidBody == nullptr)
+			continue;
+
+		BoxCollider* box = gameObject->GetComponent<BoxCollider>();
+		SphereCollider* sphere = gameObject->GetComponent<SphereCollider>();
+
+		// 강체의 관성 모멘트 텐서를 도형에 따라 설정함
+		Matrix inertiaTensor = Matrix::Identity;
+		if (sphere)
+		{
+			float value = 0.4f * rigidBody->GetMass();
+			inertiaTensor._11 = value;
+			inertiaTensor._22 = value;
+			inertiaTensor._33 = value;
+		}
+		else if (box)
+		{
+			float value = rigidBody->GetMass() / 6.0f;
+			inertiaTensor._11 = value;
+			inertiaTensor._22 = value;
+			inertiaTensor._33 = value;
+		}
+		rigidBody->SetInertiaTensor(inertiaTensor);
+	}
+}
+
 void PhysicsManager::Update(float deltaTime)
 {
 	/* 물체들을 적분한다 */

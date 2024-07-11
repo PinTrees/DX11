@@ -12,7 +12,7 @@ public:
 	~SphereCollider();
 
 public:
-	float GetRadius() { return m_Radius; }
+	float GetRadius();
 
 public:
 	virtual void OnDrawGizmos() override;

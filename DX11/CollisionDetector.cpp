@@ -23,15 +23,15 @@ void CollisionDetector::DetectCollision(std::vector<Contact*>& contacts, vector<
 			{
 				CheckBoxBoxCollision(contacts, box1Col, box2Col);
 			}
-			else if (box1Col && sphere2Col)
+			if (box1Col && sphere2Col)
 			{
 				CheckSphereBoxCollision(contacts, sphere2Col, box1Col);
 			}
-			else if(sphere1Col && box2Col)
+			if(sphere1Col && box2Col)
 			{
 				CheckSphereBoxCollision(contacts, sphere1Col, box2Col);
             }
-			else if (sphere1Col && sphere2Col)
+			if (sphere1Col && sphere2Col)
 			{
 				CheckSphereSphereCollision(contacts, sphere1Col, sphere2Col);
 			}

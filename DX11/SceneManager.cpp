@@ -88,6 +88,7 @@ void SceneManager::HandlePlay()
 		return;
 
 	Scene::Save(m_pCurrScene); 
+	m_pCurrScene->Enter();
 }
 
 void SceneManager::HandleStop()

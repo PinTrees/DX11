@@ -128,9 +128,9 @@ bool App::Init()
 	// Singleton Init
 	ResourceManager::GetI()->Init(_device);
 	InputManager::GetI()->Init();
-	PhysicsManager::GetI()->Init();
 
 	SceneManager::GetI()->Init();
+	PhysicsManager::GetI()->Init();
 
 	if (!EditorSettingManager::GetSetting()->LastOpenedScenePath.empty())
 	{
