@@ -44,29 +44,44 @@ Vec3 Transform::ToEulerAngles(Quaternion q)
 
 void Transform::UpdateTransform()
 {
-	Matrix matScale = Matrix::CreateScale(_localScale);
-	Matrix matRotation = Matrix::CreateRotationX(_localRotation.x);
-	matRotation *= Matrix::CreateRotationY(_localRotation.y);
-	matRotation *= Matrix::CreateRotationZ(_localRotation.z);
-	Matrix matTranslation = Matrix::CreateTranslation(_localPosition);
+	// 로컬 회전을 쿼터니언으로 변환
+	Quaternion localRotation = Quaternion::CreateFromYawPitchRoll(m_LocalEulerAngles.y, m_LocalEulerAngles.x, m_LocalEulerAngles.z);
 
-	_matLocal = matScale * matRotation * matTranslation;
+	// 로컬 변환 행렬 생성 
+	Matrix S = Matrix::CreateScale(m_LocalScale);  
+	Matrix R = Matrix::CreateFromQuaternion(localRotation);  
+	Matrix T = Matrix::CreateTranslation(m_LocalPosition);
+
+	m_LocalMatrix = S * R * T;
 
 	if (HasParent())
 	{
-		m_WorldMatrix = _matLocal * _parent->GetWorldMatrix();
+		m_WorldMatrix = m_LocalMatrix * _parent->GetWorldMatrix();
 	}
 	else
 	{
-		m_WorldMatrix = _matLocal;
+		m_WorldMatrix = m_LocalMatrix;
 	}
 
-	m_WorldMatrix.Decompose(_scale, m_Rotation, _position);
-	_rotation = ToEulerAngles(m_Rotation);
+	m_WorldMatrix.Decompose(m_Scale, m_Rotation, m_Position); 
+	m_EulerAngles = ToEulerAngles(m_Rotation); 
 
 	// Children
-	for (const shared_ptr<Transform>& child : _children)
-		child->UpdateTransform();
+	for (const shared_ptr<Transform>& child : _children) 
+	{
+		child->UpdateTransform(); 
+	}
+}
+
+Vec3 Transform::GetLocalPosition()
+{
+	return m_LocalPosition;
+}
+
+void Transform::SetLocalPosition(const Vec3& localPosition)
+{
+	m_LocalPosition = localPosition;
+	UpdateTransform();
 }
 
 void Transform::SetScale(const Vec3& worldScale)
@@ -104,15 +119,15 @@ void Transform::SetRotation(const Vec3& worldRotation)
 void Transform::SetRotationQ(Quaternion q)
 {
 	m_Rotation = q;
-	_rotation = ToEulerAngles(q);
-	SetRotation(_rotation);
+	m_EulerAngles = ToEulerAngles(q);
+	SetRotation(m_EulerAngles);
 }
 
 void Transform::SetLookRotation(Quaternion q)
 {
 	m_Rotation = q;  
-	_rotation = ToEulerAngles(q);  
-	SetRotation(_rotation); 
+	m_EulerAngles = ToEulerAngles(q);  
+	SetRotation(m_EulerAngles); 
 }
 
 void Transform::SetPosition(const Vec3& worldPosition)
@@ -159,14 +174,21 @@ void Transform::OnInspectorGUI()
 	bool rotationChanged = false;
 	bool scaleChanged = false;
 
-	ImGui::Text("Position");
-	positionChanged = ImGui::DragFloat3("##Position", reinterpret_cast<float*>(&_localPosition), 0.1f);
+	ImGui::Text("Position"); 
+	if (ImGui::DragFloat3("##WorldPosition", reinterpret_cast<float*>(&m_Position), 0.1f))
+	{
+		positionChanged = true;
+	}
+	if (ImGui::DragFloat3("##Position", reinterpret_cast<float*>(&m_LocalPosition), 0.1f))
+	{
+		positionChanged = true;
+	}
 
 	// Convert radians to degrees
 	Vec3 angles;
-	angles.x = XMConvertToDegrees(_localRotation.x); 
-	angles.y = XMConvertToDegrees(_localRotation.y); 
-	angles.z = XMConvertToDegrees(_localRotation.z); 
+	angles.x = XMConvertToDegrees(m_LocalEulerAngles.x); 
+	angles.y = XMConvertToDegrees(m_LocalEulerAngles.y); 
+	angles.z = XMConvertToDegrees(m_LocalEulerAngles.z); 
 
 	ImGui::Text("Rotation");
 	if (ImGui::DragFloat3("##Rotation", reinterpret_cast<float*>(&angles), 0.1f))
@@ -180,7 +202,7 @@ void Transform::OnInspectorGUI()
 	}
 
 	ImGui::Text("Scale");
-	scaleChanged = ImGui::DragFloat3("##Scale", reinterpret_cast<float*>(&_localScale), 0.1f);
+	scaleChanged = ImGui::DragFloat3("##Scale", reinterpret_cast<float*>(&m_LocalScale), 0.01f);
 
 	if (positionChanged || rotationChanged || scaleChanged)
 	{
@@ -192,24 +214,24 @@ GENERATE_COMPONENT_FUNC_TOJSON(Transform)
 {
 	json j;
 	j["type"] = "Transform";
-	j["_localScale"] = { _localScale.x, _localScale.y, _localScale.z };
-	j["_localRotation"] = { _localRotation.x, _localRotation.y, _localRotation.z };
-	j["_localPosition"] = { _localPosition.x, _localPosition.y, _localPosition.z };
-	j["_scale"] = { _scale.x, _scale.y, _scale.z };
-	j["_rotation"] = { _rotation.x, _rotation.y, _rotation.z };
-	j["_position"] = { _position.x, _position.y, _position.z };
+	j["_localScale"] = { m_LocalScale.x, m_LocalScale.y, m_LocalScale.z };
+	j["_localRotation"] = { m_LocalEulerAngles.x, m_LocalEulerAngles.y, m_LocalEulerAngles.z };
+	j["_localPosition"] = { m_LocalPosition.x, m_LocalPosition.y, m_LocalPosition.z };
+	j["_scale"] = { m_Scale.x, m_Scale.y, m_Scale.z };
+	j["_rotation"] = { m_EulerAngles.x, m_EulerAngles.y, m_EulerAngles.z };
+	j["_position"] = { m_Position.x, m_Position.y, m_Position.z };
 
 	return j;
 }
 
 GENERATE_COMPONENT_FUNC_FROMJSON(Transform)
 {
-	_localScale = { j.at("_localScale")[0].get<float>(), j.at("_localScale")[1].get<float>(), j.at("_localScale")[2].get<float>() };
-	_localRotation = { j.at("_localRotation")[0].get<float>(), j.at("_localRotation")[1].get<float>(), j.at("_localRotation")[2].get<float>() };
-	_localPosition = { j.at("_localPosition")[0].get<float>(), j.at("_localPosition")[1].get<float>(), j.at("_localPosition")[2].get<float>() };
-	_scale = { j.at("_scale")[0].get<float>(), j.at("_scale")[1].get<float>(), j.at("_scale")[2].get<float>() };
-	_rotation = { j.at("_rotation")[0].get<float>(), j.at("_rotation")[1].get<float>(), j.at("_rotation")[2].get<float>() };
-	_position = { j.at("_position")[0].get<float>(), j.at("_position")[1].get<float>(), j.at("_position")[2].get<float>() };
+	m_LocalScale = { j.at("_localScale")[0].get<float>(), j.at("_localScale")[1].get<float>(), j.at("_localScale")[2].get<float>() };
+	m_LocalEulerAngles = { j.at("_localRotation")[0].get<float>(), j.at("_localRotation")[1].get<float>(), j.at("_localRotation")[2].get<float>() };
+	m_LocalPosition = { j.at("_localPosition")[0].get<float>(), j.at("_localPosition")[1].get<float>(), j.at("_localPosition")[2].get<float>() };
+	m_Scale = { j.at("_scale")[0].get<float>(), j.at("_scale")[1].get<float>(), j.at("_scale")[2].get<float>() };
+	m_EulerAngles = { j.at("_rotation")[0].get<float>(), j.at("_rotation")[1].get<float>(), j.at("_rotation")[2].get<float>() };
+	m_Position = { j.at("_position")[0].get<float>(), j.at("_position")[1].get<float>(), j.at("_position")[2].get<float>() };
 
 	UpdateTransform(); 
 }

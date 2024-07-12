@@ -178,6 +178,15 @@ void Scene::AddRootGameObject(GameObject* gameObject)
 	m_arrGameObjects[0].push_back(gameObject);
 }
 
+void Scene::RemoveRootGameObjects(GameObject* gameObject)
+{
+    auto it = std::find(m_RootGameObjects.begin(), m_RootGameObjects.end(), gameObject);  
+    if (it != m_RootGameObjects.end())  
+    { 
+        m_RootGameObjects.erase(it); 
+    }
+}
+
 void to_json(json& j, const Scene& scene)
 {
     j = json

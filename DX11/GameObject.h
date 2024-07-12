@@ -41,6 +41,7 @@ public:
 	Transform* GetTransform() { return m_pTransform; }
 	
 	void SetParent(GameObject* parent);
+	GameObject* GetParent() { return m_pParentGameObject; }
 
 	void Awake();
 	void Start();
@@ -72,7 +73,7 @@ public:
 		m_Components.push_back(component);
 	}
 	template <class T>
-	T* GetComponent()
+	T* GetComponent() 
 	{
 		for (auto& component : m_Components)
 		{
@@ -80,6 +81,19 @@ public:
 			if (castedComponent)
 			{
 				return castedComponent.get();
+			}
+		}
+		return nullptr;
+	}
+	template <class T> 
+	shared_ptr<T> GetComponent_SP()
+	{
+		for (auto& component : m_Components)
+		{
+			std::shared_ptr<T> castedComponent = std::dynamic_pointer_cast<T>(component);
+			if (castedComponent)
+			{
+				return castedComponent;
 			}
 		}
 		return nullptr;

@@ -9,17 +9,17 @@ private:
 	shared_ptr<Transform> _parent;
 	vector<shared_ptr<Transform>> _children;
 	
-	Vec3 _localScale = { 1.f, 1.f, 1.f };
-	Vec3 _localRotation = { 0.f, 0.f, 0.f };
-	Vec3 _localPosition = { 0.f, 0.f, 0.f };
+	Vec3 m_LocalScale		= Vec3::One;
+	Vec3 m_LocalEulerAngles = Vec3::Zero;
+	Vec3 m_LocalPosition	= Vec3::Zero;
 
 	// Cache
-	Matrix _matLocal = Matrix::Identity;
+	Matrix m_LocalMatrix = Matrix::Identity;
 	Matrix m_WorldMatrix = Matrix::Identity;
 
-	Vec3 _scale;
-	Vec3 _rotation;
-	Vec3 _position;
+	Vec3 m_Scale;
+	Vec3 m_EulerAngles;
+	Vec3 m_Position;
 
 	Quaternion m_Rotation;
 
@@ -35,23 +35,23 @@ public:
 	static Vec3 ToEulerAngles(Quaternion q);
 
 	// Local
-	Vec3 GetLocalScale() { return _localScale; }
-	void SetLocalScale(const Vec3& localScale) { _localScale = localScale; UpdateTransform(); }
-	Vec3 GetLocalRotation() { return _localRotation; }
-	void SetLocalRotation(const Vec3& localRotation) { _localRotation = localRotation; UpdateTransform(); }
-	Vec3 GetLocalPosition() { return _localPosition; }
-	void SetLocalPosition(const Vec3& localPosition) { _localPosition = localPosition; UpdateTransform(); }
+	Vec3 GetLocalScale() { return m_LocalScale; }
+	void SetLocalScale(const Vec3& localScale) { m_LocalScale = localScale; UpdateTransform(); }
+	Vec3 GetLocalRotation() { return m_LocalEulerAngles; }
+	void SetLocalRotation(const Vec3& localRotation) { m_LocalEulerAngles = localRotation; UpdateTransform(); }
+	Vec3 GetLocalPosition();
+	void SetLocalPosition(const Vec3& localPosition);
 
 	// World
-	Vec3 GetScale() { return _scale; }
+	Vec3 GetScale() { return m_Scale; }
 	void SetScale(const Vec3& scale);
-	Vec3 GetRotation() { return _rotation; }
+	Vec3 GetRotation() { return m_EulerAngles; }
 	void SetRotation(const Vec3& rotation);
 	Quaternion GetRotationQ() { return m_Rotation; }
 	void SetRotationQ(Quaternion q);
 	void SetLookRotation(Quaternion q);
 
-	Vec3 GetPosition() { return _position; }
+	Vec3 GetPosition() { return m_Position; }
 	void SetPosition(const Vec3& position);
 	void SetPosition(float x, float y, float z) { SetPosition(Vec3(x, y, z)); }  
 
@@ -75,10 +75,10 @@ public:
 	void AddChild(shared_ptr<Transform> child) { _children.push_back(child); }
 
 public:
-	virtual void OnInspectorGUI() override;
+	virtual void OnInspectorGUI() override; 
 
 public:
-	GENERATE_COMPONENT_BODY(Transform)
+	GENERATE_COMPONENT_BODY(Transform) 
 };
 
-REGISTER_COMPONENT(Transform)
+REGISTER_COMPONENT(Transform) 

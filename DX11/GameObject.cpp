@@ -27,13 +27,19 @@ GameObject::~GameObject()
 
 void GameObject::SetParent(GameObject* parent)
 {
-	m_pParentGameObject = parent;
-	parent->SetChild(this);
+    // ºÎ¸ð ¾À ÀúÀå
+    if (m_pParentGameObject == nullptr) 
+        SceneManager::GetI()->GetCurrentScene()->RemoveRootGameObjects(this); 
+ 
+    m_pParentGameObject = parent;
+    GetTransform()->SetParent(parent->GetComponent_SP<Transform>());
+    parent->SetChild(this);
 }
 
 void GameObject::SetChild(GameObject* child)
 {
 	m_pChildGameObjects.push_back(child);
+    GetTransform()->AddChild(child->GetComponent_SP<Transform>());
 }
 
 void GameObject::Awake()

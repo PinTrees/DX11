@@ -8,6 +8,7 @@ CollisionDetector::CollisionDetector()
 {
 }
 
+// 제거 예정
 void CollisionDetector::DetectCollision(std::vector<Contact*>& contacts, vector<GameObject*>& gameObjects)
 {
     for (size_t i = 0; i < gameObjects.size(); ++i)
@@ -132,9 +133,10 @@ bool CollisionDetector::CheckSphereBoxCollision(std::vector<Contact*>& contacts,
 
 	/* 구의 중심을 직육면체의 로컬 좌표계로 변환한다 */
 	Matrix worldToLocal = box->GetGameObject()->GetTransform()->GetWorldMatrix().Invert(); 
-	Vec3 sphereInBoxLocal = Vec3XMatrix(worldToLocal, sphereTr->GetPosition());
+	Vec3 sphereInBoxLocal = Vec3::Transform(sphereTr->GetPosition(), worldToLocal); 
 
 	Vec3 boxHalfSize = box->GetSize() / 2.0f;
+	float sphereRadius = sphere->GetRadius(); 
 
 	/* 구의 중심과 가장 가까운 직육면체 위의 점을 찾는다 */
 	Vector3 closestPoint;
@@ -145,6 +147,7 @@ bool CollisionDetector::CheckSphereBoxCollision(std::vector<Contact*>& contacts,
 		closestPoint.x = -boxHalfSize.x;
 	else
 		closestPoint.x = sphereInBoxLocal.x;
+
 	/* y 축 성분 비교 */
 	if (sphereInBoxLocal.y > boxHalfSize.y)
 		closestPoint.y = boxHalfSize.y;
@@ -152,6 +155,7 @@ bool CollisionDetector::CheckSphereBoxCollision(std::vector<Contact*>& contacts,
 		closestPoint.y = -boxHalfSize.y;
 	else
 		closestPoint.y = sphereInBoxLocal.y;
+
 	/* z 축 성분 비교 */
 	if (sphereInBoxLocal.z > boxHalfSize.z)
 		closestPoint.z = boxHalfSize.z;
@@ -163,10 +167,10 @@ bool CollisionDetector::CheckSphereBoxCollision(std::vector<Contact*>& contacts,
 	/* 위의 결과와 구의 중심 사이의 거리가
 		구의 반지름보다 작다면 충돌이 발생한 것이다 */
 	float distanceSquared = (closestPoint - sphereInBoxLocal).LengthSquared();
-	if (distanceSquared < sphere->GetRadius() * sphere->GetRadius())
+	if (distanceSquared < sphereRadius * sphereRadius)
 	{
 		/* 구에 가장 가까운 직육면체 위의 점을 월드 좌표계로 변환한다 */
-		Vector3 closestPointWorld = Vec3XMatrix(boxTr->GetWorldMatrix(), closestPoint);
+		Vector3 closestPointWorld = Vec3::Transform(closestPoint, boxTr->GetWorldMatrix()); 
 
 		/* 충돌 정보를 생성한다 */
 		Contact* newContact = new Contact;
@@ -174,9 +178,9 @@ bool CollisionDetector::CheckSphereBoxCollision(std::vector<Contact*>& contacts,
 		newContact->bodies[1] = boxRb;
 		newContact->normal = sphereTr->GetPosition() - closestPointWorld;
 		newContact->normal.Normalize();
-		newContact->contactPoint[0] = Vec3(sphereTr->GetPosition() - newContact->normal * sphere->GetRadius());
+		newContact->contactPoint[0] = Vec3(sphereTr->GetPosition() - newContact->normal * sphereRadius);
 		newContact->contactPoint[1] = Vec3(closestPointWorld);
-		newContact->penetration = sphere->GetRadius() - sqrtf(distanceSquared);
+		newContact->penetration = sphereRadius - sqrtf(distanceSquared); 
 		newContact->restitution = objectRestitution;
 		newContact->friction = friction;
 		newContact->normalImpulseSum = 0.0f;

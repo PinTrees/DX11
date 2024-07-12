@@ -81,8 +81,9 @@ void RigidBody::SetRotationVelocity(const Vec3& vec)
 void RigidBody::SetMass(float mass)
 {
 	m_Mass = mass;
-	if (m_Mass > 0)
-		m_InverseMass = 1.0f / m_Mass;
+
+	if (m_Mass > 0) m_InverseMass = 1.0f / m_Mass;
+	else m_InverseMass = 0;
 }
 
 void RigidBody::TransformInertiaTensor()
@@ -142,19 +143,24 @@ void RigidBody::Integrate(float deltaTime)
 
 void RigidBody::OnDrawGizmos()
 {
+	if (m_Mass == 0)
+		return;
+
 	Transform* tr = GetGameObject()->GetTransform();
 	//Gizmo::DrawVector(tr->GetWorldMatrix(), m_Velocity);
 	//Gizmo::DrawVector(tr->GetWorldMatrix(), m_RotationVelocity);
 	//Gizmo::DrawVector(tr->GetWorldMatrix(), m_Force);
 	//Gizmo::DrawVector(tr->GetWorldMatrix(), m_Torque);
 	Gizmo::DrawArrow(tr->GetPosition(), m_Velocity, ImVec4(0, 0, 255, 255));
+	Gizmo::DrawArrow(tr->GetPosition(), m_RotationVelocity, ImVec4(0, 255, 0, 255));
 }
 
 void RigidBody::OnInspectorGUI()
 {
 	if (ImGui::DragFloat("Mass", &m_Mass))
 	{
-		if(m_Mass > 0) m_InverseMass = 1.0f / m_Mass;
+		if (m_Mass > 0) m_InverseMass = 1.0f / m_Mass;
+		else m_InverseMass = 0;
 	}
 	ImGui::DragFloat("Linear Damping", &m_LinearDamping); 
 	ImGui::DragFloat("Angular Damping", &m_AngularDamping);
@@ -181,6 +187,6 @@ GENERATE_COMPONENT_FUNC_FROMJSON(RigidBody)
 	m_AngularDamping = j.value("angularDamping", 0.05f);
 	m_IsKinematic = j.value("isKinematic", false);
 
-	if (m_Mass > 0)
-		m_InverseMass = 1.0f / m_Mass;
+	if (m_Mass > 0) m_InverseMass = 1.0f / m_Mass;
+	else m_InverseMass = 0;
 }

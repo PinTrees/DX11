@@ -42,6 +42,7 @@ public:
 	void AddRootGameObject(GameObject* gameObject);
 	vector<GameObject*> GetRootGameObjects() { return m_RootGameObjects; }
 	vector<GameObject*> GetAllGameObjects() const { return m_arrGameObjects[0]; }
+	void RemoveRootGameObjects(GameObject* gameObject);
 
 public:
 	friend void from_json(const json& j, Scene& scene);

@@ -125,7 +125,7 @@ void Gizmo::DrawCube(const XMMATRIX& worldMatrix, const Vec3& size)
     }
 }
 
-
+// Fixed
 void Gizmo::DrawSphere(const XMMATRIX& worldMatrix, float radius)
 {
     auto context = Application::GetI()->GetDeviceContext();
@@ -155,7 +155,7 @@ void Gizmo::DrawSphere(const XMMATRIX& worldMatrix, float radius)
             XMVECTOR pos = XMVector3TransformCoord(XMLoadFloat3(&worldPos), worldViewProj);
             float x = (XMVectorGetX(pos) / XMVectorGetW(pos)) * 0.5f + 0.5f;
             float y = (XMVectorGetY(pos) / XMVectorGetW(pos)) * -0.5f + 0.5f;
-            return ImVec2(x * viewport.Width + viewport.TopLeftX + offset.x, y * viewport.Height + viewport.TopLeftY + offset.y);
+            return ImVec2(x * (contentRegionMax.x - contentRegionMin.x) + offset.x, y * (contentRegionMax.y - contentRegionMin.y) + offset.y);
         };
 
     const ImU32 color = IM_COL32(0, 255, 0, 255);
@@ -183,9 +183,12 @@ void Gizmo::DrawSphere(const XMMATRIX& worldMatrix, float radius)
     // 각 축에 대해 원을 그림
     XMFLOAT3 center(0.0f, 0.0f, 0.0f);
 
-    XMVECTOR right = XMVector3TransformNormal(XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f), worldMatrix); 
-    XMVECTOR up = XMVector3TransformNormal(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f), worldMatrix);
-    XMVECTOR forward = XMVector3TransformNormal(XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f), worldMatrix);
+    // 단위 벡터를 사용하여 회전만 적용
+    XMMATRIX rotationMatrix = XMMatrixRotationQuaternion(XMQuaternionRotationMatrix(worldMatrix));
+
+    XMVECTOR right = XMVector3TransformNormal(XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f), rotationMatrix); 
+    XMVECTOR up = XMVector3TransformNormal(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f), rotationMatrix); 
+    XMVECTOR forward = XMVector3TransformNormal(XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f), rotationMatrix); 
 
     XMFLOAT3 rightF, upF, forwardF;
     XMStoreFloat3(&rightF, right);
@@ -196,20 +199,20 @@ void Gizmo::DrawSphere(const XMMATRIX& worldMatrix, float radius)
     DrawCircle(center, forwardF, rightF);  // XZ 평면 
     DrawCircle(center, upF, forwardF);  // YZ 평면 
      
-    EditorCamera* sceneViewCamera = SceneViewManager::GetI()->m_LastActiveSceneEditorWindow->GetSceneCamera();
-    XMMATRIX camWorldMatrix = sceneViewCamera->GetWorldMatrix();  
-
-    XMFLOAT3 camRight = sceneViewCamera->GetRight();
-    XMFLOAT3 camUp = sceneViewCamera->GetUp();
-    XMFLOAT3 camRightF, camUpF;
-
-    XMVECTOR camRightV = XMVector3TransformNormal(XMVectorSet(camRight.x, camRight.y, camRight.z, 0.0f), worldMatrix); 
-    XMVECTOR camUpV = XMVector3TransformNormal(XMVectorSet(camUp.x, camUp.y, camUp.z, 0.0f), worldMatrix);
-
-    XMStoreFloat3(&camRightF, camRightV);
-    XMStoreFloat3(&camUpF, camUpV);
-
-    DrawCircle(center, camUpF, camRightF);  // XY 평면 
+    //EditorCamera* sceneViewCamera = SceneViewManager::GetI()->m_LastActiveSceneEditorWindow->GetSceneCamera();
+    //XMMATRIX camWorldMatrix = sceneViewCamera->GetWorldMatrix();  
+    //
+    //XMFLOAT3 camRight = sceneViewCamera->GetRight();
+    //XMFLOAT3 camUp = sceneViewCamera->GetUp();
+    //XMFLOAT3 camRightF, camUpF;
+    //
+    //XMVECTOR camRightV = XMVector3TransformNormal(XMVectorSet(camRight.x, camRight.y, camRight.z, 0.0f), worldMatrix); 
+    //XMVECTOR camUpV = XMVector3TransformNormal(XMVectorSet(camUp.x, camUp.y, camUp.z, 0.0f), worldMatrix);
+    //
+    //XMStoreFloat3(&camRightF, camRightV);
+    //XMStoreFloat3(&camUpF, camUpV);
+    //
+    //DrawCircle(center, camUpF, camRightF);  // XY 평면 
 }
 
 void Gizmo::DrawArrow(Vector3 position, Vec3 dir, ImVec4 color) 

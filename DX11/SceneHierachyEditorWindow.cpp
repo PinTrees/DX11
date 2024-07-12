@@ -103,6 +103,14 @@ void SceneHierachyEditorWindow::DrawGameObject(GameObject* gameObject)
 		SelectionManager::SetSelectedGameObject(gameObject);
 	}
 
+	// 드래그 앤 드롭 소스
+	if (ImGui::BeginDragDropSource()) 
+	{
+		ImGui::SetDragDropPayload("GAME_OBJECT", &gameObject, sizeof(GameObject*)); 
+		ImGui::Text("Dragging %s", gameObject->GetName().c_str()); 
+		ImGui::EndDragDropSource(); 
+	}
+
 	// 드래그 앤 드롭 처리 (특정 오브젝트에 드롭)
 	if (ImGui::BeginDragDropTarget())
 	{
@@ -110,6 +118,12 @@ void SceneHierachyEditorWindow::DrawGameObject(GameObject* gameObject)
 		{
 			const char* filePath = static_cast<const char*>(payload->Data);
 			HandleFbxFileDrop(std::string(filePath), gameObject);
+		}
+
+		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("GAME_OBJECT")) 
+		{
+			GameObject* droppedObject = *(GameObject**)payload->Data; 
+			droppedObject->SetParent(gameObject); 
 		}
 		ImGui::EndDragDropTarget();
 	}
