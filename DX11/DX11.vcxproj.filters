@@ -187,6 +187,9 @@
     <Filter Include="0. Engine\98. Utils\Type">
       <UniqueIdentifier>{2ffa6689-c7cb-43df-8778-73505b9e4123}</UniqueIdentifier>
     </Filter>
+    <Filter Include="0. Engine\98. Utils\Json">
+      <UniqueIdentifier>{6e637bbb-d7b8-4e03-871e-faa549e0b938}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="01. InitDemo.cpp">
@@ -518,6 +521,9 @@
     </ClCompile>
     <ClCompile Include="Matrix3.cpp">
       <Filter>0. Engine\98. Utils\Type</Filter>
+    </ClCompile>
+    <ClCompile Include="JsonUtility.cpp">
+      <Filter>0. Engine\98. Utils\Json</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -854,6 +860,9 @@
     </ClInclude>
     <ClInclude Include="Matrix3.h">
       <Filter>0. Engine\98. Utils\Type</Filter>
+    </ClInclude>
+    <ClInclude Include="JsonUtility.h">
+      <Filter>0. Engine\98. Utils\Json</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

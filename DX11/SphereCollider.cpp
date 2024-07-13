@@ -13,8 +13,8 @@ SphereCollider::~SphereCollider()
 
 float SphereCollider::GetRadius()
 {
-    auto scale = GetGameObject()->GetTransform()->GetScale(); 
-    return m_Radius * scale.x;
+    //auto scale = GetGameObject()->GetTransform()->GetScale(); 
+    return m_Radius;
 }
 
 void SphereCollider::OnDrawGizmos()

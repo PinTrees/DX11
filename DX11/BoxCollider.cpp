@@ -15,7 +15,7 @@ BoxCollider::~BoxCollider()
 
 Vec3 BoxCollider::GetSize()
 {
-    return m_Size * GetGameObject()->GetTransform()->GetScale(); 
+    return m_Size; 
 }
 
 void BoxCollider::OnDrawGizmos()

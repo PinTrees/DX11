@@ -85,7 +85,6 @@ using namespace Microsoft::WRL;
 // Component
 #include "Mesh.h"
 #include "GameObject.h"
-#include "Transform.h"
 #include "MeshRenderer.h"
 #include "Camera.h"
 #include "RigidBody.h"
@@ -94,6 +93,7 @@ using namespace Microsoft::WRL;
 #include "Scene.h"
 #include "SceneManager.h"
 
+#include "Transform.h"
 #include "Collider.h"
 #include "BoxCollider.h"
 #include "PhysicsManager.h"

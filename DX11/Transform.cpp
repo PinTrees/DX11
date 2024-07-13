@@ -157,9 +157,9 @@ Vec3 Transform::GetAxis(int index) const
 	}
 
 	Vec3 result(
-		m_WorldMatrix(index, 0),
-		m_WorldMatrix(index, 1),
-		m_WorldMatrix(index, 2)
+		m_WorldMatrix.m[index][0],
+		m_WorldMatrix.m[index][1],
+		m_WorldMatrix.m[index][2]
 	);
 	result.Normalize();
 
@@ -226,12 +226,12 @@ GENERATE_COMPONENT_FUNC_TOJSON(Transform)
 
 GENERATE_COMPONENT_FUNC_FROMJSON(Transform)
 {
-	m_LocalScale = { j.at("_localScale")[0].get<float>(), j.at("_localScale")[1].get<float>(), j.at("_localScale")[2].get<float>() };
-	m_LocalEulerAngles = { j.at("_localRotation")[0].get<float>(), j.at("_localRotation")[1].get<float>(), j.at("_localRotation")[2].get<float>() };
-	m_LocalPosition = { j.at("_localPosition")[0].get<float>(), j.at("_localPosition")[1].get<float>(), j.at("_localPosition")[2].get<float>() };
-	m_Scale = { j.at("_scale")[0].get<float>(), j.at("_scale")[1].get<float>(), j.at("_scale")[2].get<float>() };
-	m_EulerAngles = { j.at("_rotation")[0].get<float>(), j.at("_rotation")[1].get<float>(), j.at("_rotation")[2].get<float>() };
-	m_Position = { j.at("_position")[0].get<float>(), j.at("_position")[1].get<float>(), j.at("_position")[2].get<float>() };
-
+	m_LocalScale = SafeGetVector3(j, "_localScale", { 1.0f, 1.0f, 1.0f }); 
+	m_LocalEulerAngles = SafeGetVector3(j, "_localRotation", { 0.0f, 0.0f, 0.0f }); 
+	m_LocalPosition = SafeGetVector3(j, "_localPosition", { 0.0f, 0.0f, 0.0f }); 
+	m_Scale = SafeGetVector3(j, "_scale", { 1.0f, 1.0f, 1.0f }); 
+	m_EulerAngles = SafeGetVector3(j, "_rotation", { 0.0f, 0.0f, 0.0f }); 
+	m_Position = SafeGetVector3(j, "_position", { 0.0f, 0.0f, 0.0f }); 
+	 
 	UpdateTransform(); 
 }

@@ -75,7 +75,7 @@ void RigidBody::SetRotationVelocity(const Vec3& vec)
 			rotationMatrix.entries[3 * i + j] = tr->GetWorldMatrix().m[i][j];
 
 	// 변환 행렬의 전치 행렬을 곱합니다.
-	m_RotationVelocity = rotationMatrix.transpose() * vec;
+	m_RotationVelocity = rotationMatrix.transpose() * vec * 50;
 }
 
 void RigidBody::SetMass(float mass)
