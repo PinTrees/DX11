@@ -44,22 +44,22 @@ void EditorGUIManager::Update()
 
     // 상단에 플레이, 스탑, 한 프레임씩 넘기기 버튼 추가
     ImGui::BeginMainMenuBar();
+    ImGui::BeginHorizontal("HHH");
     if (ImGui::Button("Play"))
     {
         Application::SetPlaying(true);
         SceneManager::GetI()->HandlePlay();
     }
-    ImGui::SameLine();
     if (ImGui::Button("Stop"))
     {
         Application::SetPlaying(false);
         SelectionManager::ClearSelection(); 
         SceneManager::GetI()->HandleStop(); 
     }
-    ImGui::SameLine();
     if (ImGui::Button("Step"))
     {
     }
+    ImGui::EndHorizontal();
     ImGui::EndMainMenuBar();
 
     // 도킹 가능한 영역 설정

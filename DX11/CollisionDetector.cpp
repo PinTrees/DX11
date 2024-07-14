@@ -22,12 +22,12 @@ void CollisionDetector::DetectCollision(std::vector<Contact*>& contacts, std::un
 				if (typeid(*colliderPtrJ) == typeid(SphereCollider)) // 구 - 구 충돌
 				{
 					SphereCollider* collider2 = static_cast<SphereCollider*>(colliderPtrJ);
-					//CheckSphereSphereCollision(contacts, collider1, collider2);
+					CheckSphereSphereCollision(contacts, collider1, collider2);
 				}
 				else if (typeid(*colliderPtrJ) == typeid(BoxCollider)) // 구 - 직육면체 충돌
 				{
 					BoxCollider* collider2 = static_cast<BoxCollider*>(colliderPtrJ);
-					//CheckSphereBoxCollision(contacts, collider1, collider2);
+					CheckSphereBoxCollision(contacts, collider1, collider2);
 				}
 			}
 			else if (typeid(*colliderPtrI) == typeid(BoxCollider))
@@ -36,7 +36,7 @@ void CollisionDetector::DetectCollision(std::vector<Contact*>& contacts, std::un
 				if (typeid(*colliderPtrJ) == typeid(SphereCollider)) // 구 - 직육면체 충돌
 				{
 					SphereCollider* collider2 = static_cast<SphereCollider*>(colliderPtrJ);
-					//CheckSphereBoxCollision(contacts, collider2, collider1);
+					CheckSphereBoxCollision(contacts, collider2, collider1);
 				}
 				else if (typeid(*colliderPtrJ) == typeid(BoxCollider)) // 직육면체 - 직육면체 충돌
 				{
@@ -94,7 +94,8 @@ bool CollisionDetector::CheckSphereSphereCollision(std::vector<Contact*>& contac
 		return false;
 }
 
-// Fixed
+// Fixed 
+// 구의 박스기준 로컬 스케일 문제 수정 - 박스의 스케일이 작을 경우 구의 반지름이 매우 커지는 오류 수정
 bool CollisionDetector::CheckSphereBoxCollision(std::vector<Contact*>& contacts, SphereCollider* sphere, BoxCollider* box)
 {
 	Transform* sphereTr = sphere->GetGameObject()->GetTransform(); 
@@ -105,17 +106,17 @@ bool CollisionDetector::CheckSphereBoxCollision(std::vector<Contact*>& contacts,
 
 	/* 구의 중심을 직육면체의 로컬 좌표계로 변환한다 */
 	Matrix sphereInBoxLocalMatrix = sphereTr->GetWorldMatrix() * boxTr->GetWorldMatrix().Invert();
-	Vec3 sphereInBoxLocalPosition = 
-		Vec3(sphereInBoxLocalMatrix._41, sphereInBoxLocalMatrix._42, sphereInBoxLocalMatrix._43); 
+	Vec3 sphereInBoxLocalPosition = Vec3(sphereInBoxLocalMatrix._41, sphereInBoxLocalMatrix._42, sphereInBoxLocalMatrix._43); 
 	Vec3 sphereInBoxLocalScale = Vec3(
 		Vec3(sphereInBoxLocalMatrix._11, sphereInBoxLocalMatrix._12, sphereInBoxLocalMatrix._13).Length(),
 		Vec3(sphereInBoxLocalMatrix._21, sphereInBoxLocalMatrix._22, sphereInBoxLocalMatrix._23).Length(),
 		Vec3(sphereInBoxLocalMatrix._31, sphereInBoxLocalMatrix._32, sphereInBoxLocalMatrix._33).Length());
 
 	// 박스의 절반 크기
-	Vec3 boxHalfSize = box->GetSize() / 2.0f;
+	Vec3 boxHalfSize = box->GetSize() * 0.5f;
 	// 구의 박스좌표축 기준 반지름
-	float sphereRadius = sphere->GetRadius() * max(sphereInBoxLocalScale.x, max(sphereInBoxLocalScale.y, sphereInBoxLocalScale.z));
+	float sphereRadius = sphere->GetRadius() * min(sphereInBoxLocalScale.x, min(sphereInBoxLocalScale.y, sphereInBoxLocalScale.z))
+		* max(boxTr->GetScale().x, max(boxTr->GetScale().y, boxTr->GetScale().z));
 	// 구의 월드좌표 기준 반지름
 	float sphereOriginal = sphere->GetRadius() * sphereTr->GetScale().x;
 
@@ -251,7 +252,6 @@ bool CollisionDetector::CheckBoxBoxCollision(std::vector<Contact*>& contacts, Bo
 	else // 선-선 접촉일 때
 	{
 		calcContactPointOnLine(box1, box2, minAxisIdx, newContact);
-		return false;
 	}
 
 	contacts.push_back(newContact);
@@ -352,11 +352,11 @@ void CollisionDetector::calcContactPointOnLine(
 	Contact* contact
 )
 {
-	Transform* box1Tr = box1->GetGameObject()->GetTransform();
-	Transform* box2Tr = box2->GetGameObject()->GetTransform();
+	Transform* box1Tr = box1->GetGameObject()->GetTransform(); 
+	Transform* box2Tr = box2->GetGameObject()->GetTransform(); 
 
-	Vec3 box1HalfSize = box1->GetSize() * box1Tr->GetScale() / 2;
-	Vec3 box2HalfSize = box2->GetSize() * box2Tr->GetScale() / 2; 
+	Vec3 box1HalfSize = box1->GetSize() * box1Tr->GetScale() * 0.5f; 
+	Vec3 box2HalfSize = box2->GetSize() * box2Tr->GetScale() * 0.5f; 
 
 	/* 접촉한 변 위의 정점을 찾는다 */
 	Vec3 vertexOne(box1HalfSize.x, box1HalfSize.y, box1HalfSize.z);
@@ -365,19 +365,19 @@ void CollisionDetector::calcContactPointOnLine(
 	if (box1Tr->GetAxis(0).Dot(contact->normal) > 0)
 		vertexOne.x *= -1.0f;
 	if (box1Tr->GetAxis(1).Dot(contact->normal) > 0)
-		vertexOne.y *= -1.0f; 
+		vertexOne.y *= -1.0f;
 	if (box1Tr->GetAxis(2).Dot(contact->normal) > 0)
 		vertexOne.z *= -1.0f;
-							  
-	if (box2Tr->GetAxis(0).Dot(contact->normal) < 0) 
+
+	if (box2Tr->GetAxis(0).Dot(contact->normal) < 0)
 		vertexTwo.x *= -1.0f;
-	if (box2Tr->GetAxis(1).Dot(contact->normal) < 0) 
+	if (box2Tr->GetAxis(1).Dot(contact->normal) < 0)
 		vertexTwo.y *= -1.0f;
-	if (box2Tr->GetAxis(2).Dot(contact->normal) < 0) 
+	if (box2Tr->GetAxis(2).Dot(contact->normal) < 0)
 		vertexTwo.z *= -1.0f;
 
 	/* 변의 방향을 찾는다 */
-	Vec3 directionOne, directionTwo;
+	Vector3 directionOne, directionTwo;
 
 	switch (minAxisIdx)
 	{
@@ -448,25 +448,16 @@ void CollisionDetector::calcContactPointOnLine(
 		break;
 	}
 
-	// 정점을 월드 좌표계로 변환한다
-	vertexOne = Vec3::Transform(vertexOne, box1Tr->GetWorldMatrix()); 
-	vertexTwo = Vec3::Transform(vertexTwo, box2Tr->GetWorldMatrix()); 
+	/* 정점을 월드 좌표계로 변환한다 */
+	vertexOne = Vec3::Transform(vertexOne, box1Tr->GetWorldMatrix());
+	vertexTwo = Vec3::Transform(vertexTwo, box2Tr->GetWorldMatrix());
 
-	// box2의 변과 가장 가까운 box1 위의 점을 찾는다
+	/* box2 의 변과 가장 가까운 box1 위의 점을 찾는다 */
 	float k = directionOne.Dot(directionTwo);
+	Vector3* closestPointOne = new Vector3(vertexOne + directionOne * ((vertexTwo - vertexOne).Dot(directionOne - directionTwo * k) / (1 - k * k)));
+	/* box1 의 변과 가장 가까운 box2 위의 점을 찾는다 */
+	Vector3* closestPointTwo = new Vector3(vertexTwo + directionTwo * ((*closestPointOne - vertexTwo).Dot(directionTwo)));
 
-	// k가 1에 매우 가까운 경우를 처리하기 위해 작은 값을 더해 분모를 보호
-	float denominator = 1.0f - k * k; 
-	if (fabs(denominator) < FLT_EPSILON) { 
-		denominator = FLT_EPSILON; 
-	} 
-
-	Vec3 closestPointOne = vertexOne + directionOne * ((vertexTwo - vertexOne).Dot(directionOne - directionTwo * k) / denominator); 
-
-	// box1의 변과 가장 가까운 box2 위의 점을 찾는다
-	Vec3 closestPointTwo = vertexTwo + directionTwo * ((closestPointOne - vertexTwo).Dot(directionTwo)); 
-
-	// 충돌 지점 설정
-	contact->contactPoint[0] = closestPointOne; 
-	contact->contactPoint[1] = closestPointTwo; 
+	contact->contactPoint[0] = *closestPointOne;
+	contact->contactPoint[1] = *closestPointTwo;
 }

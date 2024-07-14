@@ -75,7 +75,7 @@ void RigidBody::SetRotationVelocity(const Vec3& vec)
 			rotationMatrix.entries[3 * i + j] = tr->GetWorldMatrix().m[i][j];
 
 	// 변환 행렬의 전치 행렬을 곱합니다.
-	m_RotationVelocity = rotationMatrix.transpose() * vec * 50;
+	m_RotationVelocity = rotationMatrix.transpose() * vec;
 }
 
 void RigidBody::SetMass(float mass)
@@ -124,14 +124,14 @@ void RigidBody::Integrate(float deltaTime)
 
 	/* 위치 업데이트 */
 	GetGameObject()->GetTransform()->Translate(m_Velocity * deltaTime);
-	GetGameObject()->GetTransform()->Rotate(m_RotationVelocity * deltaTime / 2.0f);
+	//GetGameObject()->GetTransform()->Rotate(m_RotationVelocity * deltaTime / 2.0f);
 
 	/* 방향을 업데이트한다 */
-	//m_Orientation += RotateByScaledVector(m_Orientation, m_RotationVelocity, deltaTime / 2.0f);
-	//m_Orientation.Normalize();
+	m_Orientation += RotateByScaledVector(m_Orientation, m_RotationVelocity, deltaTime / 2.0f);  
+	m_Orientation.Normalize(); 
 
 	/* 업데이트 된 회전을 트랜스폼에 설정 */
-	//GetGameObject()->GetTransform()->SetLookRotation(m_Orientation);
+	GetGameObject()->GetTransform()->SetLookRotation(m_Orientation);
 
 	/* 월드 좌표계 기준의 관성 텐서를 업데이트한다 */
 	TransformInertiaTensor();
