@@ -9,6 +9,7 @@
 #include "InspectorEditorWindow.h"
 #include "GameViewEditorWindow.h"
 #include "ConsoleEditorWindow.h"
+#include "AnimatorEditorWindow.h"
 
 namespace
 {
@@ -124,6 +125,7 @@ bool App::Init()
 	EditorGUIManager::GetI()->RegisterWindow(new GameViewEditorWindow);
 	EditorGUIManager::GetI()->RegisterWindow(new ProjectEditorWindow);
 	EditorGUIManager::GetI()->RegisterWindow(new ConsoleEditorWindow);
+	EditorGUIManager::GetI()->RegisterWindow(new AnimatorEditorWindow);
 
 	// Singleton Init
 	ResourceManager::GetI()->Init(_device);

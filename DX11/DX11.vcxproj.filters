@@ -127,9 +127,6 @@
     <Filter Include="0. Engine\ImguiContainer\0. Editor\ConsoleEditorWindow">
       <UniqueIdentifier>{60e6a2ee-9abf-43bc-b205-3d829eb44405}</UniqueIdentifier>
     </Filter>
-    <Filter Include="0. Engine\ImguiContainer\GameViewEditorWindow">
-      <UniqueIdentifier>{4a9f6bbf-fa1e-4f20-a06e-54309e41c38a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="0. Engine\98. Utils">
       <UniqueIdentifier>{861c456f-060b-45fd-a1c8-ee2f466bf87a}</UniqueIdentifier>
     </Filter>
@@ -189,6 +186,15 @@
     </Filter>
     <Filter Include="0. Engine\98. Utils\Json">
       <UniqueIdentifier>{6e637bbb-d7b8-4e03-871e-faa549e0b938}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="0. Engine\ImguiContainer\0. Core\0. NodeEditor">
+      <UniqueIdentifier>{7ca90e6c-d596-41fc-824f-9e99b50efffc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="0. Engine\ImguiContainer\0. Editor\GameViewEditorWindow">
+      <UniqueIdentifier>{4a9f6bbf-fa1e-4f20-a06e-54309e41c38a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="0. Engine\ImguiContainer\0. Editor\AnimatorEditorWindow">
+      <UniqueIdentifier>{d0d51dd0-9bd0-4ea6-bf76-45d5c964e916}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -496,7 +502,7 @@
       <Filter>0. Engine\Manager\PostProcessingManager</Filter>
     </ClCompile>
     <ClCompile Include="GameViewEditorWindow.cpp">
-      <Filter>0. Engine\ImguiContainer\GameViewEditorWindow</Filter>
+      <Filter>0. Engine\ImguiContainer\0. Editor\GameViewEditorWindow</Filter>
     </ClCompile>
     <ClCompile Include="Camera.cpp">
       <Filter>0. Engine\Component\Camera</Filter>
@@ -524,6 +530,21 @@
     </ClCompile>
     <ClCompile Include="JsonUtility.cpp">
       <Filter>0. Engine\98. Utils\Json</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGuiNodeEditor\crude_json.cpp">
+      <Filter>0. Engine\ImguiContainer\0. Core\0. NodeEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGuiNodeEditor\imgui_canvas.cpp">
+      <Filter>0. Engine\ImguiContainer\0. Core\0. NodeEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGuiNodeEditor\imgui_node_editor.cpp">
+      <Filter>0. Engine\ImguiContainer\0. Core\0. NodeEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGuiNodeEditor\imgui_node_editor_api.cpp">
+      <Filter>0. Engine\ImguiContainer\0. Core\0. NodeEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimatorEditorWindow.cpp">
+      <Filter>0. Engine\ImguiContainer\0. Editor\AnimatorEditorWindow</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -835,7 +856,7 @@
       <Filter>0. Engine\Manager\PostProcessingManager</Filter>
     </ClInclude>
     <ClInclude Include="GameViewEditorWindow.h">
-      <Filter>0. Engine\ImguiContainer\GameViewEditorWindow</Filter>
+      <Filter>0. Engine\ImguiContainer\0. Editor\GameViewEditorWindow</Filter>
     </ClInclude>
     <ClInclude Include="Camera.h">
       <Filter>0. Engine\Component\Camera</Filter>
@@ -863,6 +884,27 @@
     </ClInclude>
     <ClInclude Include="JsonUtility.h">
       <Filter>0. Engine\98. Utils\Json</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGuiNodeEditor\crude_json.h">
+      <Filter>0. Engine\ImguiContainer\0. Core\0. NodeEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGuiNodeEditor\imgui_bezier_math.h">
+      <Filter>0. Engine\ImguiContainer\0. Core\0. NodeEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGuiNodeEditor\imgui_canvas.h">
+      <Filter>0. Engine\ImguiContainer\0. Core\0. NodeEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGuiNodeEditor\imgui_extra_math.h">
+      <Filter>0. Engine\ImguiContainer\0. Core\0. NodeEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGuiNodeEditor\imgui_node_editor.h">
+      <Filter>0. Engine\ImguiContainer\0. Core\0. NodeEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGuiNodeEditor\imgui_node_editor_internal.h">
+      <Filter>0. Engine\ImguiContainer\0. Core\0. NodeEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimatorEditorWindow.h">
+      <Filter>0. Engine\ImguiContainer\0. Editor\AnimatorEditorWindow</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -957,6 +999,15 @@
   <ItemGroup>
     <None Include="SimpleMath.inl">
       <Filter>0. Engine\00. Header</Filter>
+    </None>
+    <None Include="ImGuiNodeEditor\imgui_bezier_math.inl">
+      <Filter>0. Engine\ImguiContainer\0. Core\0. NodeEditor</Filter>
+    </None>
+    <None Include="ImGuiNodeEditor\imgui_extra_math.inl">
+      <Filter>0. Engine\ImguiContainer\0. Core\0. NodeEditor</Filter>
+    </None>
+    <None Include="ImGuiNodeEditor\imgui_node_editor_internal.inl">
+      <Filter>0. Engine\ImguiContainer\0. Core\0. NodeEditor</Filter>
     </None>
   </ItemGroup>
 </Project>

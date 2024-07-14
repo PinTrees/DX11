@@ -196,6 +196,7 @@
     <ClInclude Include="30. QuatDemo.h" />
     <ClInclude Include="31. SkinnedMeshDemo.h" />
     <ClInclude Include="AnimationHelper.h" />
+    <ClInclude Include="AnimatorEditorWindow.h" />
     <ClInclude Include="App.h" />
     <ClInclude Include="01. InitDemo.h" />
     <ClInclude Include="Application.h" />
@@ -224,6 +225,12 @@
     <ClInclude Include="Gizmo.h" />
     <ClInclude Include="imconfig.h" />
     <ClInclude Include="imgui.h" />
+    <ClInclude Include="ImGuiNodeEditor\crude_json.h" />
+    <ClInclude Include="ImGuiNodeEditor\imgui_bezier_math.h" />
+    <ClInclude Include="ImGuiNodeEditor\imgui_canvas.h" />
+    <ClInclude Include="ImGuiNodeEditor\imgui_extra_math.h" />
+    <ClInclude Include="ImGuiNodeEditor\imgui_node_editor.h" />
+    <ClInclude Include="ImGuiNodeEditor\imgui_node_editor_internal.h" />
     <ClInclude Include="imgui_impl_dx11.h" />
     <ClInclude Include="imgui_impl_win32.h" />
     <ClInclude Include="imgui_internal.h" />
@@ -311,6 +318,7 @@
     <ClCompile Include="30. QuatDemo.cpp" />
     <ClCompile Include="31. SkinnedMeshDemo.cpp" />
     <ClCompile Include="AnimationHelper.cpp" />
+    <ClCompile Include="AnimatorEditorWindow.cpp" />
     <ClCompile Include="App.cpp" />
     <ClCompile Include="01. InitDemo.cpp" />
     <ClCompile Include="Application.cpp" />
@@ -337,6 +345,18 @@
     <ClCompile Include="GeometryGenerator.cpp" />
     <ClCompile Include="Gizmo.cpp" />
     <ClCompile Include="imgui.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="ImGuiNodeEditor\crude_json.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="ImGuiNodeEditor\imgui_canvas.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="ImGuiNodeEditor\imgui_node_editor.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="ImGuiNodeEditor\imgui_node_editor_api.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="imgui_demo.cpp">
@@ -412,6 +432,9 @@
     <ClCompile Include="Waves.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="ImGuiNodeEditor\imgui_bezier_math.inl" />
+    <None Include="ImGuiNodeEditor\imgui_extra_math.inl" />
+    <None Include="ImGuiNodeEditor\imgui_node_editor_internal.inl" />
     <None Include="SimpleMath.inl" />
   </ItemGroup>
   <ItemGroup>

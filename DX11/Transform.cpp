@@ -150,18 +150,20 @@ void Transform::SetPosition(const Vec3& worldPosition)
 /* 월드 좌표계의 x, y, z 축 중 하나를 단위 벡터화하여 반환한다. */
 Vec3 Transform::GetAxis(int index) const
 {
-	/* 입력값 검사 */
-	if (index < 0 || index > 3)
+	// 입력값 검사
+	if (index < 0 || index > 2)  // 3x3 또는 4x4 행렬의 유효한 축 인덱스는 0, 1, 2
 	{
-		return Vec3::Zero;
+		std::cout << "RigidBody::getAxis::Out of index" << std::endl;
+		return Vector3();  
 	}
 
-	Vec3 result(
-		m_WorldMatrix.m[index][0],
-		m_WorldMatrix.m[index][1],
-		m_WorldMatrix.m[index][2]
+	// Matrix 열을 가져와서 Vector3 생성
+	Vector3 result(
+		m_WorldMatrix(index, 0),  // index 열의 첫 번째 행
+		m_WorldMatrix(index, 1),  // index 열의 두 번째 행
+		m_WorldMatrix(index, 2)   // index 열의 세 번째 행
 	);
-	result.Normalize();
+	result.Normalize();  // 벡터를 정규화
 
 	return result;
 }

@@ -27,6 +27,8 @@ void EditorWindow::Render()
 
     PushStyle();
 
+    OnRenderBegin();
+
     ImGui::Begin(windowName.c_str(),  nullptr, windowFlags);
 
     OnRender();

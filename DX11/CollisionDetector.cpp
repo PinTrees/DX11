@@ -278,7 +278,7 @@ bool CollisionDetector::CheckBoxBoxCollision(std::vector<Contact*>& contacts, Bo
 	/* 충돌 지점을 찾는다 */
 	if (minAxisIdx < 6) // 면-점 접촉일 때
 	{
-		//calcContactPointOnPlane(box1, box2, minAxisIdx, newContact);
+		calcContactPointOnPlane(box1, box2, minAxisIdx, newContact);
 	}
 	else // 선-선 접촉일 때
 	{
@@ -297,8 +297,8 @@ float CollisionDetector::calcPenetration(BoxCollider* box1, BoxCollider* box2, c
 	Transform* box1Tr = box1->GetGameObject()->GetTransform(); 
 	Transform* box2Tr = box2->GetGameObject()->GetTransform();
 
-	Vec3 box1HalfSize = box1->GetSize() * box1Tr->GetLocalScale() / 2;
-	Vec3 box2HalfSize = box2->GetSize() * box2Tr->GetLocalScale() / 2;
+	Vec3 box1HalfSize = box1->GetSize() * box1Tr->GetScale() / 2;
+	Vec3 box2HalfSize = box2->GetSize() * box2Tr->GetScale() / 2;
 
 	/* 두 박스의 중심 간 거리를 계산한다 */
 	Vector3 centerToCenter = box2Tr->GetPosition() - box1Tr->GetPosition();
@@ -330,8 +330,8 @@ void CollisionDetector::calcContactPointOnPlane(
 	Transform* box1Tr = box1->GetGameObject()->GetTransform(); 
 	Transform* box2Tr = box2->GetGameObject()->GetTransform(); 
 
-	Vec3 box1HalfSize = box1->GetSize() * box1Tr->GetLocalScale() / 2; 
-	Vec3 box2HalfSize = box2->GetSize() * box2Tr->GetLocalScale() / 2; 
+	Vec3 box1HalfSize = box1->GetSize() * box1Tr->GetScale() / 2; 
+	Vec3 box2HalfSize = box2->GetSize() * box2Tr->GetScale() / 2;
 
 	/* 충돌 정점 */
 	Vec3 contactPoint1;

@@ -39,6 +39,8 @@ using namespace Microsoft::WRL;
 #include "ImGui/imgui.h"
 #include "ImGui/imgui_impl_dx11.h" 
 #include "ImGui/imgui_impl_win32.h" 
+#include "ImGuiNodeEditor/imgui_node_editor.h" 
+namespace ed = ax::NodeEditor;  
 
 // LIB
 #include <DirectXTex/DirectXTex.h>
