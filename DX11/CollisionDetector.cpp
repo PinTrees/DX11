@@ -8,38 +8,6 @@ CollisionDetector::CollisionDetector()
 {
 }
 
-// 제거 예정
-void CollisionDetector::DetectCollision(std::vector<Contact*>& contacts, vector<GameObject*>& gameObjects)
-{
-    for (size_t i = 0; i < gameObjects.size(); ++i)
-    {
-        for (size_t j = i + 1; j < gameObjects.size(); ++j)
-        {
-			BoxCollider* box1Col = gameObjects[i]->GetComponent<BoxCollider>();
-			BoxCollider* box2Col = gameObjects[j]->GetComponent<BoxCollider>();
-			SphereCollider* sphere1Col = gameObjects[i]->GetComponent<SphereCollider>(); 
-			SphereCollider* sphere2Col = gameObjects[j]->GetComponent<SphereCollider>();
-
-			if (box1Col && box2Col)
-			{
-				CheckBoxBoxCollision(contacts, box1Col, box2Col);
-			}
-			if (box1Col && sphere2Col)
-			{
-				CheckSphereBoxCollision(contacts, sphere2Col, box1Col);
-			}
-			if(sphere1Col && box2Col)
-			{
-				CheckSphereBoxCollision(contacts, sphere1Col, box2Col);
-            }
-			if (sphere1Col && sphere2Col)
-			{
-				CheckSphereSphereCollision(contacts, sphere1Col, sphere2Col);
-			}
-        }
-    }
-}
-
 void CollisionDetector::DetectCollision(std::vector<Contact*>& contacts, std::unordered_map<unsigned int, Collider*>& colliders)
 {
 	for (auto i = colliders.begin(); i != colliders.end(); ++i)
@@ -54,12 +22,12 @@ void CollisionDetector::DetectCollision(std::vector<Contact*>& contacts, std::un
 				if (typeid(*colliderPtrJ) == typeid(SphereCollider)) // 구 - 구 충돌
 				{
 					SphereCollider* collider2 = static_cast<SphereCollider*>(colliderPtrJ);
-					CheckSphereSphereCollision(contacts, collider1, collider2);
+					//CheckSphereSphereCollision(contacts, collider1, collider2);
 				}
 				else if (typeid(*colliderPtrJ) == typeid(BoxCollider)) // 구 - 직육면체 충돌
 				{
 					BoxCollider* collider2 = static_cast<BoxCollider*>(colliderPtrJ);
-					CheckSphereBoxCollision(contacts, collider1, collider2);
+					//CheckSphereBoxCollision(contacts, collider1, collider2);
 				}
 			}
 			else if (typeid(*colliderPtrI) == typeid(BoxCollider))
@@ -68,7 +36,7 @@ void CollisionDetector::DetectCollision(std::vector<Contact*>& contacts, std::un
 				if (typeid(*colliderPtrJ) == typeid(SphereCollider)) // 구 - 직육면체 충돌
 				{
 					SphereCollider* collider2 = static_cast<SphereCollider*>(colliderPtrJ);
-					CheckSphereBoxCollision(contacts, collider2, collider1);
+					//CheckSphereBoxCollision(contacts, collider2, collider1);
 				}
 				else if (typeid(*colliderPtrJ) == typeid(BoxCollider)) // 직육면체 - 직육면체 충돌
 				{
@@ -269,7 +237,7 @@ bool CollisionDetector::CheckBoxBoxCollision(std::vector<Contact*>& contacts, Bo
 	newContact->tangentImpulseSum2 = 0.0f;
 
 	/* 충돌 법선을 방향에 유의하여 설정한다 */
-	Vector3 centerToCenter = box1Tr->GetPosition() - box2Tr->GetPosition();
+	Vector3 centerToCenter = box2Tr->GetPosition() - box1Tr->GetPosition();
 	if (axes[minAxisIdx].Dot(centerToCenter) > 0)
 		newContact->normal = axes[minAxisIdx] * -1.0f;
 	else
@@ -283,6 +251,7 @@ bool CollisionDetector::CheckBoxBoxCollision(std::vector<Contact*>& contacts, Bo
 	else // 선-선 접촉일 때
 	{
 		calcContactPointOnLine(box1, box2, minAxisIdx, newContact);
+		return false;
 	}
 
 	contacts.push_back(newContact);
@@ -319,7 +288,8 @@ float CollisionDetector::calcPenetration(BoxCollider* box1, BoxCollider* box2, c
 
 
 
-
+// Fixed
+// 면-점 접촉일 때
 void CollisionDetector::calcContactPointOnPlane(
 	BoxCollider* box1,
 	BoxCollider* box2,
@@ -330,46 +300,46 @@ void CollisionDetector::calcContactPointOnPlane(
 	Transform* box1Tr = box1->GetGameObject()->GetTransform(); 
 	Transform* box2Tr = box2->GetGameObject()->GetTransform(); 
 
-	Vec3 box1HalfSize = box1->GetSize() * box1Tr->GetScale() / 2; 
-	Vec3 box2HalfSize = box2->GetSize() * box2Tr->GetScale() / 2;
+	Vec3 box1HalfSize = box1->GetSize() * box1Tr->GetScale() * 0.5f; 
+	Vec3 box2HalfSize = box2->GetSize() * box2Tr->GetScale() * 0.5f;
 
 	/* 충돌 정점 */
-	Vec3 contactPoint1;
-	Vec3 contactPoint2;
+	Vec3* contactPoint1;
+	Vec3* contactPoint2;
 
 	if (minAxisIdx < 3) // 충돌면이 box1 의 면일 때
 	{
-		contactPoint2 = Vec3(box2HalfSize.x, box2HalfSize.y, box2HalfSize.z);
+		contactPoint2 = new Vec3(box2HalfSize.x, box2HalfSize.y, box2HalfSize.z);
 
 		if (box2Tr->GetAxis(0).Dot(contact->normal) < 0)
-			contactPoint2.x *= -1.0f;
+			contactPoint2->x *= -1.0f;
 		if (box2Tr->GetAxis(1).Dot(contact->normal) < 0)
-			contactPoint2.y *= -1.0f;
+			contactPoint2->y *= -1.0f;
 		if (box2Tr->GetAxis(2).Dot(contact->normal) < 0)
-			contactPoint2.z *= -1.0f;
+			contactPoint2->z *= -1.0f;
 
 		/* 월드 좌표로 변환한다 */
-		contactPoint2 = Vec3::Transform(contactPoint2, box2Tr->GetWorldMatrix());
-		contactPoint1 = Vec3(contactPoint2 - contact->normal * contact->penetration);
+		*contactPoint2 = Vec3::Transform(*contactPoint2, box2Tr->GetWorldMatrix());
+		contactPoint1 = new Vec3(*contactPoint2 - contact->normal * contact->penetration);
 	}
 	else // 충돌면이 box2 의 면일 때
 	{
-		contactPoint1 = Vec3(box1HalfSize.x, box1HalfSize.y, box1HalfSize.z);
+		contactPoint1 = new Vec3(box1HalfSize.x, box1HalfSize.y, box1HalfSize.z);
 
 		if (box1Tr->GetAxis(0).Dot(contact->normal) > 0)
-			contactPoint1.x *= -1.0f;
+			contactPoint1->x *= -1.0f;
 		if (box1Tr->GetAxis(1).Dot(contact->normal) > 0)
-			contactPoint1.y *= -1.0f;
+			contactPoint1->y *= -1.0f;
 		if (box1Tr->GetAxis(2).Dot(contact->normal) > 0)
-			contactPoint1.z *= -1.0f;
+			contactPoint1->z *= -1.0f;
 
 		/* 월드 좌표로 변환한다 */
-		contactPoint1 = Vec3::Transform(contactPoint1, box1Tr->GetWorldMatrix());
-		contactPoint2 = Vec3(contactPoint1 - contact->normal * contact->penetration);
+		*contactPoint1 = Vec3::Transform(*contactPoint1, box1Tr->GetWorldMatrix()); 
+		contactPoint2 = new Vec3(*contactPoint1 - contact->normal * contact->penetration);
 	}
 
-	contact->contactPoint[0] = contactPoint1;
-	contact->contactPoint[1] = contactPoint2;
+	contact->contactPoint[0] = *contactPoint1;
+	contact->contactPoint[1] = *contactPoint2;
 }
 
 

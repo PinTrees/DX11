@@ -157,15 +157,16 @@ Vec3 Transform::GetAxis(int index) const
 		return Vector3();  
 	}
 
-	// Matrix 열을 가져와서 Vector3 생성
-	Vector3 result(
-		m_WorldMatrix(index, 0),  // index 열의 첫 번째 행
-		m_WorldMatrix(index, 1),  // index 열의 두 번째 행
-		m_WorldMatrix(index, 2)   // index 열의 세 번째 행
+	// 월드 매트릭스에서 축 벡터 추출
+	Vector3 axis(
+		m_WorldMatrix(index, 0),
+		m_WorldMatrix(index, 1),
+		m_WorldMatrix(index, 2)
 	);
-	result.Normalize();  // 벡터를 정규화
 
-	return result;
+	axis.Normalize();  // 벡터를 정규화
+
+	return axis;
 }
 
 void Transform::OnInspectorGUI()

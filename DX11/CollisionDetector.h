@@ -12,7 +12,6 @@ public:
       
 public:
     /* 충돌을 검출하고 충돌 정보를 contacts 에 저장한다 */
-    void DetectCollision(std::vector<Contact*>& contacts, vector<GameObject*>& gameObjects);
     void DetectCollision(std::vector<Contact*>& contacts, std::unordered_map<unsigned int, Collider*>& colliders);
 
 
