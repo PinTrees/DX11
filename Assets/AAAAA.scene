@@ -333,7 +333,7 @@
                     "angularDamping": 0.05000000074505806,
                     "isKinematic": true,
                     "m_LinearDamping": 0.05000000074505806,
-                    "mass": 100.0,
+                    "mass": 271.0,
                     "type": "RigidBody"
                 }
             ],
@@ -499,7 +499,7 @@
                     "angularDamping": 0.05000000074505806,
                     "isKinematic": true,
                     "m_LinearDamping": 0.05000000074505806,
-                    "mass": 8.0,
+                    "mass": 1.0,
                     "type": "RigidBody"
                 },
                 {

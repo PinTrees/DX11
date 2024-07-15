@@ -300,8 +300,8 @@ void CollisionDetector::calcContactPointOnPlane(
 	Transform* box1Tr = box1->GetGameObject()->GetTransform(); 
 	Transform* box2Tr = box2->GetGameObject()->GetTransform(); 
 
-	Vec3 box1HalfSize = box1->GetSize() * box1Tr->GetScale() * 0.5f; 
-	Vec3 box2HalfSize = box2->GetSize() * box2Tr->GetScale() * 0.5f;
+	Vec3 box1HalfSize = box1->GetSize() * 0.5f; 
+	Vec3 box2HalfSize = box2->GetSize() * 0.5f;
 
 	/* 충돌 정점 */
 	Vec3* contactPoint1;
@@ -355,8 +355,8 @@ void CollisionDetector::calcContactPointOnLine(
 	Transform* box1Tr = box1->GetGameObject()->GetTransform(); 
 	Transform* box2Tr = box2->GetGameObject()->GetTransform(); 
 
-	Vec3 box1HalfSize = box1->GetSize() * box1Tr->GetScale() * 0.5f; 
-	Vec3 box2HalfSize = box2->GetSize() * box2Tr->GetScale() * 0.5f; 
+	Vec3 box1HalfSize = box1->GetSize() * 0.5f; 
+	Vec3 box2HalfSize = box2->GetSize() * 0.5f; 
 
 	/* 접촉한 변 위의 정점을 찾는다 */
 	Vec3 vertexOne(box1HalfSize.x, box1HalfSize.y, box1HalfSize.z);
