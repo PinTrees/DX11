@@ -15,6 +15,14 @@ Scene::~Scene()
 
 void Scene::Enter()
 {
+    for (auto& gameObject : m_arrGameObjects[0])
+    {
+        for (auto& component : gameObject->GetComponents())
+        {
+            component->Awake();
+        }
+    }
+
     PhysicsManager::GetI()->Start();
 }
 

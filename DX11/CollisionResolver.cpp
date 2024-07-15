@@ -14,6 +14,9 @@ void CollisionResolver::ResolveCollision(std::vector<Contact*>& contacts, float 
 
 void CollisionResolver::sequentialImpulse(Contact* contact, float deltaTime)
 {
+    Transform* tr1 = contact->bodies[0]->GetGameObject()->GetTransform();
+    Transform* tr2 = contact->bodies[1]->GetGameObject()->GetTransform();
+
     float effectiveMass;
 
     float totalInvMass = contact->bodies[0]->GetInverseMass();
@@ -22,10 +25,10 @@ void CollisionResolver::sequentialImpulse(Contact* contact, float deltaTime)
     if (totalInvMass == 0.0f)
         return;
 
-    Vector3 contactPointFromCenter1 = contact->contactPoint[0] - contact->bodies[0]->GetGameObject()->GetTransform()->GetPosition();
+    Vector3 contactPointFromCenter1 = contact->contactPoint[0] - tr1->GetPosition();
     Vector3 contactPointFromCenter2;
     if (contact->bodies[1] != nullptr)
-        contactPointFromCenter2 = contact->contactPoint[1] - contact->bodies[1]->GetGameObject()->GetTransform()->GetPosition();
+        contactPointFromCenter2 = contact->contactPoint[1] - tr2->GetPosition();
 
     Vector3 termInDenominator1 = (contact->bodies[0]->GetInverseInertiaTensorWorld() * (contactPointFromCenter1.Cross(contact->normal)))
         .Cross(contactPointFromCenter1);
@@ -84,7 +87,7 @@ void CollisionResolver::sequentialImpulse(Contact* contact, float deltaTime)
         contact->bodies[0]->GetVelocity() + linearImpulse * contact->bodies[0]->GetInverseMass()
     );
     contact->bodies[0]->SetRotationVelocity(
-        contact->bodies[0]->GetRotationVelocity() + (contact->bodies[0]->GetInverseInertiaTensorWorld() * angularImpulse1)
+        contact->bodies[0]->GetRotationVelocity() + contact->bodies[0]->GetInverseInertiaTensorWorld() * angularImpulse1
     );
     if (contact->bodies[1] != nullptr)
     {
@@ -92,7 +95,7 @@ void CollisionResolver::sequentialImpulse(Contact* contact, float deltaTime)
             contact->bodies[1]->GetVelocity() - linearImpulse * contact->bodies[1]->GetInverseMass()
         );
         contact->bodies[1]->SetRotationVelocity(
-            contact->bodies[1]->GetRotationVelocity() - (contact->bodies[1]->GetInverseInertiaTensorWorld() * angularImpulse2)
+            contact->bodies[1]->GetRotationVelocity() - contact->bodies[1]->GetInverseInertiaTensorWorld() * angularImpulse2
         );
     }
 
@@ -200,7 +203,7 @@ void CollisionResolver::sequentialImpulse(Contact* contact, float deltaTime)
         contact->bodies[0]->GetVelocity() + linearImpulse * contact->bodies[0]->GetInverseMass()
     );
     contact->bodies[0]->SetRotationVelocity(
-        contact->bodies[0]->GetRotationVelocity() + (contact->bodies[0]->GetInverseInertiaTensorWorld() * angularImpulse1)
+        contact->bodies[0]->GetRotationVelocity() + contact->bodies[0]->GetInverseInertiaTensorWorld() * angularImpulse1
     );
     if (contact->bodies[1] != nullptr)
     {
@@ -208,7 +211,7 @@ void CollisionResolver::sequentialImpulse(Contact* contact, float deltaTime)
             contact->bodies[1]->GetVelocity() - linearImpulse * contact->bodies[1]->GetInverseMass()
         );
         contact->bodies[1]->SetRotationVelocity(
-            contact->bodies[1]->GetRotationVelocity() - (contact->bodies[1]->GetInverseInertiaTensorWorld() * angularImpulse2)
+            contact->bodies[1]->GetRotationVelocity() - contact->bodies[1]->GetInverseInertiaTensorWorld() * angularImpulse2
         );
     }
 }

@@ -6,7 +6,12 @@ RigidBody::RigidBody()
 	: m_Velocity(0.0f, 0.0f, 0.0f),
 	m_Acceleration(0.0f, 0.0f, 0.0f),
 	m_Mass(1.0f),
-	m_IsKinematic(false)
+	m_InverseMass(0.0f),
+	m_Force(Vec3::Zero),
+	m_Torque(Vec3::Zero),
+	m_IsKinematic(false),
+	m_AngularDamping(0.99f),
+	m_LinearDamping(0.99f)
 {
 	m_InspectorTitleName = "RigidBody";
 }
@@ -50,52 +55,54 @@ void RigidBody::ApplyImpulse(const Vec3& impulse)
 
 Vec3 RigidBody::GetRotationVelocity()
 {
-	Transform* tr = GetGameObject()->GetTransform(); 
-	Matrix worldMatrix = tr->GetWorldMatrix(); 
-
+	Matrix worldMatrix = GetGameObject()->GetTransform()->GetWorldMatrix();
+	 
 	Matrix3 rotationMatrix;
-	// transformMatrix의 상단 3x3 부분을 가져옵니다.
 	for (int i = 0; i < 3; ++i)
 		for (int j = 0; j < 3; ++j)
-			rotationMatrix.entries[3 * i + j] = tr->GetWorldMatrix().m[i][j];
-
+			rotationMatrix.entries[3 * i + j] = worldMatrix.m[i][j];
+	
 	// 로컬 회전 속도를 월드 회전 속도로 변환
 	return rotationMatrix * m_RotationVelocity;
 }
 
+// Fixed
 void RigidBody::SetRotationVelocity(const Vec3& vec)
 {
-	Transform* tr = GetGameObject()->GetTransform(); 
-	Matrix worldMatrix = tr->GetWorldMatrix(); 
+	Matrix worldMatrix = GetGameObject()->GetTransform()->GetWorldMatrix(); 
 
 	// transformMatrix의 상단 3x3 부분을 가져옵니다.
 	Matrix3 rotationMatrix;
 	for (int i = 0; i < 3; ++i)
 		for (int j = 0; j < 3; ++j)
-			rotationMatrix.entries[3 * i + j] = tr->GetWorldMatrix().m[i][j];
+			rotationMatrix.entries[3 * i + j] = worldMatrix.m[i][j]; 
 
 	// 변환 행렬의 전치 행렬을 곱합니다.
-	m_RotationVelocity = rotationMatrix.transpose() * vec;
+	m_RotationVelocity = rotationMatrix.transpose() * vec; 
 }
 
 void RigidBody::SetMass(float mass)
 {
 	m_Mass = mass;
 
-	if (m_Mass > 0) m_InverseMass = 1.0f / m_Mass;
-	else m_InverseMass = 0;
+	if (m_Mass > 0) 
+		m_InverseMass = 1.0f / m_Mass;
+	else
+		m_InverseMass = 0;
 }
 
+// Fixed
 void RigidBody::TransformInertiaTensor()
 {
-	Transform* tr = GetGameObject()->GetTransform();
+	Matrix worldMatrix = GetGameObject()->GetTransform()->GetWorldMatrix();
+
 	/* 변환 행렬 중 회전 변환 행렬만 뽑아낸다 */ 
 	Matrix3 rotationMatrix;
 	for (int i = 0; i < 3; ++i)
 		for (int j = 0; j < 3; ++j)
-			rotationMatrix.entries[3 * i + j] = tr->GetWorldMatrix().m[i][j];
+			rotationMatrix.entries[3 * i + j] = worldMatrix.m[i][j]; 
 
-	m_InverseInertiaTensorWorld = (rotationMatrix * m_InverseInertiaTensorWorld) * rotationMatrix.transpose();
+	m_InverseInertiaTensorWorld = (rotationMatrix * m_InverseInertiaTensor) * rotationMatrix.transpose();
 }
 
 void RigidBody::Integrate(float deltaTime)
@@ -104,12 +111,12 @@ void RigidBody::Integrate(float deltaTime)
 		return;
 
 	/* 강체의 질량이 무한대라면 적분을 하지 않는다 */
-	if (GetInverseMass() == 0.0f)
+	if (m_InverseMass <= 0.0f)
 		return;
 
 	/* 가속도를 계산한다 */
 	m_PrevAcceleration = m_Acceleration;
-	m_PrevAcceleration += m_Force * GetInverseMass();
+	m_PrevAcceleration += m_Force * m_InverseMass;
 
 	/* 각가속도를 계산한다 */
 	Vec3 angularAcceleration = m_InverseInertiaTensorWorld * m_Torque;
@@ -124,10 +131,9 @@ void RigidBody::Integrate(float deltaTime)
 
 	/* 위치 업데이트 */
 	GetGameObject()->GetTransform()->Translate(m_Velocity * deltaTime);
-	//GetGameObject()->GetTransform()->Rotate(m_RotationVelocity * deltaTime / 2.0f);
 
 	/* 방향을 업데이트한다 */
-	m_Orientation += RotateByScaledVector(m_Orientation, m_RotationVelocity, deltaTime / 2.0f);  
+	m_Orientation += RotateByScaledVector(m_Orientation, m_RotationVelocity, deltaTime);   
 	m_Orientation.Normalize(); 
 
 	/* 업데이트 된 회전을 트랜스폼에 설정 */
@@ -139,7 +145,13 @@ void RigidBody::Integrate(float deltaTime)
 	/* 강체에 적용된 힘과 토크는 제거한다 */
 	m_Force = Vec3::Zero;
 	m_Torque = Vec3::Zero;
-} 
+}
+
+void RigidBody::Awake()
+{
+	m_Orientation = GetGameObject()->GetTransform()->GetRotationQ(); 
+}
+
 
 void RigidBody::OnDrawGizmos()
 {
@@ -147,11 +159,7 @@ void RigidBody::OnDrawGizmos()
 		return;
 
 	Transform* tr = GetGameObject()->GetTransform();
-	//Gizmo::DrawVector(tr->GetWorldMatrix(), m_Velocity);
-	//Gizmo::DrawVector(tr->GetWorldMatrix(), m_RotationVelocity);
-	//Gizmo::DrawVector(tr->GetWorldMatrix(), m_Force);
-	//Gizmo::DrawVector(tr->GetWorldMatrix(), m_Torque);
-	Gizmo::DrawArrow(tr->GetPosition(), m_Velocity, ImVec4(0, 0, 255, 255));
+	Gizmo::DrawArrow(tr->GetPosition(), m_Velocity * 0.35f, ImVec4(0, 0, 255, 255));
 	Gizmo::DrawArrow(tr->GetPosition(), m_RotationVelocity, ImVec4(0, 255, 0, 255));
 }
 
@@ -159,8 +167,7 @@ void RigidBody::OnInspectorGUI()
 {
 	if (ImGui::DragFloat("Mass", &m_Mass))
 	{
-		if (m_Mass > 0) m_InverseMass = 1.0f / m_Mass;
-		else m_InverseMass = 0;
+		SetMass(m_Mass);
 	}
 	ImGui::DragFloat("Linear Damping", &m_LinearDamping); 
 	ImGui::DragFloat("Angular Damping", &m_AngularDamping);
@@ -182,11 +189,8 @@ GENERATE_COMPONENT_FUNC_TOJSON(RigidBody)
 
 GENERATE_COMPONENT_FUNC_FROMJSON(RigidBody)
 {
-	m_Mass = j.value("mass", 5.0f);
+	SetMass(j.value("mass", 5.0f)); 
 	m_LinearDamping = j.value("m_LinearDamping", 0.05f);
 	m_AngularDamping = j.value("angularDamping", 0.05f);
 	m_IsKinematic = j.value("isKinematic", false);
-
-	if (m_Mass > 0) m_InverseMass = 1.0f / m_Mass;
-	else m_InverseMass = 0;
 }

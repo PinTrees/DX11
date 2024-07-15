@@ -44,12 +44,11 @@ Vec3 Transform::ToEulerAngles(Quaternion q)
 
 void Transform::UpdateTransform()
 {
-	// 로컬 회전을 쿼터니언으로 변환
-	Quaternion localRotation = Quaternion::CreateFromYawPitchRoll(m_LocalEulerAngles.y, m_LocalEulerAngles.x, m_LocalEulerAngles.z);
-
 	// 로컬 변환 행렬 생성 
 	Matrix S = Matrix::CreateScale(m_LocalScale);  
-	Matrix R = Matrix::CreateFromQuaternion(localRotation);  
+	Matrix R = Matrix::CreateRotationX(m_LocalEulerAngles.x)
+			 * Matrix::CreateRotationY(m_LocalEulerAngles.y)
+			 * Matrix::CreateRotationZ(m_LocalEulerAngles.z);
 	Matrix T = Matrix::CreateTranslation(m_LocalPosition);
 
 	m_LocalMatrix = S * R * T;
@@ -88,11 +87,8 @@ void Transform::SetScale(const Vec3& worldScale)
 {
 	if (HasParent())
 	{
-		Vec3 parentScale = _parent->GetScale();
-		Vec3 scale = worldScale;
-		scale.x /= parentScale.x;
-		scale.y /= parentScale.y;
-		scale.z /= parentScale.z;
+		Vec3 parentScale = _parent->GetScale(); 
+		Vec3 scale = worldScale / parentScale; 
 		SetLocalScale(scale);
 	}
 	else
@@ -105,15 +101,15 @@ void Transform::SetRotation(const Vec3& worldRotation)
 {
 	if (HasParent())
 	{
-		Matrix inverseMatrix = _parent->GetWorldMatrix().Invert();
-
-		Vec3 rotation;
-		rotation.TransformNormal(worldRotation, inverseMatrix);
-
+		Matrix inverseMatrix = _parent->GetWorldMatrix().Invert(); 
+		Vec3 rotation = Vec3::TransformNormal(worldRotation, inverseMatrix);
+		 
 		SetLocalRotation(rotation);
 	}
 	else
-		SetLocalRotation(worldRotation);
+	{
+		SetLocalRotation(worldRotation); 
+	}
 }
 
 void Transform::SetRotationQ(Quaternion q)
@@ -123,11 +119,11 @@ void Transform::SetRotationQ(Quaternion q)
 	SetRotation(m_EulerAngles);
 }
 
-void Transform::SetLookRotation(Quaternion q)
+void Transform::SetLookRotation(Quaternion targetRotation) 
 {
-	m_Rotation = q;  
-	m_EulerAngles = ToEulerAngles(q);  
-	SetRotation(m_EulerAngles); 
+	m_Rotation = targetRotation;
+	m_EulerAngles = ToEulerAngles(targetRotation);
+	SetRotation(m_EulerAngles);
 }
 
 void Transform::SetPosition(const Vec3& worldPosition)
@@ -135,9 +131,7 @@ void Transform::SetPosition(const Vec3& worldPosition)
 	if (HasParent())
 	{
 		Matrix worldToParentLocalMatrix = _parent->GetWorldMatrix().Invert();
-
-		Vec3 position;
-		position.Transform(worldPosition, worldToParentLocalMatrix);
+		Vec3 position = Vec3::Transform(worldPosition, worldToParentLocalMatrix);
 
 		SetLocalPosition(position);
 	}
@@ -171,17 +165,16 @@ Vec3 Transform::GetAxis(int index) const
 
 void Transform::OnInspectorGUI()
 {
-	ImGui::Text("Transform");
-
 	bool positionChanged = false;
 	bool rotationChanged = false;
 	bool scaleChanged = false;
 
-	ImGui::Text("Position"); 
+	ImGui::Text("World Position"); 
 	if (ImGui::DragFloat3("##WorldPosition", reinterpret_cast<float*>(&m_Position), 0.1f))
 	{
 		positionChanged = true;
 	}
+	ImGui::Text("Local Position");
 	if (ImGui::DragFloat3("##Position", reinterpret_cast<float*>(&m_LocalPosition), 0.1f))
 	{
 		positionChanged = true;

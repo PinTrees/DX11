@@ -8,7 +8,7 @@ class RigidBody
 {
 private:
 	float m_Mass;						// 질량
-	float m_InverseMass;				// 질량의 역수. - 적분식에 활용
+	float m_InverseMass;				// 질량의 역수 - 적분식에 활용
 
 	// Fixed
 	/* 관성 모멘트 역텐서 */
@@ -63,10 +63,13 @@ public:
 	void ApplyForce(const Vec3& force);
 	void ApplyImpulse(const Vec3& impulse);
 	
-	// 오버라이드
 	void TransformInertiaTensor();
 
+
+public:
+	virtual void Awake() override;
 	void Integrate(float deltaTime);
+
 
 public:
 	virtual void OnDrawGizmos() override;

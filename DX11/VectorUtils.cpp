@@ -26,19 +26,8 @@ Vec3 Clamp(const Vec3& value, const Vec3& min, const Vec3& max)
     );
 }
 
+// Fixed
 Quaternion RotateByScaledVector(const Quaternion& quat, const Vector3& vec, float scale)
 {
-    // 벡터를 스케일링한 값으로 쿼터니언 생성 
-    Quaternion scaledVecQuat(0.0f, vec.x * scale, vec.y * scale, vec.z * scale); 
-
-    // 입력 쿼터니언과 곱셈하여 새로운 쿼터니언 반환
-    return quat * scaledVecQuat; 
-}
-
-Vec3 Vec3XMatrix(const Matrix& matrix, const Vector3& vec)
-{
-    Vector4 vec4(vec.x, vec.y, vec.z, 1.0f); // vec를 4D 벡터로 확장
-    Vector4 result = Vector4::Transform(vec4, matrix);
-
-    return Vector3(result.x / result.w, result.y / result.w, result.z / result.w);
+    return quat * Quaternion(0.0f, vec.x * scale, vec.y * scale, vec.z * scale); 
 }
