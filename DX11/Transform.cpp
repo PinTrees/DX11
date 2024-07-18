@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "Transform.h"
 
-
 Transform::Transform()
 {
 	m_InspectorTitleName = "Transform";
@@ -32,7 +31,7 @@ Vec3 Transform::ToEulerAngles(Quaternion q)
 	// pitch (y-axis rotation)
 	double sinp = std::sqrt(1 + 2 * (q.w * q.y - q.x * q.z));
 	double cosp = std::sqrt(1 - 2 * (q.w * q.y - q.x * q.z));
-	angles.y = 2 * std::atan2(sinp, cosp) - 3.14159f / 2;
+	angles.y = 2 * std::atan2(sinp, cosp) - PI / 2;  
 
 	// yaw (z-axis rotation)
 	double siny_cosp = 2 * (q.w * q.z + q.x * q.y);
@@ -45,13 +44,14 @@ Vec3 Transform::ToEulerAngles(Quaternion q)
 void Transform::UpdateTransform()
 {
 	// 로컬 변환 행렬 생성 
-	Matrix S = Matrix::CreateScale(m_LocalScale);  
-	Matrix R = Matrix::CreateRotationX(m_LocalEulerAngles.x)
-			 * Matrix::CreateRotationY(m_LocalEulerAngles.y)
-			 * Matrix::CreateRotationZ(m_LocalEulerAngles.z);
-	Matrix T = Matrix::CreateTranslation(m_LocalPosition);
+	Matrix S = Matrix::CreateScale(m_LocalScale);   
+	// 로컬 오일러 각을 쿼터니언으로 변환
+	Quaternion q = Quaternion::CreateFromYawPitchRoll(m_LocalEulerAngles.y, m_LocalEulerAngles.x, m_LocalEulerAngles.z);
+	Matrix QR = Matrix::CreateFromQuaternion(q);
 
-	m_LocalMatrix = S * R * T;
+	Matrix T = Matrix::CreateTranslation(m_LocalPosition); 
+
+	m_LocalMatrix = S * QR * T; 
 
 	if (HasParent())
 	{
@@ -70,6 +70,25 @@ void Transform::UpdateTransform()
 	{
 		child->UpdateTransform(); 
 	}
+}
+
+Vec3 Transform::GetLocalEulerAngle()
+{
+	return ToEulerAngles(m_LocalRotation); 
+}
+
+void Transform::SetLocalEulerAngle(const Vec3& angle)
+{
+	m_LocalEulerAngles = angle;
+	m_LocalRotation = Quaternion::CreateFromYawPitchRoll(angle.y, angle.x, angle.z);
+	UpdateTransform(); 
+}
+
+void Transform::SetLocalRotation(Quaternion q)
+{
+	m_LocalRotation = q;
+	m_LocalEulerAngles = ToEulerAngles(q);
+	UpdateTransform();
 }
 
 Vec3 Transform::GetLocalPosition()
@@ -97,33 +116,30 @@ void Transform::SetScale(const Vec3& worldScale)
 	}
 }
 
-void Transform::SetRotation(const Vec3& worldRotation)
+void Transform::SetEulerAngle(const Vec3& worldRotation)
 {
 	if (HasParent())
 	{
 		Matrix inverseMatrix = _parent->GetWorldMatrix().Invert(); 
 		Vec3 rotation = Vec3::TransformNormal(worldRotation, inverseMatrix);
 		 
-		SetLocalRotation(rotation);
+		SetLocalEulerAngle(rotation);
 	}
 	else
 	{
-		SetLocalRotation(worldRotation); 
+		SetLocalEulerAngle(worldRotation); 
 	}
 }
 
-void Transform::SetRotationQ(Quaternion q)
+void Transform::SetRotation(Quaternion q)
 {
-	m_Rotation = q;
-	m_EulerAngles = ToEulerAngles(q);
-	SetRotation(m_EulerAngles);
-}
-
-void Transform::SetLookRotation(Quaternion targetRotation) 
-{
-	m_Rotation = targetRotation;
-	m_EulerAngles = ToEulerAngles(targetRotation);
-	SetRotation(m_EulerAngles);
+	if (HasParent())
+	{
+	}
+	else
+	{
+		SetLocalRotation(q);
+	}
 }
 
 void Transform::SetPosition(const Vec3& worldPosition)
@@ -181,20 +197,21 @@ void Transform::OnInspectorGUI()
 	}
 
 	// Convert radians to degrees
-	Vec3 angles;
-	angles.x = XMConvertToDegrees(m_LocalEulerAngles.x); 
-	angles.y = XMConvertToDegrees(m_LocalEulerAngles.y); 
-	angles.z = XMConvertToDegrees(m_LocalEulerAngles.z); 
+	Vec3 localEulerAngle_Radian = m_LocalEulerAngles; 
+	Vec3 localEulerAngle_Degree;
+	localEulerAngle_Degree.x = XMConvertToDegrees(localEulerAngle_Radian.x);
+	localEulerAngle_Degree.y = XMConvertToDegrees(localEulerAngle_Radian.y);
+	localEulerAngle_Degree.z = XMConvertToDegrees(localEulerAngle_Radian.z);
 
 	ImGui::Text("Rotation");
-	if (ImGui::DragFloat3("##Rotation", reinterpret_cast<float*>(&angles), 0.1f))
+	if (ImGui::DragFloat3("##Rotation", reinterpret_cast<float*>(&localEulerAngle_Degree), 0.1f))
 	{
 		rotationChanged = true;
 		Vec3 a;
-		a.x = XMConvertToRadians(angles.x);
-		a.y = XMConvertToRadians(angles.y);
-		a.z = XMConvertToRadians(angles.z);
-		SetLocalRotation(a);
+		a.x = XMConvertToRadians(localEulerAngle_Degree.x); 
+		a.y = XMConvertToRadians(localEulerAngle_Degree.y); 
+		a.z = XMConvertToRadians(localEulerAngle_Degree.z); 
+		SetLocalEulerAngle(a);
 	}
 
 	ImGui::Text("Scale");
@@ -209,25 +226,30 @@ void Transform::OnInspectorGUI()
 GENERATE_COMPONENT_FUNC_TOJSON(Transform)
 {
 	json j;
-	j["type"] = "Transform";
-	j["_localScale"] = { m_LocalScale.x, m_LocalScale.y, m_LocalScale.z };
-	j["_localRotation"] = { m_LocalEulerAngles.x, m_LocalEulerAngles.y, m_LocalEulerAngles.z };
-	j["_localPosition"] = { m_LocalPosition.x, m_LocalPosition.y, m_LocalPosition.z };
-	j["_scale"] = { m_Scale.x, m_Scale.y, m_Scale.z };
-	j["_rotation"] = { m_EulerAngles.x, m_EulerAngles.y, m_EulerAngles.z };
-	j["_position"] = { m_Position.x, m_Position.y, m_Position.z };
+	
+	j["type"] = "Transform"; 
+	SERIALIZE_QUATERNION(j, m_LocalRotation); 
+	SERIALIZE_VECTOR3(j, m_LocalEulerAngles);
+	SERIALIZE_VECTOR3(j, m_LocalPosition);
+	SERIALIZE_VECTOR3(j, m_LocalScale);
+
+	SERIALIZE_VECTOR3(j, m_Scale);
+	SERIALIZE_VECTOR3(j, m_EulerAngles);
+	SERIALIZE_VECTOR3(j, m_Position);
 
 	return j;
 }
 
 GENERATE_COMPONENT_FUNC_FROMJSON(Transform)
 {
-	m_LocalScale = SafeGetVector3(j, "_localScale", { 1.0f, 1.0f, 1.0f }); 
-	m_LocalEulerAngles = SafeGetVector3(j, "_localRotation", { 0.0f, 0.0f, 0.0f }); 
-	m_LocalPosition = SafeGetVector3(j, "_localPosition", { 0.0f, 0.0f, 0.0f }); 
-	m_Scale = SafeGetVector3(j, "_scale", { 1.0f, 1.0f, 1.0f }); 
-	m_EulerAngles = SafeGetVector3(j, "_rotation", { 0.0f, 0.0f, 0.0f }); 
-	m_Position = SafeGetVector3(j, "_position", { 0.0f, 0.0f, 0.0f }); 
-	 
+	DE_SERIALIZE_QUATERNION(j, m_LocalRotation); 
+	DE_SERIALIZE_VECTOR3(j, m_LocalEulerAngles);
+	DE_SERIALIZE_VECTOR3(j, m_LocalPosition);
+	DE_SERIALIZE_VECTOR3_D(j, m_LocalScale, Vec3::One);
+
+	DE_SERIALIZE_VECTOR3(j, m_EulerAngles);
+	DE_SERIALIZE_VECTOR3(j, m_Position);
+	DE_SERIALIZE_VECTOR3_D(j, m_Scale, Vec3::One);
+
 	UpdateTransform(); 
 }

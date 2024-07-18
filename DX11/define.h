@@ -21,7 +21,8 @@
 								~type();					\
 
 
-
+#define PI 3.14159265359
+#define PI_2 1.57079632679
 #define DT TimeManager::GetI()->GetDT()
 
 #define INPUT_CHECK(key , state) InputManager::GetI()->GetKeyState(key) == state

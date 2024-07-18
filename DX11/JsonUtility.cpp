@@ -27,3 +27,21 @@ Vector3 SafeGetVector3(const json& j, const std::string& key, const Vector3& def
         SafeGetFloat(j, key, 2, defaultValue.z)
     };
 }
+
+json QuaternionToJSON(const Quaternion& q) 
+{
+    return json{ {"x", q.x}, {"y", q.y}, {"z", q.z}, {"w", q.w} };
+}
+ 
+Quaternion SafeGetQuaternion(const json& j, const std::string& key, const Quaternion& defaultValue)
+{
+    if (j.contains(key) && j[key].is_object())
+    {
+        const json& q = j[key];
+        return Quaternion(q.value("x", defaultValue.x),
+            q.value("y", defaultValue.y),
+            q.value("z", defaultValue.z),
+            q.value("w", defaultValue.w));
+    }
+    return defaultValue;
+} 

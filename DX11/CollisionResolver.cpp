@@ -3,20 +3,110 @@
 
 void CollisionResolver::ResolveCollision(std::vector<Contact*>& contacts, float deltaTime)
 {
-    for (int i = 0; i < 30; ++i)
+    for (int i = 0; i < 1; ++i)
     {
         for (auto& contact : contacts)
         {
-            sequentialImpulse(contact, deltaTime);
+            //sequentialImpulse(contact, deltaTime);
+            AA(contact, deltaTime);
         }
+    }
+}
+
+void CollisionResolver::AA(Contact* contact, float deltaTime)
+{
+    /* 두 물체의 역질량의 합을 계산한다 */
+    float totalInverseMass = contact->bodies[0]->GetInverseMass();
+    if (contact->bodies[1] != nullptr) // 오브젝트-지면 충돌이면 bodies[1] 은 nullptr
+        totalInverseMass += contact->bodies[1]->GetInverseMass();
+
+    /* 역질량의 합이 0 이면
+        두 물체가 무한의 질량을 가지는 것이므로 함수를 종료한다 */
+    if (totalInverseMass == 0.0f)
+        return;
+
+    float penetrationPerInverseMass = contact->penetration / totalInverseMass;
+
+    /* 두 물체의 위치를 질량에 반비례하여 조정한다 */
+    Vector3 deltaPosition = contact->normal * penetrationPerInverseMass;
+    contact->bodies[0]->GetGameObject()->GetTransform()->Translate(deltaPosition * contact->bodies[0]->GetInverseMass());
+    if (contact->bodies[1] != nullptr)
+    {
+        contact->bodies[1]->GetGameObject()->GetTransform()->Translate(-deltaPosition * contact->bodies[1]->GetInverseMass());
+    }
+
+
+    Vector3 contactPointFromCenter1 = contact->contactPoint[0] - contact->bodies[0]->GetGameObject()->GetTransform()->GetPosition();
+    Vector3 contactPointFromCenter2;
+    if (contact->bodies[1] != nullptr)
+        contactPointFromCenter2 = contact->contactPoint[1] - contact->bodies[1]->GetGameObject()->GetTransform()->GetPosition();
+
+    /* 두 물체의 충돌점의 속도를 계산한다 */
+    Vector3 contactPointVelocity1 = contact->bodies[0]->GetVelocity() +
+        contact->bodies[0]->GetRotationVelocity().Cross(contactPointFromCenter1);
+
+    Vector3 contactPointVelocity2;
+    if (contact->bodies[1] != nullptr)
+    {
+        contactPointVelocity2 = contact->bodies[1]->GetVelocity() +
+            contact->bodies[1]->GetRotationVelocity().Cross(contactPointFromCenter2);
+    }
+
+    /* 상대 속도를 계산한다 */
+    Vector3 relativeVelocity = contactPointVelocity2 - contactPointVelocity1;
+
+    /* 충격량의 크기를 계산한다 */
+    Vector3 contactNormal = contact->normal * -1.0f;
+    float numerator = (relativeVelocity * (1.0f + contact->restitution)).Dot(contactNormal) * -1.0f;
+
+    Vector3 termInDenominator1 = (contact->bodies[0]->GetInverseInertiaTensorWorld() * (contactPointFromCenter1.Cross(contactNormal)))
+        .Cross(contactPointFromCenter1);
+    Vector3 termInDenominator2;
+    if (contact->bodies[1] != nullptr) {
+        termInDenominator2 =
+            (contact->bodies[1]->GetInverseInertiaTensorWorld() * (contactPointFromCenter2.Cross(contactNormal)))
+            .Cross(contactPointFromCenter2);
+    }
+    float denominator = totalInverseMass + (termInDenominator1 + termInDenominator2).Dot(contactNormal);
+    if (denominator == 0.0f)
+        return;
+
+    float impulse = numerator / denominator;
+    if (impulse == 0.0f)
+        return;
+    Vector3 impulseVector = contactNormal * impulse;
+
+    /* 두 물체의 선속도를 갱신한다 */
+    contact->bodies[0]->SetVelocity(
+        contact->bodies[0]->GetVelocity() - impulseVector * contact->bodies[0]->GetInverseMass()
+    );
+
+    if (contact->bodies[1] != nullptr)
+    {
+        contact->bodies[1]->SetVelocity(
+            contact->bodies[1]->GetVelocity() + impulseVector * contact->bodies[1]->GetInverseMass()
+        );
+    }
+
+    /* 두 물체의 각속도를 갱신한다 */
+    Vector3 contactPointFromCenter = contact->contactPoint[0] - contact->bodies[0]->GetGameObject()->GetTransform()->GetPosition();
+    contact->bodies[0]->SetRotationVelocity(
+        contact->bodies[0]->GetRotationVelocity() - contact->bodies[0]->GetInverseInertiaTensorWorld()
+        * (contactPointFromCenter.Cross(impulseVector))
+    );
+
+    if (contact->bodies[1] != nullptr)
+    {
+        contactPointFromCenter = contact->contactPoint[1] - contact->bodies[1]->GetGameObject()->GetTransform()->GetPosition();
+        contact->bodies[1]->SetRotationVelocity(
+            contact->bodies[1]->GetRotationVelocity() + contact->bodies[1]->GetInverseInertiaTensorWorld()
+            * (contactPointFromCenter.Cross(impulseVector))
+        );
     }
 }
 
 void CollisionResolver::sequentialImpulse(Contact* contact, float deltaTime)
 {
-    Transform* tr1 = contact->bodies[0]->GetGameObject()->GetTransform();
-    Transform* tr2 = contact->bodies[1]->GetGameObject()->GetTransform();
-
     float effectiveMass;
 
     float totalInvMass = contact->bodies[0]->GetInverseMass();
@@ -25,10 +115,10 @@ void CollisionResolver::sequentialImpulse(Contact* contact, float deltaTime)
     if (totalInvMass == 0.0f)
         return;
 
-    Vector3 contactPointFromCenter1 = contact->contactPoint[0] - tr1->GetPosition();
+    Vector3 contactPointFromCenter1 = contact->contactPoint[0] - contact->bodies[0]->GetGameObject()->GetTransform()->GetPosition();
     Vector3 contactPointFromCenter2;
     if (contact->bodies[1] != nullptr)
-        contactPointFromCenter2 = contact->contactPoint[1] - tr2->GetPosition();
+        contactPointFromCenter2 = contact->contactPoint[1] - contact->bodies[1]->GetGameObject()->GetTransform()->GetPosition();
 
     Vector3 termInDenominator1 = (contact->bodies[0]->GetInverseInertiaTensorWorld() * (contactPointFromCenter1.Cross(contact->normal)))
         .Cross(contactPointFromCenter1);

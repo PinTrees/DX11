@@ -15,9 +15,6 @@ private:
 	Matrix3 m_InverseInertiaTensor;			// 로컬 좌표계 기준
 	Matrix3 m_InverseInertiaTensorWorld;	// 월드 좌표계 기준
 
-	/* 강체가 바라보는 방향 */
-	Quaternion m_Orientation;
-
 	Vec3 m_Velocity;				// 선속도
 	Vec3 m_RotationVelocity;		// 각속도
 

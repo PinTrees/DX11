@@ -60,10 +60,10 @@ Vec3 RigidBody::GetRotationVelocity()
 	Matrix3 rotationMatrix;
 	for (int i = 0; i < 3; ++i)
 		for (int j = 0; j < 3; ++j)
-			rotationMatrix.entries[3 * i + j] = worldMatrix.m[i][j];
+			rotationMatrix.entries[3 * i + j] = worldMatrix.m[i][j]; 
 	
 	// 로컬 회전 속도를 월드 회전 속도로 변환
-	return rotationMatrix * m_RotationVelocity;
+	return  rotationMatrix * m_RotationVelocity;
 }
 
 // Fixed
@@ -71,14 +71,13 @@ void RigidBody::SetRotationVelocity(const Vec3& vec)
 {
 	Matrix worldMatrix = GetGameObject()->GetTransform()->GetWorldMatrix(); 
 
-	// transformMatrix의 상단 3x3 부분을 가져옵니다.
 	Matrix3 rotationMatrix;
 	for (int i = 0; i < 3; ++i)
 		for (int j = 0; j < 3; ++j)
-			rotationMatrix.entries[3 * i + j] = worldMatrix.m[i][j]; 
+			rotationMatrix.entries[3 * i + j] = worldMatrix.m[i][j];
 
 	// 변환 행렬의 전치 행렬을 곱합니다.
-	m_RotationVelocity = rotationMatrix.transpose() * vec; 
+	m_RotationVelocity = rotationMatrix.transpose() * vec;
 }
 
 void RigidBody::SetMass(float mass)
@@ -96,13 +95,16 @@ void RigidBody::TransformInertiaTensor()
 {
 	Matrix worldMatrix = GetGameObject()->GetTransform()->GetWorldMatrix();
 
-	/* 변환 행렬 중 회전 변환 행렬만 뽑아낸다 */ 
 	Matrix3 rotationMatrix;
 	for (int i = 0; i < 3; ++i)
 		for (int j = 0; j < 3; ++j)
-			rotationMatrix.entries[3 * i + j] = worldMatrix.m[i][j]; 
+			rotationMatrix.entries[3 * i + j] = worldMatrix.m[i][j];
 
 	m_InverseInertiaTensorWorld = (rotationMatrix * m_InverseInertiaTensor) * rotationMatrix.transpose();
+}
+
+void RigidBody::Awake()
+{
 }
 
 void RigidBody::Integrate(float deltaTime)
@@ -133,11 +135,12 @@ void RigidBody::Integrate(float deltaTime)
 	GetGameObject()->GetTransform()->Translate(m_Velocity * deltaTime);
 
 	/* 방향을 업데이트한다 */
-	m_Orientation += RotateByScaledVector(m_Orientation, m_RotationVelocity, deltaTime);   
-	m_Orientation.Normalize(); 
+	auto m_Orientation = GetGameObject()->GetTransform()->GetRotation(); 
+	m_Orientation += RotateByScaledVector(m_Orientation, m_RotationVelocity, deltaTime * 0.5f);     
+	m_Orientation.Normalize();   
 
 	/* 업데이트 된 회전을 트랜스폼에 설정 */
-	GetGameObject()->GetTransform()->SetLookRotation(m_Orientation);
+	GetGameObject()->GetTransform()->SetRotation(m_Orientation);  
 
 	/* 월드 좌표계 기준의 관성 텐서를 업데이트한다 */
 	TransformInertiaTensor();
@@ -147,19 +150,13 @@ void RigidBody::Integrate(float deltaTime)
 	m_Torque = Vec3::Zero;
 }
 
-void RigidBody::Awake()
-{
-	m_Orientation = GetGameObject()->GetTransform()->GetRotationQ(); 
-}
-
-
 void RigidBody::OnDrawGizmos()
 {
 	if (m_Mass == 0)
 		return;
 
 	Transform* tr = GetGameObject()->GetTransform();
-	Gizmo::DrawArrow(tr->GetPosition(), m_Velocity * 0.35f, ImVec4(0, 0, 255, 255));
+	Gizmo::DrawArrow(tr->GetPosition(), m_Velocity * 0.1f, ImVec4(0, 0, 255, 255));
 	Gizmo::DrawArrow(tr->GetPosition(), m_RotationVelocity, ImVec4(0, 255, 0, 255));
 }
 

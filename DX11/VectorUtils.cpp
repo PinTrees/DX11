@@ -29,5 +29,5 @@ Vec3 Clamp(const Vec3& value, const Vec3& min, const Vec3& max)
 // Fixed
 Quaternion RotateByScaledVector(const Quaternion& quat, const Vector3& vec, float scale)
 {
-    return quat * Quaternion(0.0f, vec.x * scale, vec.y * scale, vec.z * scale); 
+    return quat * Quaternion(vec.x * scale, vec.y * scale, vec.z * scale, 0.0f);
 }

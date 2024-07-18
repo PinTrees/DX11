@@ -9,9 +9,10 @@ private:
 	shared_ptr<Transform> _parent;
 	vector<shared_ptr<Transform>> _children;
 	
-	Vec3 m_LocalScale		= Vec3::One;
-	Vec3 m_LocalEulerAngles = Vec3::Zero;
-	Vec3 m_LocalPosition	= Vec3::Zero;
+	Vec3 m_LocalScale			= Vec3::One;
+	Vec3 m_LocalPosition		= Vec3::Zero;
+	Vec3 m_LocalEulerAngles		= Vec3::Zero;
+	Quaternion m_LocalRotation	= Quaternion::Identity; 
 
 	// Cache
 	Matrix m_LocalMatrix = Matrix::Identity;
@@ -20,7 +21,6 @@ private:
 	Vec3 m_Scale;
 	Vec3 m_EulerAngles;
 	Vec3 m_Position;
-
 	Quaternion m_Rotation;
 
 public:
@@ -37,26 +37,27 @@ public:
 	// Local
 	Vec3 GetLocalScale() { return m_LocalScale; }
 	void SetLocalScale(const Vec3& localScale) { m_LocalScale = localScale; UpdateTransform(); }
-	Vec3 GetLocalRotation() { return m_LocalEulerAngles; }
-	void SetLocalRotation(const Vec3& localRotation) { m_LocalEulerAngles = localRotation; UpdateTransform(); }
+	Vec3 GetLocalEulerAngle();
+	void SetLocalEulerAngle(const Vec3& localRotation);
+	void SetLocalRotation(Quaternion q);
+	Quaternion GetLocalRotation() { return m_LocalRotation; }
 	Vec3 GetLocalPosition();
 	void SetLocalPosition(const Vec3& localPosition);
 
 	// World
 	Vec3 GetScale() { return m_Scale; }
-	void SetScale(const Vec3& scale);
-	Vec3 GetRotation() { return m_EulerAngles; }
-	void SetRotation(const Vec3& rotation);
-	Quaternion GetRotationQ() { return m_Rotation; }
-	void SetRotationQ(Quaternion q);
-	void SetLookRotation(Quaternion q);
+	void SetScale(const Vec3& scale); 
+	Vec3 GetEulerAngle() { return m_EulerAngles; }    
+	void SetEulerAngle(const Vec3& rotation);  
+	Quaternion GetRotation() { return m_Rotation; } 
+	void SetRotation(Quaternion q); 
 
 	Vec3 GetPosition() { return m_Position; }
 	void SetPosition(const Vec3& position);
 	void SetPosition(float x, float y, float z) { SetPosition(Vec3(x, y, z)); }  
 
 	void Translate(const Vec3& position) { SetPosition(GetPosition() + position); }
-	void Rotate(const Vec3& angle) { SetRotation(GetRotation() + angle); }
+	void Rotate(const Vec3& angle) { SetEulerAngle(GetEulerAngle() + angle); }
 
 	Vec3 GetAxis(int index) const;
 	Vec3 GetRight() { return m_WorldMatrix.Right(); }

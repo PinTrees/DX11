@@ -12,6 +12,7 @@ Matrix3::Matrix3(float value)
     setDiagonal(value);
 }
 
+// 생성자: 행 우선 순서로 초기화
 Matrix3::Matrix3(float v1, float v2, float v3)
 {
     entries[0] = v1;
@@ -27,6 +28,7 @@ Matrix3::Matrix3(float v1, float v2, float v3)
     entries[8] = v3;
 }
 
+// 대각 행렬 설정: 행 우선 순서로 설정
 void Matrix3::setDiagonal(float value)
 {
     entries[0] = value;

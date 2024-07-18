@@ -10,6 +10,7 @@ public:
 	void ResolveCollision(std::vector<Contact*>& contacts, float deltaTime);
 
 private:
+	void AA(Contact* contact, float deltaTime);
 	void sequentialImpulse(Contact* contact, float deltaTime);
 };
 
