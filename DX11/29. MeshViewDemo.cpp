@@ -160,6 +160,12 @@ bool MeshViewDemo::Init()
 	XMFLOAT3 minPt(+MathHelper::Infinity, +MathHelper::Infinity, +MathHelper::Infinity);
 	XMFLOAT3 maxPt(-MathHelper::Infinity, -MathHelper::Infinity, -MathHelper::Infinity);
 
+	if (!(scene->GetAllGameObjects().size() > 0))
+	{
+		minPt = XMFLOAT3(0, 0, 0);
+		maxPt = XMFLOAT3(20, 20, 20);
+	}
+
 	for (uint32 i = 0; i < scene->GetAllGameObjects().size(); ++i)
 	{
 		MeshRenderer* meshRenderer = scene->GetAllGameObjects()[i]->GetComponent<MeshRenderer>();

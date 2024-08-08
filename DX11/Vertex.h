@@ -94,6 +94,7 @@ public:
 	static const D3D11_INPUT_ELEMENT_DESC Particle[5];
 	static const D3D11_INPUT_ELEMENT_DESC AmbientOcclusion[4];
 	static const D3D11_INPUT_ELEMENT_DESC PosNormalTexTanSkinned[6];
+	static const D3D11_INPUT_ELEMENT_DESC InstancedBasic[8];
 };
 
 class InputLayouts
@@ -112,4 +113,5 @@ public:
 	static ComPtr<ID3D11InputLayout> Particle;
 	static ComPtr<ID3D11InputLayout> AmbientOcclusion;
 	static ComPtr<ID3D11InputLayout> PosNormalTexTanSkinned;
+	static ComPtr<ID3D11InputLayout> InstancedBasic;
 };

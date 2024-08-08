@@ -190,10 +190,10 @@ void InstancingAndCullingDemo::RenderApplication()
 	XMMATRIX viewProj = _camera.ViewProj();
 
 	// Set per frame constants.
-	Effects::InstancedBasicFX->SetDirLights(_dirLights);
+	Effects::InstancedBasicFX->SetDirLights(_dirLights,3);
 	Effects::InstancedBasicFX->SetEyePosW(_camera.GetPosition());
 
-	ComPtr<ID3DX11EffectTechnique> activeTech = Effects::InstancedBasicFX->Light3Tech;
+	ComPtr<ID3DX11EffectTechnique> activeTech = Effects::InstancedBasicFX->InstancingTech;
 
 	D3DX11_TECHNIQUE_DESC techDesc;
 	activeTech->GetDesc(&techDesc);
@@ -207,8 +207,8 @@ void InstancingAndCullingDemo::RenderApplication()
 		XMMATRIX world = XMLoadFloat4x4(&_skullWorld);
 		XMMATRIX worldInvTranspose = MathHelper::InverseTranspose(world);
 
-		Effects::InstancedBasicFX->SetWorld(world);
-		Effects::InstancedBasicFX->SetWorldInvTranspose(worldInvTranspose);
+		//Effects::InstancedBasicFX->SetWorld(world);
+		//Effects::InstancedBasicFX->SetWorldInvTranspose(worldInvTranspose);
 		Effects::InstancedBasicFX->SetViewProj(viewProj);
 		Effects::InstancedBasicFX->SetMaterial(_skullMat);
 

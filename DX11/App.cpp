@@ -128,6 +128,8 @@ bool App::Init()
 	EditorGUIManager::GetI()->RegisterWindow(new AnimatorEditorWindow);
 
 	// Singleton Init
+	PathManager::GetI()->Init();
+	PathManager::GetI()->GetMovePath(L"Assets");
 	ResourceManager::GetI()->Init(_device);
 	InputManager::GetI()->Init();
 

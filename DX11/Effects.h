@@ -1,6 +1,47 @@
 #pragma once
 #include "LightHelper.h"
 
+struct ShaderSetting
+{
+	void SetLightCount(int i) { LightCount->SetInt(i); }
+	void SetUseTexture(bool b) { UseTexture->SetBool(b); }
+	void SetUseNormalMap(bool b) { UseNormalMap->SetBool(b); }
+	void SetAlphaClip(bool b) { AlphaClip->SetBool(b); }
+	void SetFogEnabled(bool b) { FogEnabled->SetBool(b); }
+	void SetReflectionEnabled(bool b) { ReflectionEnabled->SetBool(b); }
+
+	void Init(ComPtr<ID3DX11Effect> fx)
+	{
+		LightCount = fx->GetVariableByName("gLightCount")->AsScalar();
+		UseTexture = fx->GetVariableByName("gUseTexture")->AsScalar();
+		UseNormalMap = fx->GetVariableByName("gUseNormalMap")->AsScalar();
+		AlphaClip = fx->GetVariableByName("gAlphaClip")->AsScalar();
+		FogEnabled = fx->GetVariableByName("gFogEnabled")->AsScalar();
+		ReflectionEnabled = fx->GetVariableByName("gReflectionEnabled")->AsScalar();
+
+		SetLightCount(0);
+		SetUseTexture(false);
+		SetUseNormalMap(false);
+		SetAlphaClip(false);
+		SetFogEnabled(false);
+		SetReflectionEnabled(false);
+	}
+
+	ComPtr<ID3DX11EffectScalarVariable> LightCount;
+	ComPtr<ID3DX11EffectScalarVariable> UseTexture;
+	ComPtr<ID3DX11EffectScalarVariable> UseNormalMap;
+	ComPtr<ID3DX11EffectScalarVariable> AlphaClip;
+	ComPtr<ID3DX11EffectScalarVariable> FogEnabled;
+	ComPtr<ID3DX11EffectScalarVariable> ReflectionEnabled;
+
+	//int LightCount;
+	//bool UseTexture;
+	//bool UseNormalMap;
+	//bool AlphaClip;
+	//bool FogEnabled;
+	//bool ReflectionEnabled;
+};
+
 class Effect
 {
 public:
@@ -255,49 +296,38 @@ public:
 	~InstancedBasicEffect();
 
 	void SetViewProj(CXMMATRIX M) { ViewProj->SetMatrix(reinterpret_cast<const float*>(&M)); }
-	void SetWorld(CXMMATRIX M) { World->SetMatrix(reinterpret_cast<const float*>(&M)); }
-	void SetWorldInvTranspose(CXMMATRIX M) { WorldInvTranspose->SetMatrix(reinterpret_cast<const float*>(&M)); }
+	void SetViewProjTex(CXMMATRIX M) { ViewProjTex->SetMatrix(reinterpret_cast<const float*>(&M)); }
+	void SetBoneTransforms(const XMFLOAT4X4* M, int cnt) { BoneTransforms->SetMatrixArray(reinterpret_cast<const float*>(M), 0, cnt); }
 	void SetTexTransform(CXMMATRIX M) { TexTransform->SetMatrix(reinterpret_cast<const float*>(&M)); }
+	void SetShadowTransform(CXMMATRIX M) { ShadowTransform->SetMatrix(reinterpret_cast<const float*>(&M)); }
 	void SetEyePosW(const XMFLOAT3& v) { EyePosW->SetRawValue(&v, 0, sizeof(XMFLOAT3)); }
 	void SetFogColor(const FXMVECTOR v) { FogColor->SetFloatVector(reinterpret_cast<const float*>(&v)); }
 	void SetFogStart(float f) { FogStart->SetFloat(f); }
 	void SetFogRange(float f) { FogRange->SetFloat(f); }
-	void SetDirLights(const DirectionalLight* lights) { DirLights->SetRawValue(lights, 0, 3 * sizeof(DirectionalLight)); }
+	void SetDirLights(const DirectionalLight* lights, int cnt) { DirLights->SetRawValue(lights, 0, cnt * sizeof(DirectionalLight)); }
 	void SetMaterial(const Material& mat) { Mat->SetRawValue(&mat, 0, sizeof(Material)); }
 	void SetDiffuseMap(ID3D11ShaderResourceView* tex) { DiffuseMap->SetResource(tex); }
+	void SetShadowMap(ID3D11ShaderResourceView* tex) { ShadowMap->SetResource(tex); }
+	void SetNormalMap(ID3D11ShaderResourceView* tex) { NormalMap->SetResource(tex); }
+	void SetSsaoMap(ID3D11ShaderResourceView* tex) { SsaoMap->SetResource(tex); }
+	void SetCubeMap(ID3D11ShaderResourceView* tex) { CubeMap->SetResource(tex); }
 
-	ComPtr<ID3DX11EffectTechnique> Light1Tech;
-	ComPtr<ID3DX11EffectTechnique> Light2Tech;
-	ComPtr<ID3DX11EffectTechnique> Light3Tech;
+	ShaderSetting shaderSetting;
 
-	ComPtr<ID3DX11EffectTechnique> Light0TexTech;
-	ComPtr<ID3DX11EffectTechnique> Light1TexTech;
-	ComPtr<ID3DX11EffectTechnique> Light2TexTech;
-	ComPtr<ID3DX11EffectTechnique> Light3TexTech;
+	ComPtr<ID3DX11EffectTechnique> Tech;
+	ComPtr<ID3DX11EffectTechnique> InstancingTech;
+	ComPtr<ID3DX11EffectTechnique> SkinnedTech;
 
-	ComPtr<ID3DX11EffectTechnique> Light0TexAlphaClipTech;
-	ComPtr<ID3DX11EffectTechnique> Light1TexAlphaClipTech;
-	ComPtr<ID3DX11EffectTechnique> Light2TexAlphaClipTech;
-	ComPtr<ID3DX11EffectTechnique> Light3TexAlphaClipTech;
-
-	ComPtr<ID3DX11EffectTechnique> Light1FogTech;
-	ComPtr<ID3DX11EffectTechnique> Light2FogTech;
-	ComPtr<ID3DX11EffectTechnique> Light3FogTech;
-
-	ComPtr<ID3DX11EffectTechnique> Light0TexFogTech;
-	ComPtr<ID3DX11EffectTechnique> Light1TexFogTech;
-	ComPtr<ID3DX11EffectTechnique> Light2TexFogTech;
-	ComPtr<ID3DX11EffectTechnique> Light3TexFogTech;
-
-	ComPtr<ID3DX11EffectTechnique> Light0TexAlphaClipFogTech;
-	ComPtr<ID3DX11EffectTechnique> Light1TexAlphaClipFogTech;
-	ComPtr<ID3DX11EffectTechnique> Light2TexAlphaClipFogTech;
-	ComPtr<ID3DX11EffectTechnique> Light3TexAlphaClipFogTech;
-
-	ComPtr<ID3DX11EffectMatrixVariable> ViewProj;
 	ComPtr<ID3DX11EffectMatrixVariable> World;
 	ComPtr<ID3DX11EffectMatrixVariable> WorldInvTranspose;
+	ComPtr<ID3DX11EffectMatrixVariable> WorldViewProj;
+	ComPtr<ID3DX11EffectMatrixVariable> WorldViewProjTex;
+
+	ComPtr<ID3DX11EffectMatrixVariable> ViewProj;
+	ComPtr<ID3DX11EffectMatrixVariable> ViewProjTex;
+	ComPtr<ID3DX11EffectMatrixVariable> BoneTransforms;
 	ComPtr<ID3DX11EffectMatrixVariable> TexTransform;
+	ComPtr<ID3DX11EffectMatrixVariable> ShadowTransform;
 	ComPtr<ID3DX11EffectVectorVariable> EyePosW;
 	ComPtr<ID3DX11EffectVectorVariable> FogColor;
 	ComPtr<ID3DX11EffectScalarVariable> FogStart;
@@ -306,6 +336,10 @@ public:
 	ComPtr<ID3DX11EffectVariable> Mat;
 
 	ComPtr<ID3DX11EffectShaderResourceVariable> DiffuseMap;
+	ComPtr<ID3DX11EffectShaderResourceVariable> ShadowMap;
+	ComPtr<ID3DX11EffectShaderResourceVariable> NormalMap;
+	ComPtr<ID3DX11EffectShaderResourceVariable> SsaoMap;
+	ComPtr<ID3DX11EffectShaderResourceVariable> CubeMap;
 };
 
 class SkyEffect : public Effect
@@ -630,6 +664,10 @@ public:
 	ComPtr<ID3DX11EffectTechnique> TessBuildShadowMapTech;
 	ComPtr<ID3DX11EffectTechnique> TessBuildShadowMapAlphaClipTech;
 
+	// NEW
+	ComPtr<ID3DX11EffectTechnique> BuildShadowMapInstancingTech;
+	ComPtr<ID3DX11EffectTechnique> BuildShadowMapAlphaClipInstancingTech;
+
 	ComPtr<ID3DX11EffectMatrixVariable> ViewProj;
 	ComPtr<ID3DX11EffectMatrixVariable> WorldViewProj;
 	ComPtr<ID3DX11EffectMatrixVariable> World;
@@ -684,6 +722,10 @@ public:
 	SsaoNormalDepthEffect(ComPtr<ID3D11Device> device, const std::wstring& filename);
 	~SsaoNormalDepthEffect();
 
+	// NEW
+	void SetView(CXMMATRIX M) { View->SetMatrix(reinterpret_cast<const float*>(&M)); }
+	void SetViewProj(CXMMATRIX M) { ViewProj->SetMatrix(reinterpret_cast<const float*>(&M)); }
+
 	void SetWorldView(CXMMATRIX M) { WorldView->SetMatrix(reinterpret_cast<const float*>(&M)); }
 	void SetWorldInvTransposeView(CXMMATRIX M) { WorldInvTransposeView->SetMatrix(reinterpret_cast<const float*>(&M)); }
 	void SetBoneTransforms(const XMFLOAT4X4* M, int cnt) { BoneTransforms->SetMatrixArray(reinterpret_cast<const float*>(M), 0, cnt); }
@@ -696,6 +738,12 @@ public:
 	ComPtr<ID3DX11EffectTechnique> NormalDepthSkinnedTech;
 	ComPtr<ID3DX11EffectTechnique> NormalDepthAlphaClipSkinnedTech;
 
+	// NEW
+	ComPtr<ID3DX11EffectTechnique> NormalDepthInstancingTech;
+	ComPtr<ID3DX11EffectTechnique> NormalDepthAlphaClipInstancingTech;
+
+	ComPtr<ID3DX11EffectMatrixVariable> View;
+	ComPtr<ID3DX11EffectMatrixVariable> ViewProj;
 	ComPtr<ID3DX11EffectMatrixVariable> WorldView;
 	ComPtr<ID3DX11EffectMatrixVariable> WorldInvTransposeView;
 	ComPtr<ID3DX11EffectMatrixVariable> BoneTransforms;
@@ -710,6 +758,7 @@ public:
 	SsaoEffect(ComPtr<ID3D11Device> device, const std::wstring& filename);
 	~SsaoEffect();
 
+	void SetSsaoPower(float f) { SsaoPower->SetFloat(f); }
 	void SetViewToTexSpace(CXMMATRIX M) { ViewToTexSpace->SetMatrix(reinterpret_cast<const float*>(&M)); }
 	void SetOffsetVectors(const XMFLOAT4 v[14]) { OffsetVectors->SetFloatVectorArray(reinterpret_cast<const float*>(v), 0, 14); }
 	void SetFrustumCorners(const XMFLOAT4 v[4]) { FrustumCorners->SetFloatVectorArray(reinterpret_cast<const float*>(v), 0, 4); }
@@ -722,6 +771,7 @@ public:
 	void SetRandomVecMap(ID3D11ShaderResourceView* srv) { RandomVecMap->SetResource(srv); }
 
 	ComPtr<ID3DX11EffectTechnique> SsaoTech;
+	ComPtr<ID3DX11EffectScalarVariable> SsaoPower;
 	ComPtr<ID3DX11EffectMatrixVariable> ViewToTexSpace;
 	ComPtr<ID3DX11EffectVectorVariable> OffsetVectors;
 	ComPtr<ID3DX11EffectVectorVariable> FrustumCorners;
@@ -766,7 +816,9 @@ public:
 	static shared_ptr<TessellationEffect> TessellationFX;
 	static shared_ptr<BezierTessellationEffect> BezierTessellationFX;
 	static shared_ptr<TessellationEffect> TriangleTessellationFX;
+
 	static shared_ptr<InstancedBasicEffect> InstancedBasicFX;
+
 	static shared_ptr<SkyEffect> SkyFX;
 	static shared_ptr<NormalMapEffect> NormalMapFX;
 	static shared_ptr<DisplacementMapEffect> DisplacementMapFX;

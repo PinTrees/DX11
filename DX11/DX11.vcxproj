@@ -82,7 +82,7 @@
     <OutDir>$(SolutionDir)Binaries\</OutDir>
     <IntDir>$(SolutionDir)Intermediate\$(Configuration)\</IntDir>
     <ExternalIncludePath>$(SolutionDir)Libraries\Include\;$(ExternalIncludePath)</ExternalIncludePath>
-    <IncludePath>$(SolutionDir)Libraries\Include\;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)Libraries\Include\;$(SolutionDir)vcpkg\installed\x64-windows\include\;$(IncludePath)</IncludePath>
     <ReferencePath>$(SolutionDir)Libraries\Include\;$(ReferencePath)</ReferencePath>
     <LibraryPath>$(SolutionDir)Libraries\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
@@ -239,6 +239,7 @@
     <ClInclude Include="imstb_truetype.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="InspectorEditorWindow.h" />
+    <ClInclude Include="InstancingBuffer.h" />
     <ClInclude Include="JsonUtility.h" />
     <ClInclude Include="LightHelper.h" />
     <ClInclude Include="LoadM3d.h" />
@@ -250,6 +251,7 @@
     <ClInclude Include="NormalMapSkinnedShader.h" />
     <ClInclude Include="Octree.h" />
     <ClInclude Include="ParticleSystem.h" />
+    <ClInclude Include="PathManager.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="PhysicsManager.h" />
     <ClInclude Include="PostProcessingManager.h" />
@@ -379,6 +381,7 @@
     </ClCompile>
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="InspectorEditorWindow.cpp" />
+    <ClCompile Include="InstancingBuffer.cpp" />
     <ClCompile Include="JsonUtility.cpp" />
     <ClCompile Include="LightHelper.cpp" />
     <ClCompile Include="LoadM3d.cpp" />
@@ -392,6 +395,7 @@
     <ClCompile Include="NormalMapSkinnedShader.cpp" />
     <ClCompile Include="Octree.cpp" />
     <ClCompile Include="ParticleSystem.cpp" />
+    <ClCompile Include="PathManager.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
@@ -717,6 +721,12 @@
       </EntryPointName>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Effect</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="..\Shaders\32. InstancedBasic.fx">
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </EntryPointName>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Effect</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

@@ -210,38 +210,23 @@ BezierTessellationEffect::~BezierTessellationEffect()
 InstancedBasicEffect::InstancedBasicEffect(ComPtr<ID3D11Device> device, const std::wstring& filename)
 	: Effect(device, filename)
 {
-	Light1Tech = _fx->GetTechniqueByName("Light1");
-	Light2Tech = _fx->GetTechniqueByName("Light2");
-	Light3Tech = _fx->GetTechniqueByName("Light3");
+	shaderSetting.Init(_fx);
 
-	Light0TexTech = _fx->GetTechniqueByName("Light0Tex");
-	Light1TexTech = _fx->GetTechniqueByName("Light1Tex");
-	Light2TexTech = _fx->GetTechniqueByName("Light2Tex");
-	Light3TexTech = _fx->GetTechniqueByName("Light3Tex");
+	Tech = _fx->GetTechniqueByName("Tech");
+	InstancingTech = _fx->GetTechniqueByName("InstancingTech");
+	SkinnedTech = _fx->GetTechniqueByName("SkinnedTech");
 
-	Light0TexAlphaClipTech = _fx->GetTechniqueByName("Light0TexAlphaClip");
-	Light1TexAlphaClipTech = _fx->GetTechniqueByName("Light1TexAlphaClip");
-	Light2TexAlphaClipTech = _fx->GetTechniqueByName("Light2TexAlphaClip");
-	Light3TexAlphaClipTech = _fx->GetTechniqueByName("Light3TexAlphaClip");
-
-	Light1FogTech = _fx->GetTechniqueByName("Light1Fog");
-	Light2FogTech = _fx->GetTechniqueByName("Light2Fog");
-	Light3FogTech = _fx->GetTechniqueByName("Light3Fog");
-
-	Light0TexFogTech = _fx->GetTechniqueByName("Light0TexFog");
-	Light1TexFogTech = _fx->GetTechniqueByName("Light1TexFog");
-	Light2TexFogTech = _fx->GetTechniqueByName("Light2TexFog");
-	Light3TexFogTech = _fx->GetTechniqueByName("Light3TexFog");
-
-	Light0TexAlphaClipFogTech = _fx->GetTechniqueByName("Light0TexAlphaClipFog");
-	Light1TexAlphaClipFogTech = _fx->GetTechniqueByName("Light1TexAlphaClipFog");
-	Light2TexAlphaClipFogTech = _fx->GetTechniqueByName("Light2TexAlphaClipFog");
-	Light3TexAlphaClipFogTech = _fx->GetTechniqueByName("Light3TexAlphaClipFog");
-
-	ViewProj = _fx->GetVariableByName("gViewProj")->AsMatrix();
 	World = _fx->GetVariableByName("gWorld")->AsMatrix();
 	WorldInvTranspose = _fx->GetVariableByName("gWorldInvTranspose")->AsMatrix();
+	WorldViewProj = _fx->GetVariableByName("gWorldViewProj")->AsMatrix();
+	WorldViewProjTex = _fx->GetVariableByName("gWorldViewProjTex")->AsMatrix();
+
+	ViewProj = _fx->GetVariableByName("gViewProj")->AsMatrix();
+	ViewProjTex = _fx->GetVariableByName("gViewProjTex")->AsMatrix();
+	BoneTransforms = _fx->GetVariableByName("gBoneTransforms")->AsMatrix();
 	TexTransform = _fx->GetVariableByName("gTexTransform")->AsMatrix();
+	ShadowTransform = _fx->GetVariableByName("gShadowTransform")->AsMatrix();
+
 	EyePosW = _fx->GetVariableByName("gEyePosW")->AsVector();
 	FogColor = _fx->GetVariableByName("gFogColor")->AsVector();
 	FogStart = _fx->GetVariableByName("gFogStart")->AsScalar();
@@ -249,6 +234,10 @@ InstancedBasicEffect::InstancedBasicEffect(ComPtr<ID3D11Device> device, const st
 	DirLights = _fx->GetVariableByName("gDirLights");
 	Mat = _fx->GetVariableByName("gMaterial");
 	DiffuseMap = _fx->GetVariableByName("gDiffuseMap")->AsShaderResource();
+	ShadowMap = _fx->GetVariableByName("gShadowMap")->AsShaderResource();
+	NormalMap = _fx->GetVariableByName("gNormalMap")->AsShaderResource();
+	SsaoMap = _fx->GetVariableByName("gSsaoMap")->AsShaderResource();
+	CubeMap = _fx->GetVariableByName("gCubeMap")->AsShaderResource();
 }
 
 InstancedBasicEffect::~InstancedBasicEffect()
@@ -507,6 +496,10 @@ BuildShadowMapEffect::BuildShadowMapEffect(ComPtr<ID3D11Device> device, const st
 	TessBuildShadowMapTech = _fx->GetTechniqueByName("TessBuildShadowMapTech");
 	TessBuildShadowMapAlphaClipTech = _fx->GetTechniqueByName("TessBuildShadowMapAlphaClipTech");
 
+	// NEW
+	BuildShadowMapInstancingTech = _fx->GetTechniqueByName("BuildShadowMapInstancingTech");
+	BuildShadowMapAlphaClipInstancingTech = _fx->GetTechniqueByName("BuildShadowMapAlphaClipInstancingTech");
+
 	ViewProj = _fx->GetVariableByName("gViewProj")->AsMatrix();
 	WorldViewProj = _fx->GetVariableByName("gWorldViewProj")->AsMatrix();
 	World = _fx->GetVariableByName("gWorld")->AsMatrix();
@@ -564,7 +557,12 @@ SsaoNormalDepthEffect::SsaoNormalDepthEffect(ComPtr<ID3D11Device> device, const 
 	
 	NormalDepthSkinnedTech = _fx->GetTechniqueByName("NormalDepthSkinned");
 	NormalDepthAlphaClipSkinnedTech = _fx->GetTechniqueByName("NormalDepthAlphaClipSkinned");
-	
+
+	// NEW
+	NormalDepthInstancingTech = _fx->GetTechniqueByName("NormalDepthInstancing");
+	NormalDepthAlphaClipInstancingTech = _fx->GetTechniqueByName("NormalDepthAlphaClipInstancing");
+	View = _fx->GetVariableByName("gView")->AsMatrix();
+	ViewProj = _fx->GetVariableByName("gViewProj")->AsMatrix();
 	WorldView = _fx->GetVariableByName("gWorldView")->AsMatrix();
 	WorldInvTransposeView = _fx->GetVariableByName("gWorldInvTransposeView")->AsMatrix();
 	BoneTransforms = _fx->GetVariableByName("gBoneTransforms")->AsMatrix();
@@ -582,6 +580,7 @@ SsaoEffect::SsaoEffect(ComPtr<ID3D11Device> device, const std::wstring& filename
 {
 	SsaoTech = _fx->GetTechniqueByName("Ssao");
 
+	SsaoPower = _fx->GetVariableByName("gSsaoPower")->AsScalar();
 	ViewToTexSpace = _fx->GetVariableByName("gViewToTexSpace")->AsMatrix();
 	OffsetVectors = _fx->GetVariableByName("gOffsetVectors")->AsVector();
 	FrustumCorners = _fx->GetVariableByName("gFrustumCorners")->AsVector();
@@ -622,7 +621,9 @@ shared_ptr<BlurEffect> Effects::BlurFX;
 shared_ptr<TessellationEffect> Effects::TessellationFX;
 shared_ptr<BezierTessellationEffect> Effects::BezierTessellationFX; 
 shared_ptr<TessellationEffect> Effects::TriangleTessellationFX;
+
 shared_ptr<InstancedBasicEffect> Effects::InstancedBasicFX;
+
 shared_ptr<SkyEffect> Effects::SkyFX;
 shared_ptr<NormalMapEffect> Effects::NormalMapFX;
 shared_ptr<DisplacementMapEffect> Effects::DisplacementMapFX;
@@ -645,7 +646,10 @@ void Effects::InitAll(ComPtr<ID3D11Device> device, const std::wstring& filename)
 	TessellationFX = make_shared<TessellationEffect>(device, L"../Shaders/15. Tessellation.fx");
 	TriangleTessellationFX = make_shared<TessellationEffect>(device, L"../Shaders/16. TriTessellation.fx");
 	BezierTessellationFX = make_shared<BezierTessellationEffect>(device, L"../Shaders/17. BezierTessellation.fx");
-	InstancedBasicFX = make_shared<InstancedBasicEffect>(device, L"../Shaders/19. InstancedBasic.fx");
+
+	//InstancedBasicFX = make_shared<InstancedBasicEffect>(device, L"../Shaders/19. InstancedBasic.fx");
+	InstancedBasicFX = make_shared<InstancedBasicEffect>(device, L"../Shaders/32. InstancedBasic.fx");
+
 	SkyFX = make_shared<SkyEffect>(device, L"../Shaders/21. Sky.fx");
 	NormalMapFX = make_shared<NormalMapEffect>(device, L"../Shaders/23. NormalMap.fx");
 	DisplacementMapFX = make_shared<DisplacementMapEffect>(device, L"../Shaders/23. DisplacementMap.fx");

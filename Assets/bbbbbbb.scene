@@ -1,0 +1,106 @@
+{
+    "rootGameObjects": [
+        {
+            "components": [
+                {
+                    "m_EulerAngles": [
+                        -0.0,
+                        -1.0347278589506459e-13,
+                        -0.0
+                    ],
+                    "m_LocalEulerAngles": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "m_LocalPosition": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "m_LocalRotation": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "m_LocalScale": [
+                        1.0,
+                        5.070000171661377,
+                        1.0
+                    ],
+                    "m_Position": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "m_Scale": [
+                        1.0,
+                        5.070000171661377,
+                        1.0
+                    ],
+                    "type": "Transform"
+                },
+                {
+                    "materialPath": "C:\\Users\\pc\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\New Material.mat",
+                    "meshPath": "C:\\Users\\pc\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\Forest_Ground_scans\\Forest_Ground_scan_var4\\Volcanic_Mossy_Rocks.fbx",
+                    "shaderPath": "",
+                    "subsetIndex": 0,
+                    "type": "MeshRenderer"
+                }
+            ],
+            "name": "GameObject"
+        },
+        {
+            "components": [
+                {
+                    "m_EulerAngles": [
+                        -0.0,
+                        -1.0347278589506459e-13,
+                        -0.0
+                    ],
+                    "m_LocalEulerAngles": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "m_LocalPosition": [
+                        0.0,
+                        65.9000015258789,
+                        0.0
+                    ],
+                    "m_LocalRotation": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "m_LocalScale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "m_Position": [
+                        0.0,
+                        65.9000015258789,
+                        0.0
+                    ],
+                    "m_Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "type": "Transform"
+                },
+                {
+                    "materialPath": "C:\\Users\\pc\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\New Material.mat",
+                    "meshPath": "C:\\Users\\pc\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\Rock\\Mossy_rock_var8.fbx",
+                    "shaderPath": "",
+                    "subsetIndex": 0,
+                    "type": "MeshRenderer"
+                }
+            ],
+            "name": "GameObject"
+        }
+    ]
+}

@@ -196,6 +196,12 @@
     <Filter Include="0. Engine\ImguiContainer\0. Editor\AnimatorEditorWindow">
       <UniqueIdentifier>{d0d51dd0-9bd0-4ea6-bf76-45d5c964e916}</UniqueIdentifier>
     </Filter>
+    <Filter Include="0. Engine\InstancingBuffer">
+      <UniqueIdentifier>{a30ab9b5-0a54-4489-98ec-ec292a346234}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="0. Engine\Manager\PathManager">
+      <UniqueIdentifier>{0c738e11-69c4-4d17-b645-4e58748ea0e6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="01. InitDemo.cpp">
@@ -545,6 +551,12 @@
     </ClCompile>
     <ClCompile Include="AnimatorEditorWindow.cpp">
       <Filter>0. Engine\ImguiContainer\0. Editor\AnimatorEditorWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="PathManager.cpp">
+      <Filter>0. Engine\Manager\PathManager</Filter>
+    </ClCompile>
+    <ClCompile Include="InstancingBuffer.cpp">
+      <Filter>0. Engine\InstancingBuffer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -906,6 +918,12 @@
     <ClInclude Include="AnimatorEditorWindow.h">
       <Filter>0. Engine\ImguiContainer\0. Editor\AnimatorEditorWindow</Filter>
     </ClInclude>
+    <ClInclude Include="PathManager.h">
+      <Filter>0. Engine\Manager\PathManager</Filter>
+    </ClInclude>
+    <ClInclude Include="InstancingBuffer.h">
+      <Filter>0. Engine\InstancingBuffer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Shaders\02. Color.fx">
@@ -990,6 +1008,9 @@
       <Filter>2. Game\Shaders</Filter>
     </FxCompile>
     <FxCompile Include="..\Shaders\31. NormalMapSkinned.fx">
+      <Filter>2. Game\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Shaders\32. InstancedBasic.fx">
       <Filter>2. Game\Shaders</Filter>
     </FxCompile>
   </ItemGroup>

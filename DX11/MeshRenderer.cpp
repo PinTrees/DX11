@@ -2,6 +2,7 @@
 #include "MeshRenderer.h"
 #include "Effects.h"
 #include "MathHelper.h"
+#include "InstancingBuffer.h"
 
 MeshRenderer::MeshRenderer()
 	: m_pMaterial(nullptr),
@@ -149,6 +150,134 @@ void MeshRenderer::RenderShadowNormal()
 	}
 }
 
+void MeshRenderer::RenderInstancing(shared_ptr<class InstancingBuffer>& buffer)
+{
+	if (m_Mesh == nullptr)
+		return;
+
+	auto deviceContext = Application::GetI()->GetDeviceContext();
+	ComPtr<ID3DX11EffectTechnique> tech = Effects::InstancedBasicFX->InstancingTech;
+	//Light3TexTech;
+
+	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	deviceContext->IASetInputLayout(InputLayouts::InstancedBasic.Get());
+
+	D3DX11_TECHNIQUE_DESC techDesc;
+	tech->GetDesc(&techDesc);
+
+	XMMATRIX toTexSpace(
+		0.5f, 0.0f, 0.0f, 0.0f,
+		0.0f, -0.5f, 0.0f, 0.0f,
+		0.0f, 0.0f, 1.0f, 0.0f,
+		0.5f, 0.5f, 0.0f, 1.0f);
+
+	for (uint32 p = 0; p < techDesc.Passes; ++p)
+	{
+		if (m_MeshSubsetIndex >= m_Mesh->Subsets.size())
+			break;
+
+		XMMATRIX ViewProj = RenderManager::GetI()->cameraViewProjectionMatrix;
+
+		Effects::InstancedBasicFX->SetViewProj(ViewProj);
+		Effects::InstancedBasicFX->SetViewProjTex(ViewProj * toTexSpace);
+		Effects::InstancedBasicFX->SetShadowTransform(RenderManager::GetI()->shadowTransform);
+		Effects::InstancedBasicFX->SetTexTransform(XMMatrixScaling(1.0f, 1.0f, 1.0f));
+
+		if (m_pMaterial == nullptr)
+		{
+			Effects::InstancedBasicFX->SetMaterial(m_Mesh->Mat[m_MeshSubsetIndex]);
+			//Effects::NormalMapFX->SetDiffuseMap(m_Mesh->DiffuseMapSRV[subset].Get());
+			//Effects::NormalMapFX->SetNormalMap(m_Mesh->NormalMapSRV[subset].Get());
+		}
+		else
+		{
+			Effects::InstancedBasicFX->SetMaterial(m_pMaterial->Mat);
+			Effects::InstancedBasicFX->SetDiffuseMap(m_pMaterial->GetBaseMapSRV());
+			Effects::InstancedBasicFX->SetNormalMap(m_pMaterial->GetNormalMapSRV());
+		}
+
+		tech->GetPassByIndex(p)->Apply(0, deviceContext);
+
+		buffer->PushData(deviceContext);
+
+		// 인스턴싱, ModelMesh 클래스에 InstancingDraw함수 적용
+		m_Mesh->ModelMesh.InstancingDraw(deviceContext, m_MeshSubsetIndex, buffer->GetCount());
+	}
+}
+
+
+void MeshRenderer::RenderShadowInstancing(shared_ptr<class InstancingBuffer>& buffer)
+{
+	if (m_Mesh == nullptr)
+		return;
+
+	auto deviceContext = Application::GetI()->GetDeviceContext();
+
+	ComPtr<ID3DX11EffectTechnique> tech = Effects::BuildShadowMapFX->BuildShadowMapInstancingTech;
+	ComPtr<ID3DX11EffectTechnique> alphaClippedTech = Effects::BuildShadowMapFX->BuildShadowMapAlphaClipInstancingTech;
+
+	XMMATRIX ViewProj;
+
+	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	deviceContext->IASetInputLayout(InputLayouts::InstancedBasic.Get());
+
+	D3DX11_TECHNIQUE_DESC techDesc;
+	tech->GetDesc(&techDesc);
+
+	for (uint32 p = 0; p < techDesc.Passes; ++p)
+	{
+		if (m_MeshSubsetIndex >= m_Mesh->Subsets.size())
+			break;
+
+		ViewProj = RenderManager::GetI()->directinalLightViewProjection;
+
+		Effects::BuildShadowMapFX->SetViewProj(ViewProj);
+		Effects::BuildShadowMapFX->SetTexTransform(::XMMatrixScaling(1.0f, 1.0f, 1.0f));
+
+		tech->GetPassByIndex(p)->Apply(0, deviceContext);
+
+		buffer->PushData(deviceContext);
+
+		m_Mesh->ModelMesh.InstancingDraw(deviceContext, m_MeshSubsetIndex, buffer->GetCount());
+	}
+}
+
+void MeshRenderer::RenderShadowNormalInstancing(shared_ptr<class InstancingBuffer>& buffer)
+{
+	if (m_Mesh == nullptr)
+		return;
+
+	auto deviceContext = Application::GetI()->GetDeviceContext();
+	ComPtr<ID3DX11EffectTechnique> tech = Effects::SsaoNormalDepthFX->NormalDepthInstancingTech;
+
+	XMMATRIX View;
+	XMMATRIX ViewProj;
+
+	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	deviceContext->IASetInputLayout(InputLayouts::InstancedBasic.Get());
+
+	D3DX11_TECHNIQUE_DESC techDesc;
+	tech->GetDesc(&techDesc);
+	for (uint32 p = 0; p < techDesc.Passes; ++p)
+	{
+		if (m_MeshSubsetIndex >= m_Mesh->Subsets.size())
+			break;
+
+		View = RenderManager::GetI()->cameraViewMatrix;
+		ViewProj = RenderManager::GetI()->cameraViewProjectionMatrix;
+
+		Effects::SsaoNormalDepthFX->SetView(View);
+		Effects::SsaoNormalDepthFX->SetViewProj(ViewProj);
+		Effects::SsaoNormalDepthFX->SetTexTransform(XMMatrixScaling(1.0f, 1.0f, 1.0f));
+
+		tech->GetPassByIndex(p)->Apply(0, deviceContext);
+
+		buffer->PushData(deviceContext);
+
+		m_Mesh->ModelMesh.InstancingDraw(deviceContext, m_MeshSubsetIndex, buffer->GetCount());
+	}
+}
+
 void MeshRenderer::OnInspectorGUI()
 {
 	ImGui::Text("%s", m_Mesh ? "Mesh" : "None");
@@ -211,6 +340,17 @@ void MeshRenderer::OnInspectorGUI()
 				m_MaterialPath = filePath;
 			}
 		}
+	}
+
+	// Shaodw와 Ssao 사용여부 버튼
+	if (ImGui::Button("Shadow"))
+	{
+		m_useShadow = !m_useShadow;
+	}
+
+	if (ImGui::Button("Ssao"))
+	{
+		m_useSsao = !m_useSsao;
 	}
 }
 

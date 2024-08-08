@@ -33,7 +33,7 @@ public:
 	void SetSubsetTable(std::vector<Subset>& subsetTable);
 
 	void Draw(ComPtr<ID3D11DeviceContext> dc, uint32 subsetId);
-
+	void InstancingDraw(ComPtr<ID3D11DeviceContext> dc, uint32 subsetId, uint32 instancingSize);
 private:
 	ComPtr<ID3D11Buffer> _vb;
 	ComPtr<ID3D11Buffer> _ib;
