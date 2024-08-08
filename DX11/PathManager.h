@@ -9,6 +9,6 @@ public:
 	void Init();
 
 	const wchar_t* GetContentPath() { return _szContentPath; }
-	const wchar_t* GetMovePath(wstring movePath);
+	wstring GetMovePath(wstring movePath);
 };
 

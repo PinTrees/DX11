@@ -161,7 +161,7 @@ float4 PS(VertexOut pin,
             ComputeDirectionalLight(gMaterial, gDirLights[i], bumpedNormalW, toEye,
                 A, D, S);
 
-            ambient += ambientAccess * A;
+            ambient += 100;
             diffuse += shadow[i] * D;
             spec += shadow[i] * S;
         }

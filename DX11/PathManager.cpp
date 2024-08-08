@@ -3,7 +3,6 @@
 
 SINGLE_BODY(PathManager)
 
-
 PathManager::PathManager()
 {
 
@@ -31,30 +30,23 @@ void PathManager::Init()
 			break;
 		}
 	}
-
 }
 
-/// <summary>
-/// 현재 프로젝트 경로 + 가야할 경로
-/// </summary>
-/// <param name="movePath"></param>
-/// <returns></returns>
-const wchar_t* PathManager::GetMovePath(wstring movePath)
+wstring PathManager::GetMovePath(wstring movePath)
 {
-	size_t len1 = std::wcslen(_szContentPath);
-	size_t len2 = movePath.size();
-	
-	if (MAX_PATH > (len1 + len2 + 2))
-		return nullptr;
+	size_t len = wcslen(_szContentPath);
 
-	wchar_t* result = new wchar_t[len1 + len2 + 2];
+	//_szContentPath[len] = '\\';
 
-	//std::wcsncpy(result, _szContentPath, len1);
 
-	//std::wcsncpy(result + len1, movePath, MAX_PATH - len1);
+	wstring path = _szContentPath;
 
-	result[len1 + len2] = L'\0';
+	// Ensure the base path ends with a backslash
+	if (!path.empty() && path.back() != L'\\') {
+		path.append(L"\\");
+	}
 
-	return nullptr;
-
+	// Append the move path
+	path.append(movePath);
+	return path;
 }
