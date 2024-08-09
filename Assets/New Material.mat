@@ -1,25 +1,25 @@
 {
     "Ambient": [
-        0.0,
-        0.0,
-        0.0,
-        0.0
+        1.0,
+        1.0,
+        1.0,
+        1.0
     ],
-    "BaseMapPath": "",
+    "BaseMapPath": "Assets\\Art\\ENV\\Rock\\Mossy_rock_var7-8_basecolor.png",
     "Diffuse": [
-        0.0,
-        0.0,
-        0.0,
-        0.0
+        1.0,
+        1.0,
+        1.0,
+        1.0
     ],
-    "NormalMapPath": "",
+    "NormalMapPath": "Assets\\Forest_ground_scan_var1_normal.png",
     "Reflect": [
         0.0,
         0.0,
         0.0,
         0.0
     ],
-    "ResourcePath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets/New Material.mat",
+    "ResourcePath": "Assets\\/New Material.mat",
     "Specular": [
         0.0,
         0.0,

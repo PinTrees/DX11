@@ -23,13 +23,15 @@ ComPtr<ID3D11ShaderResourceView> ResourceManager::LoadTexture(wstring filename)
 {
 	ComPtr<ID3D11ShaderResourceView> srv;
 
+	wstring path = PathManager::GetI()->GetMovePath(filename);
+
 	if (m_TextureSRV.find(filename) != m_TextureSRV.end())
 	{
 		srv = m_TextureSRV[filename];
 	}
 	else
 	{
-		srv = Utils::LoadTexture(m_Device, filename.c_str());
+		srv = Utils::LoadTexture(m_Device, path.c_str());
 		m_TextureSRV[filename] = srv;
 	}
 

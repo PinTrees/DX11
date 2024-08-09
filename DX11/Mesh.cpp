@@ -17,14 +17,16 @@ std::string GetFileExtension(const std::string& filename)
 
 Mesh::Mesh(ComPtr<ID3D11Device> device, TextureMgr& texMgr, const std::string& modelFilename, const std::wstring& texturePath)
 {
-	std::string fileExtension = GetFileExtension(modelFilename);
+	string modelfilepath = PathManager::GetI()->GetMoveSPath(modelFilename);
+
+	std::string fileExtension = GetFileExtension(modelfilepath);
 
 	if (fileExtension == "fbx")
 	{
 		std::vector<FbxMaterial> mats;
 
 		FBXLoader m3dLoader;
-		m3dLoader.LoadFBX(modelFilename, Vertices, Indices, Subsets, mats);
+		m3dLoader.LoadFBX(modelfilepath, Vertices, Indices, Subsets, mats);
 
 		ModelMesh.SetVertices(device, &Vertices[0], Vertices.size());
 		ModelMesh.SetIndices(device, &Indices[0], Indices.size());
@@ -48,7 +50,7 @@ Mesh::Mesh(ComPtr<ID3D11Device> device, TextureMgr& texMgr, const std::string& m
 		std::vector<M3dMaterial> mats;
 
 		M3DLoader m3dLoader;
-		m3dLoader.LoadM3d(modelFilename, Vertices, Indices, Subsets, mats);
+		m3dLoader.LoadM3d(modelfilepath, Vertices, Indices, Subsets, mats);
 
 		ModelMesh.SetVertices(device, &Vertices[0], Vertices.size());
 		ModelMesh.SetIndices(device, &Indices[0], Indices.size());
@@ -71,14 +73,16 @@ Mesh::Mesh(ComPtr<ID3D11Device> device, TextureMgr& texMgr, const std::string& m
 
 Mesh::Mesh(ComPtr<ID3D11Device> device, const std::string& modelFilename)
 {
-	std::string fileExtension = GetFileExtension(modelFilename);
+	string modelfilepath = PathManager::GetI()->GetMoveSPath(modelFilename);
+
+	std::string fileExtension = GetFileExtension(modelfilepath);
 
 	if (fileExtension == "fbx" || fileExtension == "FBX")
 	{
 		std::vector<FbxMaterial> mats;
 
 		FBXLoader m3dLoader;
-		m3dLoader.LoadFBX(modelFilename, Vertices, Indices, Subsets, mats);
+		m3dLoader.LoadFBX(modelfilepath, Vertices, Indices, Subsets, mats);
 
 		ModelMesh.SetVertices(device, &Vertices[0], Vertices.size());
 		ModelMesh.SetIndices(device, &Indices[0], Indices.size());

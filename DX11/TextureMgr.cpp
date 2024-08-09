@@ -20,16 +20,18 @@ ComPtr<ID3D11ShaderResourceView> TextureMgr::CreateTexture(std::wstring filename
 {
 	ComPtr<ID3D11ShaderResourceView> srv;
 
+	wstring path = PathManager::GetI()->GetCutSolutionPath(filename);
+
 	// Does it already exist?
-	if (_textureSRV.find(filename) != _textureSRV.end())
+	if (_textureSRV.find(path) != _textureSRV.end())
 	{
-		srv = _textureSRV[filename];
+		srv = _textureSRV[path];
 	}
 	else
 	{
 		srv = Utils::LoadTexture(_device, filename.c_str());
 
-		_textureSRV[filename] = srv;
+		_textureSRV[path] = srv;
 	}
 
 	return srv;

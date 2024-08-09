@@ -34,6 +34,20 @@ void PathManager::Init()
 	wcscat_s(_szContentPath, MAX_PATH, L"\\");
 }
 
+wstring PathManager::GetContentWPath()
+{
+	wstring path = _szContentPath;
+
+	return path;
+}
+
+string PathManager::GetContentSPath()
+{
+	string path = wstring_to_string(_szContentPath);
+
+	return path;
+}
+
 wstring PathManager::GetMovePath(wstring movePath)
 {
 	wstring path = _szContentPath;
@@ -44,4 +58,64 @@ wstring PathManager::GetMovePath(wstring movePath)
 		assert(false);
 
 	return path;
+}
+
+wstring PathManager::GetMovePath(string movePath)
+{
+	wstring path = _szContentPath;
+	path += string_to_wstring(movePath);
+
+	// 최대 폴더 경로 제한 검사
+	if (path.size() > MAX_PATH)
+		assert(false);
+
+	return path;
+}
+
+string PathManager::GetMoveSPath(wstring movePath)
+{
+	wstring path = _szContentPath;
+	path += movePath;
+
+	string result = wstring_to_string(path);
+
+	// 최대 폴더 경로 제한 검사
+	if (result.size() > MAX_PATH)
+		assert(false);
+
+	return result;
+}
+
+string PathManager::GetMoveSPath(string movePath)
+{
+	wstring path = _szContentPath;
+	path += string_to_wstring(movePath);
+
+	string result = wstring_to_string(path);
+
+	// 최대 폴더 경로 제한 검사
+	if (result.size() > MAX_PATH)
+		assert(false);
+
+	return result;
+}
+
+wstring PathManager::GetCutSolutionPath(wstring path)
+{
+	wstring result = path;
+	wstring soluPath = GetContentWPath();
+	size_t pos = result.find(soluPath);
+	result.erase(pos, soluPath.length());
+
+	return result;
+}
+
+string PathManager::GetCutSolutionPath(string path)
+{
+	string result = path;
+	string soluPath = GetContentSPath();
+	size_t pos = result.find(soluPath);
+	result.erase(pos, soluPath.length());
+
+	return result;
 }

@@ -19,14 +19,17 @@ string UMaterial::GetName()
 void UMaterial::Create(string fullPath)
 {
 	UMaterial* material = new UMaterial;
-	material->m_ResourcePath = fullPath + "/New Material.mat";
+
+	string filePath = PathManager::GetI()->GetCutSolutionPath(fullPath);
+	
+	material->m_ResourcePath = filePath + "/New Material.mat";
 
 	Save(material);
 }
 
 UMaterial* UMaterial::Load(string fullPath)
 {
-	std::ifstream is(fullPath);
+	std::ifstream is(PathManager::GetI()->GetMovePath(fullPath));
 	if (!is)
 	{
 		return nullptr;
@@ -61,10 +64,10 @@ void UMaterial::Save(UMaterial* material)
 	json j = *material;
 
 	// JSON 파일로 저장
-	std::ofstream os(material->m_ResourcePath);
+	std::ofstream os(PathManager::GetI()->GetMovePath(material->m_ResourcePath));
 	if (!os)
 	{
-		std::cerr << "파일을 열 수 없습니다: " << material->m_ResourcePath << std::endl;
+		std::cerr << "파일을 열 수 없습니다: " << PathManager::GetI()->GetMoveSPath(material->m_ResourcePath) << std::endl;
 		return;
 	}
 
@@ -92,7 +95,9 @@ void UMaterial::OnInspectorGUI()
 	{
 		if (ImGui::ImageButton((void*)BaseMapSRV.Get(), ImVec2(64, 64)))
 		{
-			std::wstring filePath = EditorUtility::OpenTextureFileDialog(m_ResourcePath);
+			std::wstring filePath = EditorUtility::OpenTextureFileDialog(PathManager::GetI()->GetMoveSPath(m_ResourcePath));
+			filePath = PathManager::GetI()->GetCutSolutionPath(filePath);
+
 			if (!filePath.empty())
 			{
 				BaseMapSRV = ResourceManager::GetI()->LoadTexture(filePath);
@@ -105,7 +110,9 @@ void UMaterial::OnInspectorGUI()
 	{
 		if (ImGui::Button("Load Base Map##image", ImVec2(64, 64)))
 		{
-			std::wstring filePath = EditorUtility::OpenTextureFileDialog(m_ResourcePath);
+			std::wstring filePath = EditorUtility::OpenTextureFileDialog(PathManager::GetI()->GetMoveSPath(m_ResourcePath));
+			filePath = PathManager::GetI()->GetCutSolutionPath(filePath);
+
 			if (!filePath.empty()) 
 			{
 				BaseMapSRV = ResourceManager::GetI()->LoadTexture(filePath);
@@ -119,7 +126,9 @@ void UMaterial::OnInspectorGUI()
 	{
 		if (ImGui::ImageButton((void*)NormalMapSRV.Get(), ImVec2(64, 64)))
 		{
-			std::wstring filePath = EditorUtility::OpenTextureFileDialog(m_ResourcePath);
+			std::wstring filePath = EditorUtility::OpenTextureFileDialog(PathManager::GetI()->GetMoveSPath(m_ResourcePath));
+			filePath = PathManager::GetI()->GetCutSolutionPath(filePath);
+
 			if (!filePath.empty())
 			{
 				NormalMapSRV = ResourceManager::GetI()->LoadTexture(filePath);
@@ -132,7 +141,9 @@ void UMaterial::OnInspectorGUI()
 	{
 		if (ImGui::Button("Load Normal Map##image", ImVec2(64, 64)))
 		{
-			std::wstring filePath = EditorUtility::OpenTextureFileDialog(m_ResourcePath);
+			std::wstring filePath = EditorUtility::OpenTextureFileDialog(PathManager::GetI()->GetMoveSPath(m_ResourcePath));
+			filePath = PathManager::GetI()->GetCutSolutionPath(filePath);
+
 			if (!filePath.empty())
 			{
 				NormalMapSRV = ResourceManager::GetI()->LoadTexture(filePath);

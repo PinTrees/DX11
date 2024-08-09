@@ -138,7 +138,7 @@ void ProjectEditorWindow::DisplayDirectoryTree(const std::wstring& directory)
         {
             if (ImGui::TreeNode(filename.c_str()))
             {
-                if (ImGui::IsItemHovered() && ImGui::IsItemClicked())
+                if (ImGui::IsItemHovered() && ImGui::IsItemClicked()) // 경로 변경
                 {
                     currentDirectory = entry.path().wstring();
                 }
@@ -303,7 +303,9 @@ void ProjectEditorWindow::RenderFileEntry_FBX(const fs::directory_entry& entry, 
 {
     wstring filename = entry.path().filename().wstring();  
 
-    shared_ptr<Mesh> mesh_fbx = ResourceManager::GetI()->LoadMesh(entry.path().wstring());
+    wstring path = PathManager::GetI()->GetCutSolutionPath(entry.path().wstring());
+
+    shared_ptr<Mesh> mesh_fbx = ResourceManager::GetI()->LoadMesh(path);
 
     if (mesh_fbx == nullptr)
         return;

@@ -42,7 +42,9 @@ void SelectionManager::SetSelectedFile(const std::wstring& filePath)
 
 	if (path.extension() == ".mat")
 	{
-		m_SelectedFile_Material = ResourceManager::GetI()->LoadMaterial(wstring_to_string(filePath));
+		string cutPath = PathManager::GetI()->GetCutSolutionPath(wstring_to_string(filePath));
+
+		m_SelectedFile_Material = ResourceManager::GetI()->LoadMaterial(cutPath);
 		m_SelectedSubType = SelectionSubType::MATERIAL;
 	}
 	else

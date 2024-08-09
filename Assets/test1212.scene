@@ -1,0 +1,55 @@
+{
+    "rootGameObjects": [
+        {
+            "components": [
+                {
+                    "m_EulerAngles": [
+                        -0.0,
+                        -1.0347278589506459e-13,
+                        -0.0
+                    ],
+                    "m_LocalEulerAngles": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "m_LocalPosition": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "m_LocalRotation": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "m_LocalScale": [
+                        1.0,
+                        5.309999942779541,
+                        1.0
+                    ],
+                    "m_Position": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "m_Scale": [
+                        1.0,
+                        5.309999942779541,
+                        1.0
+                    ],
+                    "type": "Transform"
+                },
+                {
+                    "materialPath": "Assets\\New Material.mat",
+                    "meshPath": "Assets\\Art\\ENV\\Forest_Ground_scans\\Forest_ground_Scan_var1\\Forest_ground_scan_var1.fbx",
+                    "shaderPath": "",
+                    "subsetIndex": 0,
+                    "type": "MeshRenderer"
+                }
+            ],
+            "name": "GameObject"
+        }
+    ]
+}

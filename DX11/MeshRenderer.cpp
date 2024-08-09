@@ -287,6 +287,9 @@ void MeshRenderer::OnInspectorGUI()
 	{
 		//std::wstring filePath = EditorUtility::OpenFileDialog(Application::GetDataPath(), L"Mesh", { L"fbx" });
 		std::wstring filePath = EditorUtility::OpenFileDialog(PathManager::GetI()->GetMovePath(L"Assets\\"), L"Mesh", { L"fbx" });
+
+		filePath = PathManager::GetI()->GetCutSolutionPath(filePath);
+
 		if (!filePath.empty())
 		{
 			m_Mesh = ResourceManager::GetI()->LoadMesh(filePath);
@@ -333,6 +336,9 @@ void MeshRenderer::OnInspectorGUI()
 	if (ImGui::Button("+"))
 	{
 		std::wstring filePath = EditorUtility::OpenFileDialog(L"", L"Material", { L"mat" });
+
+		filePath = PathManager::GetI()->GetCutSolutionPath(filePath);
+
 		if (!filePath.empty())
 		{
 			m_pMaterial = ResourceManager::GetI()->LoadMaterial(wstring_to_string(filePath));

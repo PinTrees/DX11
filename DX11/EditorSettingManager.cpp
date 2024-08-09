@@ -23,8 +23,8 @@ void EditorSettingManager::Init()
 
 void EditorSettingManager::Load()
 {
-    std::wstring settingsPath = Application::GetDataPath() + L"\\EditorSettings.json";
-    //std::wstring settingsPath = PathManager::GetI()->GetMovePath(L"Assets\\EditorSettings.json");
+    //std::wstring settingsPath = Application::GetDataPath() + L"\\EditorSettings.json";
+    std::wstring settingsPath = PathManager::GetI()->GetMovePath(L"Assets\\EditorSettings.json");
     std::ifstream settingsFile(wstring_to_string(settingsPath));
     if (settingsFile.is_open())
     {
