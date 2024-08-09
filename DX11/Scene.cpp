@@ -247,7 +247,7 @@ void Scene::UpdateScene()
 Scene* Scene::Load(wstring scenePath)
 {
     //std::ifstream is(wstring_to_string(scenePath));
-    std::ifstream is(wstring_to_string(PathManager::GetI()->GetMovePath(scenePath)));
+    std::ifstream is(wstring_to_string(PathManager::GetI()->GetMovePathW(scenePath)));
 
     if (!is)
     {
@@ -273,7 +273,7 @@ void Scene::Save(Scene* scene)
 
     json j = *scene;
     //std::ofstream os(scene->m_ScenePath);
-    std::ofstream os(PathManager::GetI()->GetMovePath(scene->m_ScenePath));
+    std::ofstream os(PathManager::GetI()->GetMovePathW(scene->m_ScenePath));
 
     if (os)
     {
@@ -293,7 +293,7 @@ void Scene::Save(Scene* scene)
 void Scene::SaveNewScene(Scene* scene)
 {
     //std::wstring filePath = EditorUtility::SaveFileDialog(Application::GetDataPath(), L"Save Scene As", L"scene");
-    std::wstring filePath = EditorUtility::SaveFileDialog(PathManager::GetI()->GetMovePath(L"Assets\\"), L"Save Scene As", L"scene");
+    std::wstring filePath = EditorUtility::SaveFileDialog(PathManager::GetI()->GetMovePathW(L"Assets\\"), L"Save Scene As", L"scene");
     
     filePath = PathManager::GetI()->GetCutSolutionPath(filePath);
 
@@ -302,7 +302,7 @@ void Scene::SaveNewScene(Scene* scene)
         scene->m_ScenePath = filePath;
 
         json j = *scene;
-        std::ofstream os(PathManager::GetI()->GetMovePath(filePath));
+        std::ofstream os(PathManager::GetI()->GetMovePathW(filePath));
 
         if (os)
         {

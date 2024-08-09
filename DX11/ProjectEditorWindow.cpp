@@ -65,7 +65,7 @@ ProjectEditorWindow::ProjectEditorWindow()
     : EditorWindow("Project")
 {
     //solutionDirectory = Application::GetDataPath();
-    solutionDirectory = PathManager::GetI()->GetMovePath(L"Assets\\");
+    solutionDirectory = PathManager::GetI()->GetMovePathW(L"Assets\\");
     currentDirectory = solutionDirectory;
 }
 

@@ -9,13 +9,11 @@ public:
 	void Init();
 
 	const wchar_t* GetContentPath() { return _szContentPath; }
-	wstring GetContentWPath();
-	string GetContentSPath();
+	wstring GetContentPathW();
+	string GetContentPathS();
 
-	wstring GetMovePath(wstring movePath);
-	wstring GetMovePath(string movePath);
-	string GetMoveSPath(wstring movePath);
-	string GetMoveSPath(string movePath);
+	wstring GetMovePathW(wstring movePath);
+	string GetMovePathS(string movePath);
 
 	wstring GetCutSolutionPath(wstring path);
 	string GetCutSolutionPath(string path);

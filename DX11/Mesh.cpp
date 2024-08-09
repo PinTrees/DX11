@@ -17,7 +17,7 @@ std::string GetFileExtension(const std::string& filename)
 
 Mesh::Mesh(ComPtr<ID3D11Device> device, TextureMgr& texMgr, const std::string& modelFilename, const std::wstring& texturePath)
 {
-	string modelfilepath = PathManager::GetI()->GetMoveSPath(modelFilename);
+	string modelfilepath = PathManager::GetI()->GetMovePathS(modelFilename);
 
 	std::string fileExtension = GetFileExtension(modelfilepath);
 
@@ -73,7 +73,7 @@ Mesh::Mesh(ComPtr<ID3D11Device> device, TextureMgr& texMgr, const std::string& m
 
 Mesh::Mesh(ComPtr<ID3D11Device> device, const std::string& modelFilename)
 {
-	string modelfilepath = PathManager::GetI()->GetMoveSPath(modelFilename);
+	string modelfilepath = PathManager::GetI()->GetMovePathS(modelFilename);
 
 	std::string fileExtension = GetFileExtension(modelfilepath);
 

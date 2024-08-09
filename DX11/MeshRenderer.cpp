@@ -286,7 +286,7 @@ void MeshRenderer::OnInspectorGUI()
 	if (ImGui::Button("Select##Mesh"))
 	{
 		//std::wstring filePath = EditorUtility::OpenFileDialog(Application::GetDataPath(), L"Mesh", { L"fbx" });
-		std::wstring filePath = EditorUtility::OpenFileDialog(PathManager::GetI()->GetMovePath(L"Assets\\"), L"Mesh", { L"fbx" });
+		std::wstring filePath = EditorUtility::OpenFileDialog(PathManager::GetI()->GetMovePathW(L"Assets\\"), L"Mesh", { L"fbx" });
 
 		filePath = PathManager::GetI()->GetCutSolutionPath(filePath);
 
