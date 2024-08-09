@@ -247,6 +247,7 @@ void Scene::UpdateScene()
 Scene* Scene::Load(wstring scenePath)
 {
     std::ifstream is(wstring_to_string(scenePath));
+    //std::ifstream is(wstring_to_string(PathManager::GetI()->GetMovePath(scenePath)));
 
     if (!is)
     {
@@ -272,6 +273,7 @@ void Scene::Save(Scene* scene)
 
     json j = *scene;
     std::ofstream os(scene->m_ScenePath);
+    //std::ofstream os(PathManager::GetI()->GetMovePath(scene->m_ScenePath));
 
     if (os)
     {
@@ -280,7 +282,7 @@ void Scene::Save(Scene* scene)
 
         // 저장됨
         // 마지막 오픈 씬을 현재 씬으로 변경
-        EditorSettingManager::SetLadtOpenedScenePath(scene->m_ScenePath);
+        EditorSettingManager::SetLastOpenedScenePath(scene->m_ScenePath);
     }
     else
     {
@@ -290,7 +292,8 @@ void Scene::Save(Scene* scene)
 
 void Scene::SaveNewScene(Scene* scene)
 {
-    std::wstring filePath = EditorUtility::SaveFileDialog(Application::GetDataPath(), L"Save Scene As", L"scene");
+    //std::wstring filePath = EditorUtility::SaveFileDialog(Application::GetDataPath(), L"Save Scene As", L"scene");
+    std::wstring filePath = EditorUtility::SaveFileDialog(PathManager::GetI()->GetMovePath(L"Assets\\"), L"Save Scene As", L"scene");
     if (!filePath.empty()) 
     {
         scene->m_ScenePath = filePath;
@@ -305,7 +308,7 @@ void Scene::SaveNewScene(Scene* scene)
 
             // 저장됨
             // 마지막 오픈 씬을 현재 씬으로 변경
-            EditorSettingManager::SetLadtOpenedScenePath(filePath);
+            EditorSettingManager::SetLastOpenedScenePath(filePath);
         }
         else 
         {

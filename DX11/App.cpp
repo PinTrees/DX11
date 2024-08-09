@@ -113,6 +113,8 @@ bool App::Init()
 	if (!InitDirect3D())
 		return false;
 
+	PathManager::GetI()->Init();
+
 	EditorSettingManager::Init();
 
 	RenderManager::GetI()->Init();
@@ -128,8 +130,6 @@ bool App::Init()
 	EditorGUIManager::GetI()->RegisterWindow(new AnimatorEditorWindow);
 
 	// Singleton Init
-	PathManager::GetI()->Init();
-	PathManager::GetI()->GetMovePath(L"Assets");
 	ResourceManager::GetI()->Init(_device);
 	InputManager::GetI()->Init();
 

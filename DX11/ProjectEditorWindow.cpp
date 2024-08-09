@@ -64,7 +64,8 @@ bool Splitter(bool split_vertically, float thickness, float* size1, float* size2
 ProjectEditorWindow::ProjectEditorWindow()
     : EditorWindow("Project")
 {
-    solutionDirectory = Application::GetDataPath();
+    //solutionDirectory = Application::GetDataPath();
+    solutionDirectory = PathManager::GetI()->GetMovePath(L"Assets\\");
     currentDirectory = solutionDirectory;
 }
 

@@ -17,7 +17,7 @@ PathManager::~PathManager()
 void PathManager::Init()
 {
 	GetCurrentDirectory(MAX_PATH, _szContentPath); // 현재 실행파일의 경로 저장
-	
+
 	// 경로 이동을 하는 이유는 게임폴더를 변경,
 	// visual studio 디버그 모드로 실행 시 경로 이상이 없게하기 위해
 	int ilen = wcslen(_szContentPath);
@@ -30,23 +30,18 @@ void PathManager::Init()
 			break;
 		}
 	}
+
+	wcscat_s(_szContentPath, MAX_PATH, L"\\");
 }
 
 wstring PathManager::GetMovePath(wstring movePath)
 {
-	size_t len = wcslen(_szContentPath);
-
-	//_szContentPath[len] = '\\';
-
-
 	wstring path = _szContentPath;
+	path += movePath;
 
-	// Ensure the base path ends with a backslash
-	if (!path.empty() && path.back() != L'\\') {
-		path.append(L"\\");
-	}
+	// 최대 폴더 경로 제한 검사
+	if (path.size() > MAX_PATH)
+		assert(false);
 
-	// Append the move path
-	path.append(movePath);
 	return path;
 }

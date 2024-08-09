@@ -23,7 +23,7 @@ public:
 	static void Load();
 	static void Save();
 
-	static void SetLadtOpenedScenePath(wstring scenePath);
+	static void SetLastOpenedScenePath(wstring scenePath);
     static EditorSetting* GetSetting() { return m_pSetting; }
 };
 

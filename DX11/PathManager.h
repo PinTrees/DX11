@@ -12,3 +12,4 @@ public:
 	wstring GetMovePath(wstring movePath);
 };
 
+#define PATH_SOLUTION PathManager::GetI()->GetContentPath();
