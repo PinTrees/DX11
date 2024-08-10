@@ -26,7 +26,7 @@
                     },
                     "m_LocalScale": [
                         1.0,
-                        5.070000171661377,
+                        3.799999952316284,
                         1.0
                     ],
                     "m_Position": [
@@ -36,14 +36,14 @@
                     ],
                     "m_Scale": [
                         1.0,
-                        5.070000171661377,
+                        3.799999952316284,
                         1.0
                     ],
                     "type": "Transform"
                 },
                 {
-                    "materialPath": "C:\\Users\\pc\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\New Material.mat",
-                    "meshPath": "C:\\Users\\pc\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\Forest_Ground_scans\\Forest_Ground_scan_var4\\Volcanic_Mossy_Rocks.fbx",
+                    "materialPath": "Assets\\Art\\ENV\\New Material.mat",
+                    "meshPath": "Assets\\Art\\ENV\\Forest_Ground_scans\\Forest_ground_Scan_var1\\Forest_ground_scan_var1.fbx",
                     "shaderPath": "",
                     "subsetIndex": 0,
                     "type": "MeshRenderer"
@@ -66,7 +66,7 @@
                     ],
                     "m_LocalPosition": [
                         0.0,
-                        65.9000015258789,
+                        69.30000305175781,
                         0.0
                     ],
                     "m_LocalRotation": {
@@ -82,7 +82,7 @@
                     ],
                     "m_Position": [
                         0.0,
-                        65.9000015258789,
+                        69.30000305175781,
                         0.0
                     ],
                     "m_Scale": [
@@ -93,8 +93,8 @@
                     "type": "Transform"
                 },
                 {
-                    "materialPath": "C:\\Users\\pc\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\New Material.mat",
-                    "meshPath": "C:\\Users\\pc\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\Rock\\Mossy_rock_var8.fbx",
+                    "materialPath": "Assets\\Art\\ENV\\New Material.mat",
+                    "meshPath": "Assets\\Art\\ENV\\Rock\\Mossy_rock_var8.fbx",
                     "shaderPath": "",
                     "subsetIndex": 0,
                     "type": "MeshRenderer"

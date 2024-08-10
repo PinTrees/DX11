@@ -22,7 +22,7 @@ void UMaterial::Create(string fullPath)
 
 	string filePath = PathManager::GetI()->GetCutSolutionPath(fullPath);
 	
-	material->m_ResourcePath = filePath + "New Material.mat";
+	material->m_ResourcePath = filePath + "\\New Material.mat";
 
 	Save(material);
 }
