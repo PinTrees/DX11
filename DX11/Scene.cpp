@@ -147,7 +147,7 @@ void Scene::RenderSceneShadow()
         else
         {
             MeshRenderer* meshRenderer = gameObject->GetComponent<MeshRenderer>();
-            if (meshRenderer == nullptr || (!meshRenderer->GetUseSsao()))
+            if (meshRenderer == nullptr)
                 continue;
 
             meshRenderer->RenderShadow();
@@ -201,7 +201,7 @@ void Scene::RenderSceneShadowNormal()
         else
         {
             MeshRenderer* meshRenderer = gameObject->GetComponent<MeshRenderer>();
-            if (meshRenderer == nullptr || (!meshRenderer->GetUseSsao()))
+            if (meshRenderer == nullptr)
                 continue;
 
             meshRenderer->RenderShadowNormal();
