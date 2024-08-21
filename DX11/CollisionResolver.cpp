@@ -3,12 +3,12 @@
 
 void CollisionResolver::ResolveCollision(std::vector<Contact*>& contacts, float deltaTime)
 {
-    for (int i = 0; i < 1; ++i)
+    for (int i = 0; i < 10; ++i)
     {
         for (auto& contact : contacts)
         {
-            //sequentialImpulse(contact, deltaTime);
-            AA(contact, deltaTime);
+            sequentialImpulse(contact, deltaTime);
+            //AA(contact, deltaTime);
         }
     }
 }

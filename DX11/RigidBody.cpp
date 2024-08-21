@@ -151,13 +151,13 @@ void RigidBody::Integrate(float deltaTime)
 }
 
 void RigidBody::OnDrawGizmos()
-{
+{	
 	if (m_Mass == 0)
 		return;
 
 	Transform* tr = GetGameObject()->GetTransform();
 	Gizmo::DrawArrow(tr->GetPosition(), m_Velocity * 0.1f, ImVec4(0, 0, 255, 255));
-	Gizmo::DrawArrow(tr->GetPosition(), m_RotationVelocity, ImVec4(0, 255, 0, 255));
+	//Gizmo::DrawArrow(tr->GetPosition(), m_RotationVelocity, ImVec4(0, 255, 0, 255));
 }
 
 void RigidBody::OnInspectorGUI()

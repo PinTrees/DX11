@@ -29,7 +29,7 @@ PhysicsManager::~PhysicsManager()
 
 void PhysicsManager::Init()
 {
-	SetGravity(9.8f);
+	SetGravity(59.8f);
 
 	m_Detector = new CollisionDetector; 
 	m_Resolver = new CollisionResolver;
@@ -64,7 +64,7 @@ void PhysicsManager::Start()
 			float value = rigidBody->GetMass() / 6.0f; 
 			inertiaTensor.setDiagonal(value);
 		}
-		rigidBody->SetAcceleration(Vec3(0.f, -9.8f, 0.f));
+		rigidBody->SetAcceleration(Vec3(0.f, -m_GravityAcceleration, 0.f));
 		rigidBody->SetInertiaTensor(inertiaTensor); 
 	}
 }

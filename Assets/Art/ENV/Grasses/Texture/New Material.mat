@@ -1,0 +1,29 @@
+{
+    "Ambient": [
+        0.31143516302108765,
+        0.6202532052993774,
+        0.3270714581012726,
+        1.0
+    ],
+    "BaseMapPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\Grasses\\Texture\\Grasses_basecolor_alpha - 복사본.png",
+    "Diffuse": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+    ],
+    "NormalMapPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\Grasses\\Texture\\Grasses_normal.png",
+    "Reflect": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+    ],
+    "ResourcePath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets/Art\\ENV\\Grasses\\Texture/New Material.mat",
+    "Specular": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+    ]
+}

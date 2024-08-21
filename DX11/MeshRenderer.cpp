@@ -2,9 +2,11 @@
 #include "MeshRenderer.h"
 #include "Effects.h"
 #include "MathHelper.h"
+#include "RenderStates.h"
 
 MeshRenderer::MeshRenderer()
 	: m_pMaterial(nullptr),
+	m_IsAlphaObject(false),
 	m_MeshSubsetIndex(0)
 {
 	m_InspectorTitleName = "MeshRenderer";
@@ -20,7 +22,10 @@ void MeshRenderer::Render()
 		return;
 
 	auto deviceContext = Application::GetI()->GetDeviceContext();
-	ComPtr<ID3DX11EffectTechnique> tech = Effects::NormalMapFX->Light3TexTech;
+	ComPtr<ID3DX11EffectTechnique> tech;
+	if (m_IsAlphaObject) tech = Effects::NormalMapFX->Light3TexAlphaClipTech;
+	else tech = Effects::NormalMapFX->Light3TexTech;
+
 	//Light3TexTech;
 
 	D3DX11_TECHNIQUE_DESC techDesc;
@@ -31,6 +36,9 @@ void MeshRenderer::Render()
 		0.0f, -0.5f, 0.0f, 0.0f,
 		0.0f, 0.0f, 1.0f, 0.0f,
 		0.5f, 0.5f, 0.0f, 1.0f);
+
+	if(m_IsAlphaObject)
+		deviceContext->RSSetState(RenderStates::NoCullRS.Get());
 
 	for (uint32 p = 0; p < techDesc.Passes; ++p)
 	{
@@ -75,9 +83,12 @@ void MeshRenderer::RenderShadow()
 
 	Transform* transform = m_pGameObject->GetComponent<Transform>();
 	auto deviceContext = Application::GetI()->GetDeviceContext();
+	
+	if (m_IsAlphaObject) deviceContext->RSSetState(RenderStates::NoCullRS.Get());
 
-	ComPtr<ID3DX11EffectTechnique> tech = Effects::BuildShadowMapFX->BuildShadowMapTech;
-	ComPtr<ID3DX11EffectTechnique> alphaClippedTech = Effects::BuildShadowMapFX->BuildShadowMapAlphaClipTech;
+	ComPtr<ID3DX11EffectTechnique> tech;
+	if (!m_IsAlphaObject) tech = Effects::BuildShadowMapFX->BuildShadowMapTech;
+	else tech = Effects::BuildShadowMapFX->BuildShadowMapAlphaClipTech;
 
 	XMMATRIX world;
 	XMMATRIX worldInvTranspose;
@@ -103,6 +114,9 @@ void MeshRenderer::RenderShadow()
 		Effects::BuildShadowMapFX->SetWorldViewProj(worldViewProj);
 		Effects::BuildShadowMapFX->SetTexTransform(::XMMatrixScaling(1.0f, 1.0f, 1.0f));
 
+		if (m_IsAlphaObject)
+			Effects::BuildShadowMapFX->SetDiffuseMap(m_pMaterial->GetBaseMapSRV());
+
 		tech->GetPassByIndex(p)->Apply(0, deviceContext);
 		m_Mesh->ModelMesh.Draw(deviceContext, m_MeshSubsetIndex);
 	}
@@ -114,8 +128,13 @@ void MeshRenderer::RenderShadowNormal()
 		return;
 
 	auto deviceContext = Application::GetI()->GetDeviceContext();
+	
+	if (m_IsAlphaObject) deviceContext->RSSetState(RenderStates::NoCullRS.Get()); 
+
 	Transform* transform = m_pGameObject->GetComponent<Transform>();
-	ComPtr<ID3DX11EffectTechnique> tech = Effects::SsaoNormalDepthFX->NormalDepthTech;
+	ComPtr<ID3DX11EffectTechnique> tech;
+	if (!m_IsAlphaObject)tech = Effects::SsaoNormalDepthFX->NormalDepthTech;
+	else tech = Effects::SsaoNormalDepthFX->NormalDepthAlphaClipTech;
 
 	XMMATRIX world;
 	XMMATRIX worldInvTranspose;
@@ -144,6 +163,9 @@ void MeshRenderer::RenderShadowNormal()
 		Effects::SsaoNormalDepthFX->SetWorldViewProj(worldViewProj);
 		Effects::SsaoNormalDepthFX->SetTexTransform(XMMatrixScaling(1.0f, 1.0f, 1.0f));
 
+		if(m_IsAlphaObject)
+			Effects::SsaoNormalDepthFX->SetDiffuseMap(m_pMaterial->GetBaseMapSRV());
+
 		tech->GetPassByIndex(p)->Apply(0, deviceContext);
 		m_Mesh->ModelMesh.Draw(deviceContext, m_MeshSubsetIndex);
 	}
@@ -167,6 +189,8 @@ void MeshRenderer::OnInspectorGUI()
 			}
 		}
 	}
+
+	ImGui::Checkbox("Is Alpha Object", &m_IsAlphaObject);
 
 	if (m_Mesh != nullptr)
 	{
@@ -223,6 +247,7 @@ GENERATE_COMPONENT_FUNC_TOJSON(MeshRenderer)
 	j["meshPath"] = wstring_to_string(m_MeshPath);
 	j["materialPath"] = wstring_to_string(m_MaterialPath);
 	j["subsetIndex"] = m_MeshSubsetIndex; 
+	j["m_IsAlphaObject"] = m_IsAlphaObject;
 	return j;
 }
 
@@ -245,5 +270,9 @@ GENERATE_COMPONENT_FUNC_FROMJSON(MeshRenderer)
 	if (j.contains("subsetIndex"))
 	{
 		m_MeshSubsetIndex = j.at("subsetIndex").get<int>(); 
+	}
+	if (j.contains("m_IsAlphaObject"))
+	{
+		m_IsAlphaObject = j.at("m_IsAlphaObject").get<bool>();
 	}
 }

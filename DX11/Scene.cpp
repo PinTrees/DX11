@@ -39,12 +39,6 @@ void Scene::RenderScene()
         {
             component->Render();
         }
-
-        //MeshRenderer* meshRenderer = gameObject->GetComponent<MeshRenderer>();
-        //if (meshRenderer == nullptr)
-        //    continue;
-        //
-        //meshRenderer->Render();
     }
 }
 
@@ -188,7 +182,7 @@ void Scene::AddRootGameObject(GameObject* gameObject)
 
 void Scene::RemoveRootGameObjects(GameObject* gameObject)
 {
-    auto it = std::find(m_RootGameObjects.begin(), m_RootGameObjects.end(), gameObject);  
+    auto it = std::find(m_RootGameObjects.begin(), m_RootGameObjects.end(), gameObject);   
     if (it != m_RootGameObjects.end())  
     { 
         m_RootGameObjects.erase(it); 
@@ -211,9 +205,26 @@ void from_json(const json& j, Scene& scene)
 {
     for (const auto& gameObjectJson : j.at("rootGameObjects"))
     {
-        GameObject* gameObject = new GameObject();
+        GameObject* gameObject = new GameObject;
         from_json(gameObjectJson, *gameObject); 
         scene.m_RootGameObjects.push_back(gameObject);
-        scene.m_arrGameObjects[0].push_back(gameObject);
+
+        // 루트 오브젝트와 그 자식들을 모두 m_arrGameObjects에 저장
+        AddGameObjectAndChildrenToArray(gameObject, scene.m_arrGameObjects[0]);
+    }
+}
+
+
+
+// 재귀적으로 오브젝트와 그 자식들을 m_arrGameObjects에 추가하는 함수
+void AddGameObjectAndChildrenToArray(GameObject* gameObject, std::vector<GameObject*>& arrGameObjects)
+{
+    // 현재 오브젝트를 배열에 추가
+    arrGameObjects.push_back(gameObject);
+
+    // 자식 오브젝트들을 가져와 재귀적으로 추가
+    for (auto* child : gameObject->GetChildren())
+    {
+        AddGameObjectAndChildrenToArray(child, arrGameObjects);
     }
 }

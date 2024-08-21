@@ -94,8 +94,6 @@ bool CollisionDetector::CheckSphereSphereCollision(std::vector<Contact*>& contac
 		return false;
 }
 
-// Fixed 
-// 구의 박스기준 로컬 스케일 문제 수정 - 박스의 스케일이 작을 경우 구의 반지름이 매우 커지는 오류 수정
 bool CollisionDetector::CheckSphereBoxCollision(std::vector<Contact*>& contacts, SphereCollider* sphere, BoxCollider* box)
 {
 	Transform* sphereTr = sphere->GetGameObject()->GetTransform(); 

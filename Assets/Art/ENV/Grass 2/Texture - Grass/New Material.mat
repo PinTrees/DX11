@@ -1,0 +1,29 @@
+{
+    "Ambient": [
+        0.7552742958068848,
+        0.7552742958068848,
+        0.7552742958068848,
+        1.0
+    ],
+    "BaseMapPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\Grass 2\\Texture - Grass\\Ground_Foliage_forest_basecolor_4K-1.png",
+    "Diffuse": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+    ],
+    "NormalMapPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\Grass 2\\Texture - Grass\\Ground_Foliage_forest_normal_4K.png",
+    "Reflect": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+    ],
+    "ResourcePath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets/Art\\ENV\\Grass 2\\Texture - Grass/New Material.mat",
+    "Specular": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+    ]
+}

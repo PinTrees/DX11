@@ -42,6 +42,7 @@ public:
 	
 	void SetParent(GameObject* parent);
 	GameObject* GetParent() { return m_pParentGameObject; }
+	void SetParentImmediate(GameObject* g) { m_pParentGameObject = g; }
 
 	void Awake();
 	void Start();
@@ -106,6 +107,7 @@ public:
 private:
 	friend class GameObject;
 	void SetChild(GameObject* child);
+	void RemoveChild(GameObject* child);
 
 public:
 	void OnInspectorGUI();

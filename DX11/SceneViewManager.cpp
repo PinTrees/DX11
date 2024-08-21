@@ -24,7 +24,7 @@ void SceneViewManager::Update()
 	if (sceneCamera == nullptr)
 		return;
 
-	float camSpeed = 50;
+	float camSpeed = 50 * 5;
 
 	if (INPUT_KEY_HOLD(KEY::W))
 		sceneCamera->Walk(camSpeed * DT);

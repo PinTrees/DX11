@@ -49,3 +49,5 @@ public:
 	friend void to_json(json& j, const Scene& scene);
 };
 
+ 
+void AddGameObjectAndChildrenToArray(GameObject* gameObject, std::vector<GameObject*>& arrGameObjects); 

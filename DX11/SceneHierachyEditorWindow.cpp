@@ -94,7 +94,7 @@ void SceneHierachyEditorWindow::DrawGameObject(GameObject* gameObject)
 		std::vector<GameObject*> children = gameObject->GetChildren();
 		for (int i = 0; i < children.size(); ++i)
 		{
-			DrawGameObject(children[i]);
+			DrawGameObject(children[i]); // 자식 게임 오브젝트들에 대해 재귀적으로 호출
 		}
 		ImGui::TreePop();
 	}
@@ -104,11 +104,11 @@ void SceneHierachyEditorWindow::DrawGameObject(GameObject* gameObject)
 	}
 
 	// 드래그 앤 드롭 소스
-	if (ImGui::BeginDragDropSource()) 
+	if (ImGui::BeginDragDropSource())
 	{
-		ImGui::SetDragDropPayload("GAME_OBJECT", &gameObject, sizeof(GameObject*)); 
-		ImGui::Text("Dragging %s", gameObject->GetName().c_str()); 
-		ImGui::EndDragDropSource(); 
+		ImGui::SetDragDropPayload("GAME_OBJECT", &gameObject, sizeof(GameObject*));
+		ImGui::Text("Dragging %s", gameObject->GetName().c_str());
+		ImGui::EndDragDropSource();
 	}
 
 	// 드래그 앤 드롭 처리 (특정 오브젝트에 드롭)
@@ -120,10 +120,10 @@ void SceneHierachyEditorWindow::DrawGameObject(GameObject* gameObject)
 			HandleFbxFileDrop(std::string(filePath), gameObject);
 		}
 
-		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("GAME_OBJECT")) 
+		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("GAME_OBJECT"))
 		{
-			GameObject* droppedObject = *(GameObject**)payload->Data; 
-			droppedObject->SetParent(gameObject); 
+			GameObject* droppedObject = *(GameObject**)payload->Data;
+			droppedObject->SetParent(gameObject);
 		}
 		ImGui::EndDragDropTarget();
 	}

@@ -21,6 +21,8 @@ private:
 	wstring				m_MeshPath;
 	int					m_MeshSubsetIndex;
 
+	bool m_IsAlphaObject;
+
 	UMaterial*	m_pMaterial;
 	wstring		m_MaterialPath;
 

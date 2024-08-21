@@ -1,0 +1,1776 @@
+{
+    "rootGameObjects": [
+        {
+            "children": [],
+            "components": [
+                {
+                    "m_EulerAngles": [
+                        3.1415927410125732,
+                        -0.8884248733520508,
+                        3.1415927410125732
+                    ],
+                    "m_LocalEulerAngles": [
+                        0.0,
+                        -2.2531676292419434,
+                        0.0
+                    ],
+                    "m_LocalPosition": [
+                        3.200000047683716,
+                        -130.5,
+                        196.60000610351563
+                    ],
+                    "m_LocalRotation": {
+                        "w": 0.42974692583084106,
+                        "x": 0.0,
+                        "y": -0.9029493927955627,
+                        "z": 0.0
+                    },
+                    "m_LocalScale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "m_Position": [
+                        3.200000047683716,
+                        -130.5,
+                        196.60000610351563
+                    ],
+                    "m_Scale": [
+                        1.0000001192092896,
+                        1.0,
+                        1.0000001192092896
+                    ],
+                    "type": "Transform"
+                },
+                {
+                    "m_IsAlphaObject": false,
+                    "materialPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\Forest_Ground_scans\\Forest_ground_Scan_var1\\Forest_ground_Scan_var1.mat",
+                    "meshPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\Forest_Ground_scans\\Forest_ground_Scan_var1\\Forest_ground_scan_var1.fbx",
+                    "shaderPath": "",
+                    "subsetIndex": 0,
+                    "type": "MeshRenderer"
+                }
+            ],
+            "name": "TestObject1"
+        },
+        {
+            "children": [],
+            "components": [
+                {
+                    "m_EulerAngles": [
+                        -0.0,
+                        -1.0347278589506459e-13,
+                        -0.0
+                    ],
+                    "m_LocalEulerAngles": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "m_LocalPosition": [
+                        7.793000221252441,
+                        85.99600219726563,
+                        -161.16200256347656
+                    ],
+                    "m_LocalRotation": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "m_LocalScale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "m_Position": [
+                        7.793000221252441,
+                        85.99600219726563,
+                        -161.16200256347656
+                    ],
+                    "m_Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "type": "Transform"
+                },
+                {
+                    "m_IsAlphaObject": false,
+                    "materialPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\Rock\\RockMaterial.mat",
+                    "meshPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\Rock\\Mossy_rock_var8.fbx",
+                    "shaderPath": "",
+                    "subsetIndex": 0,
+                    "type": "MeshRenderer"
+                },
+                {
+                    "radius": 32.0,
+                    "type": "SphereCollider"
+                },
+                {
+                    "angularDamping": 0.9900000095367432,
+                    "isKinematic": false,
+                    "m_LinearDamping": 0.9900000095367432,
+                    "mass": 100.0,
+                    "type": "RigidBody"
+                }
+            ],
+            "name": "Rock_1\u0000ect2"
+        },
+        {
+            "children": [],
+            "components": [
+                {
+                    "m_EulerAngles": [
+                        -0.0,
+                        -1.0347278589506459e-13,
+                        -0.0
+                    ],
+                    "m_LocalEulerAngles": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "m_LocalPosition": [
+                        76.5,
+                        -770.0999755859375,
+                        -27.0
+                    ],
+                    "m_LocalRotation": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "m_LocalScale": [
+                        3.0,
+                        4.0,
+                        3.0
+                    ],
+                    "m_Position": [
+                        76.5,
+                        -770.0999755859375,
+                        -27.0
+                    ],
+                    "m_Scale": [
+                        3.0,
+                        4.0,
+                        3.0
+                    ],
+                    "type": "Transform"
+                },
+                {
+                    "m_IsAlphaObject": false,
+                    "materialPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\Forest_Ground_scans\\Forest_ground_Scan_var1\\Forest_ground_Scan_var1.mat",
+                    "meshPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\Forest_Ground_scans\\Forest_ground_Scan_var1\\Forest_ground_scan_var1.fbx",
+                    "shaderPath": "",
+                    "subsetIndex": 0,
+                    "type": "MeshRenderer"
+                },
+                {
+                    "radius": 0.0,
+                    "type": "SphereCollider"
+                }
+            ],
+            "name": "TestObject3"
+        },
+        {
+            "children": [],
+            "components": [
+                {
+                    "m_EulerAngles": [
+                        -0.0,
+                        -1.0347278589506459e-13,
+                        -0.0
+                    ],
+                    "m_LocalEulerAngles": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "m_LocalPosition": [
+                        0.0,
+                        51.70000076293945,
+                        0.0
+                    ],
+                    "m_LocalRotation": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "m_LocalScale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "m_Position": [
+                        0.0,
+                        51.70000076293945,
+                        0.0
+                    ],
+                    "m_Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "type": "Transform"
+                },
+                {
+                    "type": "Camera"
+                }
+            ],
+            "name": "Camera"
+        },
+        {
+            "children": [],
+            "components": [
+                {
+                    "m_EulerAngles": [
+                        -0.0,
+                        -1.0347278589506459e-13,
+                        -0.0
+                    ],
+                    "m_LocalEulerAngles": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "m_LocalPosition": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "m_LocalRotation": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "m_LocalScale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "m_Position": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "m_Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "type": "Transform"
+                }
+            ],
+            "name": "Directinal Light"
+        },
+        {
+            "children": [],
+            "components": [
+                {
+                    "m_EulerAngles": [
+                        -0.0,
+                        -1.0347278589506459e-13,
+                        -0.0
+                    ],
+                    "m_LocalEulerAngles": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "m_LocalPosition": [
+                        6.790999889373779,
+                        27.56800079345703,
+                        -5.716000080108643
+                    ],
+                    "m_LocalRotation": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "m_LocalScale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "m_Position": [
+                        6.790999889373779,
+                        27.56800079345703,
+                        -5.716000080108643
+                    ],
+                    "m_Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "type": "Transform"
+                },
+                {
+                    "angularDamping": 0.009999999776482582,
+                    "isKinematic": false,
+                    "m_LinearDamping": 0.9900000095367432,
+                    "mass": 50.0,
+                    "type": "RigidBody"
+                },
+                {
+                    "m_IsAlphaObject": false,
+                    "materialPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\Rock\\RockMaterial.mat",
+                    "meshPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\Rock\\Mossy_rock_var8.fbx",
+                    "shaderPath": "",
+                    "subsetIndex": 0,
+                    "type": "MeshRenderer"
+                },
+                {
+                    "radius": 23.0,
+                    "type": "SphereCollider"
+                }
+            ],
+            "name": "Rock_2\u0000ect"
+        },
+        {
+            "children": [],
+            "components": [
+                {
+                    "m_EulerAngles": [
+                        1.8290703296661377,
+                        0.01745329611003399,
+                        9.314644611180256e-10
+                    ],
+                    "m_LocalEulerAngles": [
+                        1.8290700912475586,
+                        0.017453286796808243,
+                        0.0
+                    ],
+                    "m_LocalPosition": [
+                        0.0,
+                        -27.899999618530273,
+                        -56.0
+                    ],
+                    "m_LocalRotation": {
+                        "w": 0.6101357936859131,
+                        "x": 0.7922488451004028,
+                        "y": 0.005324572790414095,
+                        "z": -0.00691384868696332
+                    },
+                    "m_LocalScale": [
+                        3.0,
+                        3.0,
+                        4.389999866485596
+                    ],
+                    "m_Position": [
+                        0.0,
+                        -27.899999618530273,
+                        -56.0
+                    ],
+                    "m_Scale": [
+                        3.0,
+                        3.000000238418579,
+                        4.389999866485596
+                    ],
+                    "type": "Transform"
+                },
+                {
+                    "m_IsAlphaObject": false,
+                    "materialPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\AssetStore\\ScanFactory\\AbandonedFactory\\Meshes\\sm_en_ConcretePlates_01\\New Material.mat",
+                    "meshPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\AssetStore\\ScanFactory\\AbandonedFactory\\Meshes\\sm_en_ConcretePlates_01\\sm_en_ConcretePlates_01.FBX",
+                    "shaderPath": "",
+                    "subsetIndex": 0,
+                    "type": "MeshRenderer"
+                },
+                {
+                    "offset": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "size": [
+                        150.0,
+                        149.0,
+                        5.0
+                    ],
+                    "type": "BoxCollider"
+                },
+                {
+                    "angularDamping": 0.9900000095367432,
+                    "isKinematic": true,
+                    "m_LinearDamping": 0.9900000095367432,
+                    "mass": 0.0,
+                    "type": "RigidBody"
+                }
+            ],
+            "name": "Ground_1\u0000t"
+        },
+        {
+            "children": [],
+            "components": [
+                {
+                    "m_EulerAngles": [
+                        -0.0,
+                        5.543231964111328e-06,
+                        -0.0
+                    ],
+                    "m_LocalEulerAngles": [
+                        0.0,
+                        5.543231964111328e-06,
+                        0.0
+                    ],
+                    "m_LocalPosition": [
+                        -208.1909942626953,
+                        66.11100006103516,
+                        115.8740005493164
+                    ],
+                    "m_LocalRotation": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 2.771615982055664e-06,
+                        "z": 0.0
+                    },
+                    "m_LocalScale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "m_Position": [
+                        -208.1909942626953,
+                        66.11100006103516,
+                        115.8740005493164
+                    ],
+                    "m_Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "type": "Transform"
+                },
+                {
+                    "angularDamping": 0.9900000095367432,
+                    "isKinematic": false,
+                    "m_LinearDamping": 0.9900000095367432,
+                    "mass": 18.0,
+                    "type": "RigidBody"
+                },
+                {
+                    "m_IsAlphaObject": false,
+                    "materialPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\Rock\\RockMaterial.mat",
+                    "meshPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\Rock\\Mossy_rock_var8.fbx",
+                    "shaderPath": "",
+                    "subsetIndex": 0,
+                    "type": "MeshRenderer"
+                },
+                {
+                    "radius": 26.0,
+                    "type": "SphereCollider"
+                }
+            ],
+            "name": "Rock_3\u0000\u0000\u0000\u0000"
+        },
+        {
+            "children": [],
+            "components": [
+                {
+                    "m_EulerAngles": [
+                        0.5898526906967163,
+                        -0.004930620547384024,
+                        -2.328334747225824e-10
+                    ],
+                    "m_LocalEulerAngles": [
+                        0.5898526906967163,
+                        -0.004930620547384024,
+                        -2.328334747225824e-10
+                    ],
+                    "m_LocalPosition": [
+                        -72.94999694824219,
+                        61.38200759887695,
+                        -94.33699798583984
+                    ],
+                    "m_LocalRotation": {
+                        "w": 0.9568207263946533,
+                        "x": 0.2906684875488281,
+                        "y": -0.002358864527195692,
+                        "z": 0.000716589274816215
+                    },
+                    "m_LocalScale": [
+                        0.5,
+                        0.5,
+                        0.5
+                    ],
+                    "m_Position": [
+                        -72.94999694824219,
+                        61.38200759887695,
+                        -94.33699798583984
+                    ],
+                    "m_Scale": [
+                        0.5,
+                        0.5,
+                        0.5
+                    ],
+                    "type": "Transform"
+                },
+                {
+                    "angularDamping": 0.9990000128746033,
+                    "isKinematic": false,
+                    "m_LinearDamping": 0.9990000128746033,
+                    "mass": 21.0,
+                    "type": "RigidBody"
+                },
+                {
+                    "m_IsAlphaObject": false,
+                    "materialPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\Rock\\RockMaterial.mat",
+                    "meshPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\Rock\\Mossy_rock_var8.fbx",
+                    "shaderPath": "",
+                    "subsetIndex": 0,
+                    "type": "MeshRenderer"
+                },
+                {
+                    "offset": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "size": [
+                        72.0,
+                        50.0,
+                        58.0
+                    ],
+                    "type": "BoxCollider"
+                }
+            ],
+            "name": "Rock_4\u0000ect"
+        },
+        {
+            "children": [],
+            "components": [
+                {
+                    "m_EulerAngles": [
+                        -0.0,
+                        -1.0347278589506459e-13,
+                        -0.0
+                    ],
+                    "m_LocalEulerAngles": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "m_LocalPosition": [
+                        -340.4620056152344,
+                        -4.947999954223633,
+                        -9.457565307617188
+                    ],
+                    "m_LocalRotation": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "m_LocalScale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "m_Position": [
+                        -340.4620056152344,
+                        -4.947999954223633,
+                        -9.457565307617188
+                    ],
+                    "m_Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "type": "Transform"
+                },
+                {
+                    "angularDamping": 0.9900000095367432,
+                    "isKinematic": false,
+                    "m_LinearDamping": 0.9900000095367432,
+                    "mass": 50.0,
+                    "type": "RigidBody"
+                },
+                {
+                    "m_IsAlphaObject": false,
+                    "materialPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\Rock\\RockMaterial.mat",
+                    "meshPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\Rock\\Mossy_rock_var8.fbx",
+                    "shaderPath": "",
+                    "subsetIndex": 0,
+                    "type": "MeshRenderer"
+                },
+                {
+                    "offset": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "size": [
+                        40.0,
+                        40.0,
+                        40.0
+                    ],
+                    "type": "BoxCollider"
+                }
+            ],
+            "name": "Rock_5\u0000\u0000\u0000\u0000"
+        },
+        {
+            "children": [],
+            "components": [
+                {
+                    "m_EulerAngles": [
+                        1.570796251296997,
+                        -1.0347278589506459e-13,
+                        0.0
+                    ],
+                    "m_LocalEulerAngles": [
+                        1.5707963705062866,
+                        0.0,
+                        0.0
+                    ],
+                    "m_LocalPosition": [
+                        0.0,
+                        -129.1999969482422,
+                        311.20001220703125
+                    ],
+                    "m_LocalRotation": {
+                        "w": 0.7071067094802856,
+                        "x": 0.7071067690849304,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "m_LocalScale": [
+                        4.0,
+                        2.200000047683716,
+                        3.930000066757202
+                    ],
+                    "m_Position": [
+                        0.0,
+                        -129.1999969482422,
+                        311.20001220703125
+                    ],
+                    "m_Scale": [
+                        4.0,
+                        2.1999998092651367,
+                        3.929999589920044
+                    ],
+                    "type": "Transform"
+                },
+                {
+                    "m_IsAlphaObject": false,
+                    "materialPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\AssetStore\\ScanFactory\\AbandonedFactory\\Meshes\\sm_en_ConcretePlates_01\\New Material.mat",
+                    "meshPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\AssetStore\\ScanFactory\\AbandonedFactory\\Meshes\\sm_en_ConcretePlates_01\\sm_en_ConcretePlates_01.FBX",
+                    "shaderPath": "",
+                    "subsetIndex": 0,
+                    "type": "MeshRenderer"
+                },
+                {
+                    "offset": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "size": [
+                        149.0,
+                        127.0,
+                        5.0
+                    ],
+                    "type": "BoxCollider"
+                },
+                {
+                    "angularDamping": 0.9900000095367432,
+                    "isKinematic": true,
+                    "m_LinearDamping": 0.9900000095367432,
+                    "mass": 0.0,
+                    "type": "RigidBody"
+                }
+            ],
+            "name": "Ground_2\u0000t"
+        },
+        {
+            "children": [],
+            "components": [
+                {
+                    "m_EulerAngles": [
+                        -0.0,
+                        -1.0347278589506459e-13,
+                        -0.0
+                    ],
+                    "m_LocalEulerAngles": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "m_LocalPosition": [
+                        -9.739999771118164,
+                        -414.27801513671875,
+                        35.20920944213867
+                    ],
+                    "m_LocalRotation": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "m_LocalScale": [
+                        0.5,
+                        0.5,
+                        0.5
+                    ],
+                    "m_Position": [
+                        -9.739999771118164,
+                        -414.27801513671875,
+                        35.20920944213867
+                    ],
+                    "m_Scale": [
+                        0.5,
+                        0.5,
+                        0.5
+                    ],
+                    "type": "Transform"
+                },
+                {
+                    "m_IsAlphaObject": false,
+                    "materialPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\AssetStore\\ScanFactory\\AbandonedFactory\\Meshes\\sm_en_ConcretePlates_01\\New Material.mat",
+                    "meshPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\Rock\\Mossy_rock_var8.fbx",
+                    "shaderPath": "",
+                    "subsetIndex": 0,
+                    "type": "MeshRenderer"
+                },
+                {
+                    "offset": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "size": [
+                        48.0,
+                        48.0,
+                        48.0
+                    ],
+                    "type": "BoxCollider"
+                },
+                {
+                    "angularDamping": 0.9900000095367432,
+                    "isKinematic": false,
+                    "m_LinearDamping": 0.9900000095367432,
+                    "mass": 50.0,
+                    "type": "RigidBody"
+                }
+            ],
+            "name": "Rock_Box\u0000t"
+        },
+        {
+            "children": [],
+            "components": [
+                {
+                    "m_EulerAngles": [
+                        0.1325996071100235,
+                        0.01746802031993866,
+                        4.593634457705775e-06
+                    ],
+                    "m_LocalEulerAngles": [
+                        0.13259951770305634,
+                        0.01746867410838604,
+                        4.633571279555326e-06
+                    ],
+                    "m_LocalPosition": [
+                        -360.05999755859375,
+                        49.696998596191406,
+                        -264.5400085449219
+                    ],
+                    "m_LocalRotation": {
+                        "w": 0.9977649450302124,
+                        "x": 0.06624864786863327,
+                        "y": 0.008715170435607433,
+                        "z": -0.0005763399531133473
+                    },
+                    "m_LocalScale": [
+                        0.7599999904632568,
+                        0.3700000047683716,
+                        0.4300000071525574
+                    ],
+                    "m_Position": [
+                        -360.05999755859375,
+                        49.696998596191406,
+                        -264.5400085449219
+                    ],
+                    "m_Scale": [
+                        0.7600000500679016,
+                        0.3700000047683716,
+                        0.4300000071525574
+                    ],
+                    "type": "Transform"
+                },
+                {
+                    "m_IsAlphaObject": false,
+                    "materialPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\Rock\\RockMaterial.mat",
+                    "meshPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\Rock\\Mossy_rock_var8.fbx",
+                    "shaderPath": "",
+                    "subsetIndex": 0,
+                    "type": "MeshRenderer"
+                },
+                {
+                    "offset": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "size": [
+                        31.0,
+                        37.0,
+                        52.0
+                    ],
+                    "type": "BoxCollider"
+                },
+                {
+                    "angularDamping": 0.9900000095367432,
+                    "isKinematic": false,
+                    "m_LinearDamping": 0.9990000128746033,
+                    "mass": 100.0,
+                    "type": "RigidBody"
+                }
+            ],
+            "name": "Rock_6\u0000ect"
+        },
+        {
+            "children": [],
+            "components": [
+                {
+                    "m_EulerAngles": [
+                        -0.0,
+                        -1.0347278589506459e-13,
+                        -0.0
+                    ],
+                    "m_LocalEulerAngles": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "m_LocalPosition": [
+                        -62.75400161743164,
+                        28.958999633789063,
+                        110.56500244140625
+                    ],
+                    "m_LocalRotation": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "m_LocalScale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "m_Position": [
+                        -62.75400161743164,
+                        28.958999633789063,
+                        110.56500244140625
+                    ],
+                    "m_Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "type": "Transform"
+                },
+                {
+                    "m_IsAlphaObject": false,
+                    "materialPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\Rock\\RockMaterial.mat",
+                    "meshPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\Rock\\Mossy_rock_var8.fbx",
+                    "shaderPath": "",
+                    "subsetIndex": 0,
+                    "type": "MeshRenderer"
+                },
+                {
+                    "radius": 31.0,
+                    "type": "SphereCollider"
+                },
+                {
+                    "angularDamping": 0.9900000095367432,
+                    "isKinematic": false,
+                    "m_LinearDamping": 0.9990000128746033,
+                    "mass": 100.0,
+                    "type": "RigidBody"
+                }
+            ],
+            "name": "Rock\u0000bject"
+        },
+        {
+            "children": [],
+            "components": [
+                {
+                    "m_EulerAngles": [
+                        -0.0,
+                        -1.0347278589506459e-13,
+                        -0.0
+                    ],
+                    "m_LocalEulerAngles": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "m_LocalPosition": [
+                        100.55500030517578,
+                        96.68000030517578,
+                        78.5510025024414
+                    ],
+                    "m_LocalRotation": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "m_LocalScale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "m_Position": [
+                        100.55500030517578,
+                        96.68000030517578,
+                        78.5510025024414
+                    ],
+                    "m_Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "type": "Transform"
+                },
+                {
+                    "m_IsAlphaObject": false,
+                    "materialPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\Rock\\RockMaterial.mat",
+                    "meshPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\Rock\\Mossy_rock_var8.fbx",
+                    "shaderPath": "",
+                    "subsetIndex": 0,
+                    "type": "MeshRenderer"
+                },
+                {
+                    "radius": 24.0,
+                    "type": "SphereCollider"
+                },
+                {
+                    "angularDamping": 0.9900000095367432,
+                    "isKinematic": false,
+                    "m_LinearDamping": 0.9990000128746033,
+                    "mass": 100.0,
+                    "type": "RigidBody"
+                }
+            ],
+            "name": "Rock_1\u0000ect"
+        },
+        {
+            "children": [],
+            "components": [
+                {
+                    "m_EulerAngles": [
+                        -0.0,
+                        -1.0347278589506459e-13,
+                        -0.0
+                    ],
+                    "m_LocalEulerAngles": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "m_LocalPosition": [
+                        -191.8939971923828,
+                        141.28500366210938,
+                        -121.7770004272461
+                    ],
+                    "m_LocalRotation": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "m_LocalScale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "m_Position": [
+                        -191.8939971923828,
+                        141.28500366210938,
+                        -121.7770004272461
+                    ],
+                    "m_Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "type": "Transform"
+                },
+                {
+                    "m_IsAlphaObject": false,
+                    "materialPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\Rock\\RockMaterial.mat",
+                    "meshPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\Rock\\Mossy_rock_var8.fbx",
+                    "shaderPath": "",
+                    "subsetIndex": 0,
+                    "type": "MeshRenderer"
+                },
+                {
+                    "radius": 23.0,
+                    "type": "SphereCollider"
+                },
+                {
+                    "angularDamping": 0.9900000095367432,
+                    "isKinematic": false,
+                    "m_LinearDamping": 0.9900000095367432,
+                    "mass": 50.0,
+                    "type": "RigidBody"
+                }
+            ],
+            "name": "Rock\u0000bject"
+        },
+        {
+            "children": [],
+            "components": [
+                {
+                    "m_EulerAngles": [
+                        -0.0,
+                        -1.0347278589506459e-13,
+                        -0.0
+                    ],
+                    "m_LocalEulerAngles": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "m_LocalPosition": [
+                        -172.3000030517578,
+                        29.0,
+                        -77.19999694824219
+                    ],
+                    "m_LocalRotation": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "m_LocalScale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "m_Position": [
+                        -172.3000030517578,
+                        29.0,
+                        -77.19999694824219
+                    ],
+                    "m_Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "type": "Transform"
+                },
+                {
+                    "m_IsAlphaObject": false,
+                    "materialPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\Rock\\RockMaterial.mat",
+                    "meshPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\Rock\\Mossy_rock_var8.fbx",
+                    "shaderPath": "",
+                    "subsetIndex": 0,
+                    "type": "MeshRenderer"
+                },
+                {
+                    "radius": 28.0,
+                    "type": "SphereCollider"
+                },
+                {
+                    "angularDamping": 0.9900000095367432,
+                    "isKinematic": false,
+                    "m_LinearDamping": 0.9900000095367432,
+                    "mass": 51.0,
+                    "type": "RigidBody"
+                }
+            ],
+            "name": "GameObject"
+        },
+        {
+            "children": [
+                {
+                    "children": [],
+                    "components": [
+                        {
+                            "m_EulerAngles": [
+                                3.1415927410125732,
+                                0.8690345287322998,
+                                3.1415927410125732
+                            ],
+                            "m_LocalEulerAngles": [
+                                0.0,
+                                0.0,
+                                0.0
+                            ],
+                            "m_LocalPosition": [
+                                -92.80000305175781,
+                                0.0,
+                                0.0
+                            ],
+                            "m_LocalRotation": {
+                                "w": 1.0,
+                                "x": 0.0,
+                                "y": 0.0,
+                                "z": 0.0
+                            },
+                            "m_LocalScale": [
+                                1.0,
+                                1.0,
+                                1.0
+                            ],
+                            "m_Position": [
+                                174.5167236328125,
+                                -128.8000030517578,
+                                432.1438293457031
+                            ],
+                            "m_Scale": [
+                                2.0,
+                                2.0,
+                                2.0
+                            ],
+                            "type": "Transform"
+                        },
+                        {
+                            "m_IsAlphaObject": true,
+                            "materialPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\Grasses\\Texture\\New Material.mat",
+                            "meshPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\Grasses\\Grass_var2.fbx",
+                            "shaderPath": "",
+                            "subsetIndex": 0,
+                            "type": "MeshRenderer"
+                        }
+                    ],
+                    "name": "Grass 1\u0000\u0000\u0000"
+                },
+                {
+                    "children": [],
+                    "components": [
+                        {
+                            "m_EulerAngles": [
+                                -0.0,
+                                1.298681616783142,
+                                -0.0
+                            ],
+                            "m_LocalEulerAngles": [
+                                0.0,
+                                -0.9738762378692627,
+                                0.0
+                            ],
+                            "m_LocalPosition": [
+                                -45.5,
+                                0.0,
+                                89.19999694824219
+                            ],
+                            "m_LocalRotation": {
+                                "w": 0.8837697505950928,
+                                "x": 0.0,
+                                "y": -0.4679220914840698,
+                                "z": 0.0
+                            },
+                            "m_LocalScale": [
+                                2.0,
+                                2.0,
+                                2.0
+                            ],
+                            "m_Position": [
+                                249.6914825439453,
+                                -128.8000030517578,
+                                244.7285919189453
+                            ],
+                            "m_Scale": [
+                                4.0,
+                                4.0,
+                                4.0
+                            ],
+                            "type": "Transform"
+                        },
+                        {
+                            "m_IsAlphaObject": false,
+                            "materialPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\Grasses\\Texture\\New Material.mat",
+                            "meshPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\Grasses\\Grass_plant_var1.fbx",
+                            "shaderPath": "",
+                            "subsetIndex": 0,
+                            "type": "MeshRenderer"
+                        }
+                    ],
+                    "name": "Grass 2\u0000ct"
+                },
+                {
+                    "children": [],
+                    "components": [
+                        {
+                            "m_EulerAngles": [
+                                0.0,
+                                -0.3855086863040924,
+                                0.0
+                            ],
+                            "m_LocalEulerAngles": [
+                                0.0,
+                                -2.658066749572754,
+                                0.0
+                            ],
+                            "m_LocalPosition": [
+                                -48.5,
+                                0.0,
+                                60.0
+                            ],
+                            "m_LocalRotation": {
+                                "w": 0.23941463232040405,
+                                "x": 0.0,
+                                "y": -0.9709174036979675,
+                                "z": 0.0
+                            },
+                            "m_LocalScale": [
+                                1.0,
+                                1.0,
+                                1.0
+                            ],
+                            "m_Position": [
+                                208.9644317626953,
+                                -128.8000030517578,
+                                287.01177978515625
+                            ],
+                            "m_Scale": [
+                                1.9999996423721313,
+                                2.0,
+                                1.9999996423721313
+                            ],
+                            "type": "Transform"
+                        },
+                        {
+                            "m_IsAlphaObject": true,
+                            "materialPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\Grasses\\Texture\\New Material.mat",
+                            "meshPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\Grasses\\Long_grass_var1.fbx",
+                            "shaderPath": "",
+                            "subsetIndex": 0,
+                            "type": "MeshRenderer"
+                        }
+                    ],
+                    "name": "Grass 3\u0000ct"
+                },
+                {
+                    "children": [],
+                    "components": [
+                        {
+                            "m_EulerAngles": [
+                                3.1415927410125732,
+                                0.8690345287322998,
+                                3.1415927410125732
+                            ],
+                            "m_LocalEulerAngles": [
+                                0.0,
+                                0.0,
+                                0.0
+                            ],
+                            "m_LocalPosition": [
+                                47.5,
+                                0.0,
+                                22.200000762939453
+                            ],
+                            "m_LocalRotation": {
+                                "w": 1.0,
+                                "x": 0.0,
+                                "y": 0.0,
+                                "z": 0.0
+                            },
+                            "m_LocalScale": [
+                                1.0,
+                                1.0,
+                                1.0
+                            ],
+                            "m_Position": [
+                                27.279949188232422,
+                                -128.8000030517578,
+                                189.18487548828125
+                            ],
+                            "m_Scale": [
+                                2.0,
+                                2.0,
+                                2.0
+                            ],
+                            "type": "Transform"
+                        },
+                        {
+                            "m_IsAlphaObject": true,
+                            "materialPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\Grasses\\Texture\\New Material.mat",
+                            "meshPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\Grasses\\Grass_top_var1.fbx",
+                            "shaderPath": "",
+                            "subsetIndex": 0,
+                            "type": "MeshRenderer"
+                        }
+                    ],
+                    "name": "Grass 4\u0000ct"
+                },
+                {
+                    "children": [],
+                    "components": [
+                        {
+                            "m_EulerAngles": [
+                                -0.0,
+                                0.5638808012008667,
+                                -0.0
+                            ],
+                            "m_LocalEulerAngles": [
+                                0.0,
+                                -1.7086772918701172,
+                                0.0
+                            ],
+                            "m_LocalPosition": [
+                                -55.900001525878906,
+                                0.0,
+                                -15.399999618530273
+                            ],
+                            "m_LocalRotation": {
+                                "w": 0.6567174196243286,
+                                "x": 0.0,
+                                "y": -0.7541367411613464,
+                                "z": 0.0
+                            },
+                            "m_LocalScale": [
+                                2.0,
+                                2.0,
+                                2.0
+                            ],
+                            "m_Position": [
+                                103.35194396972656,
+                                -128.8000030517578,
+                                395.66571044921875
+                            ],
+                            "m_Scale": [
+                                3.999999761581421,
+                                4.0,
+                                3.999999761581421
+                            ],
+                            "type": "Transform"
+                        },
+                        {
+                            "m_IsAlphaObject": true,
+                            "materialPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\Grasses\\Texture\\New Material.mat",
+                            "meshPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\Grasses\\Grass_plant_var1.fbx",
+                            "shaderPath": "",
+                            "subsetIndex": 0,
+                            "type": "MeshRenderer"
+                        }
+                    ],
+                    "name": "Grass 5\u0000ct"
+                }
+            ],
+            "components": [
+                {
+                    "m_EulerAngles": [
+                        3.1415927410125732,
+                        0.8690345287322998,
+                        3.1415927410125732
+                    ],
+                    "m_LocalEulerAngles": [
+                        0.0,
+                        -4.010627269744873,
+                        0.0
+                    ],
+                    "m_LocalPosition": [
+                        54.70000076293945,
+                        -128.8000030517578,
+                        290.3999938964844
+                    ],
+                    "m_LocalRotation": {
+                        "w": -0.4209725260734558,
+                        "x": -0.0,
+                        "y": -0.9070733785629272,
+                        "z": 0.0
+                    },
+                    "m_LocalScale": [
+                        2.0,
+                        2.0,
+                        2.0
+                    ],
+                    "m_Position": [
+                        54.70000076293945,
+                        -128.8000030517578,
+                        290.3999938964844
+                    ],
+                    "m_Scale": [
+                        2.0,
+                        2.0,
+                        2.0
+                    ],
+                    "type": "Transform"
+                },
+                {
+                    "m_IsAlphaObject": true,
+                    "materialPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\Grasses\\Texture\\New Material.mat",
+                    "meshPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\Grasses\\Grass_var1.fbx",
+                    "shaderPath": "",
+                    "subsetIndex": 0,
+                    "type": "MeshRenderer"
+                }
+            ],
+            "name": "Grass\u0000ject"
+        },
+        {
+            "children": [
+                {
+                    "children": [],
+                    "components": [
+                        {
+                            "m_EulerAngles": [
+                                3.1415927410125732,
+                                -0.02448691613972187,
+                                3.1415927410125732
+                            ],
+                            "m_LocalEulerAngles": [
+                                0.0,
+                                -1.8849207162857056,
+                                0.0
+                            ],
+                            "m_LocalPosition": [
+                                -15.5,
+                                0.0,
+                                -48.599998474121094
+                            ],
+                            "m_LocalRotation": {
+                                "w": 0.5877993702888489,
+                                "x": 0.0,
+                                "y": -0.8090067505836487,
+                                "z": 0.0
+                            },
+                            "m_LocalScale": [
+                                1.0,
+                                1.0,
+                                1.0
+                            ],
+                            "m_Position": [
+                                -64.0168228149414,
+                                -132.6999969482422,
+                                264.37261962890625
+                            ],
+                            "m_Scale": [
+                                2.0,
+                                2.0,
+                                2.0
+                            ],
+                            "type": "Transform"
+                        },
+                        {
+                            "m_IsAlphaObject": true,
+                            "materialPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\Grass 2\\Texture - Grass\\New Material.mat",
+                            "meshPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\Grass 2\\Fern_var2.fbx",
+                            "shaderPath": "",
+                            "subsetIndex": 0,
+                            "type": "MeshRenderer"
+                        }
+                    ],
+                    "name": "Grass 1\u0000ct"
+                },
+                {
+                    "children": [],
+                    "components": [
+                        {
+                            "m_EulerAngles": [
+                                0.0,
+                                -1.2321851253509521,
+                                0.0
+                            ],
+                            "m_LocalEulerAngles": [
+                                0.0,
+                                0.0,
+                                0.0
+                            ],
+                            "m_LocalPosition": [
+                                91.5999984741211,
+                                0.0,
+                                0.0
+                            ],
+                            "m_LocalRotation": {
+                                "w": 1.0,
+                                "x": 0.0,
+                                "y": 0.0,
+                                "z": 0.0
+                            },
+                            "m_LocalScale": [
+                                1.0,
+                                1.0,
+                                1.0
+                            ],
+                            "m_Position": [
+                                -84.54505920410156,
+                                -132.6999969482422,
+                                498.69732666015625
+                            ],
+                            "m_Scale": [
+                                2.0,
+                                2.0,
+                                2.0
+                            ],
+                            "type": "Transform"
+                        },
+                        {
+                            "m_IsAlphaObject": true,
+                            "materialPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\Grass 2\\Texture - Grass\\New Material.mat",
+                            "meshPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\Grass 2\\Fern_var1.fbx",
+                            "shaderPath": "",
+                            "subsetIndex": 0,
+                            "type": "MeshRenderer"
+                        }
+                    ],
+                    "name": "Grass 2\u0000ct"
+                },
+                {
+                    "children": [],
+                    "components": [
+                        {
+                            "m_EulerAngles": [
+                                3.1415927410125732,
+                                -1.1013375520706177,
+                                3.1415927410125732
+                            ],
+                            "m_LocalEulerAngles": [
+                                0.0,
+                                -0.8080700039863586,
+                                0.0
+                            ],
+                            "m_LocalPosition": [
+                                -88.0,
+                                0.0,
+                                1.7000000476837158
+                            ],
+                            "m_LocalRotation": {
+                                "w": 0.9194822311401367,
+                                "x": 0.0,
+                                "y": -0.39313164353370667,
+                                "z": 0.0
+                            },
+                            "m_LocalScale": [
+                                2.0,
+                                2.0,
+                                2.0
+                            ],
+                            "m_Position": [
+                                -207.0701904296875,
+                                -132.6999969482422,
+                                161.0232391357422
+                            ],
+                            "m_Scale": [
+                                4.0,
+                                4.0,
+                                4.0
+                            ],
+                            "type": "Transform"
+                        },
+                        {
+                            "m_IsAlphaObject": true,
+                            "materialPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\Grass 2\\Texture - Grass\\New Material.mat",
+                            "meshPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\Grass 2\\Dandelion_var1.fbx",
+                            "shaderPath": "",
+                            "subsetIndex": 0,
+                            "type": "MeshRenderer"
+                        }
+                    ],
+                    "name": "Grass 3\u0000ct"
+                },
+                {
+                    "children": [],
+                    "components": [
+                        {
+                            "m_EulerAngles": [
+                                3.1415927410125732,
+                                -1.0856120586395264,
+                                3.1415927410125732
+                            ],
+                            "m_LocalEulerAngles": [
+                                0.0,
+                                -0.8237954378128052,
+                                0.0
+                            ],
+                            "m_LocalPosition": [
+                                12.0,
+                                0.0,
+                                39.099998474121094
+                            ],
+                            "m_LocalRotation": {
+                                "w": 0.9163627028465271,
+                                "x": 0.0,
+                                "y": -0.40034905076026917,
+                                "z": 0.0
+                            },
+                            "m_LocalScale": [
+                                2.0,
+                                2.0,
+                                2.0
+                            ],
+                            "m_Position": [
+                                -211.18728637695313,
+                                -132.6999969482422,
+                                374.51348876953125
+                            ],
+                            "m_Scale": [
+                                4.0,
+                                4.0,
+                                4.0
+                            ],
+                            "type": "Transform"
+                        },
+                        {
+                            "m_IsAlphaObject": true,
+                            "materialPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\Grass 2\\Texture - Grass\\New Material.mat",
+                            "meshPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\Grass 2\\Dandelion_var2.fbx",
+                            "shaderPath": "",
+                            "subsetIndex": 0,
+                            "type": "MeshRenderer"
+                        }
+                    ],
+                    "name": "Grass 4\u0000ct"
+                },
+                {
+                    "children": [],
+                    "components": [
+                        {
+                            "m_EulerAngles": [
+                                3.1415927410125732,
+                                0.3944093585014343,
+                                3.1415927410125732
+                            ],
+                            "m_LocalEulerAngles": [
+                                0.0,
+                                -2.3038170337677,
+                                0.0
+                            ],
+                            "m_LocalPosition": [
+                                57.900001525878906,
+                                0.0,
+                                -71.9000015258789
+                            ],
+                            "m_LocalRotation": {
+                                "w": 0.40674465894699097,
+                                "x": 0.0,
+                                "y": -0.913541853427887,
+                                "z": 0.0
+                            },
+                            "m_LocalScale": [
+                                2.0,
+                                2.0,
+                                2.0
+                            ],
+                            "m_Position": [
+                                28.70074462890625,
+                                -132.6999969482422,
+                                387.35736083984375
+                            ],
+                            "m_Scale": [
+                                3.999999761581421,
+                                4.0,
+                                3.999999761581421
+                            ],
+                            "type": "Transform"
+                        },
+                        {
+                            "m_IsAlphaObject": true,
+                            "materialPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\Grass 2\\Texture - Grass\\New Material.mat",
+                            "meshPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\Grass 2\\Herb_var1.fbx",
+                            "shaderPath": "",
+                            "subsetIndex": 0,
+                            "type": "MeshRenderer"
+                        }
+                    ],
+                    "name": "Grass 5\u0000ct"
+                },
+                {
+                    "children": [],
+                    "components": [
+                        {
+                            "m_EulerAngles": [
+                                0.0,
+                                -1.2321851253509521,
+                                0.0
+                            ],
+                            "m_LocalEulerAngles": [
+                                0.0,
+                                0.0,
+                                0.0
+                            ],
+                            "m_LocalPosition": [
+                                -30.299999237060547,
+                                6.599999904632568,
+                                53.099998474121094
+                            ],
+                            "m_LocalRotation": {
+                                "w": 1.0,
+                                "x": 0.0,
+                                "y": 0.0,
+                                "z": 0.0
+                            },
+                            "m_LocalScale": [
+                                1.0,
+                                1.0,
+                                1.0
+                            ],
+                            "m_Position": [
+                                -265.6995849609375,
+                                -119.5,
+                                304.018310546875
+                            ],
+                            "m_Scale": [
+                                2.0,
+                                2.0,
+                                2.0
+                            ],
+                            "type": "Transform"
+                        },
+                        {
+                            "m_IsAlphaObject": true,
+                            "materialPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\Grass 2\\Texture - Grass\\New Material.mat",
+                            "meshPath": "C:\\Users\\PinTree\\Documents\\GitHub\\DX11\\Assets\\Art\\ENV\\Grass 2\\Fern_var4.fbx",
+                            "shaderPath": "",
+                            "subsetIndex": 0,
+                            "type": "MeshRenderer"
+                        }
+                    ],
+                    "name": "Grass 5\u0000ct"
+                }
+            ],
+            "components": [
+                {
+                    "m_EulerAngles": [
+                        0.0,
+                        -1.2321851253509521,
+                        0.0
+                    ],
+                    "m_LocalEulerAngles": [
+                        0.0,
+                        -1.2321850061416626,
+                        0.0
+                    ],
+                    "m_LocalPosition": [
+                        -145.39999389648438,
+                        -132.6999969482422,
+                        325.8999938964844
+                    ],
+                    "m_LocalRotation": {
+                        "w": 0.8161426186561584,
+                        "x": 0.0,
+                        "y": -0.5778505206108093,
+                        "z": 0.0
+                    },
+                    "m_LocalScale": [
+                        2.0,
+                        2.0,
+                        2.0
+                    ],
+                    "m_Position": [
+                        -145.39999389648438,
+                        -132.6999969482422,
+                        325.8999938964844
+                    ],
+                    "m_Scale": [
+                        2.0,
+                        2.0,
+                        2.0
+                    ],
+                    "type": "Transform"
+                }
+            ],
+            "name": "Grass Cont"
+        }
+    ]
+}
