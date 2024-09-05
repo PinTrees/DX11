@@ -210,7 +210,6 @@ BezierTessellationEffect::~BezierTessellationEffect()
 InstancedBasicEffect::InstancedBasicEffect(ComPtr<ID3D11Device> device, const std::wstring& filename)
 	: Effect(device, filename)
 {
-	shaderSetting.Init(_fx);
 
 	Tech = _fx->GetTechniqueByName("Tech");
 	InstancingTech = _fx->GetTechniqueByName("InstancingTech");
@@ -233,6 +232,7 @@ InstancedBasicEffect::InstancedBasicEffect(ComPtr<ID3D11Device> device, const st
 	FogRange = _fx->GetVariableByName("gFogRange")->AsScalar();
 	DirLights = _fx->GetVariableByName("gDirLights");
 	Mat = _fx->GetVariableByName("gMaterial");
+	Setting = _fx->GetVariableByName("gShaderSetting");
 	DiffuseMap = _fx->GetVariableByName("gDiffuseMap")->AsShaderResource();
 	ShadowMap = _fx->GetVariableByName("gShadowMap")->AsShaderResource();
 	NormalMap = _fx->GetVariableByName("gNormalMap")->AsShaderResource();

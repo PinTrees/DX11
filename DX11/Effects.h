@@ -3,43 +3,20 @@
 
 struct ShaderSetting
 {
-	void SetLightCount(int i) { LightCount->SetInt(i); }
-	void SetUseTexture(bool b) { UseTexture->SetBool(b); }
-	void SetUseNormalMap(bool b) { UseNormalMap->SetBool(b); }
-	void SetAlphaClip(bool b) { AlphaClip->SetBool(b); }
-	void SetFogEnabled(bool b) { FogEnabled->SetBool(b); }
-	void SetReflectionEnabled(bool b) { ReflectionEnabled->SetBool(b); }
+	ShaderSetting() { ZeroMemory(this, sizeof(this)); }
 
-	void Init(ComPtr<ID3DX11Effect> fx)
-	{
-		LightCount = fx->GetVariableByName("gLightCount")->AsScalar();
-		UseTexture = fx->GetVariableByName("gUseTexture")->AsScalar();
-		UseNormalMap = fx->GetVariableByName("gUseNormalMap")->AsScalar();
-		AlphaClip = fx->GetVariableByName("gAlphaClip")->AsScalar();
-		FogEnabled = fx->GetVariableByName("gFogEnabled")->AsScalar();
-		ReflectionEnabled = fx->GetVariableByName("gReflectionEnabled")->AsScalar();
+	int LightCount;
+	bool UseTexture;
+	bool UseNormalMap;
+	bool AlphaClip;
+	bool FogEnabled;
+	bool ReflectionEnabled;
+	bool UseShadowMap;
+	bool UseSsaoMap;
 
-		SetLightCount(0);
-		SetUseTexture(false);
-		SetUseNormalMap(false);
-		SetAlphaClip(false);
-		SetFogEnabled(false);
-		SetReflectionEnabled(false);
-	}
-
-	ComPtr<ID3DX11EffectScalarVariable> LightCount;
-	ComPtr<ID3DX11EffectScalarVariable> UseTexture;
-	ComPtr<ID3DX11EffectScalarVariable> UseNormalMap;
-	ComPtr<ID3DX11EffectScalarVariable> AlphaClip;
-	ComPtr<ID3DX11EffectScalarVariable> FogEnabled;
-	ComPtr<ID3DX11EffectScalarVariable> ReflectionEnabled;
-
-	//int LightCount;
-	//bool UseTexture;
-	//bool UseNormalMap;
-	//bool AlphaClip;
-	//bool FogEnabled;
-	//bool ReflectionEnabled;
+	// 16바이트 정렬
+	bool pad1;
+	int pad2;
 };
 
 class Effect
@@ -306,13 +283,12 @@ public:
 	void SetFogRange(float f) { FogRange->SetFloat(f); }
 	void SetDirLights(const DirectionalLight* lights, int cnt) { DirLights->SetRawValue(lights, 0, cnt * sizeof(DirectionalLight)); }
 	void SetMaterial(const Material& mat) { Mat->SetRawValue(&mat, 0, sizeof(Material)); }
+	void SetShaderSetting(const ShaderSetting& setting) { Setting->SetRawValue(&setting, 0, sizeof(ShaderSetting)); }
 	void SetDiffuseMap(ID3D11ShaderResourceView* tex) { DiffuseMap->SetResource(tex); }
 	void SetShadowMap(ID3D11ShaderResourceView* tex) { ShadowMap->SetResource(tex); }
 	void SetNormalMap(ID3D11ShaderResourceView* tex) { NormalMap->SetResource(tex); }
 	void SetSsaoMap(ID3D11ShaderResourceView* tex) { SsaoMap->SetResource(tex); }
 	void SetCubeMap(ID3D11ShaderResourceView* tex) { CubeMap->SetResource(tex); }
-
-	ShaderSetting shaderSetting;
 
 	ComPtr<ID3DX11EffectTechnique> Tech;
 	ComPtr<ID3DX11EffectTechnique> InstancingTech;
@@ -334,6 +310,7 @@ public:
 	ComPtr<ID3DX11EffectScalarVariable> FogRange;
 	ComPtr<ID3DX11EffectVariable> DirLights;
 	ComPtr<ID3DX11EffectVariable> Mat;
+	ComPtr<ID3DX11EffectVariable> Setting;
 
 	ComPtr<ID3DX11EffectShaderResourceVariable> DiffuseMap;
 	ComPtr<ID3DX11EffectShaderResourceVariable> ShadowMap;

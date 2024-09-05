@@ -241,6 +241,7 @@
     <ClInclude Include="InspectorEditorWindow.h" />
     <ClInclude Include="InstancingBuffer.h" />
     <ClInclude Include="JsonUtility.h" />
+    <ClInclude Include="Light.h" />
     <ClInclude Include="LightHelper.h" />
     <ClInclude Include="LoadM3d.h" />
     <ClInclude Include="MathHelper.h" />
@@ -383,6 +384,7 @@
     <ClCompile Include="InspectorEditorWindow.cpp" />
     <ClCompile Include="InstancingBuffer.cpp" />
     <ClCompile Include="JsonUtility.cpp" />
+    <ClCompile Include="Light.cpp" />
     <ClCompile Include="LightHelper.cpp" />
     <ClCompile Include="LoadM3d.cpp" />
     <ClCompile Include="Main.cpp" />

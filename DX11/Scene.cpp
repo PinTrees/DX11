@@ -56,21 +56,31 @@ void Scene::RenderScene()
 
         for (const auto& gameObject : m_arrGameObjects[0])
         {
-            // 다른 컴포넌트들도 순회하면서 렌더해야함(수정사항)
-            auto meshRenderer = gameObject->GetComponent<MeshRenderer>();
-            if (meshRenderer == nullptr)
-                continue;
+            for (auto& component : gameObject->GetComponents())
+            {
+                if (component->GetType() == "MeshRenderer")
+                {
+                    std::shared_ptr<MeshRenderer> meshRenderer = std::dynamic_pointer_cast<MeshRenderer>(component);
 
-            // map<인스턴싱 ID,gameObject> 변수에 추가
-            const InstanceID instanceId = meshRenderer->GetInstanceID();
-            cache[instanceId].emplace_back(gameObject);
+                    if (meshRenderer)
+                    {
+                        // map<인스턴싱 ID,gameObject> 변수에 추가
+                        const InstanceID instanceId = meshRenderer->GetInstanceID();
+                        cache[instanceId].emplace_back(gameObject);
+                    }
+                }
+                else // 다른 컴포넌트 Render 
+                {
+                    component->Render();
+                }
+            }
         }
 
         // 같은 오브젝트들 끼리 world배열에 저장 후 world배열을 인자값으로 넘기면서 인스턴싱 렌더
         for (auto& pair : cache)
         {
             const vector<shared_ptr<GameObject>>& vec = pair.second;
-            shared_ptr<InstancingBuffer> buffer; // worldMatrix 값을 가지고 있는 인스턴싱 버퍼, 렌더로 넘겨야함
+            shared_ptr<InstancingBuffer> buffer = make_shared<InstancingBuffer>(); // worldMatrix 값을 가지고 있는 인스턴싱 버퍼, 렌더로 넘겨야함
             {
                 //const InstanceID instanceId = pair.first;
 
@@ -88,6 +98,8 @@ void Scene::RenderScene()
                 vec[0]->GetComponent<MeshRenderer>()->RenderInstancing(buffer);
             }
         }
+
+        int a;
     }
     else
     {
@@ -111,7 +123,6 @@ void Scene::RenderSceneShadow()
 
             for (const auto& gameObject : m_arrGameObjects[0])
             {
-                // 다른 컴포넌트들도 순회하면서 렌더해야함(수정사항)
                 auto meshRenderer = gameObject->GetComponent<MeshRenderer>();
                 if (meshRenderer == nullptr)
                     continue;
@@ -147,7 +158,7 @@ void Scene::RenderSceneShadow()
         else
         {
             MeshRenderer* meshRenderer = gameObject->GetComponent<MeshRenderer>();
-            if (meshRenderer == nullptr)
+            if (meshRenderer == nullptr) // 이 부분에서 제어 -> 그림자의 영향을 주는 오브젝트에 대한 제어
                 continue;
 
             meshRenderer->RenderShadow();
@@ -165,7 +176,6 @@ void Scene::RenderSceneShadowNormal()
 
             for (const auto& gameObject : m_arrGameObjects[0])
             {
-                // 다른 컴포넌트들도 순회하면서 렌더해야함(수정사항)
                 auto meshRenderer = gameObject->GetComponent<MeshRenderer>();
                 if (meshRenderer == nullptr)
                     continue;

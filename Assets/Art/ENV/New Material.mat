@@ -7,9 +7,9 @@
     ],
     "BaseMapPath": "Assets\\Art\\ENV\\Rock\\Mossy_rock_var7-8_basecolor.png",
     "Diffuse": [
-        0.0,
-        0.0,
-        0.0,
+        1.0,
+        1.0,
+        1.0,
         1.0
     ],
     "NormalMapPath": "Assets\\Art\\ENV\\Rock\\Mossy_rock_var7-8_normal.png",

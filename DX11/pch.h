@@ -107,3 +107,13 @@ namespace ed = ax::NodeEditor;
 
 // SHADER
 #include "NormalMapSkinnedShader.h"
+
+namespace Constant
+{
+	// Transform NDC space [-1,+1]^2 to texture space [0,1]^2
+	const XMMATRIX toTexSpace(
+		0.5f, 0.0f, 0.0f, 0.0f,
+		0.0f, -0.5f, 0.0f, 0.0f,
+		0.0f, 0.0f, 1.0f, 0.0f,
+		0.5f, 0.5f, 0.0f, 1.0f);
+}

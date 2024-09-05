@@ -431,6 +431,7 @@ void MeshViewDemo::OnEditorSceneRender(ID3D11RenderTargetView* renderTargetView,
 {
 	BuildShadowTransform();
 
+	// 와이어프레임 제어처럼 전체 그림자맵 제어도 가능하게
 	auto shadowMap = RenderManager::GetI()->editorShadowMap;
 	shadowMap->BindDsvAndSetNullRenderTarget(_deviceContext);
 
@@ -456,9 +457,9 @@ void MeshViewDemo::OnEditorSceneRender(ID3D11RenderTargetView* renderTargetView,
 	auto ssao = PostProcessingManager::GetI()->GetEditorSSAO();
 	ssao->SetNormalDepthRenderTarget(_depthStencilView.Get());
 
-	RenderManager::GetI()->cameraViewMatrix = camera->View(); 
+	RenderManager::GetI()->cameraViewMatrix = camera->View();
 	RenderManager::GetI()->cameraProjectionMatrix = camera->Proj();
-	RenderManager::GetI()->cameraViewProjectionMatrix = XMMatrixMultiply(camera->View(), camera->Proj()); 
+	RenderManager::GetI()->cameraViewProjectionMatrix = XMMatrixMultiply(camera->View(), camera->Proj());
 
 	if (RenderManager::GetI()->WireFrameMode)
 		_deviceContext->RSSetState(RenderStates::WireframeRS.Get());

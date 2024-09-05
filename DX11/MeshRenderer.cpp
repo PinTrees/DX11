@@ -195,6 +195,16 @@ void MeshRenderer::RenderInstancing(shared_ptr<class InstancingBuffer>& buffer)
 			Effects::InstancedBasicFX->SetDiffuseMap(m_pMaterial->GetBaseMapSRV());
 			Effects::InstancedBasicFX->SetNormalMap(m_pMaterial->GetNormalMapSRV());
 		}
+		ShaderSetting temp;
+		temp.AlphaClip = false;
+		temp.FogEnabled = false;
+		temp.LightCount = 1;
+		temp.ReflectionEnabled = false;
+		temp.UseNormalMap = true;
+		temp.UseShadowMap = true;
+		temp.UseSsaoMap = true;
+		temp.UseTexture = true;
+		Effects::InstancedBasicFX->SetShaderSetting(temp);
 
 		tech->GetPassByIndex(p)->Apply(0, deviceContext);
 
@@ -349,16 +359,8 @@ void MeshRenderer::OnInspectorGUI()
 		}
 	}
 
-	// Shaodw와 Ssao 사용여부 버튼
-	if (ImGui::Button("Shadow"))
-	{
-		m_useShadow = !m_useShadow;
-	}
-
-	if (ImGui::Button("Ssao"))
-	{
-		m_useSsao = !m_useSsao;
-	}
+	//ShaderSetting 설정 부분
+	
 }
 
 
