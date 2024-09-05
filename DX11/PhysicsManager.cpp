@@ -56,13 +56,22 @@ void PhysicsManager::Start()
 		Matrix3 inertiaTensor;
 		if (sphere)
 		{
-			float value = 0.4f * rigidBody->GetMass(); 
-			inertiaTensor.setDiagonal(value);
+			float value = 0.4f * rigidBody->GetMass();
+			inertiaTensor.setDiagonal(Vec3(value, value, value));
 		}
 		else if (box)
 		{
-			float value = rigidBody->GetMass() / 6.0f; 
-			inertiaTensor.setDiagonal(value);
+			Vec3 size = box->GetSize(); 
+			Transform* transform = box->GetGameObject()->GetTransform();
+
+			size = Vec3(size.x * transform->GetScale().x, size.y * transform->GetScale().y, size.z * transform->GetScale().z);
+			size *= 0.15f;
+
+			float mass = rigidBody->GetMass(); 
+			float I_x = mass / 12.0f * (size.y * size.y + size.z * size.z);
+			float I_y = mass / 12.0f * (size.x * size.x + size.z * size.z);
+			float I_z = mass / 12.0f * (size.x * size.x + size.y * size.y);
+			inertiaTensor.setDiagonal(Vec3(I_x, I_y, I_z));
 		}
 		rigidBody->SetAcceleration(Vec3(0.f, -9.8f, 0.f));
 		rigidBody->SetInertiaTensor(inertiaTensor); 

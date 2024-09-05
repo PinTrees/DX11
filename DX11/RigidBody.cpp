@@ -105,6 +105,7 @@ void RigidBody::TransformInertiaTensor()
 
 void RigidBody::Awake()
 {
+
 }
 
 void RigidBody::Integrate(float deltaTime)

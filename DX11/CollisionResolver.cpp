@@ -7,7 +7,7 @@ void CollisionResolver::ResolveCollision(std::vector<Contact*>& contacts, float 
     {
         for (auto& contact : contacts)
         {
-            //sequentialImpulse(contact, deltaTime);
+            //sequentialImpulse(contact, deltaTime); 
             AA(contact, deltaTime);
         }
     }

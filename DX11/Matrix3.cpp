@@ -28,6 +28,34 @@ Matrix3::Matrix3(float v1, float v2, float v3)
     entries[8] = v3;
 }
 
+Matrix3::Matrix3(Quaternion q)
+{
+    float xx = q.x * q.x;
+    float yy = q.y * q.y;
+    float zz = q.z * q.z;
+    float xy = q.x * q.y;
+    float xz = q.x * q.z;
+    float yz = q.y * q.z;
+    float wx = q.w * q.x;
+    float wy = q.w * q.y;
+    float wz = q.w * q.z;
+
+    // 첫 번째 행
+    entries[0] = 1.0f - 2.0f * (yy + zz);
+    entries[1] = 2.0f * (xy - wz);
+    entries[2] = 2.0f * (xz + wy);
+
+    // 두 번째 행
+    entries[3] = 2.0f * (xy + wz);
+    entries[4] = 1.0f - 2.0f * (xx + zz);
+    entries[5] = 2.0f * (yz - wx);
+
+    // 세 번째 행
+    entries[6] = 2.0f * (xz - wy);
+    entries[7] = 2.0f * (yz + wx);
+    entries[8] = 1.0f - 2.0f * (xx + yy);
+}
+
 // 대각 행렬 설정: 행 우선 순서로 설정
 void Matrix3::setDiagonal(float value)
 {
@@ -42,6 +70,36 @@ void Matrix3::setDiagonal(float value)
     entries[6] = 0.0f;
     entries[7] = 0.0f;
     entries[8] = value;
+}
+
+void Matrix3::setDiagonal(Vec3 vec)
+{
+    entries[0] = vec.x; // 대각선의 첫 번째 성분 (x)
+    entries[1] = 0.0f;
+    entries[2] = 0.0f;
+
+    entries[3] = 0.0f;
+    entries[4] = vec.y; // 대각선의 두 번째 성분 (y)
+    entries[5] = 0.0f;
+
+    entries[6] = 0.0f;
+    entries[7] = 0.0f;
+    entries[8] = vec.z; // 대각선의 세 번째 성분 (z)
+}
+
+void Matrix3::setIdentity()
+{
+    entries[0] = 1.0f; // 첫 번째 행 첫 번째 열
+    entries[1] = 0.0f;
+    entries[2] = 0.0f;
+
+    entries[3] = 0.0f;
+    entries[4] = 1.0f; // 두 번째 행 두 번째 열
+    entries[5] = 0.0f;
+
+    entries[6] = 0.0f;
+    entries[7] = 0.0f;
+    entries[8] = 1.0f; // 세 번째 행 세 번째 열
 }
 
 Matrix3 Matrix3::transpose() const
