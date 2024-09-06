@@ -34,42 +34,23 @@ void Scene::Exit()
 
 void Scene::RenderScene()
 {
-    /*
-    for (auto& gameObject : m_arrGameObjects[0])
-    {
-        for (auto& component : gameObject->GetComponents())
-        {
-            component->Render();
-        }
-
-        //MeshRenderer* meshRenderer = gameObject->GetComponent<MeshRenderer>();
-        //if (meshRenderer == nullptr)
-        //    continue;
-        //
-        //meshRenderer->Render();
-    }
-    */
-
     if (false) // if문에 Editor에서 인스턴싱을 사용할 것인지에 대한 bool형 변수로 인스턴싱 사용여부 판단
     {
-        map<InstanceID, vector<shared_ptr<GameObject>>> cache;
+        map<InstanceID, vector<GameObject*>> cache = {};
 
         for (const auto& gameObject : m_arrGameObjects[0])
         {
             for (auto& component : gameObject->GetComponents())
             {
-                if (component->GetType() == "MeshRenderer")
-                {
-                    std::shared_ptr<MeshRenderer> meshRenderer = std::dynamic_pointer_cast<MeshRenderer>(component);
+                MeshRenderer* meshRenderer = gameObject->GetComponent<MeshRenderer>();
 
-                    if (meshRenderer)
-                    {
-                        // map<인스턴싱 ID,gameObject> 변수에 추가
-                        const InstanceID instanceId = meshRenderer->GetInstanceID();
-                        cache[instanceId].emplace_back(gameObject);
-                    }
+                if (meshRenderer)
+                {
+                    // map<인스턴싱 ID,gameObject> 변수에 추가
+                    const InstanceID instanceId = meshRenderer->GetInstanceID();
+                    cache[instanceId].emplace_back(gameObject);
                 }
-                else // 다른 컴포넌트 Render 
+                else 
                 {
                     component->Render();
                 }
@@ -79,14 +60,14 @@ void Scene::RenderScene()
         // 같은 오브젝트들 끼리 world배열에 저장 후 world배열을 인자값으로 넘기면서 인스턴싱 렌더
         for (auto& pair : cache)
         {
-            const vector<shared_ptr<GameObject>>& vec = pair.second;
+            const vector<GameObject*>& vec = pair.second;
             shared_ptr<InstancingBuffer> buffer = make_shared<InstancingBuffer>(); // worldMatrix 값을 가지고 있는 인스턴싱 버퍼, 렌더로 넘겨야함
             {
                 //const InstanceID instanceId = pair.first;
 
                 for (int32 i = 0; i < vec.size(); i++)
                 {
-                    const shared_ptr<GameObject>& gameObject = vec[i];
+                    GameObject* gameObject = vec[i];
                     InstancingData data;
                     data.world = gameObject->GetTransform()->GetWorldMatrix();
 
@@ -99,6 +80,7 @@ void Scene::RenderScene()
             }
         }
 
+        cache.clear();
         int a;
     }
     else
