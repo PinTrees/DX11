@@ -3,6 +3,9 @@
 #include <fstream>
 #include "Utils.h"
 
+
+
+
 Effect::Effect(ComPtr<ID3D11Device> device, const std::wstring& filename)
 {
 	WORD shaderFlags = 0;

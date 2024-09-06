@@ -1,4 +1,8 @@
 #include "07. LightHelper.fx"
+
+
+//pragam {get }
+
  
 struct ShaderSetting
 {
@@ -255,8 +259,8 @@ float4 PS(VertexOut pin) : SV_Target
         float3 normalMapSample = gNormalMap.Sample(samLinear, pin.Tex).rgb;
         bumpedNormalW = NormalSampleToWorldSpace(normalMapSample, pin.NormalW, pin.TangentW);
     }
-    
-	 
+ 
+
 	//
 	// Lighting.
 	//

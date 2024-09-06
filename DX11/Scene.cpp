@@ -42,8 +42,11 @@ void Scene::RenderScene()
         {
             for (auto& component : gameObject->GetComponents())
             {
-                MeshRenderer* meshRenderer = gameObject->GetComponent<MeshRenderer>();
 
+                // 컴포넌트 마다 MeshRenderer인지 체크
+                shared_ptr<MeshRenderer> meshRenderer = dynamic_pointer_cast<MeshRenderer>(component);
+                //MeshRenderer* meshRenderer = gameObject->GetComponent<MeshRenderer>();
+                
                 if (meshRenderer)
                 {
                     // map<인스턴싱 ID,gameObject> 변수에 추가

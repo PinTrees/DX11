@@ -273,7 +273,7 @@ class InstancedBasicEffect : public Effect
 public:
 	InstancedBasicEffect(ComPtr<ID3D11Device> device, const std::wstring& filename);
 	~InstancedBasicEffect();
-
+	
 	void SetWorldViewProj(CXMMATRIX M) { WorldViewProj->SetMatrix(reinterpret_cast<const float*>(&M)); }
 	void SetWorldViewProjTex(CXMMATRIX M) { WorldViewProjTex->SetMatrix(reinterpret_cast<const float*>(&M)); }
 	void SetWorld(CXMMATRIX M) { World->SetMatrix(reinterpret_cast<const float*>(&M)); }

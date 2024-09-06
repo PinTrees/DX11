@@ -18,7 +18,7 @@ private:
 	DirectionalLight m_directionalDesc;
 	PointLight m_pointDesc;
 	SpotLight m_spotDesc;
-
+	
 	XMVECTOR up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 
 	float m_lightLengthX = 20.0f;

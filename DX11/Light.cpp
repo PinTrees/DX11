@@ -25,6 +25,7 @@ void Light::LateUpdate()
 
 	XMMATRIX P = ::XMMatrixOrthographicLH(m_lightLengthX, m_lightLengthY, 0.001f, m_lightFarZ);
 	::XMStoreFloat4x4(&m_lightProj, P);
+
 }
 
 void Light::FixedUpdate()
