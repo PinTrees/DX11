@@ -5,18 +5,20 @@ struct ShaderSetting
 {
 	ShaderSetting() { ZeroMemory(this, sizeof(this)); }
 
-	int LightCount;
-	bool UseTexture;
-	bool UseNormalMap;
-	bool AlphaClip;
-	bool FogEnabled;
-	bool ReflectionEnabled;
-	bool UseShadowMap;
-	bool UseSsaoMap;
+	//int LightCount;
+	int UseTexture;
+	int UseNormalMap;
+	int AlphaClip;
+	int FogEnabled;
+	int ReflectionEnabled;
+	int UseShadowMap;
+	int UseSsaoMap;
 
 	// 16바이트 정렬
-	bool pad1;
-	int pad2;
+	//bool pad1;
+	//XMFLOAT2 pad2;
+
+	int pad;
 };
 
 class Effect
@@ -51,7 +53,7 @@ public:
 	void SetFogRange(float f) { FogRange->SetFloat(f); }
 	void SetDirLights(const DirectionalLight* lights) { DirLights->SetRawValue(lights, 0, 3 * sizeof(DirectionalLight)); }
 	void SetMaterial(const Material& mat) { Mat->SetRawValue(&mat, 0, sizeof(Material)); }
-
+	
 	void SetDiffuseMap(ID3D11ShaderResourceView* tex) { DiffuseMap->SetResource(tex); }
 	void SetShadowMap(ID3D11ShaderResourceView* tex) { ShadowMap->SetResource(tex); }
 	void SetSsaoMap(ID3D11ShaderResourceView* tex) { SsaoMap->SetResource(tex); }
@@ -272,6 +274,10 @@ public:
 	InstancedBasicEffect(ComPtr<ID3D11Device> device, const std::wstring& filename);
 	~InstancedBasicEffect();
 
+	void SetWorldViewProj(CXMMATRIX M) { WorldViewProj->SetMatrix(reinterpret_cast<const float*>(&M)); }
+	void SetWorldViewProjTex(CXMMATRIX M) { WorldViewProjTex->SetMatrix(reinterpret_cast<const float*>(&M)); }
+	void SetWorld(CXMMATRIX M) { World->SetMatrix(reinterpret_cast<const float*>(&M)); }
+	void SetWorldInvTranspose(CXMMATRIX M) { WorldInvTranspose->SetMatrix(reinterpret_cast<const float*>(&M)); }
 	void SetViewProj(CXMMATRIX M) { ViewProj->SetMatrix(reinterpret_cast<const float*>(&M)); }
 	void SetViewProjTex(CXMMATRIX M) { ViewProjTex->SetMatrix(reinterpret_cast<const float*>(&M)); }
 	void SetBoneTransforms(const XMFLOAT4X4* M, int cnt) { BoneTransforms->SetMatrixArray(reinterpret_cast<const float*>(M), 0, cnt); }
@@ -282,6 +288,7 @@ public:
 	void SetFogStart(float f) { FogStart->SetFloat(f); }
 	void SetFogRange(float f) { FogRange->SetFloat(f); }
 	void SetDirLights(const DirectionalLight* lights, int cnt) { DirLights->SetRawValue(lights, 0, cnt * sizeof(DirectionalLight)); }
+	void SetLightCount(int cnt) { LightCount->SetInt(cnt); }
 	void SetMaterial(const Material& mat) { Mat->SetRawValue(&mat, 0, sizeof(Material)); }
 	void SetShaderSetting(const ShaderSetting& setting) { Setting->SetRawValue(&setting, 0, sizeof(ShaderSetting)); }
 	void SetDiffuseMap(ID3D11ShaderResourceView* tex) { DiffuseMap->SetResource(tex); }
@@ -309,6 +316,7 @@ public:
 	ComPtr<ID3DX11EffectScalarVariable> FogStart;
 	ComPtr<ID3DX11EffectScalarVariable> FogRange;
 	ComPtr<ID3DX11EffectVariable> DirLights;
+	ComPtr<ID3DX11EffectScalarVariable> LightCount;
 	ComPtr<ID3DX11EffectVariable> Mat;
 	ComPtr<ID3DX11EffectVariable> Setting;
 

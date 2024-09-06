@@ -481,11 +481,18 @@ void MeshViewDemo::OnEditorSceneRender(ID3D11RenderTargetView* renderTargetView,
 
 	float blendFactor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
 
-	Effects::NormalMapFX->SetDirLights(_dirLights);
-	Effects::NormalMapFX->SetEyePosW(camera->GetPosition());
-	Effects::NormalMapFX->SetCubeMap(_sky->CubeMapSRV().Get());
-	Effects::NormalMapFX->SetShadowMap(shadowMap->DepthMapSRV().Get());
-	Effects::NormalMapFX->SetSsaoMap(ssao->AmbientSRV().Get());
+	//Effects::NormalMapFX->SetDirLights(_dirLights);
+	//Effects::NormalMapFX->SetEyePosW(camera->GetPosition());
+	//Effects::NormalMapFX->SetCubeMap(_sky->CubeMapSRV().Get());
+	//Effects::NormalMapFX->SetShadowMap(shadowMap->DepthMapSRV().Get());
+	//Effects::NormalMapFX->SetSsaoMap(ssao->AmbientSRV().Get());
+
+	Effects::InstancedBasicFX->SetDirLights(_dirLights,3);
+	Effects::InstancedBasicFX->SetLightCount(3);
+	Effects::InstancedBasicFX->SetEyePosW(camera->GetPosition());
+	Effects::InstancedBasicFX->SetCubeMap(_sky->CubeMapSRV().Get());
+	Effects::InstancedBasicFX->SetShadowMap(shadowMap->DepthMapSRV().Get());
+	Effects::InstancedBasicFX->SetSsaoMap(ssao->AmbientSRV().Get());
 
 	RenderManager::GetI()->shadowTransform = XMLoadFloat4x4(&_shadowTransform);
 

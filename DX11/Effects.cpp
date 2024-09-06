@@ -231,6 +231,7 @@ InstancedBasicEffect::InstancedBasicEffect(ComPtr<ID3D11Device> device, const st
 	FogStart = _fx->GetVariableByName("gFogStart")->AsScalar();
 	FogRange = _fx->GetVariableByName("gFogRange")->AsScalar();
 	DirLights = _fx->GetVariableByName("gDirLights");
+	LightCount = _fx->GetVariableByName("gLightCount")->AsScalar();
 	Mat = _fx->GetVariableByName("gMaterial");
 	Setting = _fx->GetVariableByName("gShaderSetting");
 	DiffuseMap = _fx->GetVariableByName("gDiffuseMap")->AsShaderResource();
