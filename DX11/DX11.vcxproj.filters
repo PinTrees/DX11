@@ -205,6 +205,9 @@
     <Filter Include="0. Engine\Component\Light">
       <UniqueIdentifier>{ba638cce-a8e3-41ab-8630-8bfd172cfa69}</UniqueIdentifier>
     </Filter>
+    <Filter Include="0. Engine\Manager\LightManager">
+      <UniqueIdentifier>{fd6523cb-ce43-458a-9ae2-4f6e90851713}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="01. InitDemo.cpp">
@@ -563,6 +566,9 @@
     </ClCompile>
     <ClCompile Include="Light.cpp">
       <Filter>0. Engine\Component\Light</Filter>
+    </ClCompile>
+    <ClCompile Include="LightManager.cpp">
+      <Filter>0. Engine\Manager\LightManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -932,6 +938,9 @@
     </ClInclude>
     <ClInclude Include="Light.h">
       <Filter>0. Engine\Component\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="LightManager.h">
+      <Filter>0. Engine\Manager\LightManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

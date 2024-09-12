@@ -243,6 +243,7 @@
     <ClInclude Include="JsonUtility.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="LightHelper.h" />
+    <ClInclude Include="LightManager.h" />
     <ClInclude Include="LoadM3d.h" />
     <ClInclude Include="MathHelper.h" />
     <ClInclude Include="Matrix3.h" />
@@ -386,6 +387,7 @@
     <ClCompile Include="JsonUtility.cpp" />
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="LightHelper.cpp" />
+    <ClCompile Include="LightManager.cpp" />
     <ClCompile Include="LoadM3d.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="GameTimer.cpp" />

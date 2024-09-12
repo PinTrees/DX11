@@ -1,33 +1,40 @@
 #include "07. LightHelper.fx"
+
+
+//pragam {get }
+
  
 struct ShaderSetting
 {
-    int gLightCount;
-    bool gUseTexture;
-    bool gUseNormalMap;
-    bool gAlphaClip;
-    bool gFogEnabled;
-    bool gReflectionEnabled;
-    bool gUseShadowMap;
-    bool gUseSsaoMap;
+    int gUseTexture;
+    int gUseNormalMap;
+    int gAlphaClip;
+    int gFogEnabled;
+    int gReflectionEnabled;
+    int gUseShadowMap;
+    int gUseSsaoMap;
     
-    // 11바이트 -> 16바이트 정렬을 위해
-    bool pad1;
-    int pad2;
+    // 28바이트 -> 32바이트 정렬을 위해
+    int pad;
 };
 
 cbuffer cbPerFrame
 {
-    DirectionalLight gDirLights[3];
+    DirectionalLight gDirLights[50];
+    int gLightCount; // gLightCount로 제한 
     float3 gEyePosW;
 
     float gFogStart;
     float gFogRange;
     float4 gFogColor;
+    
+    float3 pad;
+    float3 pad2;
 };
 
 cbuffer cbPerObject
 {
+    // Use when instancing is not used.
     float4x4 gWorld;
     float4x4 gWorldInvTranspose;
     float4x4 gWorldViewProj;
@@ -37,7 +44,7 @@ cbuffer cbPerObject
     float4x4 gViewProjTex;
     
     float4x4 gTexTransform;
-    float4x4 gShadowTransform; // Worldx, LightV * LightP * toTexSpace
+    float4x4 gShadowTransform; // Instancing -> Worldx, LightV * LightP * toTexSpace, Not Instancing -> World * LightV * LightP * toTexSpace
     Material gMaterial;
     ShaderSetting gShaderSetting;
 }; 
@@ -48,12 +55,17 @@ cbuffer cbSkinned
 };
 
 // Nonnumeric values cannot be added to a cbuffer.
+
+// frame
 Texture2D gShadowMap;
+Texture2D gSsaoMap;
+TextureCube gCubeMap;
+
+// object
 Texture2D gDiffuseMap;
 Texture2D gNormalMap;
-Texture2D gSsaoMap;
 
-TextureCube gCubeMap;
+
 
 SamplerState samLinear
 {
@@ -247,14 +259,14 @@ float4 PS(VertexOut pin) : SV_Target
         float3 normalMapSample = gNormalMap.Sample(samLinear, pin.Tex).rgb;
         bumpedNormalW = NormalSampleToWorldSpace(normalMapSample, pin.NormalW, pin.TangentW);
     }
-    
-	 
+ 
+
 	//
 	// Lighting.
 	//
 
     float4 litColor = texColor;
-    if (gShaderSetting.gLightCount > 0)
+    if (gLightCount > 0)
     {
 		// Start with a sum of zero. 
         float4 ambient = float4(0.0f, 0.0f, 0.0f, 0.0f);
@@ -278,7 +290,7 @@ float4 PS(VertexOut pin) : SV_Target
 		
 		// Sum the light contribution from each light source.  
 		[unroll] 
-        for (int i = 0; i < gShaderSetting.gLightCount; ++i)
+        for (int i = 0; i < gLightCount; ++i)
         {
             float4 A, D, S;
             ComputeDirectionalLight(gMaterial, gDirLights[i], bumpedNormalW, toEye,

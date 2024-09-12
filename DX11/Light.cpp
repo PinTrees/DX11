@@ -19,12 +19,13 @@ void Light::LateUpdate()
 	XMVECTOR pos = m_pGameObject->GetTransform()->GetPosition();
 	XMVECTOR dir = XMLoadFloat3(&m_directionalDesc.Direction);
 	XMVECTOR target = pos + dir;
-	XMVECTOR up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+	//XMVECTOR up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 	XMMATRIX V = ::XMMatrixLookAtLH(pos,target,up);
 	::XMStoreFloat4x4(&m_lightView, V);
 
-	XMMATRIX P = ::XMMatrixOrthographicLH(m_lightLengthX, m_lightLengthY, 1, 100);
+	XMMATRIX P = ::XMMatrixOrthographicLH(m_lightLengthX, m_lightLengthY, 0.001f, m_lightFarZ);
 	::XMStoreFloat4x4(&m_lightProj, P);
+
 }
 
 void Light::FixedUpdate()
