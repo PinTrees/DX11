@@ -1,15 +1,22 @@
 #include "pch.h"
 #include "Light.h"
-
+#include "LightManager.h"
 
 Light::Light()
 {
 	m_InspectorTitleName = "Light";
 	ProjUpdate();
+	// Manager 추가
+	//shared_from_this()
 }
 
 Light::~Light()
 {
+}
+
+void Light::ComponentOnDestroy()
+{
+	// Manager 삭제
 }
 
 void Light::Update()

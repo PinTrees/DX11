@@ -33,6 +33,10 @@ private:
 	void ProjUpdate();
 	string GetStringLightType(LightType type);
 
+	InstanceID GetInstanceID()
+	{
+		return make_tuple((uint64)&m_directionalDesc, (uint64)&m_pointDesc, (uint64)&m_spotDesc);
+	}
 public:
 	Light();
 	~Light();
@@ -42,6 +46,7 @@ public:
 	virtual void FixedUpdate() override;
 	virtual void Render() override;
 	virtual void OnInspectorGUI() override;
+	virtual void ComponentOnDestroy() override;
 
 	DirectionalLight GetDirLight() { return m_directionalDesc; }
 	PointLight GetPointLight() { return m_pointDesc; }

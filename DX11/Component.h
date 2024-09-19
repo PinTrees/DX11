@@ -27,7 +27,7 @@ public:
 	void RenderInspectorGUI();
 	virtual void OnInspectorGUI() { }
 	virtual void OnDrawGizmos() { }
-
+	virtual void ComponentOnDestroy() { }
 public:
 	GameObject* GetGameObject() { return m_pGameObject; }
 
