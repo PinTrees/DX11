@@ -9,11 +9,11 @@ class LightManager
 	SINGLE_HEADER(LightManager)
 	// Light 컴포넌트가 포함된 오브젝트들
 private:
-	vector<Light> m_lightList;
+	vector<shared_ptr<Light>> m_lightList;
 public:
 	void Init();
 
-	void SetLight(shared_ptr<Light> light);
+	void SetLight(shared_ptr<Light> light) { m_lightList.push_back(light); }
 	void DeleteLight(InstanceID id);
 
 

@@ -12,6 +12,7 @@ enum class LightType
 
 class Light
 	: public Component
+	, std::enable_shared_from_this<Light>
 {
 private:
 	LightType m_lightType = LightType::Directional;
@@ -34,13 +35,15 @@ private:
 	void ProjUpdate();
 	string GetStringLightType(LightType type);
 
+	
+public:
+	Light();
+	~Light();
+
 	InstanceID GetInstanceID()
 	{
 		return make_tuple((uint64)&m_directionalDesc, (uint64)&m_pointDesc, (uint64)&m_spotDesc);
 	}
-public:
-	Light();
-	~Light();
 
 	virtual void Update() override;
 	virtual void LateUpdate() override;

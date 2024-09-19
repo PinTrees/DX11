@@ -10,7 +10,7 @@ Light::Light()
 	m_spotDesc.Init();
 	ProjUpdate();
 	// Manager 추가
-	//shared_from_this()
+	LightManager::GetI()->SetLight(shared_from_this());
 }
 
 Light::~Light()
@@ -20,6 +20,7 @@ Light::~Light()
 void Light::ComponentOnDestroy()
 {
 	// Manager 삭제
+	LightManager::GetI()->DeleteLight(this->GetInstanceID());
 }
 
 void Light::Update()
