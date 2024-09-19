@@ -4,6 +4,13 @@
 struct DirectionalLight
 {
 	DirectionalLight() { ZeroMemory(this, sizeof(this)); }
+	void Init()
+	{
+		Ambient = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
+		Diffuse = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
+		Specular = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
+		Direction = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	}
 
 	XMFLOAT4 Ambient;
 	XMFLOAT4 Diffuse;
@@ -15,6 +22,14 @@ struct DirectionalLight
 struct PointLight
 {
 	PointLight() { ZeroMemory(this, sizeof(this)); }
+	void Init()
+	{
+		Ambient = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
+		Diffuse = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
+		Specular = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
+		Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
+		Range = 0.0f;
+	}
 
 	XMFLOAT4 Ambient;
 	XMFLOAT4 Diffuse;
@@ -32,7 +47,16 @@ struct PointLight
 struct SpotLight
 {
 	SpotLight() { ZeroMemory(this, sizeof(this)); }
-
+	void Init()
+	{
+		Ambient = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
+		Diffuse = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
+		Specular = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
+		Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
+		Range = 0.0f;
+		Direction = XMFLOAT3(0.0f, 0.0f, 0.0f);
+		Spot = 0.0f;
+	}
 	XMFLOAT4 Ambient;
 	XMFLOAT4 Diffuse;
 	XMFLOAT4 Specular;

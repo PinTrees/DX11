@@ -25,5 +25,5 @@ using Matrix = DirectX::SimpleMath::Matrix;
 using Quaternion = DirectX::SimpleMath::Quaternion;
 using Ray = DirectX::SimpleMath::Ray;
 
-// MeshID / MaterialID
-using InstanceID = std::pair<uint64, uint64>;
+// MeshID / MaterialID / ShaderSettingID
+using InstanceID = std::tuple<uint64, uint64, uint64>;

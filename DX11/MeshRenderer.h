@@ -1,5 +1,6 @@
 #pragma once
 #include "Component.h"
+#include "ShaderSetting.h"
 
 class Model;
 class Shader;
@@ -25,9 +26,8 @@ private:
 	UMaterial*	m_pMaterial;
 	wstring		m_MaterialPath;
 
-	//ShaderSetting m_shaderSetting; // 구조체 변수의 UseShadowMap은 그 생성된 그림자맵에 영향을 미칠건지에 대한 여부(영향을 받는 오브젝트)
+	ShaderSetting m_shaderSetting; // 구조체 변수의 UseShadowMap은 그 생성된 그림자맵에 영향을 미칠건지에 대한 여부(영향을 받는 오브젝트)
 	//bool m_createShadowMap; // 그림자맵 생성 단계에서 오브젝트를 그릴지에 대한 여부(영향을 주는 오브젝트)
-
 public:
 	MeshRenderer();
 	virtual ~MeshRenderer();
@@ -39,10 +39,10 @@ public:
 
 	shared_ptr<Mesh> GetMesh() { return m_Mesh; }
 
-	// 임시 함수, 인스턴싱 ID
+	// 인스턴싱 ID, mesh and material and setting
 	InstanceID GetInstanceID()
 	{
-		return make_pair((uint64)m_Mesh.get(), (uint64)m_pMaterial);
+		return make_tuple((uint64)m_Mesh.get(), (uint64)m_pMaterial, (uint64)&m_shaderSetting);
 	}
 
 public:

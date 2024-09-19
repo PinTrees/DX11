@@ -22,7 +22,7 @@ public:
 
 	D3D11_VIEWPORT EditorViewport;
 	bool WireFrameMode;
-
+	bool InstancingMode;
 public:
 	void Init();
 

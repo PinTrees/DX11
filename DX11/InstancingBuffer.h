@@ -2,7 +2,7 @@
 
 struct InstancingData
 {
-	Matrix world;
+	XMMATRIX world;
 };
 
 #define MAX_MESH_INSTANCE 500
