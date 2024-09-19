@@ -5,6 +5,9 @@
 Light::Light()
 {
 	m_InspectorTitleName = "Light";
+	m_directionalDesc.Init();
+	m_pointDesc.Init();
+	m_spotDesc.Init();
 	ProjUpdate();
 	// Manager 추가
 	//shared_from_this()
@@ -38,6 +41,14 @@ void Light::LateUpdate()
 	//::XMStoreFloat4x4(&m_lightProj, P);
 }
 
+void Light::FixedUpdate()
+{
+}
+
+void Light::Render()
+{
+}
+
 // private function
 void Light::ProjUpdate()
 {
@@ -55,20 +66,12 @@ string Light::GetStringLightType(LightType type)
 	}
 }
 
-void Light::FixedUpdate()
-{
-}
-
-void Light::Render()
-{
-}
-
 void Light::OnInspectorGUI()
 {
 	// LightType 선택GUI
 	if (ImGui::BeginCombo("LightType", GetStringLightType(m_lightType).c_str())) // The second parameter is the previewed value
 	{
-		for (int n = 0; n < (int)LightType::Spot; n++)
+		for (int n = 0; n < (int)LightType::End; n++)
 		{
 			bool is_selected = ((int)m_lightType == n); // You can store your selection somewhere
 			if (ImGui::Selectable(GetStringLightType((LightType)n).c_str(), is_selected))

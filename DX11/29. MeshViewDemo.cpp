@@ -67,11 +67,7 @@ bool MeshViewDemo::Init()
 	//_ssao = make_shared<class Ssao>(_device, _deviceContext, _clientWidth, _clientHeight, _camera.GetFovY(), _camera.GetFarZ());
 
 	BuildScreenQuadGeometryBuffers();
-<<<<<<< HEAD
 
-=======
-	
->>>>>>> 53ecd85807b1f11dbc03ae81aeed56282fdffcec
 	//
 	// Compute scene bounding box.
 	//
@@ -153,10 +149,7 @@ void MeshViewDemo::UpdateScene(float dt)
 
 void MeshViewDemo::RenderApplication()
 {
-<<<<<<< HEAD
-=======
 
->>>>>>> 53ecd85807b1f11dbc03ae81aeed56282fdffcec
 }
 
 void MeshViewDemo::OnEditorSceneRender(ID3D11RenderTargetView* renderTargetView, EditorCamera* camera)
