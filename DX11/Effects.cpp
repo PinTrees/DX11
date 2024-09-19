@@ -223,6 +223,8 @@ InstancedBasicEffect::InstancedBasicEffect(ComPtr<ID3D11Device> device, const st
 	WorldViewProj = _fx->GetVariableByName("gWorldViewProj")->AsMatrix();
 	WorldViewProjTex = _fx->GetVariableByName("gWorldViewProjTex")->AsMatrix();
 
+	View = _fx->GetVariableByName("gView")->AsMatrix();
+	Proj = _fx->GetVariableByName("gProj")->AsMatrix();
 	ViewProj = _fx->GetVariableByName("gViewProj")->AsMatrix();
 	ViewProjTex = _fx->GetVariableByName("gViewProjTex")->AsMatrix();
 	BoneTransforms = _fx->GetVariableByName("gBoneTransforms")->AsMatrix();
@@ -566,7 +568,7 @@ SsaoNormalDepthEffect::SsaoNormalDepthEffect(ComPtr<ID3D11Device> device, const 
 	NormalDepthInstancingTech = _fx->GetTechniqueByName("NormalDepthInstancing");
 	NormalDepthAlphaClipInstancingTech = _fx->GetTechniqueByName("NormalDepthAlphaClipInstancing");
 	View = _fx->GetVariableByName("gView")->AsMatrix();
-	ViewProj = _fx->GetVariableByName("gViewProj")->AsMatrix();
+	Proj = _fx->GetVariableByName("gProj")->AsMatrix();
 	WorldView = _fx->GetVariableByName("gWorldView")->AsMatrix();
 	WorldInvTransposeView = _fx->GetVariableByName("gWorldInvTransposeView")->AsMatrix();
 	BoneTransforms = _fx->GetVariableByName("gBoneTransforms")->AsMatrix();

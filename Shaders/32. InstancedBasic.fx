@@ -1,18 +1,15 @@
 #include "07. LightHelper.fx"
 
-
-//pragam {get }
-
  
 struct ShaderSetting
 {
     int gUseTexture;
-    int gUseNormalMap;
     int gAlphaClip;
-    int gFogEnabled;
-    int gReflectionEnabled;
+    int gUseNormalMap;
     int gUseShadowMap;
     int gUseSsaoMap;
+    int gReflectionEnabled;
+    int gFogEnabled;
     
     // 28바이트 -> 32바이트 정렬을 위해
     int pad;
@@ -20,7 +17,7 @@ struct ShaderSetting
 
 cbuffer cbPerFrame
 {
-    DirectionalLight gDirLights[50];
+    DirectionalLight gDirLights[8];
     int gLightCount; // gLightCount로 제한 
     float3 gEyePosW;
 
@@ -40,6 +37,8 @@ cbuffer cbPerObject
     float4x4 gWorldViewProj;
     float4x4 gWorldViewProjTex;
     
+    float4x4 gView;
+    float4x4 gProj;
     float4x4 gViewProj;
     float4x4 gViewProjTex;
     
@@ -48,6 +47,8 @@ cbuffer cbPerObject
     Material gMaterial;
     ShaderSetting gShaderSetting;
 }; 
+
+
 
 cbuffer cbSkinned
 {
@@ -93,7 +94,7 @@ struct VertexIn
     float4 TangentL : TANGENT;
 };
  
-struct VertexIn_Instacing
+struct VertexIn_Instancing
 {
     float3 PosL : POSITION;
     float3 NormalL : NORMAL;
@@ -149,29 +150,34 @@ VertexOut VS(VertexIn vin)
     return vout;
 }
 
-VertexOut VS_Instacing(VertexIn_Instacing vin)
+VertexOut VS_Instancing(VertexIn_Instancing vin)
 {
     VertexOut vout;
-	
-    float4x4 WorldInv = transpose(vin.World);
+    
+    // Transform to homogeneous clip space.
+    vout.PosH = mul(float4(vin.PosL, 1.0f), vin.World);
     
 	// Transform to world space space.
-    vout.PosW = mul(float4(vin.PosL, 1.0f), vin.World).xyz; // World
-    vout.NormalW = mul(vin.NormalL, (float3x3) WorldInv);
+    vout.PosW = vout.PosH.xyz; // World
+    
+    vout.PosH = mul(float4(vin.PosL, 1.0f), mul(vin.World, gViewProj));
+    
+    
+    vout.NormalW = mul(vin.NormalL, (float3x3) vin.World);
     vout.TangentW = mul(vin.TangentL, vin.World);
-
-	// Transform to homogeneous clip space.
-    vout.PosH = mul(float4(vout.PosW, 1.0f), gViewProj);
-	
+    
 	// Output vertex attributes for interpolation across triangle.
     vout.Tex = mul(float4(vin.Tex, 0.0f, 1.0f), gTexTransform).xy;
 
 	// Generate projective tex-coords to project shadow map onto scene.
-    vout.ShadowPosH = mul(float4(vout.PosW, 1.0f), gShadowTransform);
+    vout.ShadowPosH = mul(float4(vout.PosW,1.0f), gShadowTransform);
 
 	// Generate projective tex-coords to project SSAO map onto scene.
     vout.SsaoPosH = mul(float4(vout.PosW, 1.0f), gViewProjTex);
 
+    
+    
+    
     return vout;
 }
 
@@ -345,7 +351,7 @@ technique11 InstancingTech
 {
     pass P0
     {
-        SetVertexShader(CompileShader(vs_5_0, VS_Instacing()));
+        SetVertexShader(CompileShader(vs_5_0, VS_Instancing()));
         SetGeometryShader(NULL);
         SetPixelShader(CompileShader(ps_5_0, PS()));
     }

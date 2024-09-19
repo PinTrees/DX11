@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Scene.h"
 #include "InstancingBuffer.h"
+#include "MathHelper.h"
 
 Scene::Scene()
 	: m_RootGameObjects(),
@@ -34,7 +35,7 @@ void Scene::Exit()
 
 void Scene::RenderScene()
 {
-    if (false) // if문에 Editor에서 인스턴싱을 사용할 것인지에 대한 bool형 변수로 인스턴싱 사용여부 판단
+    if (RenderManager::GetI()->InstancingMode) // if문에 Editor에서 인스턴싱을 사용할 것인지에 대한 bool형 변수로 인스턴싱 사용여부 판단
     {
         map<InstanceID, vector<GameObject*>> cache;
 
@@ -97,47 +98,48 @@ void Scene::RenderScene()
 
 void Scene::RenderSceneShadow()
 {
-    for (auto& gameObject : m_arrGameObjects[0])
+    if (RenderManager::GetI()->InstancingMode)
     {
-        if (false)
+        map<InstanceID, vector<GameObject*>> cache;
+
+        for (const auto& gameObject : m_arrGameObjects[0])
         {
-            map<InstanceID, vector<GameObject*>> cache;
+            auto meshRenderer = gameObject->GetComponent<MeshRenderer>();
+            if (meshRenderer == nullptr)
+                continue;
 
-            for (const auto& gameObject : m_arrGameObjects[0])
+            // map<인스턴싱 ID,gameObject> 변수에 추가
+            const InstanceID instanceId = meshRenderer->GetInstanceID();
+            cache[instanceId].emplace_back(gameObject);
+        }
+
+        // 같은 오브젝트들 끼리 world배열에 저장 후 world배열을 인자값으로 넘기면서 인스턴싱 렌더
+        for (auto& pair : cache)
+        {
+            const vector<GameObject*>& vec = pair.second;
+            shared_ptr<InstancingBuffer> buffer = make_shared<InstancingBuffer>(); // worldMatrix 값을 가지고 있는 인스턴싱 버퍼, 렌더로 넘겨야함
             {
-                auto meshRenderer = gameObject->GetComponent<MeshRenderer>();
-                if (meshRenderer == nullptr)
-                    continue;
+                //const InstanceID instanceId = pair.first;
 
-                // map<인스턴싱 ID,gameObject> 변수에 추가
-                const InstanceID instanceId = meshRenderer->GetInstanceID();
-                cache[instanceId].emplace_back(gameObject);
-            }
-
-            // 같은 오브젝트들 끼리 world배열에 저장 후 world배열을 인자값으로 넘기면서 인스턴싱 렌더
-            for (auto& pair : cache)
-            {
-                const vector<GameObject*>& vec = pair.second;
-                shared_ptr<InstancingBuffer> buffer = make_shared<InstancingBuffer>(); // worldMatrix 값을 가지고 있는 인스턴싱 버퍼, 렌더로 넘겨야함
+                for (int32 i = 0; i < vec.size(); i++)
                 {
-                    //const InstanceID instanceId = pair.first;
+                    GameObject* gameObject = vec[i];
+                    InstancingData data;
+                    data.world = gameObject->GetTransform()->GetWorldMatrix();
 
-                    for (int32 i = 0; i < vec.size(); i++)
-                    {
-                        GameObject* gameObject = vec[i];
-                        InstancingData data;
-                        data.world = gameObject->GetTransform()->GetWorldMatrix();
-
-                        // Mesh와 Material의 조합 아이디 배열의 data 벡터에 data(월드좌표들)저장
-                        buffer->AddData(data);
-                        //AddData(instanceId, data);
-                    }
-
-                    vec[0]->GetComponent<MeshRenderer>()->RenderShadowInstancing(buffer);
+                    // Mesh와 Material의 조합 아이디 배열의 data 벡터에 data(월드좌표들)저장
+                    buffer->AddData(data);
+                    //AddData(instanceId, data);
                 }
+
+                vec[0]->GetComponent<MeshRenderer>()->RenderShadowInstancing(buffer);
             }
         }
-        else
+
+    }
+    else
+    {
+        for (auto& gameObject : m_arrGameObjects[0])
         {
             MeshRenderer* meshRenderer = gameObject->GetComponent<MeshRenderer>();
             if (meshRenderer == nullptr) // 이 부분에서 제어 -> 그림자의 영향을 주는 오브젝트에 대한 제어
@@ -150,47 +152,47 @@ void Scene::RenderSceneShadow()
 
 void Scene::RenderSceneShadowNormal()
 {
-    for (auto& gameObject : m_arrGameObjects[0])
+    if (RenderManager::GetI()->InstancingMode)
     {
-        if (false)
+        map<InstanceID, vector<GameObject*>> cache;
+
+        for (const auto& gameObject : m_arrGameObjects[0])
         {
-            map<InstanceID, vector<GameObject*>> cache;
+            auto meshRenderer = gameObject->GetComponent<MeshRenderer>();
+            if (meshRenderer == nullptr)
+                continue;
 
-            for (const auto& gameObject : m_arrGameObjects[0])
+            // map<인스턴싱 ID,gameObject> 변수에 추가
+            const InstanceID instanceId = meshRenderer->GetInstanceID();
+            cache[instanceId].emplace_back(gameObject);
+        }
+
+        // 같은 오브젝트들 끼리 world배열에 저장 후 world배열을 인자값으로 넘기면서 인스턴싱 렌더
+        for (auto& pair : cache)
+        {
+            const vector<GameObject*>& vec = pair.second;
+            shared_ptr<InstancingBuffer> buffer = make_shared<InstancingBuffer>(); // worldMatrix 값을 가지고 있는 인스턴싱 버퍼, 렌더로 넘겨야함
             {
-                auto meshRenderer = gameObject->GetComponent<MeshRenderer>();
-                if (meshRenderer == nullptr)
-                    continue;
+                //const InstanceID instanceId = pair.first;
 
-                // map<인스턴싱 ID,gameObject> 변수에 추가
-                const InstanceID instanceId = meshRenderer->GetInstanceID();
-                cache[instanceId].emplace_back(gameObject);
-            }
-
-            // 같은 오브젝트들 끼리 world배열에 저장 후 world배열을 인자값으로 넘기면서 인스턴싱 렌더
-            for (auto& pair : cache)
-            {
-                const vector<GameObject*>& vec = pair.second;
-                shared_ptr<InstancingBuffer> buffer = make_shared<InstancingBuffer>(); // worldMatrix 값을 가지고 있는 인스턴싱 버퍼, 렌더로 넘겨야함
+                for (int32 i = 0; i < vec.size(); i++)
                 {
-                    //const InstanceID instanceId = pair.first;
+                    GameObject* gameObject = vec[i];
+                    InstancingData data;
+                    data.world = gameObject->GetTransform()->GetWorldMatrix();
 
-                    for (int32 i = 0; i < vec.size(); i++)
-                    {
-                        GameObject* gameObject = vec[i];
-                        InstancingData data;
-                        data.world = gameObject->GetTransform()->GetWorldMatrix();
-
-                        // Mesh와 Material의 조합 아이디 배열의 data 벡터에 data(월드좌표들)저장
-                        buffer->AddData(data);
-                        //AddData(instanceId, data);
-                    }
-
-                    vec[0]->GetComponent<MeshRenderer>()->RenderShadowNormalInstancing(buffer);
+                    // Mesh와 Material의 조합 아이디 배열의 data 벡터에 data(월드좌표들)저장
+                    buffer->AddData(data);
+                    //AddData(instanceId, data);
                 }
+
+                vec[0]->GetComponent<MeshRenderer>()->RenderShadowNormalInstancing(buffer);
             }
         }
-        else
+    }
+    else
+    {
+        for (const auto& gameObject : m_arrGameObjects[0])
         {
             MeshRenderer* meshRenderer = gameObject->GetComponent<MeshRenderer>();
             if (meshRenderer == nullptr)

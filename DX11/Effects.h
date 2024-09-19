@@ -1,25 +1,6 @@
 #pragma once
 #include "LightHelper.h"
-
-struct ShaderSetting
-{
-	ShaderSetting() { ZeroMemory(this, sizeof(this)); }
-
-	//int LightCount;
-	int UseTexture;
-	int UseNormalMap;
-	int AlphaClip;
-	int FogEnabled;
-	int ReflectionEnabled;
-	int UseShadowMap;
-	int UseSsaoMap;
-
-	// 16바이트 정렬
-	//bool pad1;
-	//XMFLOAT2 pad2;
-
-	int pad;
-};
+#include "ShaderSetting.h"
 
 class Effect
 {
@@ -278,6 +259,8 @@ public:
 	void SetWorldViewProjTex(CXMMATRIX M) { WorldViewProjTex->SetMatrix(reinterpret_cast<const float*>(&M)); }
 	void SetWorld(CXMMATRIX M) { World->SetMatrix(reinterpret_cast<const float*>(&M)); }
 	void SetWorldInvTranspose(CXMMATRIX M) { WorldInvTranspose->SetMatrix(reinterpret_cast<const float*>(&M)); }
+	void SetView(CXMMATRIX M) { View->SetMatrix(reinterpret_cast<const float*>(&M)); }
+	void SetProj(CXMMATRIX M) { Proj->SetMatrix(reinterpret_cast<const float*>(&M)); }
 	void SetViewProj(CXMMATRIX M) { ViewProj->SetMatrix(reinterpret_cast<const float*>(&M)); }
 	void SetViewProjTex(CXMMATRIX M) { ViewProjTex->SetMatrix(reinterpret_cast<const float*>(&M)); }
 	void SetBoneTransforms(const XMFLOAT4X4* M, int cnt) { BoneTransforms->SetMatrixArray(reinterpret_cast<const float*>(M), 0, cnt); }
@@ -291,6 +274,7 @@ public:
 	void SetLightCount(int cnt) { LightCount->SetInt(cnt); }
 	void SetMaterial(const Material& mat) { Mat->SetRawValue(&mat, 0, sizeof(Material)); }
 	void SetShaderSetting(const ShaderSetting& setting) { Setting->SetRawValue(&setting, 0, sizeof(ShaderSetting)); }
+	
 	void SetDiffuseMap(ID3D11ShaderResourceView* tex) { DiffuseMap->SetResource(tex); }
 	void SetShadowMap(ID3D11ShaderResourceView* tex) { ShadowMap->SetResource(tex); }
 	void SetNormalMap(ID3D11ShaderResourceView* tex) { NormalMap->SetResource(tex); }
@@ -306,6 +290,8 @@ public:
 	ComPtr<ID3DX11EffectMatrixVariable> WorldViewProj;
 	ComPtr<ID3DX11EffectMatrixVariable> WorldViewProjTex;
 
+	ComPtr<ID3DX11EffectMatrixVariable> View;
+	ComPtr<ID3DX11EffectMatrixVariable> Proj;
 	ComPtr<ID3DX11EffectMatrixVariable> ViewProj;
 	ComPtr<ID3DX11EffectMatrixVariable> ViewProjTex;
 	ComPtr<ID3DX11EffectMatrixVariable> BoneTransforms;
@@ -709,7 +695,7 @@ public:
 
 	// NEW
 	void SetView(CXMMATRIX M) { View->SetMatrix(reinterpret_cast<const float*>(&M)); }
-	void SetViewProj(CXMMATRIX M) { ViewProj->SetMatrix(reinterpret_cast<const float*>(&M)); }
+	void SetProj(CXMMATRIX M) { Proj->SetMatrix(reinterpret_cast<const float*>(&M)); }
 
 	void SetWorldView(CXMMATRIX M) { WorldView->SetMatrix(reinterpret_cast<const float*>(&M)); }
 	void SetWorldInvTransposeView(CXMMATRIX M) { WorldInvTransposeView->SetMatrix(reinterpret_cast<const float*>(&M)); }
@@ -728,7 +714,7 @@ public:
 	ComPtr<ID3DX11EffectTechnique> NormalDepthAlphaClipInstancingTech;
 
 	ComPtr<ID3DX11EffectMatrixVariable> View;
-	ComPtr<ID3DX11EffectMatrixVariable> ViewProj;
+	ComPtr<ID3DX11EffectMatrixVariable> Proj;
 	ComPtr<ID3DX11EffectMatrixVariable> WorldView;
 	ComPtr<ID3DX11EffectMatrixVariable> WorldInvTransposeView;
 	ComPtr<ID3DX11EffectMatrixVariable> BoneTransforms;

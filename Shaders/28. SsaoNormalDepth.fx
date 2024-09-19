@@ -1,6 +1,10 @@
 
 cbuffer cbPerObject
 {
+    // Instancing
+    float4x4 gView;
+    float4x4 gProj;
+    
     float4x4 gWorldView;
     float4x4 gWorldInvTransposeView;
     float4x4 gWorldViewProj;
@@ -27,6 +31,17 @@ struct VertexIn
     float3 PosL : POSITION;
     float3 NormalL : NORMAL;
     float2 Tex : TEXCOORD;
+};
+
+struct VertexIn_Instancing
+{
+    float3 PosL : POSITION;
+    float3 NormalL : NORMAL;
+    float2 Tex : TEXCOORD;
+    float4 TangentL : TANGENT;
+    // Instancing
+    row_major float4x4 World : WORLD;
+    uint InstanceId : SV_InstanceID;
 };
 
 struct SkinnedVertexIn
@@ -57,6 +72,31 @@ VertexOut VS(VertexIn vin)
 		
 	// Transform to homogeneous clip space.
     vout.PosH = mul(float4(vin.PosL, 1.0f), gWorldViewProj);
+	
+	// Output vertex attributes for interpolation across triangle.
+    vout.Tex = mul(float4(vin.Tex, 0.0f, 1.0f), gTexTransform).xy;
+ 
+    return vout;
+}
+
+VertexOut VS_Instancing(VertexIn_Instancing vin)
+{
+    VertexOut vout;
+	
+	// Transform to view space.
+    //vout.PosV = mul(float4(vin.PosL, 1.0f), gWorldView).xyz;
+    
+    vout.PosH = mul(float4(vin.PosL, 1.0f), vin.World);
+
+    vout.PosV = mul(vout.PosH, gView).xyz;
+    
+    //vout.NormalV = mul(vin.NormalL, (float3x3) gWorldInvTransposeView);
+    vout.NormalV = mul(vin.NormalL, (float3x3) vin.World);
+    vout.NormalV = mul(vout.NormalV, (float3x3) gView);
+    
+	// Transform to homogeneous clip space.
+    vout.PosH = mul(vout.PosH, gView);
+    vout.PosH = mul(vout.PosH, gProj);
 	
 	// Output vertex attributes for interpolation across triangle.
     vout.Tex = mul(float4(vin.Tex, 0.0f, 1.0f), gTexTransform).xy;
@@ -128,6 +168,26 @@ technique11 NormalDepthAlphaClip
     pass P0
     {
         SetVertexShader(CompileShader(vs_5_0, VS()));
+        SetGeometryShader(NULL);
+        SetPixelShader(CompileShader(ps_5_0, PS(true)));
+    }
+}
+
+technique11 NormalDepthInstancing
+{
+    pass P0
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_Instancing()));
+        SetGeometryShader(NULL);
+        SetPixelShader(CompileShader(ps_5_0, PS(false)));
+    }
+}
+
+technique11 NormalDepthAlphaClipInstancing
+{
+    pass P0
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS_Instancing()));
         SetGeometryShader(NULL);
         SetPixelShader(CompileShader(ps_5_0, PS(true)));
     }

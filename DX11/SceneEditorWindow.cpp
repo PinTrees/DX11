@@ -129,6 +129,7 @@ void SceneEditorWindow::OnRender()
     ImGui::BeginChild("LeftPanel", ImVec2(24, windowSize.y), false, ImGuiWindowFlags_NoDecoration); // 테두리 제거
 
     bool isWireframeMode = RenderManager::GetI()->WireFrameMode;
+    bool isInstancingMode = RenderManager::GetI()->InstancingMode;
 
     if (isWireframeMode)
     {
@@ -141,6 +142,21 @@ void SceneEditorWindow::OnRender()
     }
 
     if (isWireframeMode)
+    {
+        ImGui::PopStyleColor(); // 변경된 색상 복원
+    }
+
+    if (isInstancingMode)
+    {
+        ImGui::PushStyleColor(ImGuiCol_Button, ImGui::GetStyleColorVec4(ImGuiCol_ButtonHovered)); // 선택된 버튼 색상
+    }
+
+    if (ImGui::Button("I", ImVec2(24, 25)))
+    {
+        RenderManager::GetI()->InstancingMode = !RenderManager::GetI()->InstancingMode;
+    }
+
+    if (isInstancingMode)
     {
         ImGui::PopStyleColor(); // 변경된 색상 복원
     }

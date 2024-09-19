@@ -570,6 +570,9 @@
     <ClCompile Include="LightManager.cpp">
       <Filter>0. Engine\Manager\LightManager</Filter>
     </ClCompile>
+    <ClCompile Include="ShaderSetting.cpp">
+      <Filter>0. Engine\00. Header</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="01. InitDemo.h">
@@ -941,6 +944,9 @@
     </ClInclude>
     <ClInclude Include="LightManager.h">
       <Filter>0. Engine\Manager\LightManager</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderSetting.h">
+      <Filter>0. Engine\00. Header</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
