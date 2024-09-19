@@ -67,7 +67,11 @@ bool MeshViewDemo::Init()
 	//_ssao = make_shared<class Ssao>(_device, _deviceContext, _clientWidth, _clientHeight, _camera.GetFovY(), _camera.GetFarZ());
 
 	BuildScreenQuadGeometryBuffers();
+<<<<<<< HEAD
 
+=======
+	
+>>>>>>> 53ecd85807b1f11dbc03ae81aeed56282fdffcec
 	//
 	// Compute scene bounding box.
 	//
@@ -149,19 +153,26 @@ void MeshViewDemo::UpdateScene(float dt)
 
 void MeshViewDemo::RenderApplication()
 {
+<<<<<<< HEAD
+=======
+
+>>>>>>> 53ecd85807b1f11dbc03ae81aeed56282fdffcec
 }
 
 void MeshViewDemo::OnEditorSceneRender(ID3D11RenderTargetView* renderTargetView, EditorCamera* camera)
 {
 	BuildShadowTransform();
 
+	RenderManager::GetI()->cameraViewMatrix = camera->View();
+	RenderManager::GetI()->cameraProjectionMatrix = camera->Proj();
+	RenderManager::GetI()->cameraViewProjectionMatrix = XMMatrixMultiply(camera->View(), camera->Proj());
+	RenderManager::GetI()->directinalLightViewProjection = XMMatrixMultiply(XMLoadFloat4x4(&_lightView), XMLoadFloat4x4(&_lightProj));
+
 	// 와이어프레임 제어처럼 전체 그림자맵 제어도 가능하게
 	auto shadowMap = RenderManager::GetI()->editorShadowMap;
 	shadowMap->BindDsvAndSetNullRenderTarget(_deviceContext);
 
 	auto viewport = RenderManager::GetI()->EditorViewport;
-
-	RenderManager::GetI()->directinalLightViewProjection = XMMatrixMultiply(XMLoadFloat4x4(&_lightView), XMLoadFloat4x4(&_lightProj));
 
 	Effects::BuildShadowMapFX->SetEyePosW(camera->GetPosition());
 	Effects::BuildShadowMapFX->SetViewProj(RenderManager::GetI()->directinalLightViewProjection);
@@ -180,10 +191,6 @@ void MeshViewDemo::OnEditorSceneRender(ID3D11RenderTargetView* renderTargetView,
 	// PostProcessing - SSAO
 	auto ssao = PostProcessingManager::GetI()->GetEditorSSAO();
 	ssao->SetNormalDepthRenderTarget(_depthStencilView.Get());
-
-	RenderManager::GetI()->cameraViewMatrix = camera->View();
-	RenderManager::GetI()->cameraProjectionMatrix = camera->Proj();
-	RenderManager::GetI()->cameraViewProjectionMatrix = XMMatrixMultiply(camera->View(), camera->Proj());
 
 	if (RenderManager::GetI()->WireFrameMode)
 		_deviceContext->RSSetState(RenderStates::WireframeRS.Get());
@@ -212,7 +219,7 @@ void MeshViewDemo::OnEditorSceneRender(ID3D11RenderTargetView* renderTargetView,
 	//Effects::NormalMapFX->SetSsaoMap(ssao->AmbientSRV().Get());
 
 	Effects::InstancedBasicFX->SetDirLights(_dirLights,3);
-	Effects::InstancedBasicFX->SetLightCount(3);
+	Effects::InstancedBasicFX->SetLightCount(1);
 	Effects::InstancedBasicFX->SetEyePosW(camera->GetPosition());
 	Effects::InstancedBasicFX->SetCubeMap(_sky->CubeMapSRV().Get());
 	Effects::InstancedBasicFX->SetShadowMap(shadowMap->DepthMapSRV().Get());

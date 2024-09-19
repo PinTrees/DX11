@@ -270,6 +270,7 @@
     <ClInclude Include="SceneViewManager.h" />
     <ClInclude Include="SelectionManager.h" />
     <ClInclude Include="Shader.h" />
+    <ClInclude Include="ShaderSetting.h" />
     <ClInclude Include="ShadowMap.h" />
     <ClInclude Include="SimpleMath.h" />
     <ClInclude Include="SkinnedData.h" />
@@ -420,6 +421,7 @@
     <ClCompile Include="SceneViewManager.cpp" />
     <ClCompile Include="SelectionManager.cpp" />
     <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="ShaderSetting.cpp" />
     <ClCompile Include="ShadowMap.cpp" />
     <ClCompile Include="SimpleMath.cpp" />
     <ClCompile Include="SkinnedData.cpp" />

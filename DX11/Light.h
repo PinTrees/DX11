@@ -13,7 +13,7 @@ class Light
 	: public Component
 {
 private:
-	LightType m_lightType;
+	LightType m_lightType = LightType::Directional;
 
 	DirectionalLight m_directionalDesc;
 	PointLight m_pointDesc;
@@ -21,12 +21,17 @@ private:
 	
 	XMVECTOR up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 
+	// DirectionalLight FarZ는 이론상 무한대이지만 리소스 효율성을 위해 (씬의 크기 + 빛의 좌표거리)로 하는것이 이상적일듯 하다.
+	// Point, Spot의 경우 Light구조체의 Range를 FarZ로 대체, Directinal은 씬의 크기로 대체함으로 나중에 이 변수는 삭제할 예정
 	float m_lightLengthX = 20.0f;
 	float m_lightLengthY = 20.0f;
-	float m_lightFarZ = 100.0f;
+	float m_lightFarZ = 100.0f;		
 
 	XMFLOAT4X4 m_lightView;
 	XMFLOAT4X4 m_lightProj;
+
+	void ProjUpdate();
+	string GetStringLightType(LightType type);
 
 public:
 	Light();
@@ -49,9 +54,9 @@ public:
 	float GetLightLengthY() { return m_lightLengthY; }
 	float GetLightFarZ() { return m_lightFarZ; }
 
-	void SetLightLengthX(float x) { m_lightLengthX = x; }
-	void SetLightLengthY(float y) { m_lightLengthY = y; }
-	void SetLightFarZ(float farZ) { m_lightFarZ = farZ; }
+	void SetLightLengthX(float x) { m_lightLengthX = x; ProjUpdate(); }
+	void SetLightLengthY(float y) { m_lightLengthY = y; ProjUpdate(); }
+	void SetLightFarZ(float farZ) { m_lightFarZ = farZ; ProjUpdate(); }
 
 
 	GENERATE_COMPONENT_BODY(Light)

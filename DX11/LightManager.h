@@ -8,11 +8,14 @@ class LightManager
 {
 	// Light 컴포넌트가 포함된 오브젝트들
 private:
-	vector<GameObject*> m_lightObj;
+	vector<shared_ptr<Light>> m_lightList;
 public:
-	void SetLightObject(GameObject* obj) { m_lightObj.push_back(obj); }
-	void DeleteLightObject(GameObject* obj) { std::find(m_lightObj.begin(), m_lightObj.end(), obj); }
+	void Init();
 
-	Light* GetLights(); // 모아둔 오브젝트들에서 라이트 클래스들만 추출해서 넘기기
+	// 타입별 Lights 반환, 카메라 렌더 거리에 해당하는 경우에만
+	// 카메라와 빛의 좌표거리, 카메라와 빛의 Near, Far까지 고려해야함
+	DirectionalLight GetDirLights();
+	PointLight GetPointLights();
+	SpotLight GetSpotLights();
 };
 

@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "MeshRenderer.h"
 #include "Effects.h"
+#include "ShaderSetting.h"
 #include "MathHelper.h"
 #include "InstancingBuffer.h"
 
@@ -43,14 +44,9 @@ void MeshRenderer::Render()
 		
 		XMMATRIX world = transform->GetWorldMatrix();
 		XMMATRIX worldInvTranspose = MathHelper::InverseTranspose(world);
+		XMMATRIX vi = RenderManager::GetI()->cameraViewMatrix;
+		XMMATRIX pr = RenderManager::GetI()->cameraProjectionMatrix;
 		XMMATRIX worldViewProj = world * RenderManager::GetI()->cameraViewProjectionMatrix;
-
-		//Effects::NormalMapFX->SetWorld(world);
-		//Effects::NormalMapFX->SetWorldInvTranspose(worldInvTranspose);
-		//Effects::NormalMapFX->SetWorldViewProj(worldViewProj);
-		//Effects::NormalMapFX->SetWorldViewProjTex(worldViewProj * toTexSpace);
-		//Effects::NormalMapFX->SetShadowTransform(world * RenderManager::GetI()->shadowTransform);
-		//Effects::NormalMapFX->SetTexTransform(XMMatrixScaling(1.0f, 1.0f, 1.0f));
 
 		Effects::InstancedBasicFX->SetWorld(world);
 		Effects::InstancedBasicFX->SetWorldInvTranspose(worldInvTranspose);
@@ -78,18 +74,82 @@ void MeshRenderer::Render()
 			Effects::InstancedBasicFX->SetNormalMap(m_pMaterial->GetNormalMapSRV());
 		}
 
-		ShaderSetting temp;
-		temp.AlphaClip = false;
-		temp.FogEnabled = false;
-		temp.ReflectionEnabled = false;
-		temp.UseNormalMap = true;
-		temp.UseShadowMap = true;
-		temp.UseSsaoMap = true;
-		temp.UseTexture = true;
-		Effects::InstancedBasicFX->SetShaderSetting(temp);
+		Effects::InstancedBasicFX->SetShaderSetting(m_shaderSetting);
 
 		tech->GetPassByIndex(p)->Apply(0, deviceContext);
 		m_Mesh->ModelMesh.Draw(deviceContext, m_MeshSubsetIndex);
+	}
+}
+
+void MeshRenderer::RenderInstancing(shared_ptr<class InstancingBuffer>& buffer)
+{
+	if (m_Mesh == nullptr)
+		return;
+
+	auto deviceContext = Application::GetI()->GetDeviceContext();
+	ComPtr<ID3DX11EffectTechnique> tech = Effects::InstancedBasicFX->InstancingTech;
+	//Light3TexTech;
+
+	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	deviceContext->IASetInputLayout(InputLayouts::InstancedBasic.Get());
+
+	D3DX11_TECHNIQUE_DESC techDesc;
+	tech->GetDesc(&techDesc);
+
+	XMMATRIX toTexSpace(
+		0.5f, 0.0f, 0.0f, 0.0f,
+		0.0f, -0.5f, 0.0f, 0.0f,
+		0.0f, 0.0f, 1.0f, 0.0f,
+		0.5f, 0.5f, 0.0f, 1.0f);
+
+	for (uint32 p = 0; p < techDesc.Passes; ++p)
+	{
+		if (m_MeshSubsetIndex >= m_Mesh->Subsets.size())
+			break;
+
+		Transform* transform = m_pGameObject->GetComponent<Transform>();
+
+		XMMATRIX world = transform->GetWorldMatrix();
+		XMMATRIX worldInvTranspose = MathHelper::InverseTranspose(world);
+		XMMATRIX worldViewProj = world * RenderManager::GetI()->cameraViewProjectionMatrix;
+		XMMATRIX View = RenderManager::GetI()->cameraViewMatrix;
+		XMMATRIX Proj = RenderManager::GetI()->cameraProjectionMatrix;
+		XMMATRIX ViewProj = RenderManager::GetI()->cameraViewProjectionMatrix;
+
+		Effects::InstancedBasicFX->SetWorld(world);
+		Effects::InstancedBasicFX->SetWorldInvTranspose(worldInvTranspose);
+		Effects::InstancedBasicFX->SetWorldViewProj(worldViewProj);
+		Effects::InstancedBasicFX->SetWorldViewProjTex(worldViewProj * toTexSpace);
+		
+
+		Effects::InstancedBasicFX->SetView(View);
+		Effects::InstancedBasicFX->SetProj(Proj);
+		Effects::InstancedBasicFX->SetViewProj(View* Proj);
+		Effects::InstancedBasicFX->SetViewProjTex(ViewProj * toTexSpace);
+		Effects::InstancedBasicFX->SetShadowTransform(RenderManager::GetI()->shadowTransform);
+		Effects::InstancedBasicFX->SetTexTransform(XMMatrixScaling(1.0f, 1.0f, 1.0f));
+
+		if (m_pMaterial == nullptr)
+		{
+			Effects::InstancedBasicFX->SetMaterial(m_Mesh->Mat[m_MeshSubsetIndex]);
+			//Effects::NormalMapFX->SetDiffuseMap(m_Mesh->DiffuseMapSRV[subset].Get());
+			//Effects::NormalMapFX->SetNormalMap(m_Mesh->NormalMapSRV[subset].Get());
+		}
+		else
+		{
+			Effects::InstancedBasicFX->SetMaterial(m_pMaterial->Mat);
+			Effects::InstancedBasicFX->SetDiffuseMap(m_pMaterial->GetBaseMapSRV());
+			Effects::InstancedBasicFX->SetNormalMap(m_pMaterial->GetNormalMapSRV());
+		}
+
+		Effects::InstancedBasicFX->SetShaderSetting(m_shaderSetting);
+
+		tech->GetPassByIndex(p)->Apply(0, deviceContext);
+
+		buffer->PushData(deviceContext);
+
+		// 인스턴싱, ModelMesh 클래스에 InstancingDraw함수 적용
+		m_Mesh->ModelMesh.InstancingDraw(deviceContext, m_MeshSubsetIndex, buffer->GetCount());
 	}
 }
 
@@ -130,6 +190,42 @@ void MeshRenderer::RenderShadow()
 
 		tech->GetPassByIndex(p)->Apply(0, deviceContext);
 		m_Mesh->ModelMesh.Draw(deviceContext, m_MeshSubsetIndex);
+	}
+}
+
+void MeshRenderer::RenderShadowInstancing(shared_ptr<class InstancingBuffer>& buffer)
+{
+	if (m_Mesh == nullptr)
+		return;
+
+	auto deviceContext = Application::GetI()->GetDeviceContext();
+
+	ComPtr<ID3DX11EffectTechnique> tech = Effects::BuildShadowMapFX->BuildShadowMapInstancingTech;
+	ComPtr<ID3DX11EffectTechnique> alphaClippedTech = Effects::BuildShadowMapFX->BuildShadowMapAlphaClipInstancingTech;
+
+	XMMATRIX ViewProj;
+
+	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	deviceContext->IASetInputLayout(InputLayouts::InstancedBasic.Get());
+
+	D3DX11_TECHNIQUE_DESC techDesc;
+	tech->GetDesc(&techDesc);
+
+	for (uint32 p = 0; p < techDesc.Passes; ++p)
+	{
+		if (m_MeshSubsetIndex >= m_Mesh->Subsets.size())
+			break;
+
+		ViewProj = RenderManager::GetI()->directinalLightViewProjection;
+
+		Effects::BuildShadowMapFX->SetViewProj(ViewProj);
+		Effects::BuildShadowMapFX->SetTexTransform(::XMMatrixScaling(1.0f, 1.0f, 1.0f));
+
+		tech->GetPassByIndex(p)->Apply(0, deviceContext);
+
+		buffer->PushData(deviceContext);
+
+		m_Mesh->ModelMesh.InstancingDraw(deviceContext, m_MeshSubsetIndex, buffer->GetCount());
 	}
 }
 
@@ -174,108 +270,6 @@ void MeshRenderer::RenderShadowNormal()
 	}
 }
 
-void MeshRenderer::RenderInstancing(shared_ptr<class InstancingBuffer>& buffer)
-{
-	if (m_Mesh == nullptr)
-		return;
-	
-	auto deviceContext = Application::GetI()->GetDeviceContext();
-	ComPtr<ID3DX11EffectTechnique> tech = Effects::InstancedBasicFX->InstancingTech;
-	//Light3TexTech;
-	
-	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	deviceContext->IASetInputLayout(InputLayouts::InstancedBasic.Get());
-	
-	D3DX11_TECHNIQUE_DESC techDesc;
-	tech->GetDesc(&techDesc);
-	
-	XMMATRIX toTexSpace(
-		0.5f, 0.0f, 0.0f, 0.0f,
-		0.0f, -0.5f, 0.0f, 0.0f,
-		0.0f, 0.0f, 1.0f, 0.0f,
-		0.5f, 0.5f, 0.0f, 1.0f);
-	
-	for (uint32 p = 0; p < techDesc.Passes; ++p)
-	{
-		if (m_MeshSubsetIndex >= m_Mesh->Subsets.size())
-			break;
-	
-		XMMATRIX ViewProj = RenderManager::GetI()->cameraViewProjectionMatrix;
-	
-		Effects::InstancedBasicFX->SetViewProj(ViewProj);
-		Effects::InstancedBasicFX->SetViewProjTex(ViewProj * toTexSpace);
-		Effects::InstancedBasicFX->SetShadowTransform(RenderManager::GetI()->shadowTransform);
-		Effects::InstancedBasicFX->SetTexTransform(XMMatrixScaling(1.0f, 1.0f, 1.0f));
-	
-		if (m_pMaterial == nullptr)
-		{
-			Effects::InstancedBasicFX->SetMaterial(m_Mesh->Mat[m_MeshSubsetIndex]);
-			//Effects::NormalMapFX->SetDiffuseMap(m_Mesh->DiffuseMapSRV[subset].Get());
-			//Effects::NormalMapFX->SetNormalMap(m_Mesh->NormalMapSRV[subset].Get());
-		}
-		else
-		{
-			Effects::InstancedBasicFX->SetMaterial(m_pMaterial->Mat);
-			Effects::InstancedBasicFX->SetDiffuseMap(m_pMaterial->GetBaseMapSRV());
-			Effects::InstancedBasicFX->SetNormalMap(m_pMaterial->GetNormalMapSRV());
-		}
-		ShaderSetting temp;
-		temp.AlphaClip = false;
-		temp.FogEnabled = false;
-		//temp.LightCount = 1;
-		temp.ReflectionEnabled = false;
-		temp.UseNormalMap = true;
-		temp.UseShadowMap = true;
-		temp.UseSsaoMap = true;
-		temp.UseTexture = true;
-		Effects::InstancedBasicFX->SetShaderSetting(temp);
-	
-		tech->GetPassByIndex(p)->Apply(0, deviceContext);
-	
-		buffer->PushData(deviceContext);
-	
-		// 인스턴싱, ModelMesh 클래스에 InstancingDraw함수 적용
-		m_Mesh->ModelMesh.InstancingDraw(deviceContext, m_MeshSubsetIndex, buffer->GetCount());
-	}
-}
-
-
-void MeshRenderer::RenderShadowInstancing(shared_ptr<class InstancingBuffer>& buffer)
-{
-	if (m_Mesh == nullptr)
-		return;
-
-	auto deviceContext = Application::GetI()->GetDeviceContext();
-
-	ComPtr<ID3DX11EffectTechnique> tech = Effects::BuildShadowMapFX->BuildShadowMapInstancingTech;
-	ComPtr<ID3DX11EffectTechnique> alphaClippedTech = Effects::BuildShadowMapFX->BuildShadowMapAlphaClipInstancingTech;
-
-	XMMATRIX ViewProj;
-
-	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	deviceContext->IASetInputLayout(InputLayouts::InstancedBasic.Get());
-
-	D3DX11_TECHNIQUE_DESC techDesc;
-	tech->GetDesc(&techDesc);
-
-	for (uint32 p = 0; p < techDesc.Passes; ++p)
-	{
-		if (m_MeshSubsetIndex >= m_Mesh->Subsets.size())
-			break;
-
-		ViewProj = RenderManager::GetI()->directinalLightViewProjection;
-
-		Effects::BuildShadowMapFX->SetViewProj(ViewProj);
-		Effects::BuildShadowMapFX->SetTexTransform(::XMMatrixScaling(1.0f, 1.0f, 1.0f));
-
-		tech->GetPassByIndex(p)->Apply(0, deviceContext);
-
-		buffer->PushData(deviceContext);
-
-		m_Mesh->ModelMesh.InstancingDraw(deviceContext, m_MeshSubsetIndex, buffer->GetCount());
-	}
-}
-
 void MeshRenderer::RenderShadowNormalInstancing(shared_ptr<class InstancingBuffer>& buffer)
 {
 	if (m_Mesh == nullptr)
@@ -285,7 +279,7 @@ void MeshRenderer::RenderShadowNormalInstancing(shared_ptr<class InstancingBuffe
 	ComPtr<ID3DX11EffectTechnique> tech = Effects::SsaoNormalDepthFX->NormalDepthInstancingTech;
 
 	XMMATRIX View;
-	XMMATRIX ViewProj;
+	XMMATRIX Proj;
 
 	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	deviceContext->IASetInputLayout(InputLayouts::InstancedBasic.Get());
@@ -298,10 +292,10 @@ void MeshRenderer::RenderShadowNormalInstancing(shared_ptr<class InstancingBuffe
 			break;
 
 		View = RenderManager::GetI()->cameraViewMatrix;
-		ViewProj = RenderManager::GetI()->cameraViewProjectionMatrix;
+		Proj = RenderManager::GetI()->cameraProjectionMatrix;
 
 		Effects::SsaoNormalDepthFX->SetView(View);
-		Effects::SsaoNormalDepthFX->SetViewProj(ViewProj);
+		Effects::SsaoNormalDepthFX->SetProj(Proj);
 		Effects::SsaoNormalDepthFX->SetTexTransform(XMMatrixScaling(1.0f, 1.0f, 1.0f));
 
 		tech->GetPassByIndex(p)->Apply(0, deviceContext);
@@ -383,10 +377,53 @@ void MeshRenderer::OnInspectorGUI()
 		}
 	}
 
-	//ShaderSetting 설정 부분
+	//ShaderSetting
+	{
+		bool is = m_shaderSetting.UseTexture;
+		if (ImGui::Checkbox("UseTexture", &is))
+		{
+			m_shaderSetting.UseTexture = is ? 1 : 0;
+		}
+
+		is = m_shaderSetting.AlphaClip;
+		if (ImGui::Checkbox("AlphaClip", &is))
+		{
+			m_shaderSetting.AlphaClip = is ? 1 : 0;
+		}
+		
+		is = m_shaderSetting.UseNormalMap;
+		if (ImGui::Checkbox("UseNormalMap", &is))
+		{
+			m_shaderSetting.UseNormalMap = is ? 1 : 0;
+		}
+
+		is = m_shaderSetting.UseShadowMap;
+		if (ImGui::Checkbox("UseShadowMap", &is))
+		{
+			m_shaderSetting.UseShadowMap = is ? 1 : 0;
+		}
+
+		is = m_shaderSetting.UseSsaoMap;
+		if (ImGui::Checkbox("UseSsaoMap", &is))
+		{
+			m_shaderSetting.UseSsaoMap = is ? 1 : 0;
+		}
+
+		is = m_shaderSetting.ReflectionEnabled;
+		if (ImGui::Checkbox("ReflectionEnabled", &is))
+		{
+			m_shaderSetting.ReflectionEnabled = is ? 1 : 0;
+		}
+
+		is = m_shaderSetting.FogEnabled;
+		if (ImGui::Checkbox("FogEnabled", &is))
+		{
+			m_shaderSetting.FogEnabled = is ? 1 : 0;
+		}
+	}
+
 	
 }
-
 
 GENERATE_COMPONENT_FUNC_TOJSON(MeshRenderer)
 {
@@ -396,6 +433,15 @@ GENERATE_COMPONENT_FUNC_TOJSON(MeshRenderer)
 	j["meshPath"] = wstring_to_string(m_MeshPath);
 	j["materialPath"] = wstring_to_string(m_MaterialPath);
 	j["subsetIndex"] = m_MeshSubsetIndex; 
+
+	// ShaderSetting
+	j["UseTexture"] = m_shaderSetting.UseTexture;
+	j["AlphaClip"] = m_shaderSetting.AlphaClip;
+	j["UseNormalMap"] = m_shaderSetting.UseNormalMap;
+	j["UseShadowMap"] = m_shaderSetting.UseShadowMap;
+	j["UseSsaoMap"] = m_shaderSetting.UseSsaoMap;
+	j["ReflectionEnabled"] = m_shaderSetting.ReflectionEnabled;
+	j["FogEnabled"] = m_shaderSetting.FogEnabled;
 	return j;
 }
 
@@ -418,5 +464,35 @@ GENERATE_COMPONENT_FUNC_FROMJSON(MeshRenderer)
 	if (j.contains("subsetIndex"))
 	{
 		m_MeshSubsetIndex = j.at("subsetIndex").get<int>(); 
+	}
+
+	// ShaderSetting
+	if (j.contains("UseTexture"))
+	{
+		m_shaderSetting.UseTexture = j.at("UseTexture").get<int>();
+	}
+	if (j.contains("AlphaClip"))
+	{
+		m_shaderSetting.AlphaClip = j.at("AlphaClip").get<int>();
+	}
+	if (j.contains("UseNormalMap"))
+	{
+		m_shaderSetting.UseNormalMap = j.at("UseNormalMap").get<int>();
+	}
+	if (j.contains("UseShadowMap"))
+	{
+		m_shaderSetting.UseShadowMap = j.at("UseShadowMap").get<int>();
+	}
+	if (j.contains("UseSsaoMap"))
+	{
+		m_shaderSetting.UseSsaoMap = j.at("UseSsaoMap").get<int>();
+	}
+	if (j.contains("ReflectionEnabled"))
+	{
+		m_shaderSetting.ReflectionEnabled = j.at("ReflectionEnabled").get<int>();
+	}
+	if (j.contains("FogEnabled"))
+	{
+		m_shaderSetting.FogEnabled = j.at("FogEnabled").get<int>();
 	}
 }
