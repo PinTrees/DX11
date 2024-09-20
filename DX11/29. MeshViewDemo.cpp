@@ -213,14 +213,15 @@ void MeshViewDemo::OnEditorSceneRender(ID3D11RenderTargetView* renderTargetView,
 	//Effects::NormalMapFX->SetShadowMap(shadowMap->DepthMapSRV().Get());
 	//Effects::NormalMapFX->SetSsaoMap(ssao->AmbientSRV().Get());
 
-	Effects::InstancedBasicFX->SetDirLights(_dirLights,3);
-	//Effects::InstancedBasicFX->SetDirLightCount(1);
+	//Effects::InstancedBasicFX->SetDirLights(_dirLights,3);
+
 	vector<DirectionalLight>& dirLight = LightManager::GetI()->GetDirLights();
 	vector<PointLight>& pointLight = LightManager::GetI()->GetPointLights();
 	vector<SpotLight>& spotLight = LightManager::GetI()->GetSpotLights();
-	//Effects::InstancedBasicFX->SetDirLights(dirLight.data(), dirLight.size());
-	//Effects::InstancedBasicFX->SetPointLights(pointLight.data(), pointLight.size());
-	//Effects::InstancedBasicFX->SetSpotLights(spotLight.data(), spotLight.size());
+
+	if (dirLight.size() > 0) Effects::InstancedBasicFX->SetDirLights(dirLight.data(), dirLight.size());
+	if (pointLight.size() > 0) Effects::InstancedBasicFX->SetPointLights(pointLight.data(), pointLight.size());
+	if (spotLight.size() > 0) Effects::InstancedBasicFX->SetSpotLights(spotLight.data(), spotLight.size());
 
 	Effects::InstancedBasicFX->SetEyePosW(camera->GetPosition());
 	Effects::InstancedBasicFX->SetCubeMap(_sky->CubeMapSRV().Get());

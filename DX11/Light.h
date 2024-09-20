@@ -41,12 +41,17 @@ public:
 		return make_tuple((uint64)&m_directionalDesc, (uint64)&m_pointDesc, (uint64)&m_spotDesc);
 	}
 
+	virtual void Awake() override;
 	virtual void Update() override;
 	virtual void LateUpdate() override;
 	virtual void FixedUpdate() override;
 	virtual void Render() override;
 	virtual void OnInspectorGUI() override;
 	virtual void OnDestroy() override;
+
+	void SetDirLight(DirectionalLight light) { m_directionalDesc = light; }
+	void SetPointLight(PointLight light) { m_pointDesc = light; }
+	void SetSpotLight(SpotLight light) { m_spotDesc = light; }
 
 	DirectionalLight GetDirLight() { return m_directionalDesc; }
 	PointLight GetPointLight() { return m_pointDesc; }

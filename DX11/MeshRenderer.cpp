@@ -58,10 +58,10 @@ void MeshRenderer::Render()
 
 		if (m_pMaterial == nullptr)
 		{
-			ShaderSetting s;
+			ShaderSetting shaderSetting;
 			//Effects::NormalMapFX->SetMaterial(m_Mesh->Mat[m_MeshSubsetIndex]);
 			Effects::InstancedBasicFX->SetMaterial(m_Mesh->Mat[m_MeshSubsetIndex]);
-			Effects::InstancedBasicFX->SetShaderSetting(s);
+			Effects::InstancedBasicFX->SetShaderSetting(shaderSetting);
 			//Effects::NormalMapFX->SetDiffuseMap(m_Mesh->DiffuseMapSRV[subset].Get());
 			//Effects::NormalMapFX->SetNormalMap(m_Mesh->NormalMapSRV[subset].Get());
 		}
@@ -133,9 +133,9 @@ void MeshRenderer::RenderInstancing(shared_ptr<class InstancingBuffer>& buffer)
 
 		if (m_pMaterial == nullptr)
 		{
-			ShaderSetting s;
+			ShaderSetting shaderSetting;
 			Effects::InstancedBasicFX->SetMaterial(m_Mesh->Mat[m_MeshSubsetIndex]);
-			Effects::InstancedBasicFX->SetShaderSetting(s);
+			Effects::InstancedBasicFX->SetShaderSetting(shaderSetting);
 			//Effects::NormalMapFX->SetDiffuseMap(m_Mesh->DiffuseMapSRV[subset].Get());
 			//Effects::NormalMapFX->SetNormalMap(m_Mesh->NormalMapSRV[subset].Get());
 		}
