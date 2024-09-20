@@ -168,6 +168,7 @@ void MeshViewDemo::OnEditorSceneRender(ID3D11RenderTargetView* renderTargetView,
 
 	auto viewport = RenderManager::GetI()->EditorViewport;
 
+	// Light수 만큼 ShadowMap을 그려야함.
 	Effects::BuildShadowMapFX->SetEyePosW(camera->GetPosition());
 	Effects::BuildShadowMapFX->SetViewProj(RenderManager::GetI()->directinalLightViewProjection);
 

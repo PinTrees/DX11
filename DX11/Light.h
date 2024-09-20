@@ -20,14 +20,14 @@ private:
 	DirectionalLight m_directionalDesc;
 	PointLight m_pointDesc;
 	SpotLight m_spotDesc;
-	
-	XMVECTOR up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 
 	XMFLOAT2 m_dirLightLen = XMFLOAT2(20.f,20.f);
 	XMFLOAT2 m_spotLightLen = XMFLOAT2(20.f, 20.f);
 
 	XMFLOAT4X4 m_lightView;
 	XMFLOAT4X4 m_lightProj;
+
+	// shadowTransform => world * (lightV * lightP * toTexSpace)
 
 	void ProjUpdate();
 	string GetStringLightType(LightType type);

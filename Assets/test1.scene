@@ -4,14 +4,14 @@
             "components": [
                 {
                     "m_EulerAngles": [
-                        0.0,
+                        -0.0,
                         -1.0347278589506459e-13,
-                        0.18500490486621857
+                        -0.0
                     ],
                     "m_LocalEulerAngles": [
                         0.0,
                         0.0,
-                        0.18500490486621857
+                        0.0
                     ],
                     "m_LocalPosition": [
                         0.0,
@@ -19,15 +19,15 @@
                         0.0
                     ],
                     "m_LocalRotation": {
-                        "w": 0.9957246780395508,
+                        "w": 1.0,
                         "x": 0.0,
                         "y": 0.0,
-                        "z": 0.09237059205770493
+                        "z": 0.0
                     },
                     "m_LocalScale": [
-                        1.9500000476837158,
-                        1.1399999856948853,
-                        2.069999933242798
+                        1.0,
+                        2.380000114440918,
+                        1.0
                     ],
                     "m_Position": [
                         0.0,
@@ -35,9 +35,9 @@
                         0.0
                     ],
                     "m_Scale": [
-                        1.9500000476837158,
-                        1.1399999856948853,
-                        2.069999933242798
+                        1.0,
+                        2.380000114440918,
+                        1.0
                     ],
                     "type": "Transform"
                 },
@@ -47,26 +47,6 @@
                     "shaderPath": "",
                     "subsetIndex": 0,
                     "type": "MeshRenderer"
-                },
-                {
-                    "offset": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "size": [
-                        141.0,
-                        11.0,
-                        124.0
-                    ],
-                    "type": "BoxCollider"
-                },
-                {
-                    "angularDamping": 0.9900000095367432,
-                    "isKinematic": true,
-                    "m_LinearDamping": 0.9900000095367432,
-                    "mass": 0.0,
-                    "type": "RigidBody"
                 }
             ],
             "name": "GameObject"
@@ -85,9 +65,9 @@
                         0.0
                     ],
                     "m_LocalPosition": [
-                        45.099998474121094,
-                        80.69999694824219,
-                        5.800000190734863
+                        0.0,
+                        53.20000076293945,
+                        0.0
                     ],
                     "m_LocalRotation": {
                         "w": 1.0,
@@ -101,9 +81,9 @@
                         1.0
                     ],
                     "m_Position": [
-                        45.099998474121094,
-                        80.69999694824219,
-                        5.800000190734863
+                        0.0,
+                        53.20000076293945,
+                        0.0
                     ],
                     "m_Scale": [
                         1.0,
@@ -118,145 +98,6 @@
                     "shaderPath": "",
                     "subsetIndex": 0,
                     "type": "MeshRenderer"
-                },
-                {
-                    "offset": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "size": [
-                        68.0,
-                        29.0,
-                        67.0
-                    ],
-                    "type": "BoxCollider"
-                },
-                {
-                    "angularDamping": 0.9900000095367432,
-                    "isKinematic": false,
-                    "m_LinearDamping": 0.9900000095367432,
-                    "mass": 50.0,
-                    "type": "RigidBody"
-                }
-            ],
-            "name": "GameObject"
-        },
-        {
-            "components": [
-                {
-                    "m_EulerAngles": [
-                        -0.0,
-                        -1.0347278589506459e-13,
-                        -0.0
-                    ],
-                    "m_LocalEulerAngles": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "m_LocalPosition": [
-                        -18.299999237060547,
-                        38.099998474121094,
-                        0.0
-                    ],
-                    "m_LocalRotation": {
-                        "w": 1.0,
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "m_LocalScale": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "m_Position": [
-                        -18.299999237060547,
-                        38.099998474121094,
-                        0.0
-                    ],
-                    "m_Scale": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "type": "Transform"
-                },
-                {
-                    "radius": 16.0,
-                    "type": "SphereCollider"
-                },
-                {
-                    "angularDamping": 0.9900000095367432,
-                    "isKinematic": false,
-                    "m_LinearDamping": 0.9900000095367432,
-                    "mass": 10.0,
-                    "type": "RigidBody"
-                }
-            ],
-            "name": "GameObject"
-        },
-        {
-            "components": [
-                {
-                    "m_EulerAngles": [
-                        -0.0,
-                        -1.0347278589506459e-13,
-                        -0.0
-                    ],
-                    "m_LocalEulerAngles": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "m_LocalPosition": [
-                        -53.70000076293945,
-                        29.799999237060547,
-                        0.0
-                    ],
-                    "m_LocalRotation": {
-                        "w": 1.0,
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "m_LocalScale": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "m_Position": [
-                        -53.70000076293945,
-                        29.799999237060547,
-                        0.0
-                    ],
-                    "m_Scale": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "type": "Transform"
-                },
-                {
-                    "offset": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "size": [
-                        25.0,
-                        25.0,
-                        25.0
-                    ],
-                    "type": "BoxCollider"
-                },
-                {
-                    "angularDamping": 0.9900000095367432,
-                    "isKinematic": false,
-                    "m_LinearDamping": 0.9900000095367432,
-                    "mass": 8.0,
-                    "type": "RigidBody"
                 }
             ],
             "name": "GameObject"

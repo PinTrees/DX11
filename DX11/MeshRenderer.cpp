@@ -50,6 +50,7 @@ void MeshRenderer::Render()
 
 		Effects::InstancedBasicFX->SetWorld(world);
 		Effects::InstancedBasicFX->SetWorldInvTranspose(worldInvTranspose);
+		Effects::InstancedBasicFX->SetViewProj(RenderManager::GetI()->cameraViewProjectionMatrix);
 		Effects::InstancedBasicFX->SetWorldViewProj(worldViewProj);
 		Effects::InstancedBasicFX->SetWorldViewProjTex(worldViewProj * toTexSpace);
 		Effects::InstancedBasicFX->SetShadowTransform(world * RenderManager::GetI()->shadowTransform);
@@ -57,9 +58,10 @@ void MeshRenderer::Render()
 
 		if (m_pMaterial == nullptr)
 		{
+			ShaderSetting s;
 			//Effects::NormalMapFX->SetMaterial(m_Mesh->Mat[m_MeshSubsetIndex]);
 			Effects::InstancedBasicFX->SetMaterial(m_Mesh->Mat[m_MeshSubsetIndex]);
-
+			Effects::InstancedBasicFX->SetShaderSetting(s);
 			//Effects::NormalMapFX->SetDiffuseMap(m_Mesh->DiffuseMapSRV[subset].Get());
 			//Effects::NormalMapFX->SetNormalMap(m_Mesh->NormalMapSRV[subset].Get());
 		}
@@ -72,9 +74,10 @@ void MeshRenderer::Render()
 			Effects::InstancedBasicFX->SetMaterial(m_pMaterial->Mat);
 			Effects::InstancedBasicFX->SetDiffuseMap(m_pMaterial->GetBaseMapSRV());
 			Effects::InstancedBasicFX->SetNormalMap(m_pMaterial->GetNormalMapSRV());
+			Effects::InstancedBasicFX->SetShaderSetting(m_pMaterial->GetShaderSetting());
 		}
 
-		Effects::InstancedBasicFX->SetShaderSetting(m_shaderSetting);
+		
 
 		tech->GetPassByIndex(p)->Apply(0, deviceContext);
 		m_Mesh->ModelMesh.Draw(deviceContext, m_MeshSubsetIndex);
@@ -130,7 +133,9 @@ void MeshRenderer::RenderInstancing(shared_ptr<class InstancingBuffer>& buffer)
 
 		if (m_pMaterial == nullptr)
 		{
+			ShaderSetting s;
 			Effects::InstancedBasicFX->SetMaterial(m_Mesh->Mat[m_MeshSubsetIndex]);
+			Effects::InstancedBasicFX->SetShaderSetting(s);
 			//Effects::NormalMapFX->SetDiffuseMap(m_Mesh->DiffuseMapSRV[subset].Get());
 			//Effects::NormalMapFX->SetNormalMap(m_Mesh->NormalMapSRV[subset].Get());
 		}
@@ -139,9 +144,10 @@ void MeshRenderer::RenderInstancing(shared_ptr<class InstancingBuffer>& buffer)
 			Effects::InstancedBasicFX->SetMaterial(m_pMaterial->Mat);
 			Effects::InstancedBasicFX->SetDiffuseMap(m_pMaterial->GetBaseMapSRV());
 			Effects::InstancedBasicFX->SetNormalMap(m_pMaterial->GetNormalMapSRV());
+			Effects::InstancedBasicFX->SetShaderSetting(m_pMaterial->GetShaderSetting());
 		}
 
-		Effects::InstancedBasicFX->SetShaderSetting(m_shaderSetting);
+		
 
 		tech->GetPassByIndex(p)->Apply(0, deviceContext);
 
@@ -393,53 +399,6 @@ void MeshRenderer::OnInspectorGUI()
 			}
 		}
 	}
-
-	//ShaderSetting
-	{
-		bool is = m_shaderSetting.UseTexture;
-		if (ImGui::Checkbox("UseTexture", &is))
-		{
-			m_shaderSetting.UseTexture = is ? 1 : 0;
-		}
-
-		is = m_shaderSetting.AlphaClip;
-		if (ImGui::Checkbox("AlphaClip", &is))
-		{
-			m_shaderSetting.AlphaClip = is ? 1 : 0;
-		}
-		
-		is = m_shaderSetting.UseNormalMap;
-		if (ImGui::Checkbox("UseNormalMap", &is))
-		{
-			m_shaderSetting.UseNormalMap = is ? 1 : 0;
-		}
-
-		is = m_shaderSetting.UseShadowMap;
-		if (ImGui::Checkbox("UseShadowMap", &is))
-		{
-			m_shaderSetting.UseShadowMap = is ? 1 : 0;
-		}
-
-		is = m_shaderSetting.UseSsaoMap;
-		if (ImGui::Checkbox("UseSsaoMap", &is))
-		{
-			m_shaderSetting.UseSsaoMap = is ? 1 : 0;
-		}
-
-		is = m_shaderSetting.ReflectionEnabled;
-		if (ImGui::Checkbox("ReflectionEnabled", &is))
-		{
-			m_shaderSetting.ReflectionEnabled = is ? 1 : 0;
-		}
-
-		is = m_shaderSetting.FogEnabled;
-		if (ImGui::Checkbox("FogEnabled", &is))
-		{
-			m_shaderSetting.FogEnabled = is ? 1 : 0;
-		}
-	}
-
-	
 }
 
 GENERATE_COMPONENT_FUNC_TOJSON(MeshRenderer)
@@ -450,15 +409,6 @@ GENERATE_COMPONENT_FUNC_TOJSON(MeshRenderer)
 	j["meshPath"] = wstring_to_string(m_MeshPath);
 	j["materialPath"] = wstring_to_string(m_MaterialPath);
 	j["subsetIndex"] = m_MeshSubsetIndex; 
-
-	// ShaderSetting
-	j["UseTexture"] = m_shaderSetting.UseTexture;
-	j["AlphaClip"] = m_shaderSetting.AlphaClip;
-	j["UseNormalMap"] = m_shaderSetting.UseNormalMap;
-	j["UseShadowMap"] = m_shaderSetting.UseShadowMap;
-	j["UseSsaoMap"] = m_shaderSetting.UseSsaoMap;
-	j["ReflectionEnabled"] = m_shaderSetting.ReflectionEnabled;
-	j["FogEnabled"] = m_shaderSetting.FogEnabled;
 	return j;
 }
 
@@ -481,35 +431,5 @@ GENERATE_COMPONENT_FUNC_FROMJSON(MeshRenderer)
 	if (j.contains("subsetIndex"))
 	{
 		m_MeshSubsetIndex = j.at("subsetIndex").get<int>(); 
-	}
-
-	// ShaderSetting
-	if (j.contains("UseTexture"))
-	{
-		m_shaderSetting.UseTexture = j.at("UseTexture").get<int>();
-	}
-	if (j.contains("AlphaClip"))
-	{
-		m_shaderSetting.AlphaClip = j.at("AlphaClip").get<int>();
-	}
-	if (j.contains("UseNormalMap"))
-	{
-		m_shaderSetting.UseNormalMap = j.at("UseNormalMap").get<int>();
-	}
-	if (j.contains("UseShadowMap"))
-	{
-		m_shaderSetting.UseShadowMap = j.at("UseShadowMap").get<int>();
-	}
-	if (j.contains("UseSsaoMap"))
-	{
-		m_shaderSetting.UseSsaoMap = j.at("UseSsaoMap").get<int>();
-	}
-	if (j.contains("ReflectionEnabled"))
-	{
-		m_shaderSetting.ReflectionEnabled = j.at("ReflectionEnabled").get<int>();
-	}
-	if (j.contains("FogEnabled"))
-	{
-		m_shaderSetting.FogEnabled = j.at("FogEnabled").get<int>();
 	}
 }

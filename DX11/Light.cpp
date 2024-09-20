@@ -29,35 +29,29 @@ void Light::Update()
 
 void Light::LateUpdate()
 {
-	XMVECTOR pos;
-	XMVECTOR dir;
-	XMVECTOR target;
+	XMVECTOR pos = m_pGameObject->GetTransform()->GetPosition();
+	XMVECTOR dir = m_pGameObject->GetTransform()->GetLook();
+	XMVECTOR target = pos + dir;
+	XMVECTOR up = m_pGameObject->GetTransform()->GetUp();
 	XMMATRIX V;
 
 	switch (m_lightType)
 	{
 	case LightType::Directional:
-		pos = m_pGameObject->GetTransform()->GetPosition();
-		dir = XMLoadFloat3(&m_directionalDesc.Direction);
-		target = pos + dir;
-		V = ::XMMatrixLookAtLH(pos, target, up);
+		XMStoreFloat3(&m_directionalDesc.Direction, dir);
 		break;
 	case LightType::Point:
-		pos = m_pGameObject->GetTransform()->GetPosition() + m_pointDesc.Position;
-		dir = XMVECTOR{ 0.0f, 0.0f, 1.0f };
-		target = pos + dir;
-		V = ::XMMatrixLookAtLH(pos, target, up);
+		XMStoreFloat3(&m_pointDesc.Position, pos);
 		break;
 	case LightType::Spot:
-		pos = m_pGameObject->GetTransform()->GetPosition() + m_pointDesc.Position;
-		dir = XMLoadFloat3(&m_spotDesc.Direction);
-		target = pos + dir;
-		V = ::XMMatrixLookAtLH(pos, target, up);
+		XMStoreFloat3(&m_spotDesc.Position, pos);
+		XMStoreFloat3(&m_spotDesc.Direction, dir);
 		break;
 	default:
 		break;
 	}
 
+	V = ::XMMatrixLookAtLH(pos, target, up);
 	::XMStoreFloat4x4(&m_lightView, V);
 }
 
@@ -124,7 +118,7 @@ void Light::OnInspectorGUI()
 		ImGui::EndCombo();
 	}
 
-	bool ProjectionChanged = false;
+	bool ProjectionChanged = false; // ProjectionMatrix를 조정하는 변수값이 변경 시
 
 	// LightType의 값을 조정하는 GUI
 	switch (m_lightType)
@@ -147,8 +141,6 @@ void Light::OnInspectorGUI()
 		ImGui::DragFloat4("##Diffuse", reinterpret_cast<float*>(&m_directionalDesc.Diffuse), 0.1f);
 		ImGui::Text("Specular");
 		ImGui::DragFloat4("##Specular", reinterpret_cast<float*>(&m_directionalDesc.Specular), 0.1f);
-		ImGui::Text("Direction");
-		ImGui::DragFloat3("##Direction", reinterpret_cast<float*>(&m_directionalDesc.Direction), 0.1f);
 		break;
 	case LightType::Point:
 		ImGui::Text("Ambient");
@@ -157,8 +149,6 @@ void Light::OnInspectorGUI()
 		ImGui::DragFloat4("##Diffuse", reinterpret_cast<float*>(&m_pointDesc.Diffuse), 0.1f);
 		ImGui::Text("Specular");
 		ImGui::DragFloat4("##Specular", reinterpret_cast<float*>(&m_pointDesc.Specular), 0.1f);
-		ImGui::Text("Position");
-		ImGui::DragFloat3("##Position", reinterpret_cast<float*>(&m_pointDesc.Position), 0.1f);
 		ImGui::Text("Range");
 		if (ImGui::DragFloat("##Range", reinterpret_cast<float*>(&m_pointDesc.Range), 0.1f))
 		{
@@ -184,15 +174,11 @@ void Light::OnInspectorGUI()
 		ImGui::DragFloat4("##Diffuse", reinterpret_cast<float*>(&m_spotDesc.Diffuse), 0.1f);
 		ImGui::Text("Specular");
 		ImGui::DragFloat4("##Specular", reinterpret_cast<float*>(&m_spotDesc.Specular), 0.1f);
-		ImGui::Text("Position");
-		ImGui::DragFloat3("##Position", reinterpret_cast<float*>(&m_spotDesc.Position), 0.1f);
 		ImGui::Text("Range");
 		if(ImGui::DragFloat("##Range", reinterpret_cast<float*>(&m_spotDesc.Range), 0.1f))
 		{
 			ProjectionChanged = true;
 		}
-		ImGui::Text("Direction");
-		ImGui::DragFloat3("##Direction", reinterpret_cast<float*>(&m_spotDesc.Direction), 0.1f);
 		ImGui::Text("Spot");
 		ImGui::DragFloat("##Spot", reinterpret_cast<float*>(&m_spotDesc.Spot), 0.1f);
 		break;

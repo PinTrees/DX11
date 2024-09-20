@@ -173,7 +173,7 @@ VertexOut VS_Instancing(VertexIn_Instancing vin)
 	// Generate projective tex-coords to project SSAO map onto scene.
     vout.SsaoPosH = mul(vout.PosH, gViewProjTex);
 
-    float4x4 wvp = mul(vin.World, gViewProj);
+    float4x4 wvp = mul(gWorld, gViewProj);
     
     vout.PosH = mul(float4(vin.PosL, 1.0f), wvp);
     //vout.PosH = mul(float4(vout.PosW, 1.0f), gViewProj);

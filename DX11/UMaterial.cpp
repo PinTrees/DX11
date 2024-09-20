@@ -158,7 +158,59 @@ void UMaterial::OnInspectorGUI()
 	changed |= ImGui::ColorEdit4("Specular", reinterpret_cast<float*>(&Specular));
 	changed |= ImGui::ColorEdit4("Reflect", reinterpret_cast<float*>(&Reflect));
 
-	if (changed) 
+	//ShaderSetting
+	{
+		bool is = m_shaderSetting.UseTexture;
+		if (ImGui::Checkbox("UseTexture", &is))
+		{
+			m_shaderSetting.UseTexture = is ? 1 : 0;
+			changed = true;
+		}
+
+		is = m_shaderSetting.AlphaClip;
+		if (ImGui::Checkbox("AlphaClip", &is))
+		{
+			m_shaderSetting.AlphaClip = is ? 1 : 0;
+			changed = true;
+		}
+
+		is = m_shaderSetting.UseNormalMap;
+		if (ImGui::Checkbox("UseNormalMap", &is))
+		{
+			m_shaderSetting.UseNormalMap = is ? 1 : 0;
+			changed = true;
+		}
+
+		is = m_shaderSetting.UseShadowMap;
+		if (ImGui::Checkbox("UseShadowMap", &is))
+		{
+			m_shaderSetting.UseShadowMap = is ? 1 : 0;
+			changed = true;
+		}
+
+		is = m_shaderSetting.UseSsaoMap;
+		if (ImGui::Checkbox("UseSsaoMap", &is))
+		{
+			m_shaderSetting.UseSsaoMap = is ? 1 : 0;
+			changed = true;
+		}
+
+		is = m_shaderSetting.ReflectionEnabled;
+		if (ImGui::Checkbox("ReflectionEnabled", &is))
+		{
+			m_shaderSetting.ReflectionEnabled = is ? 1 : 0;
+			changed = true;
+		}
+
+		is = m_shaderSetting.FogEnabled;
+		if (ImGui::Checkbox("FogEnabled", &is))
+		{
+			m_shaderSetting.FogEnabled = is ? 1 : 0;
+			changed = true;
+		}
+	}
+
+	if (changed)
 	{
 		UMaterial::Save(this);
 		Mat.Ambient = Ambient;
@@ -181,6 +233,14 @@ void from_json(const json& j, UMaterial& m)
 	m.Specular = XMFLOAT4{ specular[0], specular[1], specular[2], specular[3] };
 	auto reflect = j.at("Reflect").get<std::vector<float>>();
 	m.Reflect = XMFLOAT4{ reflect[0], reflect[1], reflect[2], reflect[3] };
+
+	m.m_shaderSetting.UseTexture = j.at("UseTexture").get<int>();
+	m.m_shaderSetting.AlphaClip = j.at("AlphaClip").get<int>();
+	m.m_shaderSetting.UseNormalMap = j.at("UseNormalMap").get<int>();
+	m.m_shaderSetting.UseShadowMap = j.at("UseShadowMap").get<int>();
+	m.m_shaderSetting.UseSsaoMap = j.at("UseSsaoMap").get<int>();
+	m.m_shaderSetting.ReflectionEnabled = j.at("ReflectionEnabled").get<int>();
+	m.m_shaderSetting.FogEnabled = j.at("FogEnabled").get<int>();
 }
 
 void to_json(json& j, const UMaterial& m)
@@ -193,6 +253,15 @@ void to_json(json& j, const UMaterial& m)
 		{ "Ambient", { m.Ambient.x, m.Ambient.y, m.Ambient.z, m.Ambient.w } },
 		{ "Diffuse", { m.Diffuse.x, m.Diffuse.y, m.Diffuse.z, m.Diffuse.w } },
 		{ "Specular", { m.Specular.x, m.Specular.y, m.Specular.z, m.Specular.w } },
-		{ "Reflect", { m.Reflect.x, m.Reflect.y, m.Reflect.z, m.Reflect.w } }
+		{ "Reflect", { m.Reflect.x, m.Reflect.y, m.Reflect.z, m.Reflect.w } },
+
+		// ShaderSetting
+		{ "UseTexture",m.m_shaderSetting.UseTexture },
+		{ "AlphaClip",m.m_shaderSetting.AlphaClip },
+		{ "UseNormalMap",m.m_shaderSetting.UseNormalMap },
+		{ "UseShadowMap",m.m_shaderSetting.UseShadowMap },
+		{ "UseSsaoMap",m.m_shaderSetting.UseSsaoMap },
+		{ "ReflectionEnabled",m.m_shaderSetting.ReflectionEnabled },
+		{ "FogEnabled",m.m_shaderSetting.FogEnabled }
 	};
 }

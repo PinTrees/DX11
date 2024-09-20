@@ -3,6 +3,16 @@
 
 SINGLE_BODY(LightManager)
 
+LightManager::LightManager()
+{
+
+}
+
+LightManager::~LightManager()
+{
+
+}
+
 void LightManager::Init()
 {
 	

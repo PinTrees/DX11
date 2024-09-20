@@ -1,4 +1,5 @@
 {
+    "AlphaClip": 0,
     "Ambient": [
         1.0,
         1.0,
@@ -12,18 +13,24 @@
         1.0,
         1.0
     ],
+    "FogEnabled": 0,
     "NormalMapPath": "Assets\\Art\\ENV\\Rock\\Mossy_rock_var7-8_normal.png",
     "Reflect": [
         0.0,
         0.0,
         0.0,
-        1.0
+        0.0
     ],
+    "ReflectionEnabled": 0,
     "ResourcePath": "Assets\\Art\\ENV\\New Material.mat",
     "Specular": [
         0.0,
         0.0,
         0.0,
         1.0
-    ]
+    ],
+    "UseNormalMap": 0,
+    "UseShadowMap": 0,
+    "UseSsaoMap": 0,
+    "UseTexture": 0
 }

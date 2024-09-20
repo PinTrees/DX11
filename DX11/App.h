@@ -36,7 +36,7 @@ public:
 	virtual void OnMouseMove(WPARAM btnState, int32 x, int32 y){ }
 
 	void SetScreenSize(UINT width, UINT height);
-
+	Vec2 GetScreenSize() { return Vec2(_clientWidth, _clientHeight); }
 protected:
 	bool InitMainWindow();
 	bool InitDirect3D();
