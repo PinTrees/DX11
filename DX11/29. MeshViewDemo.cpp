@@ -9,6 +9,7 @@
 #include "ShadowMap.h"
 #include "Ssao.h"
 #include "EditorCamera.h"
+#include "LightManager.h"
 
 MeshViewDemo::MeshViewDemo(HINSTANCE hInstance)
 	: App(hInstance)
@@ -212,7 +213,14 @@ void MeshViewDemo::OnEditorSceneRender(ID3D11RenderTargetView* renderTargetView,
 	//Effects::NormalMapFX->SetSsaoMap(ssao->AmbientSRV().Get());
 
 	Effects::InstancedBasicFX->SetDirLights(_dirLights,3);
-	Effects::InstancedBasicFX->SetLightCount(1);
+	//Effects::InstancedBasicFX->SetDirLightCount(1);
+	vector<DirectionalLight>& dirLight = LightManager::GetI()->GetDirLights();
+	vector<PointLight>& pointLight = LightManager::GetI()->GetPointLights();
+	vector<SpotLight>& spotLight = LightManager::GetI()->GetSpotLights();
+	//Effects::InstancedBasicFX->SetDirLights(dirLight.data(), dirLight.size());
+	//Effects::InstancedBasicFX->SetPointLights(pointLight.data(), pointLight.size());
+	//Effects::InstancedBasicFX->SetSpotLights(spotLight.data(), spotLight.size());
+
 	Effects::InstancedBasicFX->SetEyePosW(camera->GetPosition());
 	Effects::InstancedBasicFX->SetCubeMap(_sky->CubeMapSRV().Get());
 	Effects::InstancedBasicFX->SetShadowMap(shadowMap->DepthMapSRV().Get());

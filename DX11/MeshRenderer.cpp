@@ -120,7 +120,6 @@ void MeshRenderer::RenderInstancing(shared_ptr<class InstancingBuffer>& buffer)
 		Effects::InstancedBasicFX->SetWorldInvTranspose(worldInvTranspose);
 		Effects::InstancedBasicFX->SetWorldViewProj(worldViewProj);
 		Effects::InstancedBasicFX->SetWorldViewProjTex(worldViewProj * toTexSpace);
-		
 
 		Effects::InstancedBasicFX->SetView(View);
 		Effects::InstancedBasicFX->SetProj(Proj);
@@ -290,6 +289,24 @@ void MeshRenderer::RenderShadowNormalInstancing(shared_ptr<class InstancingBuffe
 	{
 		if (m_MeshSubsetIndex >= m_Mesh->Subsets.size())
 			break;
+
+		XMMATRIX world;
+		XMMATRIX worldInvTranspose;
+		XMMATRIX worldView;
+		XMMATRIX worldInvTransposeView;
+		XMMATRIX worldViewProj;
+		Transform* transform = m_pGameObject->GetComponent<Transform>();
+
+		world = transform->GetWorldMatrix();
+		worldInvTranspose = MathHelper::InverseTranspose(world);
+		worldView = world * RenderManager::GetI()->cameraViewMatrix;
+		worldInvTransposeView = worldInvTranspose * RenderManager::GetI()->cameraViewMatrix;
+		worldViewProj = world * RenderManager::GetI()->cameraViewProjectionMatrix;
+
+		Effects::SsaoNormalDepthFX->SetWorldView(worldView);
+		Effects::SsaoNormalDepthFX->SetWorldInvTransposeView(worldInvTransposeView);
+		Effects::SsaoNormalDepthFX->SetWorldViewProj(worldViewProj);
+		Effects::SsaoNormalDepthFX->SetTexTransform(XMMatrixScaling(1.0f, 1.0f, 1.0f));
 
 		View = RenderManager::GetI()->cameraViewMatrix;
 		Proj = RenderManager::GetI()->cameraProjectionMatrix;

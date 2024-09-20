@@ -92,7 +92,7 @@ namespace ed = ax::NodeEditor;
 #include "Camera.h"
 #include "RigidBody.h"
 #include "SphereCollider.h"
-
+#include "Light.h"
 #include "Scene.h"
 #include "SceneManager.h"
 

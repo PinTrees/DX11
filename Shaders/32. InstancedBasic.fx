@@ -17,16 +17,17 @@ struct ShaderSetting
 
 cbuffer cbPerFrame
 {
-    DirectionalLight gDirLights[8];
-    int gLightCount; // gLightCount·Î Á¦ÇÑ 
+    DirectionalLight gDirLights[4];
+    PointLight gPointLight[4];
+    SpotLight gSpotLight[4];
+    int gDirLightCount;
+    int gPointLightCount;
+    int gSpotLightCount;
     float3 gEyePosW;
 
     float gFogStart;
     float gFogRange;
     float4 gFogColor;
-    
-    float3 pad;
-    float3 pad2;
 };
 
 cbuffer cbPerObject
@@ -160,23 +161,22 @@ VertexOut VS_Instancing(VertexIn_Instancing vin)
 	// Transform to world space space.
     vout.PosW = vout.PosH.xyz; // World
     
-    vout.PosH = mul(float4(vin.PosL, 1.0f), mul(vin.World, gViewProj));
-    
-    
-    vout.NormalW = mul(vin.NormalL, (float3x3) vin.World);
+    vout.NormalW = mul(vin.NormalL, (float3x3) gWorldInvTranspose);
     vout.TangentW = mul(vin.TangentL, vin.World);
     
 	// Output vertex attributes for interpolation across triangle.
     vout.Tex = mul(float4(vin.Tex, 0.0f, 1.0f), gTexTransform).xy;
 
 	// Generate projective tex-coords to project shadow map onto scene.
-    vout.ShadowPosH = mul(float4(vout.PosW,1.0f), gShadowTransform);
+    vout.ShadowPosH = mul(vout.PosH, gShadowTransform);
 
 	// Generate projective tex-coords to project SSAO map onto scene.
-    vout.SsaoPosH = mul(float4(vout.PosW, 1.0f), gViewProjTex);
+    vout.SsaoPosH = mul(vout.PosH, gViewProjTex);
 
+    float4x4 wvp = mul(vin.World, gViewProj);
     
-    
+    vout.PosH = mul(float4(vin.PosL, 1.0f), wvp);
+    //vout.PosH = mul(float4(vout.PosW, 1.0f), gViewProj);
     
     return vout;
 }
@@ -272,7 +272,7 @@ float4 PS(VertexOut pin) : SV_Target
 	//
 
     float4 litColor = texColor;
-    if (gLightCount > 0)
+    if ((gDirLightCount + gPointLightCount + gSpotLightCount) > 0)
     {
 		// Start with a sum of zero. 
         float4 ambient = float4(0.0f, 0.0f, 0.0f, 0.0f);
@@ -293,13 +293,36 @@ float4 PS(VertexOut pin) : SV_Target
         {
             ambientAccess = gSsaoMap.Sample(samLinear, pin.SsaoPosH.xy, 0.0f).r;
         }
-		
+	    
+        float4 A, D, S;
+        int i = 0;
 		// Sum the light contribution from each light source.  
 		[unroll] 
-        for (int i = 0; i < gLightCount; ++i)
+        for (i = 0; i < gDirLightCount; ++i)
         {
-            float4 A, D, S;
             ComputeDirectionalLight(gMaterial, gDirLights[i], bumpedNormalW, toEye,
+				A, D, S);
+
+            ambient += ambientAccess * A;
+            diffuse += shadow[i] * D;
+            spec += shadow[i] * S;
+        }
+        
+        [unroll]
+        for (i = 0; i < gPointLightCount; ++i)
+        {
+            ComputePointLight(gMaterial, gPointLight[i], pin.PosW, bumpedNormalW, toEye,
+				A, D, S);
+
+            ambient += ambientAccess * A;
+            diffuse += shadow[i] * D;
+            spec += shadow[i] * S;
+        }
+        
+        [unroll] 
+        for (i = 0; i < gSpotLightCount; ++i)
+        {
+            ComputeSpotLight(gMaterial, gSpotLight[i], pin.PosW, bumpedNormalW, toEye,
 				A, D, S);
 
             ambient += ambientAccess * A;

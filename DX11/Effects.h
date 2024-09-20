@@ -270,8 +270,21 @@ public:
 	void SetFogColor(const FXMVECTOR v) { FogColor->SetFloatVector(reinterpret_cast<const float*>(&v)); }
 	void SetFogStart(float f) { FogStart->SetFloat(f); }
 	void SetFogRange(float f) { FogRange->SetFloat(f); }
-	void SetDirLights(const DirectionalLight* lights, int cnt) { DirLights->SetRawValue(lights, 0, cnt * sizeof(DirectionalLight)); }
-	void SetLightCount(int cnt) { LightCount->SetInt(cnt); }
+	void SetDirLights(const DirectionalLight* lights, int cnt)
+	{ 
+		DirLights->SetRawValue(lights, 0, cnt * sizeof(DirectionalLight));
+		DirLightCount->SetInt(cnt);
+	}
+	void SetPointLights(const PointLight* lights, int cnt) 
+	{
+		PointLights->SetRawValue(lights, 0, cnt * sizeof(PointLight));
+		PointLightCount->SetInt(cnt);
+	}
+	void SetSpotLights(const SpotLight* lights, int cnt) 
+	{ 
+		SpotLights->SetRawValue(lights, 0, cnt * sizeof(SpotLight));
+		SpotLightCount->SetInt(cnt);
+	}
 	void SetMaterial(const Material& mat) { Mat->SetRawValue(&mat, 0, sizeof(Material)); }
 	void SetShaderSetting(const ShaderSetting& setting) { Setting->SetRawValue(&setting, 0, sizeof(ShaderSetting)); }
 	
@@ -302,7 +315,11 @@ public:
 	ComPtr<ID3DX11EffectScalarVariable> FogStart;
 	ComPtr<ID3DX11EffectScalarVariable> FogRange;
 	ComPtr<ID3DX11EffectVariable> DirLights;
-	ComPtr<ID3DX11EffectScalarVariable> LightCount;
+	ComPtr<ID3DX11EffectVariable> PointLights;
+	ComPtr<ID3DX11EffectVariable> SpotLights;
+	ComPtr<ID3DX11EffectScalarVariable> DirLightCount;
+	ComPtr<ID3DX11EffectScalarVariable> PointLightCount;
+	ComPtr<ID3DX11EffectScalarVariable> SpotLightCount;
 	ComPtr<ID3DX11EffectVariable> Mat;
 	ComPtr<ID3DX11EffectVariable> Setting;
 

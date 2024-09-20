@@ -17,7 +17,7 @@ Light::~Light()
 {
 }
 
-void Light::ComponentOnDestroy()
+void Light::OnDestroy()
 {
 	// Manager 삭제
 	LightManager::GetI()->DeleteLight(this->GetInstanceID());
@@ -29,17 +29,36 @@ void Light::Update()
 
 void Light::LateUpdate()
 {
-	// Directional Light일 때만, 다른 라이트 계산도 해야함
+	XMVECTOR pos;
+	XMVECTOR dir;
+	XMVECTOR target;
+	XMMATRIX V;
 
-	XMVECTOR pos = m_pGameObject->GetTransform()->GetPosition();
-	XMVECTOR dir = XMLoadFloat3(&m_directionalDesc.Direction);
-	XMVECTOR target = pos + dir;
-	//XMVECTOR up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-	XMMATRIX V = ::XMMatrixLookAtLH(pos,target,up);
+	switch (m_lightType)
+	{
+	case LightType::Directional:
+		pos = m_pGameObject->GetTransform()->GetPosition();
+		dir = XMLoadFloat3(&m_directionalDesc.Direction);
+		target = pos + dir;
+		V = ::XMMatrixLookAtLH(pos, target, up);
+		break;
+	case LightType::Point:
+		pos = m_pGameObject->GetTransform()->GetPosition() + m_pointDesc.Position;
+		dir = XMVECTOR{ 0.0f, 0.0f, 1.0f };
+		target = pos + dir;
+		V = ::XMMatrixLookAtLH(pos, target, up);
+		break;
+	case LightType::Spot:
+		pos = m_pGameObject->GetTransform()->GetPosition() + m_pointDesc.Position;
+		dir = XMLoadFloat3(&m_spotDesc.Direction);
+		target = pos + dir;
+		V = ::XMMatrixLookAtLH(pos, target, up);
+		break;
+	default:
+		break;
+	}
+
 	::XMStoreFloat4x4(&m_lightView, V);
-
-	//XMMATRIX P = ::XMMatrixOrthographicLH(m_lightLengthX, m_lightLengthY, 0.001f, m_lightFarZ);
-	//::XMStoreFloat4x4(&m_lightProj, P);
 }
 
 void Light::FixedUpdate()
@@ -53,7 +72,25 @@ void Light::Render()
 // private function
 void Light::ProjUpdate()
 {
-	XMMATRIX P = ::XMMatrixOrthographicLH(m_lightLengthX, m_lightLengthY, 0.001f, m_lightFarZ);
+	XMMATRIX P;
+	switch (m_lightType)
+	{
+	case LightType::Directional:
+		// X, Y 범위 한정, FarZ 이론상 무한이지만 리소스 효율을 위해 빛의 위치와 씬 위치 사이의 거리 + 씬의 크기로
+		P = ::XMMatrixOrthographicLH(m_dirLightLen.x, m_dirLightLen.y, 0.001f, 100.f);
+		break;
+	case LightType::Point:
+		// X, Y 의미 없으므로 임의의 값으로, FarZ는 범위 한정
+		P = ::XMMatrixOrthographicLH(10.0f, 10.0f, 0.001f, m_pointDesc.Range);
+		break;
+	case LightType::Spot:
+		// X, Y, FarZ 범위 한정
+		P = ::XMMatrixOrthographicLH(m_spotLightLen.x, m_spotLightLen.y, 0.001f, m_spotDesc.Range);
+		break;
+	default: 
+		break;
+	}
+
 	::XMStoreFloat4x4(&m_lightProj, P);
 }
 string Light::GetStringLightType(LightType type)
@@ -76,17 +113,34 @@ void Light::OnInspectorGUI()
 		{
 			bool is_selected = ((int)m_lightType == n); // You can store your selection somewhere
 			if (ImGui::Selectable(GetStringLightType((LightType)n).c_str(), is_selected))
+			{
 				m_lightType = (LightType)n;
+				ProjUpdate();
+			}
+				
 			if (is_selected)
 				ImGui::SetItemDefaultFocus(); // Set the initial focus when opening the combo (scrolling + for keyboard navigation support)
 		}
 		ImGui::EndCombo();
 	}
 
+	bool ProjectionChanged = false;
+
 	// LightType의 값을 조정하는 GUI
 	switch (m_lightType)
 	{
 	case LightType::Directional:
+		ImGui::Text("LightLengthX");
+		if (ImGui::DragFloat4("##LightLengthX", reinterpret_cast<float*>(&m_dirLightLen.x), 0.1f))
+		{
+			ProjectionChanged = true;
+		}
+		ImGui::Text("LightLengthY");
+		if (ImGui::DragFloat4("##LightLengthY", reinterpret_cast<float*>(&m_dirLightLen.y), 0.1f))
+		{
+			ProjectionChanged = true;
+		}
+
 		ImGui::Text("Ambient");
 		ImGui::DragFloat4("##Ambient", reinterpret_cast<float*>(&m_directionalDesc.Ambient), 0.1f);
 		ImGui::Text("Diffuse");
@@ -106,10 +160,24 @@ void Light::OnInspectorGUI()
 		ImGui::Text("Position");
 		ImGui::DragFloat3("##Position", reinterpret_cast<float*>(&m_pointDesc.Position), 0.1f);
 		ImGui::Text("Range");
-		ImGui::DragFloat("##Range", reinterpret_cast<float*>(&m_pointDesc.Range), 0.1f);
+		if (ImGui::DragFloat("##Range", reinterpret_cast<float*>(&m_pointDesc.Range), 0.1f))
+		{
+			ProjectionChanged = true;
+		}
 
 		break;
 	case LightType::Spot:
+		ImGui::Text("LightLengthX");
+		if (ImGui::DragFloat4("##LightLengthX", reinterpret_cast<float*>(&m_spotLightLen.x), 0.1f))
+		{
+			ProjectionChanged = true;
+		}
+		ImGui::Text("LightLengthY");
+		if (ImGui::DragFloat4("##LightLengthY", reinterpret_cast<float*>(&m_spotLightLen.y), 0.1f))
+		{
+			ProjectionChanged = true;
+		}
+
 		ImGui::Text("Ambient");
 		ImGui::DragFloat4("##Ambient", reinterpret_cast<float*>(&m_spotDesc.Ambient), 0.1f);
 		ImGui::Text("Diffuse");
@@ -119,7 +187,10 @@ void Light::OnInspectorGUI()
 		ImGui::Text("Position");
 		ImGui::DragFloat3("##Position", reinterpret_cast<float*>(&m_spotDesc.Position), 0.1f);
 		ImGui::Text("Range");
-		ImGui::DragFloat("##Range", reinterpret_cast<float*>(&m_spotDesc.Range), 0.1f);
+		if(ImGui::DragFloat("##Range", reinterpret_cast<float*>(&m_spotDesc.Range), 0.1f))
+		{
+			ProjectionChanged = true;
+		}
 		ImGui::Text("Direction");
 		ImGui::DragFloat3("##Direction", reinterpret_cast<float*>(&m_spotDesc.Direction), 0.1f);
 		ImGui::Text("Spot");
@@ -128,6 +199,9 @@ void Light::OnInspectorGUI()
 	default:
 		break;
 	}
+
+	if(ProjectionChanged)
+		ProjUpdate();
 }
 
 GENERATE_COMPONENT_FUNC_TOJSON(Light)
@@ -140,6 +214,7 @@ GENERATE_COMPONENT_FUNC_TOJSON(Light)
 	j["directionalLightDiffuse"] = { m_directionalDesc.Diffuse.x, m_directionalDesc.Diffuse.y, m_directionalDesc.Diffuse.z, m_directionalDesc.Diffuse.w };
 	j["directionalLightSpecular"] = { m_directionalDesc.Specular.x, m_directionalDesc.Specular.y, m_directionalDesc.Specular.z, m_directionalDesc.Specular.w };
 	j["directionalLightDirection"] = { m_directionalDesc.Direction.x, m_directionalDesc.Direction.y, m_directionalDesc.Direction.z };
+	j["directionalLightLength"] = { m_dirLightLen.x,m_dirLightLen.y };
 
 	j["pointLightAmbient"] = { m_pointDesc.Ambient.x, m_pointDesc.Ambient.y, m_pointDesc.Ambient.z, m_pointDesc.Ambient.w };
 	j["pointLightDiffuse"] = { m_pointDesc.Diffuse.x, m_pointDesc.Diffuse.y, m_pointDesc.Diffuse.z, m_pointDesc.Diffuse.w };
@@ -154,6 +229,8 @@ GENERATE_COMPONENT_FUNC_TOJSON(Light)
 	j["spotLightRange"] = m_spotDesc.Range;
 	j["spotLightDirection"] = { m_spotDesc.Direction.x, m_spotDesc.Direction.y, m_spotDesc.Direction.z };
 	j["spotLightSpot"] = m_spotDesc.Spot;
+	j["spotLightLength"] = { m_spotLightLen.x,m_spotLightLen.y };
+
 	return j;
 }
 
@@ -185,6 +262,11 @@ GENERATE_COMPONENT_FUNC_FROMJSON(Light)
 		{
 			auto direction = j.at("directionalLightDirection").get<std::vector<float>>();
 			m_directionalDesc.Direction = XMFLOAT3{ direction[0], direction[1], direction[2] };
+		}
+		if (j.contains("directionalLightLength"))
+		{
+			auto length = j.at("directionalLightLength").get<std::vector<float>>();
+			m_dirLightLen = XMFLOAT2{ length[0], length[1] };
 		}
 	}
 	
@@ -253,6 +335,11 @@ GENERATE_COMPONENT_FUNC_FROMJSON(Light)
 		{
 			auto spot = j.at("spotLightSpot").get<float>();
 			m_spotDesc.Spot = spot;
+		}
+		if (j.contains("spotLightLength"))
+		{
+			auto length = j.at("spotLightLength").get<std::vector<float>>();
+			m_spotLightLen = XMFLOAT2{ length[0], length[1] };
 		}
 	}
 
