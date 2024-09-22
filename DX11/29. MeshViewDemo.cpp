@@ -9,6 +9,7 @@
 #include "ShadowMap.h"
 #include "Ssao.h"
 #include "EditorCamera.h"
+#include "LightManager.h"
 
 MeshViewDemo::MeshViewDemo(HINSTANCE hInstance)
 	: App(hInstance)
@@ -167,6 +168,7 @@ void MeshViewDemo::OnEditorSceneRender(ID3D11RenderTargetView* renderTargetView,
 
 	auto viewport = RenderManager::GetI()->EditorViewport;
 
+	// Light수 만큼 ShadowMap을 그려야함.
 	Effects::BuildShadowMapFX->SetEyePosW(camera->GetPosition());
 	Effects::BuildShadowMapFX->SetViewProj(RenderManager::GetI()->directinalLightViewProjection);
 
@@ -211,8 +213,16 @@ void MeshViewDemo::OnEditorSceneRender(ID3D11RenderTargetView* renderTargetView,
 	//Effects::NormalMapFX->SetShadowMap(shadowMap->DepthMapSRV().Get());
 	//Effects::NormalMapFX->SetSsaoMap(ssao->AmbientSRV().Get());
 
-	Effects::InstancedBasicFX->SetDirLights(_dirLights,3);
-	Effects::InstancedBasicFX->SetLightCount(1);
+	//Effects::InstancedBasicFX->SetDirLights(_dirLights,3);
+
+	vector<DirectionalLight>& dirLight = LightManager::GetI()->GetDirLights();
+	vector<PointLight>& pointLight = LightManager::GetI()->GetPointLights();
+	vector<SpotLight>& spotLight = LightManager::GetI()->GetSpotLights();
+
+	if (dirLight.size() > 0) Effects::InstancedBasicFX->SetDirLights(dirLight.data(), dirLight.size());
+	if (pointLight.size() > 0) Effects::InstancedBasicFX->SetPointLights(pointLight.data(), pointLight.size());
+	if (spotLight.size() > 0) Effects::InstancedBasicFX->SetSpotLights(spotLight.data(), spotLight.size());
+
 	Effects::InstancedBasicFX->SetEyePosW(camera->GetPosition());
 	Effects::InstancedBasicFX->SetCubeMap(_sky->CubeMapSRV().Get());
 	Effects::InstancedBasicFX->SetShadowMap(shadowMap->DepthMapSRV().Get());

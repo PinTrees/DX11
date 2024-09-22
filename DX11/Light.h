@@ -20,22 +20,18 @@ private:
 	DirectionalLight m_directionalDesc;
 	PointLight m_pointDesc;
 	SpotLight m_spotDesc;
-	
-	XMVECTOR up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 
-	// DirectionalLight FarZ는 이론상 무한대이지만 리소스 효율성을 위해 (씬의 크기 + 빛의 좌표거리)로 하는것이 이상적일듯 하다.
-	// Point, Spot의 경우 Light구조체의 Range를 FarZ로 대체, Directinal은 씬의 크기로 대체함으로 나중에 이 변수는 삭제할 예정
-	float m_lightLengthX = 20.0f;
-	float m_lightLengthY = 20.0f;
-	float m_lightFarZ = 100.0f;		
+	XMFLOAT2 m_dirLightLen = XMFLOAT2(20.f,20.f);
+	XMFLOAT2 m_spotLightLen = XMFLOAT2(20.f, 20.f);
 
 	XMFLOAT4X4 m_lightView;
 	XMFLOAT4X4 m_lightProj;
 
+	// shadowTransform => world * (lightV * lightP * toTexSpace)
+
 	void ProjUpdate();
 	string GetStringLightType(LightType type);
 
-	
 public:
 	Light();
 	~Light();
@@ -45,12 +41,17 @@ public:
 		return make_tuple((uint64)&m_directionalDesc, (uint64)&m_pointDesc, (uint64)&m_spotDesc);
 	}
 
+	virtual void Awake() override;
 	virtual void Update() override;
 	virtual void LateUpdate() override;
 	virtual void FixedUpdate() override;
 	virtual void Render() override;
 	virtual void OnInspectorGUI() override;
-	virtual void ComponentOnDestroy() override;
+	virtual void OnDestroy() override;
+
+	void SetDirLight(DirectionalLight light) { m_directionalDesc = light; }
+	void SetPointLight(PointLight light) { m_pointDesc = light; }
+	void SetSpotLight(SpotLight light) { m_spotDesc = light; }
 
 	DirectionalLight GetDirLight() { return m_directionalDesc; }
 	PointLight GetPointLight() { return m_pointDesc; }
@@ -59,14 +60,7 @@ public:
 	XMFLOAT4X4 GetLightView() { return m_lightView; }
 	XMFLOAT4X4 GetLightProj() { return m_lightProj; }
 
-	float GetLightLengthX() { return m_lightLengthX; }
-	float GetLightLengthY() { return m_lightLengthY; }
-	float GetLightFarZ() { return m_lightFarZ; }
-
-	void SetLightLengthX(float x) { m_lightLengthX = x; ProjUpdate(); }
-	void SetLightLengthY(float y) { m_lightLengthY = y; ProjUpdate(); }
-	void SetLightFarZ(float farZ) { m_lightFarZ = farZ; ProjUpdate(); }
-
+	LightType GetLightType() { return m_lightType; }
 
 	GENERATE_COMPONENT_BODY(Light)
 };

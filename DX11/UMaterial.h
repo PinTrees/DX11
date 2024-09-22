@@ -1,5 +1,6 @@
 #pragma once
 #include <nlohmann/json.hpp>
+#include "ShaderSetting.h"
 
 using json = nlohmann::json;
 
@@ -19,6 +20,8 @@ private:
 	XMFLOAT4 Diffuse;
 	XMFLOAT4 Specular; // w = SpecPower
 	XMFLOAT4 Reflect;
+
+	ShaderSetting m_shaderSetting;
 
 	// base
 public:
@@ -45,6 +48,8 @@ public:
 
 	ID3D11ShaderResourceView* GetBaseMapSRV() { return BaseMapSRV.Get(); }
 	ID3D11ShaderResourceView* GetNormalMapSRV() { return NormalMapSRV.Get(); }
+
+	ShaderSetting GetShaderSetting() { return m_shaderSetting; }
 
 public:
 	void OnInspectorGUI();

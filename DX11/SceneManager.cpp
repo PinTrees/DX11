@@ -115,4 +115,19 @@ void SceneManager::HandleStop()
 void SceneManager::CreateScene()
 {
 	m_pCurrScene = new Scene;
+
+	// Camera, Light Object »ý¼º
+	//GameObject* camera = new GameObject("Camera");
+	//GameObject* light = new GameObject("Light");
+	//
+	//DirectionalLight dir;
+	//dir.Ambient = XMFLOAT4(0.6f, 0.6f, 0.6f, 1.0f);
+	//dir.Diffuse = XMFLOAT4(0.8f, 0.7f, 0.7f, 1.0f);
+	//dir.Specular = XMFLOAT4(0.6f, 0.6f, 0.7f, 1.0f); 
+	//dir.Direction = XMFLOAT3(-0.57735f, -0.57735f, 0.57735f);
+	//
+	//light->AddComponent(make_shared<Light>());
+	//light->GetComponent<Light>()->SetDirLight(dir);
+	//
+	//m_pCurrScene->AddRootGameObject(light);
 }

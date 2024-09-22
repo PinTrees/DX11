@@ -1,5 +1,7 @@
 #include "pch.h"
 #include "Camera.h"
+#include "Application.h"
+#include "App.h"
 
 Camera::Camera()
 {
@@ -55,64 +57,61 @@ XMFLOAT3 Camera::GetLook()const
 
 float Camera::GetNearZ()const
 {
-	return _nearZ;
+	return m_nearZ;
 }
 
 float Camera::GetFarZ()const
 {
-	return _farZ;
+	return m_farZ;
 }
 
 float Camera::GetAspect()const
 {
-	return _aspect;
+	return m_aspect;
 }
 
 float Camera::GetFovY()const
 {
-	return _fovY;
+	return m_fovY;
 }
 
 float Camera::GetFovX()const
 {
 	float halfWidth = 0.5f * GetNearWindowWidth();
-	return 2.0f * atan(halfWidth / _nearZ);
+	return 2.0f * atan(halfWidth / m_nearZ);
 }
 
 float Camera::GetNearWindowWidth()const
 {
-	return _aspect * _nearWindowHeight;
+	return m_aspect * m_nearWindowHeight;
 }
 
 float Camera::GetNearWindowHeight()const
 {
-	return _nearWindowHeight;
+	return m_nearWindowHeight;
 }
 
 float Camera::GetFarWindowWidth()const
 {
-	return _aspect * _farWindowHeight;
+	return m_aspect * m_farWindowHeight;
 }
 
 float Camera::GetFarWindowHeight()const
 {
-	return _farWindowHeight;
+	return m_farWindowHeight;
 }
 
 void Camera::SetLens(float fovY, float aspect, float zn, float zf)
 {
 	// cache properties
-	_fovY = fovY;
-	_aspect = aspect;
-	_nearZ = zn;
-	_farZ = zf;
+	m_fovY = fovY;
+	m_aspect = aspect;
+	m_nearZ = zn;
+	m_farZ = zf;
 
-	_nearWindowHeight = 2.0f * _nearZ * tanf(0.5f * _fovY);
-	_farWindowHeight = 2.0f * _farZ * tanf(0.5f * _fovY);
-
-	XMMATRIX P = ::XMMatrixPerspectiveFovLH(_fovY, _aspect, _nearZ, _farZ);
-	::XMStoreFloat4x4(&_proj, P);
+	ProjectionUpdate();
 }
+
 
 void Camera::LookAt(FXMVECTOR pos, FXMVECTOR target, FXMVECTOR worldUp)
 {
@@ -239,6 +238,53 @@ void Camera::UpdateViewMatrix()
 	_view(3, 3) = 1.0f;
 }
 
+void Camera::Update()
+{
+}
+
+void Camera::LateUpdate()
+{
+	XMVECTOR pos = m_pGameObject->GetTransform()->GetPosition();
+	XMVECTOR dir = m_pGameObject->GetTransform()->GetLook();
+	XMVECTOR target = pos + dir;
+	XMVECTOR up = m_pGameObject->GetTransform()->GetUp();
+
+	XMMATRIX V = ::XMMatrixLookAtLH(pos, target, up);
+	::XMStoreFloat4x4(&_view, V);
+
+	ProjectionUpdate();
+}
+
+// private funtion
+void Camera::ProjectionUpdate()
+{
+	m_nearWindowHeight = 2.0f * m_nearZ * tanf(0.5f * m_fovY);
+	m_farWindowHeight = 2.0f * m_farZ * tanf(0.5f * m_fovY);
+
+	XMMATRIX P;
+	if (ProjectionType::Perspective == m_cameraType)
+	{
+		P = ::XMMatrixPerspectiveFovLH(m_fovY, m_aspect, m_nearZ, m_farZ);
+	}
+	else // Orthographic
+	{
+		Vec2 size = Application::GetI()->GetApp()->GetScreenSize();
+		P = ::XMMatrixOrthographicLH(size.x, size.y, m_nearZ, m_farZ);
+	}
+	
+	::XMStoreFloat4x4(&_proj, P);
+}
+
+string Camera::GetStringCameraType(ProjectionType type)
+{
+	switch (type)
+	{
+	case ProjectionType::Orthographic: return "Orthographic";
+	case ProjectionType::Perspective: return "Perspective";
+	default: return "Unknown";
+	}
+}
+
 void Camera::Render()
 {
 
@@ -246,7 +292,35 @@ void Camera::Render()
 
 void Camera::OnInspectorGUI()
 {
+	// CameraType 선택GUI
+	if (ImGui::BeginCombo("LightType", GetStringCameraType(m_cameraType).c_str())) // The second parameter is the previewed value
+	{
+		for (int n = 0; n < (int)ProjectionType::End; n++)
+		{
+			bool is_selected = ((int)m_cameraType == n); // You can store your selection somewhere
+			if (ImGui::Selectable(GetStringCameraType((ProjectionType)n).c_str(), is_selected))
+			{
+				m_cameraType = (ProjectionType)n;
+			}
 
+			if (is_selected)
+				ImGui::SetItemDefaultFocus(); // Set the initial focus when opening the combo (scrolling + for keyboard navigation support)
+		}
+		ImGui::EndCombo();
+	}
+
+	// Camera 값들 설정
+	ImGui::Text("NearZ");
+	ImGui::DragFloat("##NearZ", reinterpret_cast<float*>(&m_nearZ), 0.1f);
+	ImGui::Text("FarZ");
+	ImGui::DragFloat("##FarZ", reinterpret_cast<float*>(&m_farZ), 0.1f);
+	if (ProjectionType::Perspective == m_cameraType)
+	{
+		ImGui::Text("Aspect");
+		ImGui::DragFloat("##Aspect", reinterpret_cast<float*>(&m_aspect), 0.1f);
+		ImGui::Text("FovY");
+		ImGui::DragFloat("##FovY", reinterpret_cast<float*>(&m_fovY), 0.1f);
+	}
 }
 
 GENERATE_COMPONENT_FUNC_TOJSON(Camera)

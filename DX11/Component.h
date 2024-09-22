@@ -11,7 +11,7 @@ class Component
 protected:
 	GameObject* m_pGameObject;
 	string m_InspectorTitleName = "";
-
+	int m_componentID;
 public:
 	Component();
 	virtual ~Component();
@@ -27,7 +27,7 @@ public:
 	void RenderInspectorGUI();
 	virtual void OnInspectorGUI() { }
 	virtual void OnDrawGizmos() { }
-	virtual void ComponentOnDestroy() { }
+	virtual void OnDestroy() { }
 public:
 	GameObject* GetGameObject() { return m_pGameObject; }
 

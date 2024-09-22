@@ -1,27 +1,40 @@
 #pragma once
 #include "Component.h"
 
+enum class ProjectionType
+{
+	Perspective, // 원근 투영
+	Orthographic, // 직교 투영
+	End
+};
+
 class Camera
 	: public Component
 {
 private:
+	ProjectionType m_cameraType;
 	// Camera coordinate system with coordinates relative to world space.
 	XMFLOAT3 _right = { 1, 0, 0 };
 	XMFLOAT3 _up = { 0, 1, 0 };
 	XMFLOAT3 _look = { 0, 0, 1 };
 
 	// Cache frustum properties.
-	float _nearZ;
-	float _farZ;
-	float _aspect;
-	float _fovY;
-	float _nearWindowHeight;
-	float _farWindowHeight;
+	float m_nearZ;
+	float m_farZ;
+	float m_aspect;
+	float m_fovY;
+
+	float m_nearWindowHeight;
+	float m_farWindowHeight;
 
 	// Cache View/Proj matrices.
 	XMFLOAT4X4 _view;
 	XMFLOAT4X4 _proj;
 
+	void ProjectionUpdate();
+	string GetStringCameraType(ProjectionType type);
+	//::XMMatrixPerspectiveFovLH
+	//::XMMatrixOrthographicLH
 public:
 	Camera();
 	~Camera();
@@ -44,6 +57,11 @@ public:
 	float GetAspect()const;
 	float GetFovY()const;
 	float GetFovX()const;
+
+	void SetFovY(float fovY) { m_fovY = fovY; ProjectionUpdate(); }
+	void SetAspect(float aspect) { m_aspect = aspect; ProjectionUpdate(); }
+	void SetNearZ(float nearZ) { m_nearZ = nearZ; ProjectionUpdate(); }
+	void SetFarZ(float farZ) { m_farZ = farZ; ProjectionUpdate(); }
 
 	// Get near and far plane dimensions in view space coordinates.
 	float GetNearWindowWidth()const;
@@ -75,6 +93,8 @@ public:
 	void UpdateViewMatrix();
 
 public:
+	virtual void Update() override;
+	virtual void LateUpdate() override;
 	virtual void Render() override;
 	virtual void OnInspectorGUI() override;
 
