@@ -8,6 +8,17 @@ enum class ProjectionType
 	End
 };
 
+struct Plane 
+{
+	DirectX::XMFLOAT3 normal; // 면의 법선 벡터
+	float d;                  // 평면의 거리 (ax + by + cz + d = 0)
+};
+
+struct Frustum
+{
+	Plane planes[6]; // 6개의 면 (left, right, top, bottom, near, far)
+};
+
 class Camera
 	: public Component
 {
@@ -31,6 +42,9 @@ private:
 	XMFLOAT4X4 _view;
 	XMFLOAT4X4 _proj;
 
+	Frustum m_frustum;
+
+	void FrustumUpdate(); // frustum 범위 계산
 	void ProjectionUpdate();
 	string GetStringCameraType(ProjectionType type);
 	//::XMMatrixPerspectiveFovLH
@@ -38,6 +52,8 @@ private:
 public:
 	Camera();
 	~Camera();
+
+	vector<GameObject*> GetFrustumCulling();
 
 	// Get/Set world camera position.
 	XMVECTOR GetPositionXM();

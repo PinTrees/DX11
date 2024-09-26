@@ -111,23 +111,24 @@ void SceneManager::HandleStop()
 
 	m_pCurrScene = scene;
 }
-
+#include "LightManager.h"
 void SceneManager::CreateScene()
 {
 	m_pCurrScene = new Scene;
 
-	// Camera, Light Object 생성
+	// Camera, Light Object 생성, 현재 Demo에서 씬의 크기를 구할 때 게임오브젝트는 1개인데, 메쉬렌더러 오브젝트는 아무것도없어서 씬의 크기가 무한대여서 오류 ㅇㅇ
 	//GameObject* camera = new GameObject("Camera");
-	//GameObject* light = new GameObject("Light");
-	//
-	//DirectionalLight dir;
-	//dir.Ambient = XMFLOAT4(0.6f, 0.6f, 0.6f, 1.0f);
-	//dir.Diffuse = XMFLOAT4(0.8f, 0.7f, 0.7f, 1.0f);
-	//dir.Specular = XMFLOAT4(0.6f, 0.6f, 0.7f, 1.0f); 
-	//dir.Direction = XMFLOAT3(-0.57735f, -0.57735f, 0.57735f);
-	//
-	//light->AddComponent(make_shared<Light>());
-	//light->GetComponent<Light>()->SetDirLight(dir);
-	//
-	//m_pCurrScene->AddRootGameObject(light);
+	GameObject* light = new GameObject("Light");
+	
+	DirectionalLight dir;
+	dir.Ambient = XMFLOAT4(0.6f, 0.6f, 0.6f, 1.0f);
+	dir.Diffuse = XMFLOAT4(0.8f, 0.7f, 0.7f, 1.0f);
+	dir.Specular = XMFLOAT4(0.6f, 0.6f, 0.7f, 1.0f); 
+	dir.Direction = XMFLOAT3(-0.57735f, -0.57735f, 0.57735f);
+	
+	light->AddComponent<Light>();
+	light->GetComponent<Light>()->SetDirLight(dir);
+	LightManager::GetI()->SetLight(light->GetComponent_SP<Light>());
+	
+	m_pCurrScene->AddRootGameObject(light);
 }

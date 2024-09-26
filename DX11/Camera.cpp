@@ -253,6 +253,37 @@ void Camera::LateUpdate()
 	::XMStoreFloat4x4(&_view, V);
 
 	ProjectionUpdate();
+
+	FrustumUpdate();
+}
+
+void Camera::FrustumUpdate()
+{
+	// 클립 행렬을 계산
+	::XMMATRIX clipMatrix = DirectX::XMMatrixMultiply(::XMLoadFloat4x4(&_proj), ::XMLoadFloat4x4(&_view));
+	::XMFLOAT4X4 clip;
+	::XMStoreFloat4x4(&clip, clipMatrix);
+
+	// 평면 계산 (각 면의 계수 계산)
+	m_frustum.planes[0] = { {clip._41 + clip._11, clip._42 + clip._12, clip._43 + clip._13}, clip._44 + clip._14 }; // left
+	m_frustum.planes[1] = { {clip._41 - clip._11, clip._42 - clip._12, clip._43 - clip._13}, clip._44 - clip._14 }; // right
+	m_frustum.planes[2] = { {clip._41 + clip._21, clip._42 + clip._22, clip._43 + clip._23}, clip._44 + clip._24 }; // bottom
+	m_frustum.planes[3] = { {clip._41 - clip._21, clip._42 - clip._22, clip._43 - clip._23}, clip._44 - clip._24 }; // top
+	m_frustum.planes[4] = { {clip._41 + clip._31, clip._42 + clip._32, clip._43 + clip._33}, clip._44 + clip._34 }; // near
+	m_frustum.planes[5] = { {clip._41 - clip._31, clip._42 - clip._32, clip._43 - clip._33}, clip._44 - clip._34 }; // far
+
+	// 각 평면의 정규화
+	for (int i = 0; i < 6; ++i) 
+	{
+		float length = sqrtf(m_frustum.planes[i].normal.x * m_frustum.planes[i].normal.x +
+			m_frustum.planes[i].normal.y * m_frustum.planes[i].normal.y +
+			m_frustum.planes[i].normal.z * m_frustum.planes[i].normal.z);
+
+		m_frustum.planes[i].normal.x /= length;
+		m_frustum.planes[i].normal.y /= length;
+		m_frustum.planes[i].normal.z /= length;
+		m_frustum.planes[i].d /= length;
+	}
 }
 
 // private funtion
