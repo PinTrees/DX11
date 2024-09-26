@@ -12,11 +12,11 @@ enum class LightType
 
 class Light
 	: public Component
-	, std::enable_shared_from_this<Light>
 {
 private:
 	LightType m_lightType = LightType::Directional;
 
+	// 각도를 가지고 있는 구조체 정보는 Transform이랑 연동해야할까?
 	DirectionalLight m_directionalDesc;
 	PointLight m_pointDesc;
 	SpotLight m_spotDesc;
@@ -24,8 +24,8 @@ private:
 	XMFLOAT2 m_dirLightLen = XMFLOAT2(20.f,20.f);
 	XMFLOAT2 m_spotLightLen = XMFLOAT2(20.f, 20.f);
 
-	XMFLOAT4X4 m_lightView;
-	XMFLOAT4X4 m_lightProj;
+	XMMATRIX m_lightView;
+	XMMATRIX m_lightProj;
 
 	// shadowTransform => world * (lightV * lightP * toTexSpace)
 
@@ -49,17 +49,19 @@ public:
 	virtual void OnInspectorGUI() override;
 	virtual void OnDestroy() override;
 
-	void SetDirLight(DirectionalLight light) { m_directionalDesc = light; }
-	void SetPointLight(PointLight light) { m_pointDesc = light; }
-	void SetSpotLight(SpotLight light) { m_spotDesc = light; }
+	void SetDirLight(DirectionalLight light);
+	void SetPointLight(PointLight light);
+	void SetSpotLight(SpotLight light);
 
 	DirectionalLight GetDirLight() { return m_directionalDesc; }
 	PointLight GetPointLight() { return m_pointDesc; }
 	SpotLight GetSpotLight() { return m_spotDesc; }
 
-	XMFLOAT4X4 GetLightView() { return m_lightView; }
-	XMFLOAT4X4 GetLightProj() { return m_lightProj; }
+	XMMATRIX GetLightView() { return m_lightView; }
+	XMMATRIX GetLightProj() { return m_lightProj; }
+	XMMATRIX GetLightViewProj() { return m_lightView * m_lightProj; }
 
+	// LightV * LightP * toTexSpace
 	LightType GetLightType() { return m_lightType; }
 
 	GENERATE_COMPONENT_BODY(Light)

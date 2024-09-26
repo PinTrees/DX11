@@ -10,6 +10,7 @@
 #include "Ssao.h"
 #include "EditorCamera.h"
 #include "LightManager.h"
+#include "Light.h"
 
 MeshViewDemo::MeshViewDemo(HINSTANCE hInstance)
 	: App(hInstance)
@@ -77,17 +78,14 @@ bool MeshViewDemo::Init()
 	XMFLOAT3 minPt(+MathHelper::Infinity, +MathHelper::Infinity, +MathHelper::Infinity);
 	XMFLOAT3 maxPt(-MathHelper::Infinity, -MathHelper::Infinity, -MathHelper::Infinity);
 
-	if (!(scene->GetAllGameObjects().size() > 0))
-	{
-		minPt = XMFLOAT3(0, 0, 0);
-		maxPt = XMFLOAT3(20, 20, 20);
-	}
-
+	bool IsMesh = false;
 	for (uint32 i = 0; i < scene->GetAllGameObjects().size(); ++i)
 	{
 		MeshRenderer* meshRenderer = scene->GetAllGameObjects()[i]->GetComponent<MeshRenderer>();
 		if (meshRenderer == nullptr)
 			continue;
+
+		IsMesh = true; // CreateScene에서 Camera, Light를 추가하므로 MeshRenderer가 없을 시에는 인피니티에서 임의의 값으로 바꿔줘야함
 
 		Transform* transform = meshRenderer->GetGameObject()->GetTransform();
 
@@ -113,6 +111,12 @@ bool MeshViewDemo::Init()
 		}
 	}
 	
+	if ((!(scene->GetAllGameObjects().size() > 0)) || (!IsMesh))
+	{
+		minPt = XMFLOAT3(0, 0, 0);
+		maxPt = XMFLOAT3(20, 20, 20);
+	}
+
 	//
 	// Derive scene bounding sphere from bounding box.
 	//
@@ -155,13 +159,20 @@ void MeshViewDemo::RenderApplication()
 
 void MeshViewDemo::OnEditorSceneRender(ID3D11RenderTargetView* renderTargetView, EditorCamera* camera)
 {
+	vector<DirectionalLight>& dirLight = LightManager::GetI()->GetDirLights();
+	vector<PointLight>& pointLight = LightManager::GetI()->GetPointLights();
+	vector<SpotLight>& spotLight = LightManager::GetI()->GetSpotLights();
+	vector<shared_ptr<Light>>& lights = LightManager::GetI()->GetLights();
 	BuildShadowTransform();
 
 	RenderManager::GetI()->cameraViewMatrix = camera->View();
 	RenderManager::GetI()->cameraProjectionMatrix = camera->Proj();
 	RenderManager::GetI()->cameraViewProjectionMatrix = XMMatrixMultiply(camera->View(), camera->Proj());
 	RenderManager::GetI()->directinalLightViewProjection = XMMatrixMultiply(XMLoadFloat4x4(&_lightView), XMLoadFloat4x4(&_lightProj));
-
+	
+	// LateUpdate 로직이 없어서 주석처리
+	//RenderManager::GetI()->directinalLightViewProjection = lights[0]->GetLightViewProj();
+	
 	// 와이어프레임 제어처럼 전체 그림자맵 제어도 가능하게
 	auto shadowMap = RenderManager::GetI()->editorShadowMap;
 	shadowMap->BindDsvAndSetNullRenderTarget(_deviceContext);
@@ -213,15 +224,12 @@ void MeshViewDemo::OnEditorSceneRender(ID3D11RenderTargetView* renderTargetView,
 	//Effects::NormalMapFX->SetShadowMap(shadowMap->DepthMapSRV().Get());
 	//Effects::NormalMapFX->SetSsaoMap(ssao->AmbientSRV().Get());
 
-	//Effects::InstancedBasicFX->SetDirLights(_dirLights,3);
+	Effects::InstancedBasicFX->SetDirLights(_dirLights,1);
 
-	vector<DirectionalLight>& dirLight = LightManager::GetI()->GetDirLights();
-	vector<PointLight>& pointLight = LightManager::GetI()->GetPointLights();
-	vector<SpotLight>& spotLight = LightManager::GetI()->GetSpotLights();
-
-	if (dirLight.size() > 0) Effects::InstancedBasicFX->SetDirLights(dirLight.data(), dirLight.size());
-	if (pointLight.size() > 0) Effects::InstancedBasicFX->SetPointLights(pointLight.data(), pointLight.size());
-	if (spotLight.size() > 0) Effects::InstancedBasicFX->SetSpotLights(spotLight.data(), spotLight.size());
+	//Effects::InstancedBasicFX->SetDirLights(&lights[0]->GetDirLight(), 1);
+	//if (dirLight.size() > 0) Effects::InstancedBasicFX->SetDirLights(dirLight.data(), dirLight.size());
+	//if (pointLight.size() > 0) Effects::InstancedBasicFX->SetPointLights(pointLight.data(), pointLight.size());
+	//if (spotLight.size() > 0) Effects::InstancedBasicFX->SetSpotLights(spotLight.data(), spotLight.size());
 
 	Effects::InstancedBasicFX->SetEyePosW(camera->GetPosition());
 	Effects::InstancedBasicFX->SetCubeMap(_sky->CubeMapSRV().Get());

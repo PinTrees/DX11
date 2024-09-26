@@ -37,6 +37,7 @@ public:
 	// Local
 	Vec3 GetLocalScale() { return m_LocalScale; }
 	void SetLocalScale(const Vec3& localScale) { m_LocalScale = localScale; UpdateTransform(); }
+	Vec3 GetLocalEulerAngles() { return m_LocalEulerAngles; }
 	Vec3 GetLocalEulerAngle();
 	void SetLocalEulerAngle(const Vec3& localRotation);
 	void SetLocalRotation(Quaternion q);
