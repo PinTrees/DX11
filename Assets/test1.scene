@@ -117,6 +117,76 @@
             "components": [
                 {
                     "m_EulerAngles": [
+                        -0.041887879371643066,
+                        -0.015708010643720627,
+                        8.732226747243388e-11
+                    ],
+                    "m_LocalEulerAngles": [
+                        -0.041887879371643066,
+                        -0.015707962214946747,
+                        0.0
+                    ],
+                    "m_LocalPosition": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "m_LocalRotation": {
+                        "w": 0.9997498393058777,
+                        "x": -0.02094176411628723,
+                        "y": -0.007852178066968918,
+                        "z": -0.00016447959933429956
+                    },
+                    "m_LocalScale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "m_Position": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "m_Scale": [
+                        0.9999999403953552,
+                        0.9999999403953552,
+                        0.9999999403953552
+                    ],
+                    "type": "Transform"
+                },
+                {
+                    "meshPath": "Assets\\Art\\ENV\\Forest_Ground_scans\\Forest_ground_Scan_var1\\Forest_ground_scan_var1.fbx",
+                    "shaderPath": "",
+                    "subsetIndex": 0,
+                    "type": "MeshRenderer"
+                },
+                {
+                    "offset": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "size": [
+                        167.0,
+                        5.0,
+                        167.0
+                    ],
+                    "type": "BoxCollider"
+                },
+                {
+                    "angularDamping": 0.9900000095367432,
+                    "isKinematic": false,
+                    "m_LinearDamping": 0.9900000095367432,
+                    "mass": 0.0,
+                    "type": "RigidBody"
+                }
+            ],
+            "name": "GameObject"
+        },
+        {
+            "components": [
+                {
+                    "m_EulerAngles": [
                         -0.0,
                         -1.0347278589506459e-13,
                         -0.0
@@ -128,7 +198,7 @@
                     ],
                     "m_LocalPosition": [
                         0.0,
-                        0.0,
+                        33.599998474121094,
                         0.0
                     ],
                     "m_LocalRotation": {
@@ -144,7 +214,7 @@
                     ],
                     "m_Position": [
                         0.0,
-                        0.0,
+                        33.599998474121094,
                         0.0
                     ],
                     "m_Scale": [
@@ -155,62 +225,21 @@
                     "type": "Transform"
                 },
                 {
-                    "materialPath": "Assets\\Art\\New Material.mat",
-                    "meshPath": "Assets\\Art\\ENV\\Forest_Ground_scans\\Forest_ground_Scan_var1\\Forest_ground_scan_var1.fbx",
-                    "shaderPath": "",
-                    "subsetIndex": 0,
-                    "type": "MeshRenderer"
-                }
-            ],
-            "name": "GameObject"
-        },
-        {
-            "components": [
-                {
-                    "m_EulerAngles": [
-                        -0.0,
-                        0.0034906286746263504,
-                        -0.0
-                    ],
-                    "m_LocalEulerAngles": [
-                        0.0,
-                        0.003490658476948738,
-                        0.0
-                    ],
-                    "m_LocalPosition": [
-                        0.0,
-                        52.400001525878906,
-                        0.0
-                    ],
-                    "m_LocalRotation": {
-                        "w": 0.9999984502792358,
-                        "x": 0.0,
-                        "y": 0.0017453283071517944,
-                        "z": 0.0
-                    },
-                    "m_LocalScale": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "m_Position": [
-                        0.0,
-                        52.400001525878906,
-                        0.0
-                    ],
-                    "m_Scale": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "type": "Transform"
-                },
-                {
-                    "materialPath": "Assets\\Art\\New Material.mat",
                     "meshPath": "Assets\\Art\\ENV\\Rock\\Mossy_rock_var8.fbx",
                     "shaderPath": "",
                     "subsetIndex": 0,
                     "type": "MeshRenderer"
+                },
+                {
+                    "radius": 25.0,
+                    "type": "SphereCollider"
+                },
+                {
+                    "angularDamping": 0.9900000095367432,
+                    "isKinematic": false,
+                    "m_LinearDamping": 0.9900000095367432,
+                    "mass": 50.0,
+                    "type": "RigidBody"
                 }
             ],
             "name": "GameObject"

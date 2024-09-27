@@ -234,13 +234,13 @@ void from_json(const json& j, UMaterial& m)
 	auto reflect = j.at("Reflect").get<std::vector<float>>();
 	m.Reflect = XMFLOAT4{ reflect[0], reflect[1], reflect[2], reflect[3] };
 
-	m.m_shaderSetting.UseTexture = j.at("UseTexture").get<int>();
-	m.m_shaderSetting.AlphaClip = j.at("AlphaClip").get<int>();
-	m.m_shaderSetting.UseNormalMap = j.at("UseNormalMap").get<int>();
-	m.m_shaderSetting.UseShadowMap = j.at("UseShadowMap").get<int>();
-	m.m_shaderSetting.UseSsaoMap = j.at("UseSsaoMap").get<int>();
-	m.m_shaderSetting.ReflectionEnabled = j.at("ReflectionEnabled").get<int>();
-	m.m_shaderSetting.FogEnabled = j.at("FogEnabled").get<int>();
+	DE_SERIALIZE_INT(j, m.m_shaderSetting.UseTexture, "UseTexture");
+	DE_SERIALIZE_INT(j, m.m_shaderSetting.AlphaClip, "AlphaClip");
+	DE_SERIALIZE_INT(j, m.m_shaderSetting.UseNormalMap, "UseNormalMap");
+	DE_SERIALIZE_INT(j, m.m_shaderSetting.UseShadowMap, "UseShadowMap");
+	DE_SERIALIZE_INT(j, m.m_shaderSetting.UseSsaoMap, "UseSsaoMap");
+	DE_SERIALIZE_INT(j, m.m_shaderSetting.ReflectionEnabled, "ReflectionEnabled");
+	DE_SERIALIZE_INT(j, m.m_shaderSetting.FogEnabled, "FogEnabled");
 }
 
 void to_json(json& j, const UMaterial& m)
@@ -254,14 +254,14 @@ void to_json(json& j, const UMaterial& m)
 		{ "Diffuse", { m.Diffuse.x, m.Diffuse.y, m.Diffuse.z, m.Diffuse.w } },
 		{ "Specular", { m.Specular.x, m.Specular.y, m.Specular.z, m.Specular.w } },
 		{ "Reflect", { m.Reflect.x, m.Reflect.y, m.Reflect.z, m.Reflect.w } },
-
-		// ShaderSetting
-		{ "UseTexture",m.m_shaderSetting.UseTexture },
-		{ "AlphaClip",m.m_shaderSetting.AlphaClip },
-		{ "UseNormalMap",m.m_shaderSetting.UseNormalMap },
-		{ "UseShadowMap",m.m_shaderSetting.UseShadowMap },
-		{ "UseSsaoMap",m.m_shaderSetting.UseSsaoMap },
-		{ "ReflectionEnabled",m.m_shaderSetting.ReflectionEnabled },
-		{ "FogEnabled",m.m_shaderSetting.FogEnabled }
 	};
+
+	// ShaderSetting
+	SERIALIZE_INT(j, m.m_shaderSetting.UseTexture, "UseTexture");
+	SERIALIZE_INT(j, m.m_shaderSetting.AlphaClip, "AlphaClip");
+	SERIALIZE_INT(j, m.m_shaderSetting.UseNormalMap, "UseNormalMap");
+	SERIALIZE_INT(j, m.m_shaderSetting.UseShadowMap, "UseShadowMap");
+	SERIALIZE_INT(j, m.m_shaderSetting.UseSsaoMap, "UseSsaoMap");
+	SERIALIZE_INT(j, m.m_shaderSetting.ReflectionEnabled, "ReflectionEnabled");
+	SERIALIZE_INT(j, m.m_shaderSetting.FogEnabled, "FogEnabled");
 }

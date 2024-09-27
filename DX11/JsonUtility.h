@@ -16,3 +16,10 @@ Quaternion SafeGetQuaternion(const json& j, const std::string& key, const Quater
 #define SERIALIZE_VECTOR3(JSON, VALUE) JSON[#VALUE] = { VALUE.x, VALUE.y, VALUE.z };
 #define DE_SERIALIZE_VECTOR3(JSON, VALUE) VALUE = SafeGetVector3(JSON, #VALUE, Vector3::Zero);
 #define DE_SERIALIZE_VECTOR3_D(JSON, VALUE, Default) VALUE = SafeGetVector3(JSON, #VALUE, Default); 
+
+#define SERIALIZE_INT(JSON, VALUE, VALUE_NAME) JSON[VALUE_NAME] = VALUE;
+
+#define DE_SERIALIZE_INT(JSON, VALUE, VALUE_NAME) if (JSON.contains(VALUE_NAME) && JSON.at(VALUE_NAME).is_number_integer()) \
+													VALUE = j.at(VALUE_NAME).get<int>();									\
+												  else VALUE = 0;															\
+
