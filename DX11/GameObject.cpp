@@ -28,19 +28,39 @@ GameObject::~GameObject()
 
 void GameObject::SetParent(GameObject* parent)
 {
-    // 부모 씬 저장
     if (m_pParentGameObject == nullptr) 
+    {
         SceneManager::GetI()->GetCurrentScene()->RemoveRootGameObjects(this); 
- 
-    m_pParentGameObject = parent;
-    GetTransform()->SetParent(parent->GetComponent_SP<Transform>());
+    }
+    else 
+    {
+        m_pParentGameObject->RemoveChild(this); 
+    }
+
+    m_pParentGameObject = parent; 
+    GetTransform()->SetParent(parent->GetComponent_SP<Transform>()); 
     parent->SetChild(this);
+
+    GetTransform()->UpdateTransform();
 }
 
 void GameObject::SetChild(GameObject* child)
 {
 	m_pChildGameObjects.push_back(child);
     GetTransform()->AddChild(child->GetComponent_SP<Transform>());
+}
+
+void GameObject::RemoveChild(GameObject* child)
+{
+    if (child == nullptr)
+    {
+        return;
+    }
+    auto it = std::find(m_pChildGameObjects.begin(), m_pChildGameObjects.end(), child);
+    if (it != m_pChildGameObjects.end())
+    {
+        m_pChildGameObjects.erase(it);  
+    }
 }
 
 void GameObject::Awake()
@@ -119,17 +139,28 @@ void to_json(json& j, const GameObject& obj)
     j = json
     {
         { "name", obj.m_Name },
-        { "components", json::array() }
+        { "components", json::array() },
+        { "children", json::array() } 
     };
+
     for (const shared_ptr<Component>& component : obj.m_Components)
     {
         j["components"].push_back(component->toJson());
+    }
+
+    for (const GameObject* child : obj.m_pChildGameObjects)
+    {
+        json childJson;
+        to_json(childJson, *child);  
+        j["children"].push_back(childJson);  
     }
 }
 
 void from_json(const json& j, GameObject& obj)
 {
     obj.m_Name = j.at("name").get<std::string>();
+
+    // 컴포넌트 복원
     for (const auto& compJson : j.at("components"))
     {
         if (compJson.is_null())
@@ -143,7 +174,7 @@ void from_json(const json& j, GameObject& obj)
         {
             Component* pComponent = component.get();
             pComponent = obj.GetComponent<Transform>();
-            pComponent->fromJson(compJson); 
+            pComponent->fromJson(compJson);
         }
         else
         {
@@ -151,6 +182,19 @@ void from_json(const json& j, GameObject& obj)
             component = ComponentFactory::Instance().CreateComponent(type);
             component->fromJson(compJson);
             obj.AddComponent(component);
+        }
+    }
+
+    if (j.contains("children"))
+    {
+        for (const auto& childJson : j.at("children"))
+        {
+            GameObject* child = new GameObject;
+            from_json(childJson, *child); 
+            child->SetParentImmediate(&obj); 
+            child->GetComponent<Transform>()->SetParent(obj.GetComponent_SP<Transform>()); 
+            child->GetComponent<Transform>()->UpdateTransform(); 
+            obj.SetChild(child); 
         }
     }
 }

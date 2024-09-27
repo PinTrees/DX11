@@ -71,7 +71,9 @@ void EditorWindow::Render()
             ImGui::EndPopup();
         }
 
+        ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
         OnRender(); // 주요 렌더링 함수 호출
+        ImGui::PopStyleVar();
     }
     ImGui::End();
 

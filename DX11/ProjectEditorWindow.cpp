@@ -253,7 +253,7 @@ void ProjectEditorWindow::RenderFileEntry(const fs::directory_entry& entry, bool
     }
     else if (extention == ".json" || extention == ".JSON")
     {
-        EditorGUI::Image(L"\\ProjectSetting\\icons\\icon_text.png", ImVec2(18, 18));
+        EditorGUI::Image(L"\\ProjectSetting\\icons\\icon_json.png", ImVec2(18, 18));
         EditorGUI::RowSizedBox(8);
         if (ImGui::Selectable(filename.c_str(), isSelected))
         {

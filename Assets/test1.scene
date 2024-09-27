@@ -243,6 +243,50 @@
                 }
             ],
             "name": "GameObject"
+        },
+        {
+            "components": [
+                {
+                    "m_EulerAngles": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "m_LocalEulerAngles": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "m_LocalPosition": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "m_LocalRotation": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "m_LocalScale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "m_Position": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "m_Scale": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "type": "Transform"
+                }
+            ],
+            "name": "Camera"
         }
     ]
 }

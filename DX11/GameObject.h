@@ -106,6 +106,8 @@ public:
 private:
 	friend class GameObject;
 	void SetChild(GameObject* child);
+	void RemoveChild(GameObject* child);
+	void SetParentImmediate(GameObject* g) { m_pParentGameObject = g; }
 
 public:
 	void OnInspectorGUI();

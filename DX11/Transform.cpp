@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Transform.h"
+#include "EditorGUI.h"
 
 // This is not in game format, it is in mathematical format.
 Quaternion Transform::CreateQuaternion(double roll, double pitch, double yaw) // roll (x), pitch (y), yaw (z), angles are in radians
@@ -240,27 +241,22 @@ void Transform::OnInspectorGUI()
 	bool positionChanged = false;
 	bool rotationChanged = false;
 	bool scaleChanged = false;
-
-	ImGui::Text("World Position");
-	if (ImGui::DragFloat3("##WorldPosition", reinterpret_cast<float*>(&m_Position), 0.1f))
-	{
-		positionChanged = true;
-	}
-	ImGui::Text("Local Position");
-	if (ImGui::DragFloat3("##Position", reinterpret_cast<float*>(&m_LocalPosition), 0.1f))
+	
+	if (EditorGUI::Vector3Field("Position", m_Position))
 	{
 		positionChanged = true;
 	}
 
-	ImGui::Text("Rotation");
-	if (ImGui::DragFloat3("##Rotation", reinterpret_cast<float*>(&m_LocalEulerAngles), 0.1f))
+	if (EditorGUI::Vector3Field("Rotation", m_LocalEulerAngles))
 	{
 		rotationChanged = true;
 		SetLocalEulerAngles(m_LocalEulerAngles);
 	}
 
-	ImGui::Text("Scale");
-	scaleChanged = ImGui::DragFloat3("##Scale", reinterpret_cast<float*>(&m_LocalScale), 0.01f);
+	if (EditorGUI::Vector3Field("Scale", m_LocalScale))
+	{
+		scaleChanged = true;
+	}
 
 	if (positionChanged || rotationChanged || scaleChanged)
 	{

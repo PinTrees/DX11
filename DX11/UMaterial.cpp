@@ -231,6 +231,7 @@ void from_json(const json& j, UMaterial& m)
 	DE_SERIALIZE_FLOAT4(j, m.Specular, "Specular");
 	DE_SERIALIZE_FLOAT4(j, m.Reflect, "Reflect");
 
+	// ShaderSetting
 	DE_SERIALIZE_INT(j, m.m_shaderSetting.UseTexture, "UseTexture");
 	DE_SERIALIZE_INT(j, m.m_shaderSetting.AlphaClip, "AlphaClip");
 	DE_SERIALIZE_INT(j, m.m_shaderSetting.UseNormalMap, "UseNormalMap");
