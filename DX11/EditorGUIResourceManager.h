@@ -22,9 +22,8 @@ public:
 	void Init();
 
 	ImFont* LoadFont(EditorTextStyle style);
-	void LastUpdate();
 
 private: 
-	Task<ImFont*> LoadFontAsync(FontLoadContainer container);
+	void LoadFontAsync(FontLoadContainer container);
 };
 

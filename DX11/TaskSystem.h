@@ -1,8 +1,12 @@
 #pragma once
 
+
 class TaskSystem
 {
 public:
-	//static Update
+    static queue<function<void()>> mainThreadTasks;
+
+public:
+    static void ExecuteMainThreadTasks();
 };
 

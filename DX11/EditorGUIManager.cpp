@@ -42,10 +42,6 @@ void EditorGUIManager::Init()
 
 void EditorGUIManager::Update()
 {
-    ImGui_ImplDX11_NewFrame();
-    ImGui_ImplWin32_NewFrame();
-    ImGui::NewFrame();
-
     for (auto& window : m_pEditorWindows)
     {
         window->Update();
@@ -100,9 +96,6 @@ void EditorGUIManager::RenderEditorWindows()
     }
 
     ImGui::PopStyleVar(3);
-
-    ImGui::Render();
-    ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 }
 
 void EditorGUIManager::RegisterWindow(EditorWindow* window)

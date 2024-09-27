@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "EditorGUIResourceManager.h"
+#include "TaskSystem.h"
 
 SINGLE_BODY(EditorGUIResourceManager);
 
@@ -41,10 +42,7 @@ ImFont* EditorGUIResourceManager::LoadFont(EditorTextStyle style)
         {
             return nullptr;
         }
-        else
-        {
-            return m_FontMap[fontKey];
-        }
+        return nullptr;
     }
 
     m_LoadFontTask[fontKey] = true;
@@ -52,99 +50,50 @@ ImFont* EditorGUIResourceManager::LoadFont(EditorTextStyle style)
     fontContainer.FontKey = fontKey;
     fontContainer.FontStyle = style;
 
-    //Task<ImFont*> fontFuture = LoadFontAsync(fontContainer); 
-    //ImFont* font = fontFuture.get();  // 폰트 로드가 완료되면 폰트를 얻음
-    //
-    //if (font) {
-    //    m_FontMap[fontKey] = font;
-    //    m_LoadFontTask[fontKey] = false;
-    //    return m_FontMap[fontKey];
-    //}
-    //else {
-    //}
-
+    LoadFontAsync(fontContainer);  
+    //ImFont* font = fontFuture.get();  // 폰트 로드가 완료되면 폰트를 얻음 
+    
     return nullptr;  // 작업이 완료되기 전까지는 nullptr 반환
 }
 
-void EditorGUIResourceManager::LastUpdate()
-{
-    // 지연된 로드 리스트에 있는 모든 폰트를 실제로 로드
-    for (const auto& fontContainer : loadedAA)
-    {
-        const string& fontPath = fontContainer.FontStyle.Bold ? "C:\\Windows\\Fonts\\malgunbd.ttf" : "C:\\Windows\\Fonts\\malgun.ttf";
-        const EditorTextStyle& style = fontContainer.FontStyle;
-
-        // 폰트 경로와 크기를 결합하여 유니크 키 생성
-        std::string fontKey = std::to_string(style.FontSize) + (style.Bold ? "_bold" : "_regular");
-
-        // 폰트가 이미 로드된 경우 바로 반환
-        if (m_FontMap.find(fontKey) != m_FontMap.end())
-        {
-            continue;
-        }
-
-        ImGuiIO& io = ImGui::GetIO();
-        ImFont* font = io.Fonts->AddFontFromFileTTF(
-            fontPath.c_str(),
-            style.FontSize,
-            NULL,
-            io.Fonts->GetGlyphRangesKorean()
-        );
-
-        if (font)
-        {
-            // 로드된 폰트를 맵에 저장
-            m_FontMap[fontKey] = font;
-        }
-        else
-        {
-            // 로드 실패시 로그 출력
-            fprintf(stderr, "Failed to load font: %s with size: %.1f\n", fontPath.c_str(), style.FontSize);
-        }
-
-        io.Fonts->Build();
-    }
-
-    // 모든 지연된 로드를 처리했으므로 리스트 비움
-    loadedAA.clear();
-
-    // 폰트 텍스처 업데이트
-    ImGui_ImplDX11_InvalidateDeviceObjects();
-    ImGui_ImplDX11_CreateDeviceObjects();       // 텍스처 생성 및 업로드
-}
-
-Task<ImFont*> EditorGUIResourceManager::LoadFontAsync(FontLoadContainer container)
+void EditorGUIResourceManager::LoadFontAsync(FontLoadContainer container)
 {
     const string& fontPath = container.FontStyle.Bold ? "C:\\Windows\\Fonts\\malgunbd.ttf" : "C:\\Windows\\Fonts\\malgun.ttf";
     const EditorTextStyle& style = container.FontStyle;
 
-    std::string fontKey = std::to_string(style.FontSize) + (style.Bold ? "_bold" : "_regular");
+    string fontKey = to_string(style.FontSize) + (style.Bold ? "_bold" : "_regular");
 
-    ImGuiIO& io = ImGui::GetIO();
-    ImFont* font = io.Fonts->AddFontFromFileTTF(
-        fontPath.c_str(),
-        style.FontSize,
-        NULL,
-        io.Fonts->GetGlyphRangesKorean()
-    );
+    // 비동기 작업의 결과를 저장할 promise 객체
+    auto fontPromise = make_shared<promise<ImFont*>>(); 
+    future<ImFont*> fontFuture = fontPromise->get_future();
 
-    if (font)
+    TaskSystem::mainThreadTasks.push([fontKey, fontPath, style, fontPromise, this]()
     {
-        //co_await io.Fonts->GetGlyphRangesKorean(); 
-        //co_await TaskSystem.EndFrame(); // 비동기 프레임 끝내기
+        ImGuiIO& io = ImGui::GetIO(); 
+        ImFont* font = io.Fonts->AddFontFromFileTTF( 
+            fontPath.c_str(), 
+            style.FontSize, 
+            NULL, 
+            io.Fonts->GetGlyphRangesKorean() 
+        );
 
-        // 폰트 텍스처 업데이트
-        io.Fonts->Build();
-        //ImGui_ImplDX11_InvalidateDeviceObjects();
-        //ImGui_ImplDX11_CreateDeviceObjects();      
+        if (font)
+        { 
+            io.Fonts->Build(); 
+            ImGui_ImplDX11_InvalidateDeviceObjects();
+            ImGui_ImplDX11_CreateDeviceObjects();
 
-        co_return font;  // 비동기적으로 폰트 반환
-    }
-    else
-    {
-        // 로드 실패시 로그 출력
-        fprintf(stderr, "Failed to load font: %s with size: %.1f\n", fontPath.c_str(), style.FontSize);
-    }
+            m_LoadFontTask[fontKey] = false;
+            this->m_FontMap[fontKey] = font; 
+            // 작업 완료 후 promise에 결과 설정
+            fontPromise->set_value(font);
+        }
+        else
+        {
+            fontPromise->set_value(nullptr);
+        }
+    });
 
-    co_return nullptr;  // 폰트 로드 실패 시 nullptr 반환
+    // 비동기적으로 폰트를 반환 (작업이 끝날 때까지 기다리기)
+    return; 
 }

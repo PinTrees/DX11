@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Transform.h"
+#include "EditorGUI.h"
 
 Transform::Transform()
 {
@@ -185,37 +186,29 @@ void Transform::OnInspectorGUI()
 	bool rotationChanged = false;
 	bool scaleChanged = false;
 
-	ImGui::Text("World Position"); 
-	if (ImGui::DragFloat3("##WorldPosition", reinterpret_cast<float*>(&m_Position), 0.1f))
-	{
-		positionChanged = true;
-	}
-	ImGui::Text("Local Position");
-	if (ImGui::DragFloat3("##Position", reinterpret_cast<float*>(&m_LocalPosition), 0.1f))
+	if (EditorGUI::Vector3Field("Position", m_LocalPosition))
 	{
 		positionChanged = true;
 	}
 
 	// Convert radians to degrees
-	Vec3 localEulerAngle_Radian = m_LocalEulerAngles; 
+	Vec3 localEulerAngle_Radian = m_LocalEulerAngles;
 	Vec3 localEulerAngle_Degree;
 	localEulerAngle_Degree.x = XMConvertToDegrees(localEulerAngle_Radian.x);
 	localEulerAngle_Degree.y = XMConvertToDegrees(localEulerAngle_Radian.y);
 	localEulerAngle_Degree.z = XMConvertToDegrees(localEulerAngle_Radian.z);
 
-	ImGui::Text("Rotation");
-	if (ImGui::DragFloat3("##Rotation", reinterpret_cast<float*>(&localEulerAngle_Degree), 0.1f))
+	if (EditorGUI::Vector3Field("Rotation", localEulerAngle_Degree))
 	{
 		rotationChanged = true;
 		Vec3 a;
-		a.x = XMConvertToRadians(localEulerAngle_Degree.x); 
-		a.y = XMConvertToRadians(localEulerAngle_Degree.y); 
-		a.z = XMConvertToRadians(localEulerAngle_Degree.z); 
+		a.x = XMConvertToRadians(localEulerAngle_Degree.x);
+		a.y = XMConvertToRadians(localEulerAngle_Degree.y);
+		a.z = XMConvertToRadians(localEulerAngle_Degree.z);
 		SetLocalEulerAngle(a);
 	}
 
-	ImGui::Text("Scale");
-	scaleChanged = ImGui::DragFloat3("##Scale", reinterpret_cast<float*>(&m_LocalScale), 0.01f);
+	scaleChanged = EditorGUI::Vector3Field("Scale", m_LocalScale);
 
 	if (positionChanged || rotationChanged || scaleChanged)
 	{

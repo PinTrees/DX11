@@ -12,6 +12,7 @@
 #include "AnimatorEditorWindow.h"
 
 #include "EditorGUIResourceManager.h"
+#include "TaskSystem.h"
 
 namespace
 {
@@ -88,15 +89,22 @@ int32 App::Run()
 				// Render
 				RenderApplication();
 
+				ImGui_ImplDX11_NewFrame();
+				ImGui_ImplWin32_NewFrame();
+				ImGui::NewFrame();
+
 				//Editor Render
 				EditorGUIManager::GetI()->RenderEditorWindows();
+
+				ImGui::Render(); 
+				ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData()); 
 
 				// Render End
 				HR(_swapChain->Present(0, 0)); 
 
 				// Last Frame
 				SceneManager::GetI()->GetCurrentScene()->LastFramUpdate();
-				EditorGUIResourceManager::GetI()->LastUpdate();
+				TaskSystem::ExecuteMainThreadTasks();
 			}
 			else
 			{
