@@ -275,7 +275,10 @@ void Camera::GetFrustumCulling()
 		auto meshRenderer = allObject[i]->GetComponent<MeshRenderer>();
 
 		// meshRenderer 컴포넌트가 없는 객체이거나 mesh를 적용 안 시켰을 경우
-		if (!meshRenderer && meshRenderer->GetMesh()->Vertices.size())
+		if (!meshRenderer)
+			continue;
+
+		if (!(meshRenderer->GetMesh()))
 			continue;
 
 		BouncingBall ball = meshRenderer->GetMesh()->Ball;

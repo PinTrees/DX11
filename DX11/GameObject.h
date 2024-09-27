@@ -2,7 +2,7 @@
 #include <atomic>
 #include <nlohmann/json.hpp>
 #include "Component.h"
-
+#include "LightManager.h"
 using json = nlohmann::json;
 using std::make_shared;
 using std::static_pointer_cast;
@@ -61,6 +61,12 @@ public:
 
 		baseComponent->SetGameObject(this);
 		m_Components.push_back(component);
+		
+		if ("Light" == baseComponent->GetType())
+		{
+			shared_ptr<Light> ptr = dynamic_pointer_cast<Light>(component);
+			LightManager::GetI()->SetLight(ptr);
+		}
 
 		return component.get();
 	}
@@ -68,6 +74,12 @@ public:
 	{
 		if (component == nullptr)
 			return;
+
+		if ("Light" == component->GetType())
+		{
+			shared_ptr<Light> ptr = dynamic_pointer_cast<Light>(component);
+			LightManager::GetI()->SetLight(ptr);
+		}
 
 		component->SetGameObject(this);
 		m_Components.push_back(component);

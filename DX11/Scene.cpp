@@ -238,12 +238,18 @@ void Scene::UpdateScene()
 {
     for (auto& gameObject : m_arrGameObjects[0])
     {
-        gameObject->Update();
+        for (auto& component : gameObject->GetComponents())
+        {
+            component->Update();
+        }
     }
 
     for (auto& gameObject : m_arrGameObjects[0])
     {
-        gameObject->LateUpdate();
+        for (auto& component : gameObject->GetComponents())
+        {
+            component->LateUpdate();
+        }
     }
 }
 

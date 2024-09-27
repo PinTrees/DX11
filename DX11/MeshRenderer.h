@@ -35,7 +35,7 @@ public:
 	void SetShader(Shader* shader) { m_Shader = shader; }
 	void SetShader(shared_ptr<Effect> effect) { m_Effect = effect; }
 
-	shared_ptr<Mesh> GetMesh() { return m_Mesh; }
+	shared_ptr<Mesh> GetMesh() { if (m_Mesh) return m_Mesh; else return nullptr; }
 
 	// ¿ŒΩ∫≈œΩÃ ID, mesh and material and setting
 	InstanceID GetInstanceID()

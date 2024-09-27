@@ -131,7 +131,6 @@ void SceneManager::CreateScene()
 	
 	light->AddComponent<Light>();
 	light->GetComponent<Light>()->SetDirLight(dir);
-	LightManager::GetI()->SetLight(light->GetComponent_SP<Light>());
 	
 	m_pCurrScene->AddRootGameObject(light);
 }
