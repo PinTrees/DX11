@@ -30,16 +30,25 @@ void GameObject::SetParent(GameObject* parent)
 {
     if (m_pParentGameObject == nullptr) 
     {
+        // RootGameObject일 경우
         SceneManager::GetI()->GetCurrentScene()->RemoveRootGameObjects(this); 
     }
     else 
     {
+        // 이미 부모가 있으나 다른 부모로 이동 시 원래 부모의 자식vector를 자기 자신을 지우기
         m_pParentGameObject->RemoveChild(this); 
     }
 
-    m_pParentGameObject = parent; 
-    GetTransform()->SetParent(parent->GetComponent_SP<Transform>()); 
-    parent->SetChild(this);
+    m_pParentGameObject = parent;
+    if (parent == nullptr)
+    {
+        GetTransform()->SetParent(nullptr);
+    }
+    else
+    {
+        GetTransform()->SetParent(parent->GetComponent_SP<Transform>());
+        parent->SetChild(this);
+    }
 
     GetTransform()->UpdateTransform();
 }
