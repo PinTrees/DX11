@@ -258,6 +258,7 @@ void Camera::LateUpdate()
 
 	ProjUpdate();
 
+	// OnPreCull 권장(Unity 생명주기)
 	FrustumUpdate();
 	GetFrustumCulling();
 }

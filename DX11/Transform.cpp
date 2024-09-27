@@ -252,16 +252,11 @@ void Transform::OnInspectorGUI()
 		positionChanged = true;
 	}
 
-	Vec3 localEulerAngle_Degree = m_LocalEulerAngles;
 	ImGui::Text("Rotation");
-	if (ImGui::DragFloat3("##Rotation", reinterpret_cast<float*>(&localEulerAngle_Degree), 0.1f))
+	if (ImGui::DragFloat3("##Rotation", reinterpret_cast<float*>(&m_LocalEulerAngles), 0.1f))
 	{
 		rotationChanged = true;
-		Vec3 a;
-		a.x = XMConvertToRadians(localEulerAngle_Degree.x);
-		a.y = XMConvertToRadians(localEulerAngle_Degree.y);
-		a.z = XMConvertToRadians(localEulerAngle_Degree.z);
-		SetLocalEulerAngles(a);
+		SetLocalEulerAngles(m_LocalEulerAngles);
 	}
 
 	ImGui::Text("Scale");
