@@ -242,7 +242,7 @@ void Transform::OnInspectorGUI()
 	bool rotationChanged = false;
 	bool scaleChanged = false;
 	
-	if (EditorGUI::Vector3Field("Position", m_Position))
+	if (EditorGUI::Vector3Field("Position", m_LocalPosition))
 	{
 		positionChanged = true;
 	}
@@ -268,7 +268,7 @@ GENERATE_COMPONENT_FUNC_TOJSON(Transform)
 {
 	json j;
 
-	j["type"] = "Transform";
+	SERIALIZE_TYPE(j, Transform);
 	SERIALIZE_QUATERNION(j, m_LocalRotation);
 	SERIALIZE_VECTOR3(j, m_LocalEulerAngles);
 	SERIALIZE_VECTOR3(j, m_LocalEulerRadians);

@@ -383,7 +383,8 @@ void MeshRenderer::OnInspectorGUI()
 GENERATE_COMPONENT_FUNC_TOJSON(MeshRenderer)
 {
 	json j;
-	j["type"] = "MeshRenderer";
+
+	SERIALIZE_TYPE(j, MeshRenderer);
 	j["shaderPath"] = wstring_to_string(m_ShaderPath);
 	j["meshPath"] = wstring_to_string(m_MeshPath);
 	//j["materialPath"] = wstring_to_string(m_MaterialPath);

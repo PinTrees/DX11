@@ -24,6 +24,7 @@ Quaternion SafeGetQuaternion(const json& j, const std::string& key, const Quater
 												  else VALUE = 0;															\
 
 
+#define SERIALIZE_TYPE(JSON, CLASS) JSON["type"] = #CLASS;
 #define SERIALIZE_STRING(JSON, VALUE, VALUE_NAME) JSON[VALUE_NAME] = VALUE;
 #define SERIALIZE_WSTRING(JSON, VALUE, VALUE_NAME) JSON[VALUE_NAME] = wstring_to_string(VALUE);
 
