@@ -34,7 +34,7 @@ void InspectorEditorWindow::OnRender()
 
 		if (SelectionManager::GetSelectedSubType() == SelectionSubType::MATERIAL)
 		{
-			UMaterial* material = SelectionManager::GetSelectMaterial();
+			auto material = SelectionManager::GetSelectMaterial();
 			if (material == nullptr)
 				return;
 

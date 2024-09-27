@@ -18,6 +18,11 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <algorithm>
+
+#include <thread>
+#include <future>		// std::async, std::future
+#include <chrono>		// std::chrono::seconds
+#include <coroutine>
 using namespace std;
 
 // WIN
@@ -66,6 +71,7 @@ namespace ed = ax::NodeEditor;
 // ENGINE
 #include "ComponentFactory.h"
 #include "PostProcessingManager.h";
+#include "Task.h"
 
 // EDITOR - ONLY
 #include "EditorUtility.h"

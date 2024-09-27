@@ -27,7 +27,7 @@ private:
     static std::wstring m_SelectedFilePath;
     static GameObject* m_SelectedGameObject;
 
-    static UMaterial* m_SelectedFile_Material;
+    static shared_ptr<UMaterial> m_SelectedFile_Material;
 
 public:
     static void ClearSelection();
@@ -41,6 +41,6 @@ public:
     static SelectionType GetSelectedObjectType() { return m_SelectedType; }
     static SelectionSubType GetSelectedSubType() { return m_SelectedSubType; }
 
-    static UMaterial* GetSelectMaterial() { return m_SelectedFile_Material; }
+    static shared_ptr<UMaterial> GetSelectMaterial() { return m_SelectedFile_Material; }
 };
 

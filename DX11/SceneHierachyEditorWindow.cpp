@@ -73,10 +73,6 @@ void SceneHierachyEditorWindow::OnRender()
 	}
 }
 
-void SceneHierachyEditorWindow::OnRenderExit()
-{
-}
-
 
 void SceneHierachyEditorWindow::DrawGameObject(GameObject* gameObject)
 {

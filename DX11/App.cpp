@@ -11,6 +11,8 @@
 #include "ConsoleEditorWindow.h"
 #include "AnimatorEditorWindow.h"
 
+#include "EditorGUIResourceManager.h"
+
 namespace
 {
 	// This is just used to forward Windows messages from a global window
@@ -94,6 +96,7 @@ int32 App::Run()
 
 				// Last Frame
 				SceneManager::GetI()->GetCurrentScene()->LastFramUpdate();
+				EditorGUIResourceManager::GetI()->LastUpdate();
 			}
 			else
 			{

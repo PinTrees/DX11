@@ -23,6 +23,8 @@ void EditorGUIManager::Init()
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+    io.Fonts->Flags |= ImFontAtlasFlags_NoBakedLines;
+    io.FontGlobalScale = 1.0f;
 
     ImGui::StyleColorsDark();
 
@@ -30,9 +32,11 @@ void EditorGUIManager::Init()
     ImGui_ImplWin32_Init(Application::GetI()->GetMainHwnd());
     ImGui_ImplDX11_Init(Application::GetI()->GetDevice(), Application::GetI()->GetDeviceContext());
 
+    float fontSize = 16.0f * io.DisplayFramebufferScale.y; // DPI에 맞춘 폰트 크기
+
     // Load Fonts
     //io.Fonts->AddFontDefault(); 
-    io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\malgun.ttf", 16.0f, NULL, io.Fonts->GetGlyphRangesKorean());
+    io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\malgun.ttf", fontSize, NULL, io.Fonts->GetGlyphRangesKorean());
     io.Fonts->Build();
 }
 
@@ -42,6 +46,14 @@ void EditorGUIManager::Update()
     ImGui_ImplWin32_NewFrame();
     ImGui::NewFrame();
 
+    for (auto& window : m_pEditorWindows)
+    {
+        window->Update();
+    }
+}
+
+void EditorGUIManager::RenderEditorWindows()
+{
     // 상단에 플레이, 스탑, 한 프레임씩 넘기기 버튼 추가
     ImGui::BeginMainMenuBar();
     ImGui::BeginHorizontal("HHH");
@@ -53,8 +65,8 @@ void EditorGUIManager::Update()
     if (ImGui::Button("Stop"))
     {
         Application::SetPlaying(false);
-        SelectionManager::ClearSelection(); 
-        SceneManager::GetI()->HandleStop(); 
+        SelectionManager::ClearSelection();
+        SceneManager::GetI()->HandleStop();
     }
     if (ImGui::Button("Step"))
     {
@@ -63,37 +75,31 @@ void EditorGUIManager::Update()
     ImGui::EndMainMenuBar();
 
     // 도킹 가능한 영역 설정
-    ImGuiViewport* viewport = ImGui::GetMainViewport(); 
-    ImGui::SetNextWindowPos(viewport->Pos); 
+    ImGuiViewport* viewport = ImGui::GetMainViewport();
+    ImGui::SetNextWindowPos(viewport->Pos);
     ImGui::SetNextWindowSize(viewport->Size);
     ImGui::SetNextWindowViewport(viewport->ID);
 
-    ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking; 
+    ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
     window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
-    window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus; 
-     
-    ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f); 
+    window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
+
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
     ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
-    ImGui::Begin("DockSpace Demo", NULL, window_flags); 
-    ImGui::PopStyleVar(3);
 
-    ImGuiID dockspace_id = ImGui::GetID("MyDockspace"); 
-    ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_None); 
-    ImGui::End(); 
+    ImGui::Begin("DockSpace Demo", NULL, window_flags);
 
-    for (auto& window : m_pEditorWindows)
-    {
-        window->Update();
-    }
-}
+    ImGuiID dockspace_id = ImGui::GetID("MyDockspace");
+    ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_None);
+    ImGui::End();
 
-void EditorGUIManager::RenderEditorWindows()
-{
     for (auto& window : m_pEditorWindows)
     {
         window->Render();
     }
+
+    ImGui::PopStyleVar(3);
 
     ImGui::Render();
     ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());

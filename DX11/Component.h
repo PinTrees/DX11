@@ -8,13 +8,19 @@ class GameObject;
 
 class Component
 {
+private:
+	static int nextInstanceId;
+
 protected:
 	GameObject* m_pGameObject;
 	string m_InspectorTitleName = "";
-	int m_componentID;
+	int m_InstanceId;
+
 public:
 	Component();
 	virtual ~Component();
+
+	int GetInstanceID() { return m_InstanceId; }
 
 	virtual void Awake()  { }
 	virtual void Start()  { }	

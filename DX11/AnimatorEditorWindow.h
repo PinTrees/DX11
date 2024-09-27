@@ -23,8 +23,6 @@ public:
 	~AnimatorEditorWindow(); 
 
 public:
-	virtual void OnRenderBegin() override;
 	virtual void OnRender() override;
-	virtual void OnRenderExit() override;
 };
 

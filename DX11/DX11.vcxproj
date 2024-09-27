@@ -212,7 +212,10 @@
     <ClInclude Include="Debug.h" />
     <ClInclude Include="define.h" />
     <ClInclude Include="EditorCamera.h" />
+    <ClInclude Include="EditorGUI.h" />
     <ClInclude Include="EditorGUIManager.h" />
+    <ClInclude Include="EditorGUIResourceManager.h" />
+    <ClInclude Include="EditorGUIStyle.h" />
     <ClInclude Include="EditorSettingManager.h" />
     <ClInclude Include="EditorUtility.h" />
     <ClInclude Include="EditorWindow.h" />
@@ -279,6 +282,8 @@
     <ClInclude Include="Sky.h" />
     <ClInclude Include="SphereCollider.h" />
     <ClInclude Include="Ssao.h" />
+    <ClInclude Include="Task.h" />
+    <ClInclude Include="TaskSystem.h" />
     <ClInclude Include="Terrain.h" />
     <ClInclude Include="TextureMgr.h" />
     <ClInclude Include="TimeManager.h" />
@@ -339,7 +344,10 @@
     <ClCompile Include="Debug.cpp" />
     <ClCompile Include="define.cpp" />
     <ClCompile Include="EditorCamera.cpp" />
+    <ClCompile Include="EditorGUI.cpp" />
     <ClCompile Include="EditorGUIManager.cpp" />
+    <ClCompile Include="EditorGUIResourceManager.cpp" />
+    <ClCompile Include="EditorGUIStyle.cpp" />
     <ClCompile Include="EditorSettingManager.cpp" />
     <ClCompile Include="EditorUtility.cpp" />
     <ClCompile Include="EditorWindow.cpp" />
@@ -430,6 +438,8 @@
     <ClCompile Include="Sky.cpp" />
     <ClCompile Include="SphereCollider.cpp" />
     <ClCompile Include="Ssao.cpp" />
+    <ClCompile Include="Task.cpp" />
+    <ClCompile Include="TaskSystem.cpp" />
     <ClCompile Include="Terrain.cpp" />
     <ClCompile Include="TextureMgr.cpp" />
     <ClCompile Include="TimeManager.cpp" />

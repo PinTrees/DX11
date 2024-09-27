@@ -22,15 +22,15 @@ private:
 	wstring				m_MeshPath;
 	int					m_MeshSubsetIndex;
 
-	UMaterial*	m_pMaterial;
-	wstring		m_MaterialPath;
+	vector<shared_ptr<UMaterial>> m_pMaterials;
+	vector<wstring> m_MaterialPaths;
 
 	//bool m_createShadowMap; // 그림자맵 생성 단계에서 오브젝트를 그릴지에 대한 여부(영향을 주는 오브젝트)
 public:
 	MeshRenderer();
 	virtual ~MeshRenderer();
 
-	void SetMaterial(UMaterial* mat) { m_pMaterial = mat; }
+	void AddMaterial(shared_ptr<UMaterial> mat) { m_pMaterials.push_back(mat); }
 	void SetMesh(shared_ptr<Mesh> mesh) { m_Mesh = mesh; }
 	void SetShader(Shader* shader) { m_Shader = shader; }
 	void SetShader(shared_ptr<Effect> effect) { m_Effect = effect; }
@@ -40,7 +40,7 @@ public:
 	// 인스턴싱 ID, mesh and material and setting
 	InstanceID GetInstanceID()
 	{
-		return make_tuple((uint64)m_Mesh.get(), (uint64)m_pMaterial, 0);
+		return make_tuple((uint64)m_Mesh.get(), 0, 0);
 	}
 
 public:

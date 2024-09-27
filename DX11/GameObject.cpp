@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "GameObject.h"
 #include "Transform.h"
+#include "EditorGUI.h"
 
 atomic<uint64> GameObject::g_NextInstanceID = 0;
 
@@ -74,10 +75,16 @@ void GameObject::ApplyPendingComponents()
 void GameObject::OnInspectorGUI()
 {
     // 게임 오브젝트 이름 변경 인풋 필드
-    if (ImGui::InputText("Name", &m_Name[0], m_Name.capacity() + 1))
+    ImGui::Dummy(ImVec2(0, 4));
+    ImGui::Dummy(ImVec2(2, 0));
+    ImGui::SameLine();
+    EditorGUI::Checkbox();
+    ImGui::SameLine();
+    if (EditorGUI::InputField(m_Name))
     {
         // 이름 변경 시 필요한 추가 작업이 있으면 여기에 추가
     }
+    ImGui::Dummy(ImVec2(0, 4));
 
     for (const auto& component : m_Components)
     {
@@ -92,18 +99,18 @@ void GameObject::OnInspectorGUI()
     if (ImGui::BeginPopup("add_component_popup"))
     {
         std::vector<std::string> componentTypes = ComponentFactory::Instance().GetComponentTypes();
-        for (const auto& type : componentTypes) 
+        for (const auto& type : componentTypes)
         {
-            if (ImGui::MenuItem(type.c_str())) 
+            if (ImGui::MenuItem(type.c_str()))
             {
                 auto newComponent = ComponentFactory::Instance().CreateComponent(type);
-                if (newComponent) 
-                { 
+                if (newComponent)
+                {
                     m_ComponentsToAdd.push_back(newComponent);
                 }
             }
         }
-        ImGui::EndPopup(); 
+        ImGui::EndPopup();
     }
 }
 
