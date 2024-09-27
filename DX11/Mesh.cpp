@@ -3,7 +3,6 @@
 #include "FBXLoader.h"
 #include "LoadM3d.h"
 
-
 std::string GetFileExtension(const std::string& filename)
 {
 	size_t dotPos = filename.find_last_of(L'.');
@@ -13,7 +12,6 @@ std::string GetFileExtension(const std::string& filename)
 	}
 	return "";
 }
-
 
 Mesh::Mesh(ComPtr<ID3D11Device> device, TextureMgr& texMgr, const std::string& modelFilename, const std::wstring& texturePath)
 {

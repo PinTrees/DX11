@@ -23,7 +23,10 @@ class SkinnedMesh
 {
 public:
 	SkinnedMesh(ComPtr<ID3D11Device> device, TextureMgr& texMgr, const std::string& modelFilename, const std::wstring& texturePath);
+	SkinnedMesh(ComPtr<ID3D11Device> device, const std::string& modelFilename);
 	~SkinnedMesh();
+
+	string GetFileExtension(const std::string& filename);
 
 	uint32 SubsetCount;
 

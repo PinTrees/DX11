@@ -573,6 +573,9 @@
     <ClCompile Include="ShaderSetting.cpp">
       <Filter>0. Engine\00. Header</Filter>
     </ClCompile>
+    <ClCompile Include="SkinnedMeshRenderer.cpp">
+      <Filter>0. Engine\Component\MeshRenderer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="01. InitDemo.h">
@@ -947,6 +950,9 @@
     </ClInclude>
     <ClInclude Include="ShaderSetting.h">
       <Filter>0. Engine\00. Header</Filter>
+    </ClInclude>
+    <ClInclude Include="SkinnedMeshRenderer.h">
+      <Filter>0. Engine\Component\MeshRenderer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

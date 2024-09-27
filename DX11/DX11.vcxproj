@@ -275,6 +275,7 @@
     <ClInclude Include="SimpleMath.h" />
     <ClInclude Include="SkinnedData.h" />
     <ClInclude Include="SkinnedMesh.h" />
+    <ClInclude Include="SkinnedMeshRenderer.h" />
     <ClInclude Include="SkinnedModel.h" />
     <ClInclude Include="Sky.h" />
     <ClInclude Include="SphereCollider.h" />
@@ -426,6 +427,7 @@
     <ClCompile Include="SimpleMath.cpp" />
     <ClCompile Include="SkinnedData.cpp" />
     <ClCompile Include="SkinnedMesh.cpp" />
+    <ClCompile Include="SkinnedMeshRenderer.cpp" />
     <ClCompile Include="SkinnedModel.cpp" />
     <ClCompile Include="Sky.cpp" />
     <ClCompile Include="SphereCollider.cpp" />

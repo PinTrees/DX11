@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "ResourceManager.h"
 #include "Utils.h"
+#include "SkinnedMesh.h"
 
 SINGLE_BODY(ResourceManager)
 
@@ -67,6 +68,23 @@ shared_ptr<Mesh> ResourceManager::LoadMesh(wstring filename)
 	{
 		mesh = make_shared<Mesh>(Application::GetI()->GetDevice(), wstring_to_string(filename));
 		m_Meshs[filename] = mesh;
+	}
+
+	return mesh;
+}
+
+shared_ptr<SkinnedMesh> ResourceManager::LoadSkinnedMesh(wstring filename)
+{
+	shared_ptr<SkinnedMesh> mesh = nullptr;
+
+	if (m_SkinnedMeshs.find(filename) != m_SkinnedMeshs.end())
+	{
+		mesh = m_SkinnedMeshs[filename];
+	}
+	else
+	{
+		mesh = make_shared<SkinnedMesh>(Application::GetI()->GetDevice(), wstring_to_string(filename));
+		m_SkinnedMeshs[filename] = mesh;
 	}
 
 	return mesh;
