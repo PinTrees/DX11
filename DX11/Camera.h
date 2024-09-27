@@ -23,7 +23,7 @@ class Camera
 	: public Component
 {
 private:
-	ProjectionType m_cameraType;
+	ProjectionType m_cameraType = ProjectionType::Perspective;
 	// Camera coordinate system with coordinates relative to world space.
 	XMFLOAT3 _right = { 1, 0, 0 };
 	XMFLOAT3 _up = { 0, 1, 0 };
@@ -45,7 +45,8 @@ private:
 	Frustum m_frustum;
 
 	void FrustumUpdate(); // frustum 범위 계산
-	void ProjectionUpdate();
+	void GetFrustumCulling();
+	void ProjUpdate();
 	string GetStringCameraType(ProjectionType type);
 	//::XMMatrixPerspectiveFovLH
 	//::XMMatrixOrthographicLH
@@ -53,7 +54,7 @@ public:
 	Camera();
 	~Camera();
 
-	vector<GameObject*> GetFrustumCulling();
+	
 
 	// Get/Set world camera position.
 	XMVECTOR GetPositionXM();
@@ -74,10 +75,10 @@ public:
 	float GetFovY()const;
 	float GetFovX()const;
 
-	void SetFovY(float fovY) { m_fovY = fovY; ProjectionUpdate(); }
-	void SetAspect(float aspect) { m_aspect = aspect; ProjectionUpdate(); }
-	void SetNearZ(float nearZ) { m_nearZ = nearZ; ProjectionUpdate(); }
-	void SetFarZ(float farZ) { m_farZ = farZ; ProjectionUpdate(); }
+	void SetFovY(float fovY) { m_fovY = fovY; ProjUpdate(); }
+	void SetAspect(float aspect) { m_aspect = aspect; ProjUpdate(); }
+	void SetNearZ(float nearZ) { m_nearZ = nearZ; ProjUpdate(); }
+	void SetFarZ(float farZ) { m_farZ = farZ; ProjUpdate(); }
 
 	// Get near and far plane dimensions in view space coordinates.
 	float GetNearWindowWidth()const;
@@ -113,6 +114,7 @@ public:
 	virtual void LateUpdate() override;
 	virtual void Render() override;
 	virtual void OnInspectorGUI() override;
+	virtual void OnDrawGizmos() override;
 
 	GENERATE_COMPONENT_BODY(Camera)
 };

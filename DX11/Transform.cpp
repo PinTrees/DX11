@@ -1,6 +1,26 @@
 #include "pch.h"
 #include "Transform.h"
-#include "EditorGUI.h"
+
+// This is not in game format, it is in mathematical format.
+Quaternion Transform::CreateQuaternion(double roll, double pitch, double yaw) // roll (x), pitch (y), yaw (z), angles are in radians
+{
+	// Abbreviations for the various angular functions
+
+	double cr = cos(roll * 0.5);
+	double sr = sin(roll * 0.5);
+	double cp = cos(pitch * 0.5);
+	double sp = sin(pitch * 0.5);
+	double cy = cos(yaw * 0.5);
+	double sy = sin(yaw * 0.5);
+
+	Quaternion q;
+	q.w = cr * cp * cy + sr * sp * sy;
+	q.x = sr * cp * cy - cr * sp * sy;
+	q.y = cr * sp * cy + sr * cp * sy;
+	q.z = cr * cp * sy - sr * sp * cy;
+
+	return q;
+}
 
 Transform::Transform()
 {
@@ -20,39 +40,54 @@ void Transform::Update()
 {
 }
 
-Vec3 Transform::ToEulerAngles(Quaternion q)
+
+Vec3 Transform::ToEulerRadians(Quaternion q)
 {
-	Vec3 angles;
+	Vec3 radians;
 
 	// roll (x-axis rotation)
 	double sinr_cosp = 2 * (q.w * q.x + q.y * q.z);
 	double cosr_cosp = 1 - 2 * (q.x * q.x + q.y * q.y);
-	angles.x = std::atan2(sinr_cosp, cosr_cosp);
+	radians.x = std::atan2(sinr_cosp, cosr_cosp);
 
 	// pitch (y-axis rotation)
 	double sinp = std::sqrt(1 + 2 * (q.w * q.y - q.x * q.z));
 	double cosp = std::sqrt(1 - 2 * (q.w * q.y - q.x * q.z));
-	angles.y = 2 * std::atan2(sinp, cosp) - PI / 2;  
+	radians.y = 2 * std::atan2(sinp, cosp) - PI / 2;
 
 	// yaw (z-axis rotation)
 	double siny_cosp = 2 * (q.w * q.z + q.x * q.y);
 	double cosy_cosp = 1 - 2 * (q.y * q.y + q.z * q.z);
-	angles.z = std::atan2(siny_cosp, cosy_cosp);
+	radians.z = std::atan2(siny_cosp, cosy_cosp);
+
+	return radians;
+}
+
+Vec3 Transform::ToEulerAngles(Quaternion q)
+{
+	Vec3 angles;
+
+	angles = ToEulerRadians(q);
+
+	angles.x = angles.x * (180.0 / PI);
+	angles.y = angles.y * (180.0 / PI);
+	angles.z = angles.z * (180.0 / PI);
 
 	return angles;
 }
 
+
 void Transform::UpdateTransform()
 {
 	// 로컬 변환 행렬 생성 
-	Matrix S = Matrix::CreateScale(m_LocalScale);   
+	Matrix S = Matrix::CreateScale(m_LocalScale);
 	// 로컬 오일러 각을 쿼터니언으로 변환
-	Quaternion q = Quaternion::CreateFromYawPitchRoll(m_LocalEulerAngles.y, m_LocalEulerAngles.x, m_LocalEulerAngles.z);
+	Quaternion q = CreateQuaternion(m_LocalEulerRadians.x, m_LocalEulerRadians.y, m_LocalEulerRadians.z);
 	Matrix QR = Matrix::CreateFromQuaternion(q);
 
-	Matrix T = Matrix::CreateTranslation(m_LocalPosition); 
+	Matrix T = Matrix::CreateTranslation(m_LocalPosition);
 
-	m_LocalMatrix = S * QR * T; 
+	m_LocalMatrix = S * QR * T;
 
 	if (HasParent())
 	{
@@ -63,32 +98,52 @@ void Transform::UpdateTransform()
 		m_WorldMatrix = m_LocalMatrix;
 	}
 
-	m_WorldMatrix.Decompose(m_Scale, m_Rotation, m_Position); 
-	m_EulerAngles = ToEulerAngles(m_Rotation); 
+	m_WorldMatrix.Decompose(m_Scale, m_Rotation, m_Position);
+	m_EulerAngles = ToEulerAngles(m_Rotation);
 
 	// Children
-	for (const shared_ptr<Transform>& child : _children) 
+	for (const shared_ptr<Transform>& child : _children)
 	{
-		child->UpdateTransform(); 
+		child->UpdateTransform();
 	}
 }
 
-Vec3 Transform::GetLocalEulerAngle()
+Vec3 Transform::GetLocalEulerAngles()
 {
-	return ToEulerAngles(m_LocalRotation); 
+	return ToEulerAngles(m_LocalRotation);
 }
 
-void Transform::SetLocalEulerAngle(const Vec3& angle)
+Vec3 Transform::GetLocalEulerRadians()
 {
-	m_LocalEulerAngles = angle;
-	m_LocalRotation = Quaternion::CreateFromYawPitchRoll(angle.y, angle.x, angle.z);
-	UpdateTransform(); 
+	return ToEulerRadians(m_LocalRotation);
+}
+
+void Transform::SetLocalEulerAngles(const Vec3& angles)
+{
+	m_LocalEulerAngles = angles;
+	m_LocalEulerRadians.x = ::XMConvertToRadians(angles.x);
+	m_LocalEulerRadians.y = ::XMConvertToRadians(angles.y);
+	m_LocalEulerRadians.z = ::XMConvertToRadians(angles.z);
+	m_LocalRotation = CreateQuaternion(m_LocalEulerRadians.x, m_LocalEulerRadians.y, m_LocalEulerRadians.z);
+	UpdateTransform();
+}
+
+void Transform::SetLocalEulerRadians(const Vec3& radians)
+{
+	m_LocalEulerRadians = radians;
+	m_LocalEulerAngles.x = ::XMConvertToDegrees(radians.x);
+	m_LocalEulerAngles.y = ::XMConvertToDegrees(radians.y);
+	m_LocalEulerAngles.z = ::XMConvertToDegrees(radians.z);
+	m_LocalRotation = CreateQuaternion(m_LocalEulerRadians.x, m_LocalEulerRadians.y, m_LocalEulerRadians.z);
+	UpdateTransform();
+
 }
 
 void Transform::SetLocalRotation(Quaternion q)
 {
 	m_LocalRotation = q;
 	m_LocalEulerAngles = ToEulerAngles(q);
+	m_LocalEulerRadians = ToEulerRadians(q);
 	UpdateTransform();
 }
 
@@ -107,8 +162,8 @@ void Transform::SetScale(const Vec3& worldScale)
 {
 	if (HasParent())
 	{
-		Vec3 parentScale = _parent->GetScale(); 
-		Vec3 scale = worldScale / parentScale; 
+		Vec3 parentScale = _parent->GetScale();
+		Vec3 scale = worldScale / parentScale;
 		SetLocalScale(scale);
 	}
 	else
@@ -121,14 +176,14 @@ void Transform::SetEulerAngle(const Vec3& worldRotation)
 {
 	if (HasParent())
 	{
-		Matrix inverseMatrix = _parent->GetWorldMatrix().Invert(); 
+		Matrix inverseMatrix = _parent->GetWorldMatrix().Invert();
 		Vec3 rotation = Vec3::TransformNormal(worldRotation, inverseMatrix);
-		 
-		SetLocalEulerAngle(rotation);
+
+		SetLocalEulerAngles(rotation);
 	}
 	else
 	{
-		SetLocalEulerAngle(worldRotation); 
+		SetLocalEulerAngles(worldRotation);
 	}
 }
 
@@ -165,7 +220,7 @@ Vec3 Transform::GetAxis(int index) const
 	if (index < 0 || index > 2)  // 3x3 또는 4x4 행렬의 유효한 축 인덱스는 0, 1, 2
 	{
 		std::cout << "RigidBody::getAxis::Out of index" << std::endl;
-		return Vector3();  
+		return Vector3();
 	}
 
 	// 월드 매트릭스에서 축 벡터 추출
@@ -186,29 +241,31 @@ void Transform::OnInspectorGUI()
 	bool rotationChanged = false;
 	bool scaleChanged = false;
 
-	if (EditorGUI::Vector3Field("Position", m_LocalPosition))
+	ImGui::Text("World Position");
+	if (ImGui::DragFloat3("##WorldPosition", reinterpret_cast<float*>(&m_Position), 0.1f))
+	{
+		positionChanged = true;
+	}
+	ImGui::Text("Local Position");
+	if (ImGui::DragFloat3("##Position", reinterpret_cast<float*>(&m_LocalPosition), 0.1f))
 	{
 		positionChanged = true;
 	}
 
-	// Convert radians to degrees
-	Vec3 localEulerAngle_Radian = m_LocalEulerAngles;
-	Vec3 localEulerAngle_Degree;
-	localEulerAngle_Degree.x = XMConvertToDegrees(localEulerAngle_Radian.x);
-	localEulerAngle_Degree.y = XMConvertToDegrees(localEulerAngle_Radian.y);
-	localEulerAngle_Degree.z = XMConvertToDegrees(localEulerAngle_Radian.z);
-
-	if (EditorGUI::Vector3Field("Rotation", localEulerAngle_Degree))
+	Vec3 localEulerAngle_Degree = m_LocalEulerAngles;
+	ImGui::Text("Rotation");
+	if (ImGui::DragFloat3("##Rotation", reinterpret_cast<float*>(&localEulerAngle_Degree), 0.1f))
 	{
 		rotationChanged = true;
 		Vec3 a;
 		a.x = XMConvertToRadians(localEulerAngle_Degree.x);
 		a.y = XMConvertToRadians(localEulerAngle_Degree.y);
 		a.z = XMConvertToRadians(localEulerAngle_Degree.z);
-		SetLocalEulerAngle(a);
+		SetLocalEulerAngles(a);
 	}
 
-	scaleChanged = EditorGUI::Vector3Field("Scale", m_LocalScale);
+	ImGui::Text("Scale");
+	scaleChanged = ImGui::DragFloat3("##Scale", reinterpret_cast<float*>(&m_LocalScale), 0.01f);
 
 	if (positionChanged || rotationChanged || scaleChanged)
 	{
@@ -219,10 +276,11 @@ void Transform::OnInspectorGUI()
 GENERATE_COMPONENT_FUNC_TOJSON(Transform)
 {
 	json j;
-	
-	j["type"] = "Transform"; 
-	SERIALIZE_QUATERNION(j, m_LocalRotation); 
+
+	j["type"] = "Transform";
+	SERIALIZE_QUATERNION(j, m_LocalRotation);
 	SERIALIZE_VECTOR3(j, m_LocalEulerAngles);
+	SERIALIZE_VECTOR3(j, m_LocalEulerRadians);
 	SERIALIZE_VECTOR3(j, m_LocalPosition);
 	SERIALIZE_VECTOR3(j, m_LocalScale);
 
@@ -235,8 +293,9 @@ GENERATE_COMPONENT_FUNC_TOJSON(Transform)
 
 GENERATE_COMPONENT_FUNC_FROMJSON(Transform)
 {
-	DE_SERIALIZE_QUATERNION(j, m_LocalRotation); 
+	DE_SERIALIZE_QUATERNION(j, m_LocalRotation);
 	DE_SERIALIZE_VECTOR3(j, m_LocalEulerAngles);
+	DE_SERIALIZE_VECTOR3(j, m_LocalEulerRadians);
 	DE_SERIALIZE_VECTOR3(j, m_LocalPosition);
 	DE_SERIALIZE_VECTOR3_D(j, m_LocalScale, Vec3::One);
 
@@ -244,5 +303,5 @@ GENERATE_COMPONENT_FUNC_FROMJSON(Transform)
 	DE_SERIALIZE_VECTOR3(j, m_Position);
 	DE_SERIALIZE_VECTOR3_D(j, m_Scale, Vec3::One);
 
-	UpdateTransform(); 
+	UpdateTransform();
 }

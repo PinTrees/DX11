@@ -27,3 +27,9 @@ using Ray = DirectX::SimpleMath::Ray;
 
 // MeshID / MaterialID / ShaderSettingID
 using InstanceID = std::tuple<uint64, uint64, uint64>;
+
+struct BouncingBall
+{
+	Vec3 center;
+	float radius;
+};

@@ -21,7 +21,7 @@ private:
 	PointLight m_pointDesc;
 	SpotLight m_spotDesc;
 
-	XMFLOAT2 m_dirLightLen = XMFLOAT2(20.f,20.f);
+	XMFLOAT2 m_dirLightLen = XMFLOAT2(20.f, 20.f);
 	XMFLOAT2 m_spotLightLen = XMFLOAT2(20.f, 20.f);
 
 	XMMATRIX m_lightView;
@@ -48,6 +48,7 @@ public:
 	virtual void Render() override;
 	virtual void OnInspectorGUI() override;
 	virtual void OnDestroy() override;
+	virtual void OnDrawGizmos() override;
 
 	void SetDirLight(DirectionalLight light);
 	void SetPointLight(PointLight light);
