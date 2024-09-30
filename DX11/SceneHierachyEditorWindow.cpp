@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "SceneHierachyEditorWindow.h"
 #include <filesystem>
+#include "EditorGUI.h"
 
 SceneHierachyEditorWindow::SceneHierachyEditorWindow()
 	: EditorWindow("SceneHerachy")
@@ -13,7 +14,7 @@ SceneHierachyEditorWindow::~SceneHierachyEditorWindow()
 
 void SceneHierachyEditorWindow::OnRender()
 {
-	Scene* currentScene = SceneManager::GetI()->GetCurrentScene(); 
+	Scene* currentScene = SceneManager::GetI()->GetCurrentScene();
 
 	if (currentScene == nullptr)
 		return;
@@ -26,9 +27,12 @@ void SceneHierachyEditorWindow::OnRender()
 		DrawGameObject(gameObject);
 	}
 
-	// 빈 공간 생성하여 드래그 앤 드롭 영역 확장
-	ImVec2 availableSpace = ImGui::GetContentRegionAvail();
-	ImGui::InvisibleButton("##DragDropSpace", availableSpace);
+	// 전체 화면을 드래그 앤 드롭 영역으로 확장
+	ImVec2 windowPos = ImGui::GetWindowPos(); // 창의 위치
+	ImVec2 windowSize = ImGui::GetWindowSize(); // 창의 크기
+
+	ImGui::SetCursorPos(ImVec2(0, 0)); // 커서를 창의 좌상단으로 이동
+	ImGui::InvisibleButton("##DragDropSpace", windowSize); // 창 크기만큼 보이지 않는 버튼 생성
 
 	if (ImGui::BeginDragDropTarget())
 	{
@@ -37,6 +41,12 @@ void SceneHierachyEditorWindow::OnRender()
 			const char* filePath = static_cast<const char*>(payload->Data);
 			HandleFbxFileDrop(std::string(filePath), nullptr);
 		}
+
+		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("GAME_OBJECT"))
+		{
+			GameObject* droppedObject = *(GameObject**)payload->Data;
+			droppedObject->SetParent(nullptr);
+		} 
 		ImGui::EndDragDropTarget();
 	}
 
@@ -73,14 +83,15 @@ void SceneHierachyEditorWindow::OnRender()
 	}
 }
 
-void SceneHierachyEditorWindow::OnRenderExit()
-{
-}
-
 
 void SceneHierachyEditorWindow::DrawGameObject(GameObject* gameObject)
 {
-	ImGui::PushID(gameObject->GetInstanceID()); // 고유 ID를 사용하여 ImGui ID 스택에 푸시
+	ImGui::PushID(gameObject->GetInstanceID()); 
+	
+	ImGui::Dummy(ImVec2(8, 0));
+	ImGui::SameLine();
+	EditorGUI::Image(L"\\ProjectSetting\\icons\\icon_gameobject.png", ImVec2(18, 18));
+	ImGui::SameLine();
 
 	bool isSelected = (SelectionManager::GetSelectedGameObject() == gameObject);
 

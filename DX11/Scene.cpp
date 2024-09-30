@@ -236,6 +236,21 @@ void Scene::LastFramUpdate()
 
 void Scene::UpdateScene()
 {
+    for (auto& gameObject : m_arrGameObjects[0])
+    {
+        for (auto& component : gameObject->GetComponents())
+        {
+            component->Update();
+        }
+    }
+
+    for (auto& gameObject : m_arrGameObjects[0])
+    {
+        for (auto& component : gameObject->GetComponents())
+        {
+            component->LateUpdate();
+        }
+    }
 }
 
 Scene* Scene::Load(wstring scenePath)

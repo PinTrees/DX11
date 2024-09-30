@@ -12,7 +12,7 @@ SelectionSubType SelectionManager::m_SelectedSubType = SelectionSubType::NONE;
 wstring SelectionManager::m_SelectedFilePath = L"";
 GameObject* SelectionManager::m_SelectedGameObject = nullptr;
 
-UMaterial* SelectionManager::m_SelectedFile_Material = nullptr;
+shared_ptr<UMaterial> SelectionManager::m_SelectedFile_Material = nullptr;
 
 SelectionManager::SelectionManager()
 {

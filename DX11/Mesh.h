@@ -6,6 +6,8 @@
 
 class Mesh
 {
+private:
+	float ComputeRadius(const Vec3& center, const std::vector<Vertex::PosNormalTexTan2>& vertices);
 public:
 	Mesh(ComPtr<ID3D11Device> device, TextureMgr& texMgr, const std::string& modelFilename, const std::wstring& texturePath);
 	Mesh(ComPtr<ID3D11Device> device, const std::string& modelFilename);
@@ -25,6 +27,7 @@ public:
 	std::vector<MeshGeometry::Subset> Subsets;
 
 	MeshGeometry ModelMesh;
+	BouncingBall Ball;
 };
 
 // 사용하지 않음 - 제거

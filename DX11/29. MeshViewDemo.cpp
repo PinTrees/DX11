@@ -168,11 +168,12 @@ void MeshViewDemo::OnEditorSceneRender(ID3D11RenderTargetView* renderTargetView,
 	RenderManager::GetI()->cameraViewMatrix = camera->View();
 	RenderManager::GetI()->cameraProjectionMatrix = camera->Proj();
 	RenderManager::GetI()->cameraViewProjectionMatrix = XMMatrixMultiply(camera->View(), camera->Proj());
-	RenderManager::GetI()->directinalLightViewProjection = XMMatrixMultiply(XMLoadFloat4x4(&_lightView), XMLoadFloat4x4(&_lightProj));
-	
+	//RenderManager::GetI()->directinalLightViewProjection = XMMatrixMultiply(XMLoadFloat4x4(&_lightView), XMLoadFloat4x4(&_lightProj));
+
 	// LateUpdate 로직이 없어서 주석처리
-	//RenderManager::GetI()->directinalLightViewProjection = lights[0]->GetLightViewProj();
-	
+	if(lights.size() > 0 && dirLight.size() > 0)
+		RenderManager::GetI()->directinalLightViewProjection = lights[0]->GetLightViewProj();
+
 	// 와이어프레임 제어처럼 전체 그림자맵 제어도 가능하게
 	auto shadowMap = RenderManager::GetI()->editorShadowMap;
 	shadowMap->BindDsvAndSetNullRenderTarget(_deviceContext);
@@ -224,10 +225,8 @@ void MeshViewDemo::OnEditorSceneRender(ID3D11RenderTargetView* renderTargetView,
 	//Effects::NormalMapFX->SetShadowMap(shadowMap->DepthMapSRV().Get());
 	//Effects::NormalMapFX->SetSsaoMap(ssao->AmbientSRV().Get());
 
-	Effects::InstancedBasicFX->SetDirLights(_dirLights,1);
-
-	//Effects::InstancedBasicFX->SetDirLights(&lights[0]->GetDirLight(), 1);
-	//if (dirLight.size() > 0) Effects::InstancedBasicFX->SetDirLights(dirLight.data(), dirLight.size());
+	//Effects::InstancedBasicFX->SetDirLights(_dirLights,1);
+	if (dirLight.size() > 0) Effects::InstancedBasicFX->SetDirLights(dirLight.data(), dirLight.size());
 	//if (pointLight.size() > 0) Effects::InstancedBasicFX->SetPointLights(pointLight.data(), pointLight.size());
 	//if (spotLight.size() > 0) Effects::InstancedBasicFX->SetSpotLights(spotLight.data(), spotLight.size());
 

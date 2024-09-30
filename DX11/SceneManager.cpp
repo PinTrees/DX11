@@ -117,7 +117,10 @@ void SceneManager::CreateScene()
 	m_pCurrScene = new Scene;
 
 	// Camera, Light Object 생성, 현재 Demo에서 씬의 크기를 구할 때 게임오브젝트는 1개인데, 메쉬렌더러 오브젝트는 아무것도없어서 씬의 크기가 무한대여서 오류 ㅇㅇ
-	//GameObject* camera = new GameObject("Camera");
+	GameObject* camera = new GameObject("Camera");
+	camera->AddComponent<Camera>();
+	m_pCurrScene->AddRootGameObject(camera);
+
 	GameObject* light = new GameObject("Light");
 	
 	DirectionalLight dir;
@@ -128,7 +131,6 @@ void SceneManager::CreateScene()
 	
 	light->AddComponent<Light>();
 	light->GetComponent<Light>()->SetDirLight(dir);
-	LightManager::GetI()->SetLight(light->GetComponent_SP<Light>());
 	
 	m_pCurrScene->AddRootGameObject(light);
 }

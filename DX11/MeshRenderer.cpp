@@ -4,9 +4,10 @@
 #include "ShaderSetting.h"
 #include "MathHelper.h"
 #include "InstancingBuffer.h"
+#include "EditorGUI.h"
 
 MeshRenderer::MeshRenderer()
-	: m_pMaterial(nullptr),
+	: m_pMaterials({}),
 	m_MeshSubsetIndex(0)
 {
 	m_InspectorTitleName = "MeshRenderer";
@@ -22,9 +23,7 @@ void MeshRenderer::Render()
 		return;
 
 	auto deviceContext = Application::GetI()->GetDeviceContext();
-	//ComPtr<ID3DX11EffectTechnique> tech = Effects::NormalMapFX->Light3TexTech;
 	ComPtr<ID3DX11EffectTechnique> tech = Effects::InstancedBasicFX->Tech;
-	//Light3TexTech;
 
 	D3DX11_TECHNIQUE_DESC techDesc;
 	tech->GetDesc(&techDesc);
@@ -56,28 +55,22 @@ void MeshRenderer::Render()
 		Effects::InstancedBasicFX->SetShadowTransform(world * RenderManager::GetI()->shadowTransform);
 		Effects::InstancedBasicFX->SetTexTransform(XMMatrixScaling(1.0f, 1.0f, 1.0f));
 
-		if (m_pMaterial == nullptr)
+		for (auto mat : m_pMaterials)
 		{
-			ShaderSetting shaderSetting;
-			//Effects::NormalMapFX->SetMaterial(m_Mesh->Mat[m_MeshSubsetIndex]);
-			Effects::InstancedBasicFX->SetMaterial(m_Mesh->Mat[m_MeshSubsetIndex]);
-			Effects::InstancedBasicFX->SetShaderSetting(shaderSetting);
-			//Effects::NormalMapFX->SetDiffuseMap(m_Mesh->DiffuseMapSRV[subset].Get());
-			//Effects::NormalMapFX->SetNormalMap(m_Mesh->NormalMapSRV[subset].Get());
+			if (mat != nullptr)
+			{
+				Effects::InstancedBasicFX->SetMaterial(mat->Mat);
+				Effects::InstancedBasicFX->SetDiffuseMap(mat->GetBaseMapSRV());
+				Effects::InstancedBasicFX->SetNormalMap(mat->GetNormalMapSRV());
+				Effects::InstancedBasicFX->SetShaderSetting(mat->GetShaderSetting());
+			}
+			else
+			{
+				ShaderSetting shaderSetting;
+				Effects::InstancedBasicFX->SetMaterial(m_Mesh->Mat[m_MeshSubsetIndex]);
+				Effects::InstancedBasicFX->SetShaderSetting(shaderSetting);
+			}
 		}
-		else
-		{
-			//Effects::NormalMapFX->SetMaterial(m_pMaterial->Mat);
-			//Effects::NormalMapFX->SetDiffuseMap(m_pMaterial->GetBaseMapSRV());
-			//Effects::NormalMapFX->SetNormalMap(m_pMaterial->GetNormalMapSRV());
-		   
-			Effects::InstancedBasicFX->SetMaterial(m_pMaterial->Mat);
-			Effects::InstancedBasicFX->SetDiffuseMap(m_pMaterial->GetBaseMapSRV());
-			Effects::InstancedBasicFX->SetNormalMap(m_pMaterial->GetNormalMapSRV());
-			Effects::InstancedBasicFX->SetShaderSetting(m_pMaterial->GetShaderSetting());
-		}
-
-		
 
 		tech->GetPassByIndex(p)->Apply(0, deviceContext);
 		m_Mesh->ModelMesh.Draw(deviceContext, m_MeshSubsetIndex);
@@ -131,23 +124,22 @@ void MeshRenderer::RenderInstancing(shared_ptr<class InstancingBuffer>& buffer)
 		Effects::InstancedBasicFX->SetShadowTransform(RenderManager::GetI()->shadowTransform);
 		Effects::InstancedBasicFX->SetTexTransform(XMMatrixScaling(1.0f, 1.0f, 1.0f));
 
-		if (m_pMaterial == nullptr)
+		for (auto mat : m_pMaterials)
 		{
-			ShaderSetting shaderSetting;
-			Effects::InstancedBasicFX->SetMaterial(m_Mesh->Mat[m_MeshSubsetIndex]);
-			Effects::InstancedBasicFX->SetShaderSetting(shaderSetting);
-			//Effects::NormalMapFX->SetDiffuseMap(m_Mesh->DiffuseMapSRV[subset].Get());
-			//Effects::NormalMapFX->SetNormalMap(m_Mesh->NormalMapSRV[subset].Get());
+			if (mat != nullptr)
+			{
+				Effects::InstancedBasicFX->SetMaterial(mat->Mat);
+				Effects::InstancedBasicFX->SetDiffuseMap(mat->GetBaseMapSRV());
+				Effects::InstancedBasicFX->SetNormalMap(mat->GetNormalMapSRV());
+				Effects::InstancedBasicFX->SetShaderSetting(mat->GetShaderSetting());
+			}
+			else
+			{
+				ShaderSetting shaderSetting;
+				Effects::InstancedBasicFX->SetMaterial(m_Mesh->Mat[m_MeshSubsetIndex]);
+				Effects::InstancedBasicFX->SetShaderSetting(shaderSetting);
+			}
 		}
-		else
-		{
-			Effects::InstancedBasicFX->SetMaterial(m_pMaterial->Mat);
-			Effects::InstancedBasicFX->SetDiffuseMap(m_pMaterial->GetBaseMapSRV());
-			Effects::InstancedBasicFX->SetNormalMap(m_pMaterial->GetNormalMapSRV());
-			Effects::InstancedBasicFX->SetShaderSetting(m_pMaterial->GetShaderSetting());
-		}
-
-		
 
 		tech->GetPassByIndex(p)->Apply(0, deviceContext);
 
@@ -331,83 +323,71 @@ void MeshRenderer::RenderShadowNormalInstancing(shared_ptr<class InstancingBuffe
 
 void MeshRenderer::OnInspectorGUI()
 {
-	ImGui::Text("%s", m_Mesh ? "Mesh" : "None");
+	auto changed = EditorGUI::MeshField("Mesh", m_Mesh, m_MeshSubsetIndex);
 
-	ImGui::SameLine();
-	if (ImGui::Button("Select##Mesh"))
-	{
-		//std::wstring filePath = EditorUtility::OpenFileDialog(Application::GetDataPath(), L"Mesh", { L"fbx" });
-		std::wstring filePath = EditorUtility::OpenFileDialog(PathManager::GetI()->GetMovePathW(L"Assets\\"), L"Mesh", { L"fbx" });
+	EditorGUI::LabelHeader("Materials");
 
-		filePath = PathManager::GetI()->GetCutSolutionPath(filePath);
+	// 배열의 각 요소의 높이를 계산
+	float itemHeight = 24;
+	float totalHeight = itemHeight * m_pMaterials.size(); // 자식 요소들의 총 높이 
 
-		if (!filePath.empty())
-		{
-			m_Mesh = ResourceManager::GetI()->LoadMesh(filePath);
-			if (m_Mesh)
-			{
-				m_MeshPath = filePath;
-				m_MeshSubsetIndex = 0; // Reset subset index
-			}
-		}
-	}
-
-	if (m_Mesh != nullptr)
-	{
-		// 서브셋 선택 드롭다운 구현
-		if (ImGui::BeginCombo("Subset", m_Mesh->Subsets[m_MeshSubsetIndex].Name.c_str())) // The second parameter is the previewed value
-		{
-			for (int n = 0; n < m_Mesh->Subsets.size(); n++)
-			{
-				bool is_selected = (m_MeshSubsetIndex == n); // You can store your selection somewhere
-				if (ImGui::Selectable(m_Mesh->Subsets[n].Name.c_str(), is_selected))
-					m_MeshSubsetIndex = n;
-				if (is_selected)
-					ImGui::SetItemDefaultFocus(); // Set the initial focus when opening the combo (scrolling + for keyboard navigation support)
-			}
-			ImGui::EndCombo();
-		}
-	}
-	else
-	{
-		ImGui::Text("No Mesh selected");
-	}
-
-	if (m_pMaterial)
-	{
-		ImGui::Text("Material: %s", m_pMaterial->GetName().c_str());
-	}
-	else
-	{
-		ImGui::Text("Material: None");
-	}
-
+	ImGui::Dummy(ImVec2(4, 0));
 	ImGui::SameLine();
 
-	if (ImGui::Button("+"))
+	if (ImGui::BeginChild("Materials List Box",
+		ImVec2(ImGui::GetContentRegionAvail().x - 8, 4 + totalHeight), true,
+		ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse))
 	{
-		std::wstring filePath = EditorUtility::OpenFileDialog(L"", L"Material", { L"mat" });
+		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(4, 0)); // X, Y 간격을 2로 설정
+		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0)); // 프레임 패딩도 2로 설정
 
-		filePath = PathManager::GetI()->GetCutSolutionPath(filePath);
-
-		if (!filePath.empty())
+		for (int i = 0; i < m_pMaterials.size(); ++i)
 		{
-			m_pMaterial = ResourceManager::GetI()->LoadMaterial(wstring_to_string(filePath));
-			if (m_pMaterial)
+			ImGui::PushID(i);
+
+			ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(4, 4));
+			bool isDelete = EditorGUI::Button("-", Vec2(20, 20), Color(0.20f, 0.20f, 0.20f, 1.0f));
+			ImGui::PopStyleVar();
+
+			if (isDelete)
 			{
-				m_MaterialPath = filePath;
+				m_pMaterials.erase(m_pMaterials.begin() + i);
+				m_MaterialPaths.erase(m_MaterialPaths.begin() + i);
+				--i;
+
+				ImGui::PopID();
+				continue;
 			}
+
+			ImGui::SameLine();
+			ImGui::Dummy(ImVec2(0, 24));
+			ImGui::SameLine();
+			EditorGUI::MaterialField("Element " + to_string(i), m_pMaterials[i], m_MaterialPaths[i]);
+
+			ImGui::PopID();
 		}
+
+		ImGui::PopStyleVar(2);
+	}
+	ImGui::EndChild();
+
+	ImGui::Dummy(ImVec2(4, 0));
+	ImGui::SameLine();
+	if (EditorGUI::Button("Add"))
+	{
+		m_pMaterials.push_back(nullptr);
+		m_MaterialPaths.push_back(L"");
 	}
 }
 
 GENERATE_COMPONENT_FUNC_TOJSON(MeshRenderer)
 {
 	json j;
-	j["type"] = "MeshRenderer";
+
+	SERIALIZE_TYPE(j, MeshRenderer);
 	j["shaderPath"] = wstring_to_string(m_ShaderPath);
 	j["meshPath"] = wstring_to_string(m_MeshPath);
-	j["materialPath"] = wstring_to_string(m_MaterialPath);
+	//j["materialPath"] = wstring_to_string(m_MaterialPath);
 	j["subsetIndex"] = m_MeshSubsetIndex; 
 	return j;
 }
@@ -425,8 +405,8 @@ GENERATE_COMPONENT_FUNC_FROMJSON(MeshRenderer)
 	}
 	if (j.contains("materialPath"))
 	{
-		m_MaterialPath = string_to_wstring(j.at("materialPath").get<string>());
-		m_pMaterial = ResourceManager::GetI()->LoadMaterial(wstring_to_string(m_MaterialPath));
+		//m_MaterialPath = string_to_wstring(j.at("materialPath").get<string>());
+		//m_pMaterial = ResourceManager::GetI()->LoadMaterial(wstring_to_string(m_MaterialPath));
 	}
 	if (j.contains("subsetIndex"))
 	{

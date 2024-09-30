@@ -15,12 +15,6 @@ AnimatorEditorWindow::~AnimatorEditorWindow()
 	ed::DestroyEditor(m_Context);
 }
 
-void AnimatorEditorWindow::OnRenderBegin()
-{
-    // Node Editor Widget
-    ed::SetCurrentEditor(m_Context); 
-}
-
 void AnimatorEditorWindow::OnRender()
 {
     auto& io = ImGui::GetIO();
@@ -384,9 +378,4 @@ void AnimatorEditorWindow::OnRender()
     ed::SetCurrentEditor(nullptr);
     //ImGui::ShowMetricsWindow();
     //ImGui::ShowDemoWindow();
-}
-
-void AnimatorEditorWindow::OnRenderExit()
-{
-    ed::SetCurrentEditor(nullptr);
 }

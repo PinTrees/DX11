@@ -39,9 +39,9 @@ ComPtr<ID3D11ShaderResourceView> ResourceManager::LoadTexture(wstring filename)
 	return srv;
 }
 
-UMaterial* ResourceManager::LoadMaterial(string filename)
+shared_ptr<UMaterial> ResourceManager::LoadMaterial(string filename)
 {
-	UMaterial* material = nullptr;
+	shared_ptr<UMaterial> material = nullptr;
 
 	if (m_Materials.find(filename) != m_Materials.end())
 	{
@@ -49,8 +49,17 @@ UMaterial* ResourceManager::LoadMaterial(string filename)
 	}
 	else
 	{
-		material = UMaterial::Load(filename);
-		m_Materials[filename] = material;
+		UMaterial* umat = UMaterial::Load(filename);
+		if (umat != nullptr)
+		{
+			shared_ptr<UMaterial> material(umat);
+			m_Materials[filename] = material;
+			return material;
+		}
+		else
+		{
+			return nullptr;
+		}
 	}
 
 	return material;

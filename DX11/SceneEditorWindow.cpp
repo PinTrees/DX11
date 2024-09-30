@@ -189,8 +189,3 @@ void SceneEditorWindow::OnRender()
 
     ImGui::EndChild(); // MainArea Á¾·á
 }
-
-void SceneEditorWindow::OnRenderExit()
-{
-    
-}

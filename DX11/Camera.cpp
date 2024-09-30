@@ -2,7 +2,11 @@
 #include "Camera.h"
 #include "Application.h"
 #include "App.h"
-
+#include "GameObject.h"
+#include "Mesh.h"
+#include "MeshRenderer.h"
+#include "SceneManager.h"
+#include "Scene.h"
 Camera::Camera()
 {
 	m_InspectorTitleName = "Camera";
@@ -109,7 +113,7 @@ void Camera::SetLens(float fovY, float aspect, float zn, float zf)
 	m_nearZ = zn;
 	m_farZ = zf;
 
-	ProjectionUpdate();
+	ProjUpdate();
 }
 
 
@@ -252,9 +256,45 @@ void Camera::LateUpdate()
 	XMMATRIX V = ::XMMatrixLookAtLH(pos, target, up);
 	::XMStoreFloat4x4(&_view, V);
 
-	ProjectionUpdate();
+	ProjUpdate();
 
+	// OnPreCull 권장(Unity 생명주기)
 	FrustumUpdate();
+	GetFrustumCulling();
+}
+
+void Camera::GetFrustumCulling()
+{
+	vector<GameObject*> allObject = SceneManager::GetI()->GetCurrentScene()->GetAllGameObjects();
+	auto culling = SceneManager::GetI()->GetCurrentScene()->GetCullingGameObjects();
+	culling.clear();
+	bool check;
+
+	for (int i = 0; i < allObject.size(); i++)
+	{
+		auto meshRenderer = allObject[i]->GetComponent<MeshRenderer>();
+
+		// meshRenderer 컴포넌트가 없는 객체이거나 mesh를 적용 안 시켰을 경우
+		if (!meshRenderer)
+			continue;
+
+		if (!(meshRenderer->GetMesh()))
+			continue;
+
+		BouncingBall ball = meshRenderer->GetMesh()->Ball;
+		check = true;
+		for (int i = 0; i < 6; i++)
+		{
+			// 충돌체크
+			//plane.normal.x * center.x + plane.normal.y * center.y + plane.normal.z * center.z + plane.d;
+			float distance = m_frustum.planes[i].normal.x * ball.center.x + m_frustum.planes[i].normal.y * ball.center.y + m_frustum.planes[i].normal.z * ball.center.z + m_frustum.planes[i].d;
+			if (distance < -ball.radius)
+				check = false; // 구가 평면의 밖에 있음
+		}
+
+		if (check)
+			culling.push_back(allObject[i]);
+	}
 }
 
 void Camera::FrustumUpdate()
@@ -279,15 +319,18 @@ void Camera::FrustumUpdate()
 			m_frustum.planes[i].normal.y * m_frustum.planes[i].normal.y +
 			m_frustum.planes[i].normal.z * m_frustum.planes[i].normal.z);
 
-		m_frustum.planes[i].normal.x /= length;
-		m_frustum.planes[i].normal.y /= length;
-		m_frustum.planes[i].normal.z /= length;
-		m_frustum.planes[i].d /= length;
+		if (length > 0.0f)
+		{
+			m_frustum.planes[i].normal.x /= length;
+			m_frustum.planes[i].normal.y /= length;
+			m_frustum.planes[i].normal.z /= length;
+			m_frustum.planes[i].d /= length;
+		}
 	}
 }
 
 // private funtion
-void Camera::ProjectionUpdate()
+void Camera::ProjUpdate()
 {
 	m_nearWindowHeight = 2.0f * m_nearZ * tanf(0.5f * m_fovY);
 	m_farWindowHeight = 2.0f * m_farZ * tanf(0.5f * m_fovY);
@@ -354,14 +397,48 @@ void Camera::OnInspectorGUI()
 	}
 }
 
+// 카메라 렌더 범위Draw
+void Camera::OnDrawGizmos()
+{
+}
+
 GENERATE_COMPONENT_FUNC_TOJSON(Camera)
 {
 	json j = {};
 	j["type"] = "Camera";
+	j["cameraType"] = m_cameraType;
+
+	j["nearZ"] = m_nearZ;
+	j["farZ"] = m_farZ;
+	j["aspect"] = m_aspect;
+	j["fovY"] = m_fovY;
+
 	return j;
 }
 
 GENERATE_COMPONENT_FUNC_FROMJSON(Camera) 
 {
+	if (j.contains("cameraType"))
+	{
+		m_cameraType = j.at("cameraType").get<ProjectionType>();
+	}
 
+	if (j.contains("nearZ"))
+	{
+		m_nearZ = j.at("nearZ").get<float>();
+	}
+	if (j.contains("farZ"))
+	{
+		m_farZ = j.at("farZ").get<float>();
+	}
+	if (j.contains("aspect"))
+	{
+		m_aspect = j.at("aspect").get<float>();
+	}
+	if (j.contains("fovY"))
+	{
+		m_fovY = j.at("fovY").get<float>();
+	}
+
+	ProjUpdate();
 }

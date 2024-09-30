@@ -10,7 +10,7 @@ Light::Light()
 	m_pointDesc.Init();
 	m_spotDesc.Init();
 	ProjUpdate();
-	
+
 }
 
 Light::~Light()
@@ -26,7 +26,7 @@ void Light::OnDestroy()
 void Light::SetDirLight(DirectionalLight light)
 {
 	m_directionalDesc = light;
-	m_pGameObject->GetTransform()->SetLocalEulerAngle(light.Direction);
+	m_pGameObject->GetTransform()->SetLocalEulerRadians(light.Direction);
 }
 
 void Light::SetPointLight(PointLight light)
@@ -38,7 +38,7 @@ void Light::SetPointLight(PointLight light)
 void Light::SetSpotLight(SpotLight light)
 {
 	m_spotDesc = light;
-	m_pGameObject->GetTransform()->SetLocalEulerAngle(light.Direction);
+	m_pGameObject->GetTransform()->SetLocalEulerRadians(light.Direction);
 	m_pGameObject->GetTransform()->SetLocalPosition(light.Position);
 }
 
@@ -61,18 +61,18 @@ void Light::LateUpdate()
 	XMMATRIX V;
 
 	Vec3 r;
-	
+
 	switch (m_lightType)
 	{
 	case LightType::Directional:
-		r = m_pGameObject->GetTransform()->GetLocalEulerAngles();
+		r = m_pGameObject->GetTransform()->GetLocalEulerRadians();
 		XMStoreFloat3(&m_directionalDesc.Direction, r);
 		break;
 	case LightType::Point:
 		XMStoreFloat3(&m_pointDesc.Position, pos);
 		break;
 	case LightType::Spot:
-		r = m_pGameObject->GetTransform()->GetLocalEulerAngles();
+		r = m_pGameObject->GetTransform()->GetLocalEulerRadians();
 		XMStoreFloat3(&m_spotDesc.Position, pos);
 		XMStoreFloat3(&m_spotDesc.Direction, r);
 		break;
@@ -109,7 +109,7 @@ void Light::ProjUpdate()
 		// X, Y, FarZ 범위 한정
 		m_lightProj = ::XMMatrixOrthographicLH(m_spotLightLen.x, m_spotLightLen.y, 0.001f, m_spotDesc.Range);
 		break;
-	default: 
+	default:
 		break;
 	}
 }
@@ -117,10 +117,10 @@ string Light::GetStringLightType(LightType type)
 {
 	switch (type)
 	{
-		case LightType::Directional: return "Directional";
-		case LightType::Point: return "Point";
-		case LightType::Spot: return "Spot";
-		default: return "Unknown";
+	case LightType::Directional: return "Directional";
+	case LightType::Point: return "Point";
+	case LightType::Spot: return "Spot";
+	default: return "Unknown";
 	}
 }
 
@@ -137,7 +137,7 @@ void Light::OnInspectorGUI()
 				m_lightType = (LightType)n;
 				ProjUpdate();
 			}
-				
+
 			if (is_selected)
 				ImGui::SetItemDefaultFocus(); // Set the initial focus when opening the combo (scrolling + for keyboard navigation support)
 		}
@@ -191,7 +191,7 @@ void Light::OnInspectorGUI()
 		ImGui::Text("Specular");
 		ImGui::DragFloat4("##Specular", reinterpret_cast<float*>(&m_spotDesc.Specular), 0.1f);
 		ImGui::Text("Range");
-		if(ImGui::DragFloat("##Range", reinterpret_cast<float*>(&m_spotDesc.Range), 0.1f))
+		if (ImGui::DragFloat("##Range", reinterpret_cast<float*>(&m_spotDesc.Range), 0.1f))
 		{
 			ProjectionChanged = true;
 		}
@@ -202,8 +202,12 @@ void Light::OnInspectorGUI()
 		break;
 	}
 
-	if(ProjectionChanged)
+	if (ProjectionChanged)
 		ProjUpdate();
+}
+
+void Light::OnDrawGizmos()
+{
 }
 
 GENERATE_COMPONENT_FUNC_TOJSON(Light)
@@ -262,7 +266,7 @@ GENERATE_COMPONENT_FUNC_FROMJSON(Light)
 			m_dirLightLen = XMFLOAT2{ length[0], length[1] };
 		}
 	}
-	
+
 	// Point
 	{
 		if (j.contains("pointLightAmbient"))

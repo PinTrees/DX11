@@ -10,7 +10,6 @@ public:
 
 protected:
 	virtual void OnRender() override;
-	virtual void OnRenderExit() override;
 
 private:
 	void DrawGameObject(GameObject* gameObject);

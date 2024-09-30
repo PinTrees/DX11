@@ -225,43 +225,41 @@ void from_json(const json& j, UMaterial& m)
 	m.m_BaseMapPath = string_to_wstring(j.at("BaseMapPath").get<std::string>());
 	m.m_NormalMapPath = string_to_wstring(j.at("NormalMapPath").get<std::string>());
 	m.m_ResourcePath = j.at("ResourcePath").get<std::string>();
-	auto ambient = j.at("Ambient").get<std::vector<float>>();
-	m.Ambient = XMFLOAT4{ ambient[0], ambient[1], ambient[2], ambient[3] };
-	auto diffuse = j.at("Diffuse").get<std::vector<float>>();
-	m.Diffuse = XMFLOAT4{ diffuse[0], diffuse[1], diffuse[2], diffuse[3] };
-	auto specular = j.at("Specular").get<std::vector<float>>();
-	m.Specular = XMFLOAT4{ specular[0], specular[1], specular[2], specular[3] };
-	auto reflect = j.at("Reflect").get<std::vector<float>>();
-	m.Reflect = XMFLOAT4{ reflect[0], reflect[1], reflect[2], reflect[3] };
+	
+	DE_SERIALIZE_FLOAT4(j, m.Ambient, "Ambient");
+	DE_SERIALIZE_FLOAT4(j, m.Diffuse, "Diffuse");
+	DE_SERIALIZE_FLOAT4(j, m.Specular, "Specular");
+	DE_SERIALIZE_FLOAT4(j, m.Reflect, "Reflect");
 
-	m.m_shaderSetting.UseTexture = j.at("UseTexture").get<int>();
-	m.m_shaderSetting.AlphaClip = j.at("AlphaClip").get<int>();
-	m.m_shaderSetting.UseNormalMap = j.at("UseNormalMap").get<int>();
-	m.m_shaderSetting.UseShadowMap = j.at("UseShadowMap").get<int>();
-	m.m_shaderSetting.UseSsaoMap = j.at("UseSsaoMap").get<int>();
-	m.m_shaderSetting.ReflectionEnabled = j.at("ReflectionEnabled").get<int>();
-	m.m_shaderSetting.FogEnabled = j.at("FogEnabled").get<int>();
+	// ShaderSetting
+	DE_SERIALIZE_INT(j, m.m_shaderSetting.UseTexture, "UseTexture");
+	DE_SERIALIZE_INT(j, m.m_shaderSetting.AlphaClip, "AlphaClip");
+	DE_SERIALIZE_INT(j, m.m_shaderSetting.UseNormalMap, "UseNormalMap");
+	DE_SERIALIZE_INT(j, m.m_shaderSetting.UseShadowMap, "UseShadowMap");
+	DE_SERIALIZE_INT(j, m.m_shaderSetting.UseSsaoMap, "UseSsaoMap");
+	DE_SERIALIZE_INT(j, m.m_shaderSetting.ReflectionEnabled, "ReflectionEnabled");
+	DE_SERIALIZE_INT(j, m.m_shaderSetting.FogEnabled, "FogEnabled");
 }
 
 void to_json(json& j, const UMaterial& m)
 {
-	j = json
-	{
-		{ "BaseMapPath", wstring_to_string(m.m_BaseMapPath) },
-		{ "NormalMapPath", wstring_to_string(m.m_NormalMapPath) },
-		{ "ResourcePath", m.m_ResourcePath },
-		{ "Ambient", { m.Ambient.x, m.Ambient.y, m.Ambient.z, m.Ambient.w } },
-		{ "Diffuse", { m.Diffuse.x, m.Diffuse.y, m.Diffuse.z, m.Diffuse.w } },
-		{ "Specular", { m.Specular.x, m.Specular.y, m.Specular.z, m.Specular.w } },
-		{ "Reflect", { m.Reflect.x, m.Reflect.y, m.Reflect.z, m.Reflect.w } },
+	j = json {};
 
-		// ShaderSetting
-		{ "UseTexture",m.m_shaderSetting.UseTexture },
-		{ "AlphaClip",m.m_shaderSetting.AlphaClip },
-		{ "UseNormalMap",m.m_shaderSetting.UseNormalMap },
-		{ "UseShadowMap",m.m_shaderSetting.UseShadowMap },
-		{ "UseSsaoMap",m.m_shaderSetting.UseSsaoMap },
-		{ "ReflectionEnabled",m.m_shaderSetting.ReflectionEnabled },
-		{ "FogEnabled",m.m_shaderSetting.FogEnabled }
-	};
+	SERIALIZE_WSTRING(j, m.m_BaseMapPath, "BaseMapPath");
+	SERIALIZE_WSTRING(j, m.m_NormalMapPath, "NormalMapPath");
+	SERIALIZE_STRING(j, m.m_ResourcePath, "ResourcePath"); 
+
+	SERIALIZE_FLOAT4(j, m.Ambient, "Ambient");
+	SERIALIZE_FLOAT4(j, m.Diffuse, "Diffuse");
+	SERIALIZE_FLOAT4(j, m.Specular, "Specular");
+	SERIALIZE_FLOAT4(j, m.Reflect, "Reflect");
+
+	// ShaderSetting
+	SERIALIZE_INT(j, m.m_shaderSetting.UseTexture, "UseTexture");
+	SERIALIZE_INT(j, m.m_shaderSetting.AlphaClip, "AlphaClip");
+	SERIALIZE_INT(j, m.m_shaderSetting.UseNormalMap, "UseNormalMap");
+	SERIALIZE_INT(j, m.m_shaderSetting.UseShadowMap, "UseShadowMap");
+	SERIALIZE_INT(j, m.m_shaderSetting.UseSsaoMap, "UseSsaoMap");
+	SERIALIZE_INT(j, m.m_shaderSetting.ReflectionEnabled, "ReflectionEnabled");
+	SERIALIZE_INT(j, m.m_shaderSetting.FogEnabled, "FogEnabled");
 }

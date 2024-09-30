@@ -11,6 +11,9 @@
 #include "ConsoleEditorWindow.h"
 #include "AnimatorEditorWindow.h"
 
+#include "EditorGUIResourceManager.h"
+#include "TaskSystem.h"
+
 namespace
 {
 	// This is just used to forward Windows messages from a global window
@@ -86,14 +89,22 @@ int32 App::Run()
 				// Render
 				RenderApplication();
 
+				ImGui_ImplDX11_NewFrame();
+				ImGui_ImplWin32_NewFrame();
+				ImGui::NewFrame();
+
 				//Editor Render
 				EditorGUIManager::GetI()->RenderEditorWindows();
+
+				ImGui::Render(); 
+				ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData()); 
 
 				// Render End
 				HR(_swapChain->Present(0, 0)); 
 
 				// Last Frame
 				SceneManager::GetI()->GetCurrentScene()->LastFramUpdate();
+				TaskSystem::ExecuteMainThreadTasks();
 			}
 			else
 			{
