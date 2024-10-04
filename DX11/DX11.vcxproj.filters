@@ -576,6 +576,20 @@
     <ClCompile Include="SkinnedMeshRenderer.cpp">
       <Filter>0. Engine\Component\MeshRenderer</Filter>
     </ClCompile>
+    <ClCompile Include="EditorGUI.cpp" />
+    <ClCompile Include="EditorGUIResourceManager.cpp" />
+    <ClCompile Include="EditorGUIStyle.cpp" />
+    <ClCompile Include="Task.cpp" />
+    <ClCompile Include="TaskSystem.cpp" />
+    <ClCompile Include="Converter.cpp">
+      <Filter>0. Engine\Mesh\0. Base</Filter>
+    </ClCompile>
+    <ClCompile Include="FileUtils.cpp">
+      <Filter>0. Engine\98. Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="tinyxml2.cpp">
+      <Filter>0. Engine\98. Utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="01. InitDemo.h">
@@ -953,6 +967,20 @@
     </ClInclude>
     <ClInclude Include="SkinnedMeshRenderer.h">
       <Filter>0. Engine\Component\MeshRenderer</Filter>
+    </ClInclude>
+    <ClInclude Include="EditorGUI.h" />
+    <ClInclude Include="EditorGUIResourceManager.h" />
+    <ClInclude Include="EditorGUIStyle.h" />
+    <ClInclude Include="Task.h" />
+    <ClInclude Include="TaskSystem.h" />
+    <ClInclude Include="Converter.h">
+      <Filter>0. Engine\Mesh\0. Base</Filter>
+    </ClInclude>
+    <ClInclude Include="FileUtils.h">
+      <Filter>0. Engine\98. Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="tinyxml2.h">
+      <Filter>0. Engine\98. Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

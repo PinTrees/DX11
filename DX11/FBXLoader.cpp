@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "FBXLoader.h"
 
-
 bool FBXLoader::LoadFBX(
     const std::string& filename,
     vector<Vertex::PosNormalTexTan2>& vertices,

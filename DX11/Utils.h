@@ -30,6 +30,9 @@ public:
 		std::vector<std::wstring>& filenames);
 
 	static ComPtr<ID3D11ShaderResourceView> CreateRandomTexture1DSRV(ComPtr<ID3D11Device> device);
+
+	static wstring string_to_wstring(const std::string& str);
+	static string wstring_to_string(const std::wstring& wstr);
 };
 
 class TextHelper

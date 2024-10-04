@@ -209,6 +209,7 @@
     <ClInclude Include="Component.h" />
     <ClInclude Include="ComponentFactory.h" />
     <ClInclude Include="ConsoleEditorWindow.h" />
+    <ClInclude Include="Converter.h" />
     <ClInclude Include="Debug.h" />
     <ClInclude Include="define.h" />
     <ClInclude Include="EditorCamera.h" />
@@ -221,6 +222,7 @@
     <ClInclude Include="EditorWindow.h" />
     <ClInclude Include="Effects.h" />
     <ClInclude Include="FBXLoader.h" />
+    <ClInclude Include="FileUtils.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GameTimer.h" />
     <ClInclude Include="GameViewEditorWindow.h" />
@@ -288,6 +290,7 @@
     <ClInclude Include="Terrain.h" />
     <ClInclude Include="TextureMgr.h" />
     <ClInclude Include="TimeManager.h" />
+    <ClInclude Include="tinyxml2.h" />
     <ClInclude Include="Transform.h" />
     <ClInclude Include="Types.h" />
     <ClInclude Include="UMaterial.h" />
@@ -342,6 +345,7 @@
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="ComponentFactory.cpp" />
     <ClCompile Include="ConsoleEditorWindow.cpp" />
+    <ClCompile Include="Converter.cpp" />
     <ClCompile Include="Debug.cpp" />
     <ClCompile Include="define.cpp" />
     <ClCompile Include="EditorCamera.cpp" />
@@ -354,6 +358,7 @@
     <ClCompile Include="EditorWindow.cpp" />
     <ClCompile Include="Effects.cpp" />
     <ClCompile Include="FBXLoader.cpp" />
+    <ClCompile Include="FileUtils.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GameViewEditorWindow.cpp" />
     <ClCompile Include="GeometryGenerator.cpp" />
@@ -445,6 +450,7 @@
     <ClCompile Include="Terrain.cpp" />
     <ClCompile Include="TextureMgr.cpp" />
     <ClCompile Include="TimeManager.cpp" />
+    <ClCompile Include="tinyxml2.cpp" />
     <ClCompile Include="Transform.cpp" />
     <ClCompile Include="UMaterial.cpp" />
     <ClCompile Include="Utils.cpp" />
