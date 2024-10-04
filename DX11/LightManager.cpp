@@ -42,30 +42,38 @@ vector<DirectionalLight>& LightManager::GetDirLights()
 	return m_dirLights;
 }
 
-vector<PointLight>& LightManager::GetPointLights()
+// true -> calculate, Not Input or false -> calculate X
+vector<PointLight>& LightManager::GetPointLights(bool calc)
 {
-	m_pointLights.clear();
-
-	for (int i = 0; i < m_lightList.size(); i++)
+	if (calc)
 	{
-		if (m_lightList[i]->GetLightType() == LightType::Point)
+		m_pointLights.clear();
+
+		for (int i = 0; i < m_lightList.size(); i++)
 		{
-			m_pointLights.push_back(m_lightList[i]->GetPointLight());
+			if (m_lightList[i]->GetLightType() == LightType::Point)
+			{
+				m_pointLights.push_back(m_lightList[i]->GetPointLight());
+			}
 		}
 	}
 
 	return m_pointLights;
 }
 
-vector<SpotLight>& LightManager::GetSpotLights()
+// true -> calculate, Not Input or false -> calculate X
+vector<SpotLight>& LightManager::GetSpotLights(bool calc)
 {
-	m_spotLights.clear();
-
-	for (int i = 0; i < m_lightList.size(); i++)
+	if (calc)
 	{
-		if (m_lightList[i]->GetLightType() == LightType::Spot)
+		m_spotLights.clear();
+
+		for (int i = 0; i < m_lightList.size(); i++)
 		{
-			m_spotLights.push_back(m_lightList[i]->GetSpotLight());
+			if (m_lightList[i]->GetLightType() == LightType::Spot)
+			{
+				m_spotLights.push_back(m_lightList[i]->GetSpotLight());
+			}
 		}
 	}
 

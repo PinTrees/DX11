@@ -29,6 +29,7 @@ struct PointLight
 		Specular = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
 		Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
 		Range = 0.0f;
+		Att = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	}
 
 	XMFLOAT4 Ambient;
@@ -56,6 +57,7 @@ struct SpotLight
 		Range = 0.0f;
 		Direction = XMFLOAT3(0.0f, 0.0f, 0.0f);
 		Spot = 0.0f;
+		Att = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	}
 	XMFLOAT4 Ambient;
 	XMFLOAT4 Diffuse;

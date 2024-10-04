@@ -269,8 +269,8 @@ void Camera::GetFrustumCulling()
 {
 	vector<GameObject*> allObject = SceneManager::GetI()->GetCurrentScene()->GetAllGameObjects();
 	auto& culling = SceneManager::GetI()->GetCurrentScene()->GetCullingGameObjects();
-	vector<PointLight>& pointLight = LightManager::GetI()->GetPointLights();
-	vector<SpotLight>& spotLight = LightManager::GetI()->GetSpotLights();
+	vector<PointLight>& pointLight = LightManager::GetI()->GetPointLights(true);
+	vector<SpotLight>& spotLight = LightManager::GetI()->GetSpotLights(true);
 	vector<PointLight> tempPointLight;
 	vector<SpotLight> tempSpotLight;
 
