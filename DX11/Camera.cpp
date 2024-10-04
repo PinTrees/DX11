@@ -7,6 +7,8 @@
 #include "MeshRenderer.h"
 #include "SceneManager.h"
 #include "Scene.h"
+#include "Light.h"
+#include "LightManager.h"
 Camera::Camera()
 {
 	m_InspectorTitleName = "Camera";
@@ -266,7 +268,12 @@ void Camera::LateUpdate()
 void Camera::GetFrustumCulling()
 {
 	vector<GameObject*> allObject = SceneManager::GetI()->GetCurrentScene()->GetAllGameObjects();
-	auto culling = SceneManager::GetI()->GetCurrentScene()->GetCullingGameObjects();
+	auto& culling = SceneManager::GetI()->GetCurrentScene()->GetCullingGameObjects();
+	vector<PointLight>& pointLight = LightManager::GetI()->GetPointLights();
+	vector<SpotLight>& spotLight = LightManager::GetI()->GetSpotLights();
+	vector<PointLight> tempPointLight;
+	vector<SpotLight> tempSpotLight;
+
 	culling.clear();
 	bool check;
 
@@ -295,6 +302,49 @@ void Camera::GetFrustumCulling()
 		if (check)
 			culling.push_back(allObject[i]);
 	}
+
+	// PointLight
+	for (int i = 0; i < pointLight.size(); i++)
+	{
+		check = true;
+		for (int i = 0; i < 6; i++)
+		{
+			// 충돌체크
+			//plane.normal.x * center.x + plane.normal.y * center.y + plane.normal.z * center.z + plane.d;
+			float distance = m_frustum.planes[i].normal.x * pointLight[i].Position.x + 
+							 m_frustum.planes[i].normal.y * pointLight[i].Position.y +
+							 m_frustum.planes[i].normal.z * pointLight[i].Position.z + 
+							 m_frustum.planes[i].d;
+			if (distance < -pointLight[i].Range)
+				check = false; // 구가 평면의 밖에 있음
+		}
+
+		if (check)
+			tempPointLight.push_back(pointLight[i]);
+	}
+
+	// SpotLight를 PointLight처럼 구의 형태로 컬링을 하게되면 편하지만 정확도를 좀 떨어질 것이다.
+	for (int i = 0; spotLight.size(); i++)
+	{
+		check = true;
+		for (int i = 0; i < 6; i++)
+		{
+			// 충돌체크
+			//plane.normal.x * center.x + plane.normal.y * center.y + plane.normal.z * center.z + plane.d;
+			float distance = m_frustum.planes[i].normal.x * spotLight[i].Position.x +
+				m_frustum.planes[i].normal.y * spotLight[i].Position.y +
+				m_frustum.planes[i].normal.z * spotLight[i].Position.z +
+				m_frustum.planes[i].d;
+			if (distance < -spotLight[i].Range)
+				check = false; // 구가 평면의 밖에 있음
+		}
+
+		if (check)
+			tempSpotLight.push_back(spotLight[i]);
+	}
+
+	pointLight = tempPointLight;
+	spotLight = tempSpotLight;
 }
 
 void Camera::FrustumUpdate()

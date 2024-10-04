@@ -42,7 +42,7 @@ public:
 	void AddRootGameObject(GameObject* gameObject);
 	vector<GameObject*> GetRootGameObjects() { return m_RootGameObjects; }
 	vector<GameObject*> GetAllGameObjects() const { return m_arrGameObjects[0]; }
-	vector<GameObject*> GetCullingGameObjects() { return m_cullingGameObjects; }
+	vector<GameObject*>& GetCullingGameObjects() { return m_cullingGameObjects; }
 
 	void RemoveRootGameObjects(GameObject* gameObject);
 
