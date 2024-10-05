@@ -24,6 +24,7 @@
 #include <future>		// std::async, std::future
 #include <chrono>		// std::chrono::seconds
 #include <coroutine>
+
 using namespace std;
 
 // WIN
@@ -52,6 +53,11 @@ namespace ed = ax::NodeEditor;
 #include <DirectXTex/DirectXTex.h>
 #include <DirectXTex/DirectXTex.inl>
 #include <FX11/d3dx11effect.h>
+
+// Assimp
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "d3dcompiler.lib")

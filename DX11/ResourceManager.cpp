@@ -75,7 +75,7 @@ shared_ptr<Mesh> ResourceManager::LoadMesh(wstring filename)
 	}
 	else
 	{
-		mesh = make_shared<Mesh>(Application::GetI()->GetDevice(), wstring_to_string(filename));
+		mesh = make_shared<Mesh>(Application::GetI()->GetDevice(), Utils::wstring_to_string(filename));
 		m_Meshs[filename] = mesh;
 	}
 
@@ -92,7 +92,7 @@ shared_ptr<SkinnedMesh> ResourceManager::LoadSkinnedMesh(wstring filename)
 	}
 	else
 	{
-		mesh = make_shared<SkinnedMesh>(Application::GetI()->GetDevice(), wstring_to_string(filename));
+		mesh = make_shared<SkinnedMesh>(Application::GetI()->GetDevice(), Utils::wstring_to_string(filename));
 		m_SkinnedMeshs[filename] = mesh;
 	}
 

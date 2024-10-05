@@ -180,20 +180,48 @@ ComPtr<ID3D11ShaderResourceView> Utils::CreateRandomTexture1DSRV(ComPtr<ID3D11De
 	return randomTexSRV;
 }
 
-std::wstring Utils::string_to_wstring(const std::string& str)
+void Utils::Replace(OUT string& str, string comp, string rep)
 {
-	if (str.empty()) return std::wstring();
+	string temp = str;
+
+	size_t start_pos = 0;
+	while ((start_pos = temp.find(comp, start_pos)) != wstring::npos)
+	{
+		temp.replace(start_pos, comp.length(), rep);
+		start_pos += rep.length();
+	}
+
+	str = temp;
+}
+
+void Utils::Replace(OUT wstring& str, wstring comp, wstring rep)
+{
+	wstring temp = str;
+
+	size_t start_pos = 0;
+	while ((start_pos = temp.find(comp, start_pos)) != wstring::npos)
+	{
+		temp.replace(start_pos, comp.length(), rep);
+		start_pos += rep.length();
+	}
+
+	str = temp;
+}
+
+wstring Utils::string_to_wstring(const string& str)
+{
+	if (str.empty()) return wstring();
 	int size_needed = MultiByteToWideChar(CP_UTF8, 0, &str[0], (int)str.size(), NULL, 0);
-	std::wstring wstr(size_needed, 0);
+	wstring wstr(size_needed, 0);
 	MultiByteToWideChar(CP_UTF8, 0, &str[0], (int)str.size(), &wstr[0], size_needed);
 	return wstr;
 }
 
-std::string Utils::wstring_to_string(const std::wstring& wstr)
+string Utils::wstring_to_string(const wstring& wstr)
 {
-	if (wstr.empty()) return std::string();
+	if (wstr.empty()) return string();
 	int size_needed = WideCharToMultiByte(CP_UTF8, 0, &wstr[0], (int)wstr.size(), NULL, 0, NULL, NULL);
-	std::string str(size_needed, 0);
+	string str(size_needed, 0);
 	WideCharToMultiByte(CP_UTF8, 0, &wstr[0], (int)wstr.size(), &str[0], size_needed, NULL, NULL);
 	return str;
 }

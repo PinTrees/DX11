@@ -385,8 +385,8 @@ GENERATE_COMPONENT_FUNC_TOJSON(MeshRenderer)
 	json j;
 
 	SERIALIZE_TYPE(j, MeshRenderer);
-	j["shaderPath"] = wstring_to_string(m_ShaderPath);
-	j["meshPath"] = wstring_to_string(m_MeshPath);
+	j["shaderPath"] = Utils::wstring_to_string(m_ShaderPath);
+	j["meshPath"] = Utils::wstring_to_string(m_MeshPath);
 	//j["materialPath"] = wstring_to_string(m_MaterialPath);
 	j["subsetIndex"] = m_MeshSubsetIndex; 
 	return j;
@@ -396,11 +396,11 @@ GENERATE_COMPONENT_FUNC_FROMJSON(MeshRenderer)
 {
 	if (j.contains("shaderPath"))
 	{
-		m_ShaderPath = string_to_wstring(j.at("shaderPath").get<string>());
+		m_ShaderPath = Utils::string_to_wstring(j.at("shaderPath").get<string>());
 	}
 	if (j.contains("meshPath"))
 	{
-		m_MeshPath = string_to_wstring(j.at("meshPath").get<string>());
+		m_MeshPath = Utils::string_to_wstring(j.at("meshPath").get<string>());
 		m_Mesh = ResourceManager::GetI()->LoadMesh(m_MeshPath);
 	}
 	if (j.contains("materialPath"))

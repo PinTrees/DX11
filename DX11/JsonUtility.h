@@ -1,5 +1,7 @@
 #pragma once
 #include <nlohmann/json.hpp>
+#include "Utils.h"
+
 using json = nlohmann::json;
 
 float SafeGetFloat(const json& j, const std::string& key, size_t index, float defaultValue);
@@ -26,7 +28,7 @@ Quaternion SafeGetQuaternion(const json& j, const std::string& key, const Quater
 
 #define SERIALIZE_TYPE(JSON, CLASS) JSON["type"] = #CLASS;
 #define SERIALIZE_STRING(JSON, VALUE, VALUE_NAME) JSON[VALUE_NAME] = VALUE;
-#define SERIALIZE_WSTRING(JSON, VALUE, VALUE_NAME) JSON[VALUE_NAME] = wstring_to_string(VALUE);
+#define SERIALIZE_WSTRING(JSON, VALUE, VALUE_NAME) JSON[VALUE_NAME] = Utils::wstring_to_string(VALUE);
 
 #define SERIALIZE_FLOAT4(JSON, VALUE, VALUE_NAME) JSON[VALUE_NAME] = { VALUE.x, VALUE.y,VALUE.z, VALUE.w };
 #define DE_SERIALIZE_FLOAT4(JSON, VALUE, VALUE_NAME) if (JSON.contains(VALUE_NAME)) {                                                   \

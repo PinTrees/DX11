@@ -298,7 +298,7 @@ bool EditorGUI::MaterialField(string title, shared_ptr<UMaterial>& material, wst
 
             if (!filePath.empty())
             {
-                material = ResourceManager::GetI()->LoadMaterial(wstring_to_string(filePath));
+                material = ResourceManager::GetI()->LoadMaterial(Utils::wstring_to_string(filePath));
                 materialPath = filePath;
                 isDirty = true;
             }

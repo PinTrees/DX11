@@ -391,7 +391,7 @@ void SkinnedMeshRenderer::OnInspectorGUI()
 
 		if (!filePath.empty())
 		{
-			m_pMaterial = ResourceManager::GetI()->LoadMaterial(wstring_to_string(filePath));
+			m_pMaterial = ResourceManager::GetI()->LoadMaterial(Utils::wstring_to_string(filePath));
 			if (m_pMaterial)
 			{
 				m_MaterialPath = filePath;
@@ -404,9 +404,9 @@ GENERATE_COMPONENT_FUNC_TOJSON(SkinnedMeshRenderer)
 {
 	json j;
 	j["type"] = "SkinnedMeshRenderer";
-	j["shaderPath"] = wstring_to_string(m_ShaderPath);
-	j["meshPath"] = wstring_to_string(m_MeshPath);
-	j["materialPath"] = wstring_to_string(m_MaterialPath);
+	j["shaderPath"] = Utils::wstring_to_string(m_ShaderPath);
+	j["meshPath"] = Utils::wstring_to_string(m_MeshPath);
+	j["materialPath"] = Utils::wstring_to_string(m_MaterialPath);
 	j["subsetIndex"] = m_MeshSubsetIndex;
 	return j;
 }
@@ -415,17 +415,17 @@ GENERATE_COMPONENT_FUNC_FROMJSON(SkinnedMeshRenderer)
 {
 	if (j.contains("shaderPath"))
 	{
-		m_ShaderPath = string_to_wstring(j.at("shaderPath").get<string>());
+		m_ShaderPath = Utils::string_to_wstring(j.at("shaderPath").get<string>());
 	}
 	if (j.contains("meshPath"))
 	{
-		m_MeshPath = string_to_wstring(j.at("meshPath").get<string>());
+		m_MeshPath = Utils::string_to_wstring(j.at("meshPath").get<string>());
 		m_SkinnedMesh = ResourceManager::GetI()->LoadSkinnedMesh(m_MeshPath);
 	}
 	if (j.contains("materialPath"))
 	{
-		m_MaterialPath = string_to_wstring(j.at("materialPath").get<string>());
-		m_pMaterial = ResourceManager::GetI()->LoadMaterial(wstring_to_string(m_MaterialPath));
+		m_MaterialPath = Utils::string_to_wstring(j.at("materialPath").get<string>());
+		m_pMaterial = ResourceManager::GetI()->LoadMaterial(Utils::wstring_to_string(m_MaterialPath));
 	}
 	if (j.contains("subsetIndex"))
 	{

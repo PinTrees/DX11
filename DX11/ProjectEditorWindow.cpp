@@ -77,7 +77,7 @@ ProjectEditorWindow::~ProjectEditorWindow()
 void ProjectEditorWindow::OnRender()
 {
     // 현재 경로를 상단에 표시
-    string aa = wstring_to_string(currentDirectory);
+    string aa = Utils::wstring_to_string(currentDirectory);
     ImGui::Text("Current Directory: %s", aa.c_str());
 
     static float leftPaneWidth = 250.0f; // 좌측 패널의 초기 너비
@@ -147,7 +147,7 @@ void ProjectEditorWindow::OnRender()
         {
             if (ImGui::MenuItem("Material"))
             {
-                UMaterial::Create(wstring_to_string(currentDirectory));
+                UMaterial::Create(Utils::wstring_to_string(currentDirectory));
                 ImGui::CloseCurrentPopup();
             }
             if (ImGui::MenuItem("Folder"))
@@ -171,7 +171,7 @@ void ProjectEditorWindow::DisplayDirectoryTree(const std::wstring& directory)
 {
     for (const auto& entry : fs::directory_iterator(directory))
     {
-        std::string filename = wstring_to_string(entry.path().filename().wstring());
+        std::string filename = Utils::wstring_to_string(entry.path().filename().wstring());
 
         if (entry.is_directory())
         {
@@ -216,7 +216,7 @@ void ProjectEditorWindow::RenderFileEntry(const fs::directory_entry& entry, bool
 {
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
 
-    string filename = wstring_to_string(entry.path().filename().wstring());
+    string filename = Utils::wstring_to_string(entry.path().filename().wstring());
     string extention = entry.path().extension().string();
 
     if (entry.is_directory())
@@ -287,16 +287,11 @@ void ProjectEditorWindow::RenameSelectedFile(const std::wstring& oldPath, const 
     }
 }
 
-
-
-
-
-
 void ProjectEditorWindow::RenderFileEntry_Directory(const fs::directory_entry& entry, bool isSelected)
 {
     wstring filename = entry.path().filename().wstring();
 
-    ImGui::Selectable(wstring_to_string(filename).c_str(), isSelected);
+    ImGui::Selectable(Utils::wstring_to_string(filename).c_str(), isSelected);
 
     if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(0))
     {
@@ -309,7 +304,7 @@ void ProjectEditorWindow::RenderFileEntry_Directory(const fs::directory_entry& e
         if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("MAT_FILE"))
         {
             std::string receivedFilePath(static_cast<const char*>(payload->Data), payload->DataSize);
-            std::wstring receivedFilePath_w = string_to_wstring(receivedFilePath);
+            std::wstring receivedFilePath_w = Utils::string_to_wstring(receivedFilePath);
         }
         else if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("PNG_FILE"))
         {
@@ -335,7 +330,7 @@ void ProjectEditorWindow::RenderFileEntry_FBX(const fs::directory_entry& entry, 
         | (isSelected ? ImGuiTreeNodeFlags_Selected : 0);
 
     // TreeNode의 상태를 관리
-    bool treeNodeOpened = ImGui::TreeNodeEx(wstring_to_string(filename).c_str(), treeFlag);
+    bool treeNodeOpened = ImGui::TreeNodeEx(Utils::wstring_to_string(filename).c_str(), treeFlag);
 
     // 트리 노드에 대한 드래그 앤 드롭 소스 설정
     if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
@@ -351,11 +346,11 @@ void ProjectEditorWindow::RenderFileEntry_FBX(const fs::directory_entry& entry, 
         for (size_t i = 0; i < mesh_fbx->Subsets.size(); ++i)
         {
             const auto& subset = mesh_fbx->Subsets[i];
-            std::wstring subsetName = string_to_wstring(subset.Name) + std::to_wstring(i + 1);
+            std::wstring subsetName = Utils::string_to_wstring(subset.Name) + std::to_wstring(i + 1);
 
             bool isSubsetSelected = (SelectionManager::GetSelectedFile() == (filename + L"\\" + subsetName));
             ImGui::PushID(static_cast<int>(i));
-            if (ImGui::Selectable(wstring_to_string(subsetName).c_str(), isSubsetSelected))
+            if (ImGui::Selectable(Utils::wstring_to_string(subsetName).c_str(), isSubsetSelected))
             {
                 SelectionManager::SetSelectedFile(filename + L"\\" + subsetName);
             }
@@ -365,7 +360,7 @@ void ProjectEditorWindow::RenderFileEntry_FBX(const fs::directory_entry& entry, 
             {
                 const std::string subsetPath = entry.path().string() + "\\" + std::to_string(i);
                 ImGui::SetDragDropPayload("FBX_SUBSET", subsetPath.c_str(), subsetPath.size() + 1);
-                ImGui::Text("Dragging %s", wstring_to_string(subsetName).c_str());
+                ImGui::Text("Dragging %s", Utils::wstring_to_string(subsetName).c_str());
                 ImGui::EndDragDropSource();
             }
 
@@ -379,7 +374,7 @@ void ProjectEditorWindow::RenderFileEntry_PNG(const fs::directory_entry& entry, 
 {
     wstring filename = entry.path().filename().wstring();
 
-    ImGui::Selectable(wstring_to_string(filename).c_str(), isSelected);
+    ImGui::Selectable(Utils::wstring_to_string(filename).c_str(), isSelected);
 
     if (!isSelected && ImGui::IsItemHovered() && ImGui::IsMouseClicked(0))
     {
@@ -399,8 +394,8 @@ void ProjectEditorWindow::RenderFileEntry_PNG(const fs::directory_entry& entry, 
     {
         // 드래그 앤 드랍 처리
 
-        const std::string filePath = wstring_to_string(entry.path().wstring());
-        const std::string filename_d = wstring_to_string(entry.path().filename().wstring());
+        const std::string filePath = Utils::wstring_to_string(entry.path().wstring());
+        const std::string filename_d = Utils::wstring_to_string(entry.path().filename().wstring());
 
         // 파일 경로를 페이로드로 설정
         ImGui::SetDragDropPayload("PNG_FILE", filePath.c_str(), (filePath.size() + 1) * sizeof(char));
@@ -413,7 +408,7 @@ void ProjectEditorWindow::RenderFileEntry_MAT(const fs::directory_entry& entry, 
 {
     wstring filename = entry.path().filename().wstring();
 
-    ImGui::Selectable(wstring_to_string(filename).c_str(), isSelected);
+    ImGui::Selectable(Utils::wstring_to_string(filename).c_str(), isSelected);
 
     if (!isSelected && ImGui::IsItemHovered() && ImGui::IsMouseClicked(0))
     {

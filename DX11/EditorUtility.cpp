@@ -56,10 +56,10 @@ std::wstring EditorUtility::OpenFileDialog(const std::wstring& initialPath, cons
     fs::path directoryPath = resourcePath.parent_path();
     std::wstring directoryPathW = directoryPath.wstring();
 
-    std::wstring filterString = string_to_wstring(title) + L'\0';
+    std::wstring filterString = Utils::string_to_wstring(title) + L'\0';
 
     for (const auto& filter : filters) 
-        filterString += L"*." + string_to_wstring(filter) + L';';
+        filterString += L"*." + Utils::string_to_wstring(filter) + L';';
 
     if (!filters.empty()) 
         filterString.pop_back();

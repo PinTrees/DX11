@@ -256,7 +256,7 @@ void Scene::UpdateScene()
 Scene* Scene::Load(wstring scenePath)
 {
     //std::ifstream is(wstring_to_string(scenePath));
-    std::ifstream is(wstring_to_string(PathManager::GetI()->GetMovePathW(scenePath)));
+    std::ifstream is(Utils::wstring_to_string(PathManager::GetI()->GetMovePathW(scenePath)));
 
     if (!is)
     {

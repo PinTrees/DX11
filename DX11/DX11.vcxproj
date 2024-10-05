@@ -200,6 +200,7 @@
     <ClInclude Include="App.h" />
     <ClInclude Include="01. InitDemo.h" />
     <ClInclude Include="Application.h" />
+    <ClInclude Include="AsTypes.h" />
     <ClInclude Include="BlurFilter.h" />
     <ClInclude Include="BoxCollider.h" />
     <ClInclude Include="Camera.h" />
@@ -336,6 +337,7 @@
     <ClCompile Include="App.cpp" />
     <ClCompile Include="01. InitDemo.cpp" />
     <ClCompile Include="Application.cpp" />
+    <ClCompile Include="AsTypes.cpp" />
     <ClCompile Include="BlurFilter.cpp" />
     <ClCompile Include="BoxCollider.cpp" />
     <ClCompile Include="Camera.cpp" />
@@ -450,7 +452,9 @@
     <ClCompile Include="Terrain.cpp" />
     <ClCompile Include="TextureMgr.cpp" />
     <ClCompile Include="TimeManager.cpp" />
-    <ClCompile Include="tinyxml2.cpp" />
+    <ClCompile Include="tinyxml2.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="Transform.cpp" />
     <ClCompile Include="UMaterial.cpp" />
     <ClCompile Include="Utils.cpp" />

@@ -31,6 +31,9 @@ public:
 
 	static ComPtr<ID3D11ShaderResourceView> CreateRandomTexture1DSRV(ComPtr<ID3D11Device> device);
 
+	static void Replace(OUT string& str, string comp, string rep);
+	static void Replace(OUT wstring& str, wstring comp, wstring rep);
+
 	static wstring string_to_wstring(const std::string& str);
 	static string wstring_to_string(const std::wstring& wstr);
 };

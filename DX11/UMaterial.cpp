@@ -222,8 +222,8 @@ void UMaterial::OnInspectorGUI()
 
 void from_json(const json& j, UMaterial& m)
 {
-	m.m_BaseMapPath = string_to_wstring(j.at("BaseMapPath").get<std::string>());
-	m.m_NormalMapPath = string_to_wstring(j.at("NormalMapPath").get<std::string>());
+	m.m_BaseMapPath = Utils::string_to_wstring(j.at("BaseMapPath").get<std::string>());
+	m.m_NormalMapPath = Utils::string_to_wstring(j.at("NormalMapPath").get<std::string>());
 	m.m_ResourcePath = j.at("ResourcePath").get<std::string>();
 	
 	DE_SERIALIZE_FLOAT4(j, m.Ambient, "Ambient");

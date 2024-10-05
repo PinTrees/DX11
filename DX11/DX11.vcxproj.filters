@@ -590,6 +590,9 @@
     <ClCompile Include="tinyxml2.cpp">
       <Filter>0. Engine\98. Utils</Filter>
     </ClCompile>
+    <ClCompile Include="AsTypes.cpp">
+      <Filter>0. Engine\98. Utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="01. InitDemo.h">
@@ -980,6 +983,9 @@
       <Filter>0. Engine\98. Utils</Filter>
     </ClInclude>
     <ClInclude Include="tinyxml2.h">
+      <Filter>0. Engine\98. Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="AsTypes.h">
       <Filter>0. Engine\98. Utils</Filter>
     </ClInclude>
   </ItemGroup>

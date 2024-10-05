@@ -4,6 +4,7 @@
 #include "Utils.h"
 #include "tinyxml2.h"
 #include "FileUtils.h"
+#include "AsTypes.h"
 
 Converter::Converter()
 {
@@ -279,7 +280,7 @@ void Converter::WriteMaterialData(wstring finalPath)
 		node->LinkEndChild(element);
 	}
 
-	document->SaveFile(Utils::ToString(finalPath).c_str());
+	document->SaveFile(Utils::wstring_to_string(finalPath).c_str());
 }
 
 std::string Converter::WriteTexture(string saveFolder, string file)
@@ -295,7 +296,7 @@ std::string Converter::WriteTexture(string saveFolder, string file)
 		if (srcTexture->mHeight == 0)
 		{
 			shared_ptr<FileUtils> file = make_shared<FileUtils>();
-			file->Open(Utils::ToWString(pathStr), FileMode::Write);
+			file->Open(Utils::string_to_wstring(pathStr), FileMode::Write);
 			file->Write(srcTexture->pcData, srcTexture->mWidth);
 		}
 		else
@@ -315,14 +316,14 @@ std::string Converter::WriteTexture(string saveFolder, string file)
 			subResource.pSysMem = srcTexture->pcData;
 
 			ComPtr<ID3D11Texture2D> texture;
-			HRESULT hr = DEVICE->CreateTexture2D(&desc, &subResource, texture.GetAddressOf());
+			HRESULT hr = Application::GetI()->GetDevice()->CreateTexture2D(&desc, &subResource, texture.GetAddressOf());
 			CHECK(hr);
 
 			DirectX::ScratchImage img;
-			::CaptureTexture(DEVICE.Get(), DC.Get(), texture.Get(), img);
+			::CaptureTexture(Application::GetI()->GetDevice(), Application::GetI()->GetDeviceContext(), texture.Get(), img);
 
 			// Save To File
-			hr = DirectX::SaveToDDSFile(*img.GetImages(), DirectX::DDS_FLAGS_NONE, Utils::ToWString(fileName).c_str());
+			hr = DirectX::SaveToDDSFile(*img.GetImages(), DirectX::DDS_FLAGS_NONE, Utils::string_to_wstring(fileName).c_str());
 			CHECK(hr);
 		}
 	}

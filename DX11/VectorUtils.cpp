@@ -17,12 +17,12 @@ Vec3 Cross(Vec3 vec1, Vec3 vec2)
     return vec1.Cross(vec2);
 }
 
-Vec3 Clamp(const Vec3& value, const Vec3& min, const Vec3& max)
+Vec3 Clamp(const Vec3& value, const Vec3& minV, const Vec3& maxV)
 {
     return Vec3(
-        max(min.x, min(value.x, max.x)), 
-        max(min.y, min(value.y, max.y)), 
-        max(min.z, min(value.z, max.z)) 
+        max(minV.x, min(value.x, maxV.x)), 
+        max(minV.y, min(value.y, maxV.y)),
+        max(minV.z, min(value.z, maxV.z))
     );
 }
 

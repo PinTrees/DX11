@@ -43,7 +43,7 @@ wstring PathManager::GetContentPathW()
 
 string PathManager::GetContentPathS()
 {
-	string path = wstring_to_string(_szContentPath);
+	string path = Utils::wstring_to_string(_szContentPath);
 
 	return path;
 }
@@ -63,9 +63,9 @@ wstring PathManager::GetMovePathW(wstring movePath)
 string PathManager::GetMovePathS(string movePath)
 {
 	wstring path = _szContentPath;
-	path += string_to_wstring(movePath);
+	path += Utils::string_to_wstring(movePath);
 
-	string result = wstring_to_string(path);
+	string result = Utils::wstring_to_string(path);
 
 	// 최대 폴더 경로 제한 검사
 	if (result.size() > MAX_PATH)
