@@ -46,7 +46,7 @@ void SceneHierachyEditorWindow::OnRender()
 		{
 			GameObject* droppedObject = *(GameObject**)payload->Data;
 			droppedObject->SetParent(nullptr);
-		} 
+		}
 		ImGui::EndDragDropTarget();
 	}
 

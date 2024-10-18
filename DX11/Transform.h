@@ -1,6 +1,8 @@
 #pragma once
 #include "Component.h"
 
+
+
 class Transform : public Component
 {
 	using Super = Component;
@@ -80,7 +82,7 @@ public:
 
 	const vector<shared_ptr<Transform>>& GetChildren() { return _children; }
 	void AddChild(shared_ptr<Transform> child) { _children.push_back(child); }
-
+	void RemoveChild(shared_ptr<Transform> child);
 public:
 	virtual void OnInspectorGUI() override;
 

@@ -29,6 +29,7 @@ struct PointLight
 		Specular = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
 		Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
 		Range = 0.0f;
+		Att = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	}
 
 	XMFLOAT4 Ambient;
@@ -40,7 +41,7 @@ struct PointLight
 	float Range;
 
 	// Packed into 4D vector: (A0, A1, A2, Pad)
-	XMFLOAT3 Att;
+	XMFLOAT3 Att; // 조명의 감쇠 특성을 나타내는 3D 벡터
 	float Pad; // Pad the last float so we can set an array of lights if we wanted.
 };
 
@@ -56,6 +57,7 @@ struct SpotLight
 		Range = 0.0f;
 		Direction = XMFLOAT3(0.0f, 0.0f, 0.0f);
 		Spot = 0.0f;
+		Att = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	}
 	XMFLOAT4 Ambient;
 	XMFLOAT4 Diffuse;
@@ -70,7 +72,7 @@ struct SpotLight
 	float Spot;
 
 	// Packed into 4D vector: (Att, Pad)
-	XMFLOAT3 Att;
+	XMFLOAT3 Att; // 조명의 감쇠 특성을 나타내는 3D 벡터
 	float Pad; // Pad the last float so we can set an array of lights if we wanted.
 };
 

@@ -22,7 +22,7 @@ public:
 
 	// 타입별 Lights 반환, 카메라 렌더 거리에 해당하는 경우에만(적용x)
 	vector<DirectionalLight>& GetDirLights();
-	vector<PointLight>& GetPointLights();
-	vector<SpotLight>& GetSpotLights();
+	vector<PointLight>& GetPointLights(bool calc = false);
+	vector<SpotLight>& GetSpotLights(bool calc = false);
 };
 

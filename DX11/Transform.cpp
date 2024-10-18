@@ -236,6 +236,15 @@ Vec3 Transform::GetAxis(int index) const
 	return axis;
 }
 
+void Transform::RemoveChild(shared_ptr<Transform> child)
+{
+	auto it = std::find(_children.begin(), _children.end(), child);
+	if (it != _children.end())
+	{
+		_children.erase(it);
+	}
+}
+
 void Transform::OnInspectorGUI()
 {
 	bool positionChanged = false;

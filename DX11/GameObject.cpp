@@ -28,26 +28,43 @@ GameObject::~GameObject()
 
 void GameObject::SetParent(GameObject* parent)
 {
-    if (m_pParentGameObject == nullptr) 
+    if (nullptr == parent) // rootGameObject로
     {
-        // RootGameObject일 경우
-        SceneManager::GetI()->GetCurrentScene()->RemoveRootGameObjects(this); 
-    }
-    else 
-    {
-        // 이미 부모가 있으나 다른 부모로 이동 시 원래 부모의 자식vector를 자기 자신을 지우기
-        m_pParentGameObject->RemoveChild(this); 
-    }
+        if (nullptr == m_pParentGameObject)
+        {
+            // 이미 rootGameObject이므로 처리X
+        }
+        else
+        {
+            // 부모오브젝트에서 RemoveChild(this) 후 자기 자신 rootGameObject로 추가
+            m_pParentGameObject->RemoveChild(this);
+            m_pParentGameObject->GetTransform()->RemoveChild(this->GetComponent_SP<Transform>());
 
-    m_pParentGameObject = parent;
-    if (parent == nullptr)
-    {
-        GetTransform()->SetParent(nullptr);
+            m_pParentGameObject = nullptr;
+            GetTransform()->SetParent(nullptr);
+
+            SceneManager::GetI()->GetCurrentScene()->AddRootGameObject(this);
+        }
     }
-    else
+    else // 다른 GameObject의 자식으로
     {
+        if (nullptr == m_pParentGameObject)
+        {
+            // rootGameObject였던 오브젝트에서 제거
+            SceneManager::GetI()->GetCurrentScene()->RemoveRootGameObjects(this);
+        }
+        else
+        {
+            // 원래 parent에서 자식 제거
+            m_pParentGameObject->RemoveChild(this);
+            m_pParentGameObject->GetTransform()->RemoveChild(this->GetComponent_SP<Transform>());
+        }
+        // parent 변경 후 parent의 자식으로 추가
+        m_pParentGameObject = parent;
         GetTransform()->SetParent(parent->GetComponent_SP<Transform>());
+
         parent->SetChild(this);
+        parent->GetTransform()->AddChild(this->GetComponent_SP<Transform>());
     }
 
     GetTransform()->UpdateTransform();
