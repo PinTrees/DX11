@@ -28,6 +28,8 @@ public:
 
 	MeshGeometry ModelMesh;
 	BouncingBall Ball;
+
+	wstring Path;
 };
 
 // 사용하지 않음 - 제거

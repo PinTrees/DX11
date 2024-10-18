@@ -1,0 +1,240 @@
+{
+    "rootGameObjects": [
+        {
+            "children": [],
+            "components": [
+                {
+                    "m_EulerAngles": [
+                        -0.0,
+                        -5.9285540886244714e-12,
+                        -0.0
+                    ],
+                    "m_LocalEulerAngles": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "m_LocalEulerRadians": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "m_LocalPosition": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "m_LocalRotation": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "m_LocalScale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "m_Position": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "m_Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "type": "Transform"
+                },
+                {
+                    "aspect": 1.0,
+                    "cameraType": 0,
+                    "farZ": 1000.0,
+                    "fovY": 0.7853981852531433,
+                    "nearZ": 1.0,
+                    "type": "Camera"
+                }
+            ],
+            "name": "Camera"
+        },
+        {
+            "children": [],
+            "components": [
+                {
+                    "m_EulerAngles": [
+                        -33.079715728759766,
+                        -33.079715728759766,
+                        33.079715728759766
+                    ],
+                    "m_LocalEulerAngles": [
+                        -33.07971954345703,
+                        -33.07971954345703,
+                        33.07971954345703
+                    ],
+                    "m_LocalEulerRadians": [
+                        -0.5773500204086304,
+                        -0.5773500204086304,
+                        0.5773500204086304
+                    ],
+                    "m_LocalPosition": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "m_LocalRotation": {
+                        "w": 0.9040031433105469,
+                        "x": -0.18391993641853333,
+                        "y": -0.33930107951164246,
+                        "z": 0.18391993641853333
+                    },
+                    "m_LocalScale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "m_Position": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "m_Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "type": "Transform"
+                },
+                {
+                    "directionalLightAmbient": [
+                        0.6000000238418579,
+                        0.6000000238418579,
+                        0.6000000238418579,
+                        1.0
+                    ],
+                    "directionalLightDiffuse": [
+                        0.800000011920929,
+                        0.699999988079071,
+                        0.699999988079071,
+                        1.0
+                    ],
+                    "directionalLightLength": [
+                        20.0,
+                        20.0
+                    ],
+                    "directionalLightSpecular": [
+                        0.6000000238418579,
+                        0.6000000238418579,
+                        0.699999988079071,
+                        1.0
+                    ],
+                    "lightType": 0,
+                    "pointLightAmbient": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "pointLightDiffuse": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "pointLightRange": 0.0,
+                    "pointLightSpecular": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "spotLightAmbient": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "spotLightDiffuse": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "spotLightLength": [
+                        20.0,
+                        20.0
+                    ],
+                    "spotLightRange": 0.0,
+                    "spotLightSpecular": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "spotLightSpot": 0.0,
+                    "type": "Light"
+                }
+            ],
+            "name": "Light"
+        },
+        {
+            "children": [],
+            "components": [
+                {
+                    "m_EulerAngles": [
+                        -0.0,
+                        -5.9285540886244714e-12,
+                        -0.0
+                    ],
+                    "m_LocalEulerAngles": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "m_LocalEulerRadians": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "m_LocalPosition": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "m_LocalRotation": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "m_LocalScale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "m_Position": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "m_Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "type": "Transform"
+                },
+                {
+                    "m_MaterialPaths": [
+                        "Assets\\Art\\New Material.mat"
+                    ],
+                    "meshPath": "Assets\\Art\\ENV\\Rock\\Mossy_rock_var8.fbx",
+                    "shaderPath": "",
+                    "subsetIndex": 0,
+                    "type": "MeshRenderer"
+                }
+            ],
+            "name": "GameObject"
+        }
+    ]
+}

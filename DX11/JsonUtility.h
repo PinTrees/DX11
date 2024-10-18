@@ -27,6 +27,33 @@ Quaternion SafeGetQuaternion(const json& j, const std::string& key, const Quater
 #define SERIALIZE_TYPE(JSON, CLASS) JSON["type"] = #CLASS;
 #define SERIALIZE_STRING(JSON, VALUE, VALUE_NAME) JSON[VALUE_NAME] = VALUE;
 #define SERIALIZE_WSTRING(JSON, VALUE, VALUE_NAME) JSON[VALUE_NAME] = wstring_to_string(VALUE);
+#define DE_SERIALIZE_WSTRING(JSON, VALUE, VALUE_NAME) if (JSON.contains(VALUE_NAME)) {                              \
+                                                         VALUE = string_to_wstring(j.at(VALUE_NAME).get<string>()); \
+                                                      }                                                             \
+
+#define SERIALIZE_WSTRING_ARRAY(JSON, VECTOR, VALUE_NAME)   \
+{                                                           \
+    std::vector<std::string> stringArray;                   \
+    for (const auto& wstr : VECTOR)                         \
+    {                                                       \
+        stringArray.push_back(wstring_to_string(wstr));     \
+    }                                                       \
+    JSON[VALUE_NAME] = stringArray;                         \
+}
+#define DE_SERIALIZE_WSTRING_ARRAY(JSON, VECTOR, VALUE_NAME)                            \
+{                                                                                       \
+    if (JSON.contains(VALUE_NAME))                                                      \
+    {                                                                                   \
+        VECTOR.clear();                                                                 \
+        const auto& stringArray = JSON.at(VALUE_NAME).get<std::vector<std::string>>();  \
+        for (const auto& str : stringArray)                                             \
+        {                                                                               \
+            VECTOR.push_back(string_to_wstring(str));                                   \
+        }                                                                               \
+    }                                                                                   \
+}
+
+
 
 #define SERIALIZE_FLOAT4(JSON, VALUE, VALUE_NAME) JSON[VALUE_NAME] = { VALUE.x, VALUE.y,VALUE.z, VALUE.w };
 #define DE_SERIALIZE_FLOAT4(JSON, VALUE, VALUE_NAME) if (JSON.contains(VALUE_NAME)) {                                                   \

@@ -367,6 +367,7 @@ bool EditorGUI::MeshField(string title, shared_ptr<Mesh>& mesh, int& subsetIndex
                 if (newMesh)
                 {
                     mesh = newMesh;
+                    mesh->Path = filePath;
                     subsetIndex = 0;
                     isDirty = true;
                 }

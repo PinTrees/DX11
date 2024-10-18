@@ -8,7 +8,9 @@
 
 MeshRenderer::MeshRenderer()
 	: m_pMaterials({}),
-	m_MeshSubsetIndex(0)
+	m_MeshSubsetIndex(0),
+	m_Mesh(nullptr),
+	m_MaterialPaths({})
 {
 	m_InspectorTitleName = "MeshRenderer";
 }
@@ -324,6 +326,10 @@ void MeshRenderer::RenderShadowNormalInstancing(shared_ptr<class InstancingBuffe
 void MeshRenderer::OnInspectorGUI()
 {
 	auto changed = EditorGUI::MeshField("Mesh", m_Mesh, m_MeshSubsetIndex);
+	if (changed)
+	{
+		m_MeshPath = m_Mesh->Path; 
+	}
 
 	EditorGUI::LabelHeader("Materials");
 
@@ -385,31 +391,35 @@ GENERATE_COMPONENT_FUNC_TOJSON(MeshRenderer)
 	json j;
 
 	SERIALIZE_TYPE(j, MeshRenderer);
-	j["shaderPath"] = wstring_to_string(m_ShaderPath);
-	j["meshPath"] = wstring_to_string(m_MeshPath);
-	//j["materialPath"] = wstring_to_string(m_MaterialPath);
-	j["subsetIndex"] = m_MeshSubsetIndex; 
+	SERIALIZE_INT(j, m_MeshSubsetIndex, "subsetIndex");
+	SERIALIZE_WSTRING(j, m_MeshPath, "meshPath");
+	SERIALIZE_WSTRING_ARRAY(j, m_MaterialPaths, "m_MaterialPaths");
+
+	// Shader
+	SERIALIZE_WSTRING(j, m_ShaderPath, "shaderPath");
 	return j;
 }
 
 GENERATE_COMPONENT_FUNC_FROMJSON(MeshRenderer)
 {
-	if (j.contains("shaderPath"))
-	{
-		m_ShaderPath = string_to_wstring(j.at("shaderPath").get<string>());
-	}
-	if (j.contains("meshPath"))
-	{
-		m_MeshPath = string_to_wstring(j.at("meshPath").get<string>());
+	DE_SERIALIZE_WSTRING(j, m_ShaderPath, "shaderPath");
+
+	DE_SERIALIZE_INT(j, m_MeshSubsetIndex, "subsetIndex");
+	DE_SERIALIZE_WSTRING(j, m_MeshPath, "meshPath");
+	if (m_MeshPath != L"")
 		m_Mesh = ResourceManager::GetI()->LoadMesh(m_MeshPath);
-	}
-	if (j.contains("materialPath"))
+
+	DE_SERIALIZE_WSTRING_ARRAY(j, m_MaterialPaths, "m_MaterialPaths");
+	if (m_MaterialPaths.size() > 0)
 	{
-		//m_MaterialPath = string_to_wstring(j.at("materialPath").get<string>());
-		//m_pMaterial = ResourceManager::GetI()->LoadMaterial(wstring_to_string(m_MaterialPath));
-	}
-	if (j.contains("subsetIndex"))
-	{
-		m_MeshSubsetIndex = j.at("subsetIndex").get<int>(); 
+		for (int i = 0; i < m_MaterialPaths.size(); ++i)
+		{
+			if (m_MaterialPaths[i] == L"")
+				continue;
+
+			auto material = ResourceManager::GetI()->LoadMaterial(wstring_to_string(m_MaterialPaths[i]));
+			if (material != nullptr)
+				m_pMaterials.push_back(material);
+		}
 	}
 }
