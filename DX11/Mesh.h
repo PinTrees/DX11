@@ -11,6 +11,8 @@ public:
 	Mesh(ComPtr<ID3D11Device> device, TextureMgr& texMgr, const std::string& modelFilename, const std::wstring& texturePath);
 	Mesh(ComPtr<ID3D11Device> device, const std::string& modelFilename);
 	~Mesh();
+	
+	void Setup();
 
 	uint32 SubsetCount;
 
@@ -34,6 +36,8 @@ public:
 public:
 	friend void from_json(const json& j, Mesh& m);
 	friend void to_json(json& j, const Mesh& m);
+
+	void from_byte(ifstream& inStream);
 	void to_byte(ofstream& outStream);
 };
 

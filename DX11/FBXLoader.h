@@ -51,8 +51,7 @@ public:
 
     bool LoadModelFbx( 
         const std::string& filename, 
-        MeshFile* skinnedModel,
-        vector<FbxMaterial>& materials);
+        MeshFile* skinnedModel);
 
 private:
     void ParsingMeshNode(

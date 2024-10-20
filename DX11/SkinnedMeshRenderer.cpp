@@ -36,7 +36,7 @@ void SkinnedMeshRenderer::Render()
 
 	for (uint32 p = 0; p < techDesc.Passes; ++p)
 	{
-		if (m_MeshSubsetIndex >= m_Mesh->Subsets.size())
+		if (m_Mesh->Subsets.size() <= 0)
 			break;
 
 		Transform* transform = m_pGameObject->GetComponent<Transform>();
@@ -55,25 +55,28 @@ void SkinnedMeshRenderer::Render()
 		Effects::InstancedBasicFX->SetShadowTransform(world * RenderManager::GetI()->shadowTransform);
 		Effects::InstancedBasicFX->SetTexTransform(XMMatrixScaling(1.0f, 1.0f, 1.0f));
 
-		int materialIndex = 0;
-		for (auto mat : m_pMaterials)
+		for (int i = 0; i < m_Mesh->Subsets.size(); ++i) 
 		{
-			if (mat != nullptr)
+			if (m_pMaterials.size() > m_Mesh->Subsets[i].MaterialIndex)
 			{
-				Effects::InstancedBasicFX->SetMaterial(mat->Mat);
-				Effects::InstancedBasicFX->SetDiffuseMap(mat->GetBaseMapSRV());
-				Effects::InstancedBasicFX->SetNormalMap(mat->GetNormalMapSRV());
-				Effects::InstancedBasicFX->SetShaderSetting(mat->GetShaderSetting());
-			}
-			else
-			{
-				ShaderSetting shaderSetting;
-				Effects::InstancedBasicFX->SetMaterial(m_Mesh->Mat[m_MeshSubsetIndex]);
-				Effects::InstancedBasicFX->SetShaderSetting(shaderSetting);
-			}
+				auto material = m_pMaterials[m_Mesh->Subsets[i].MaterialIndex];
+				if (material != nullptr)
+				{
+					Effects::InstancedBasicFX->SetMaterial(material->Mat);
+					Effects::InstancedBasicFX->SetDiffuseMap(material->GetBaseMapSRV());
+					Effects::InstancedBasicFX->SetNormalMap(material->GetNormalMapSRV());
+					Effects::InstancedBasicFX->SetShaderSetting(material->GetShaderSetting());
+				}
+				else
+				{
+					ShaderSetting shaderSetting; 
+					Effects::InstancedBasicFX->SetMaterial(m_Mesh->Mat[i]);   
+					Effects::InstancedBasicFX->SetShaderSetting(shaderSetting); 
+				}
 
-			tech->GetPassByIndex(p)->Apply(0, deviceContext);
-			m_Mesh->ModelMesh.Draw(deviceContext, m_MeshSubsetIndex);
+				tech->GetPassByIndex(p)->Apply(0, deviceContext);   
+				m_Mesh->ModelMesh.Draw(deviceContext, i);   
+			}
 		}
 	}
 }
@@ -94,32 +97,37 @@ void SkinnedMeshRenderer::RenderShadow()
 	XMMATRIX worldViewProj;
 
 	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	deviceContext->IASetInputLayout(InputLayouts::PosNormalTexTan.Get());
+	deviceContext->IASetInputLayout(InputLayouts::PosNormalTexTanSkinned.Get());
 
 	D3DX11_TECHNIQUE_DESC techDesc;
 	tech->GetDesc(&techDesc);
 
 	for (uint32 p = 0; p < techDesc.Passes; ++p)
 	{
-		if (m_MeshSubsetIndex >= m_Mesh->Subsets.size())
+		if (m_Mesh->Subsets.size() <= 0)
 			break;
+		 
+		world = transform->GetWorldMatrix(); 
+		worldInvTranspose = MathHelper::InverseTranspose(world); 
+		worldViewProj = world * RenderManager::GetI()->directinalLightViewProjection; 
 
-		world = transform->GetWorldMatrix();
-		worldInvTranspose = MathHelper::InverseTranspose(world);
-		worldViewProj = world * RenderManager::GetI()->directinalLightViewProjection;
+		Effects::BuildShadowMapFX->SetWorld(world); 
+		Effects::BuildShadowMapFX->SetWorldInvTranspose(worldInvTranspose); 
+		Effects::BuildShadowMapFX->SetWorldViewProj(worldViewProj); 
+		Effects::BuildShadowMapFX->SetTexTransform(::XMMatrixScaling(1.0f, 1.0f, 1.0f)); 
 
-		Effects::BuildShadowMapFX->SetWorld(world);
-		Effects::BuildShadowMapFX->SetWorldInvTranspose(worldInvTranspose);
-		Effects::BuildShadowMapFX->SetWorldViewProj(worldViewProj);
-		Effects::BuildShadowMapFX->SetTexTransform(::XMMatrixScaling(1.0f, 1.0f, 1.0f));
-
-		tech->GetPassByIndex(p)->Apply(0, deviceContext);
-		m_Mesh->ModelMesh.Draw(deviceContext, m_MeshSubsetIndex);
+		for (int i = 0; i < m_Mesh->Subsets.size(); ++i)
+		{
+			tech->GetPassByIndex(p)->Apply(0, deviceContext);
+			m_Mesh->ModelMesh.Draw(deviceContext, i); 
+		}
 	}
 }
 
 void SkinnedMeshRenderer::RenderShadowNormal()
 {
+	return;
+
 	if (m_Mesh == nullptr)
 		return;
 
@@ -133,29 +141,32 @@ void SkinnedMeshRenderer::RenderShadowNormal()
 	XMMATRIX worldInvTransposeView;
 	XMMATRIX worldViewProj;
 
-	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	deviceContext->IASetInputLayout(InputLayouts::PosNormalTexTan.Get());
+	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST); 
+	deviceContext->IASetInputLayout(InputLayouts::PosNormalTexTanSkinned.Get());  
 
 	D3DX11_TECHNIQUE_DESC techDesc;
 	tech->GetDesc(&techDesc);
 	for (uint32 p = 0; p < techDesc.Passes; ++p)
 	{
-		if (m_MeshSubsetIndex >= m_Mesh->Subsets.size())
+		if (m_Mesh->Subsets.size() <= 0)
 			break;
 
-		world = transform->GetWorldMatrix();
-		worldInvTranspose = MathHelper::InverseTranspose(world);
-		worldView = world * RenderManager::GetI()->cameraViewMatrix;
-		worldInvTransposeView = worldInvTranspose * RenderManager::GetI()->cameraViewMatrix;
-		worldViewProj = world * RenderManager::GetI()->cameraViewProjectionMatrix;
+		world = transform->GetWorldMatrix(); 
+		worldInvTranspose = MathHelper::InverseTranspose(world); 
+		worldView = world * RenderManager::GetI()->cameraViewMatrix; 
+		worldInvTransposeView = worldInvTranspose * RenderManager::GetI()->cameraViewMatrix; 
+		worldViewProj = world * RenderManager::GetI()->cameraViewProjectionMatrix; 
 
-		Effects::SsaoNormalDepthFX->SetWorldView(worldView);
-		Effects::SsaoNormalDepthFX->SetWorldInvTransposeView(worldInvTransposeView);
-		Effects::SsaoNormalDepthFX->SetWorldViewProj(worldViewProj);
+		Effects::SsaoNormalDepthFX->SetWorldView(worldView); 
+		Effects::SsaoNormalDepthFX->SetWorldInvTransposeView(worldInvTransposeView); 
+		Effects::SsaoNormalDepthFX->SetWorldViewProj(worldViewProj); 
 		Effects::SsaoNormalDepthFX->SetTexTransform(XMMatrixScaling(1.0f, 1.0f, 1.0f));
 
-		tech->GetPassByIndex(p)->Apply(0, deviceContext);
-		m_Mesh->ModelMesh.Draw(deviceContext, m_MeshSubsetIndex);
+		for (int i = 0; i < m_Mesh->Subsets.size(); ++i) 
+		{
+			tech->GetPassByIndex(p)->Apply(0, deviceContext); 
+			m_Mesh->ModelMesh.Draw(deviceContext, i);  
+		}
 	}
 }
 
@@ -241,7 +252,7 @@ GENERATE_COMPONENT_FUNC_FROMJSON(SkinnedMeshRenderer)
 	DE_SERIALIZE_INT(j, m_MeshSubsetIndex, "subsetIndex");
 	DE_SERIALIZE_WSTRING(j, m_MeshPath, "meshPath");
 	if (m_MeshPath != L"")
-		m_Mesh = ResourceManager::GetI()->LoadSkinnedMesh(m_MeshPath);
+		m_Mesh = ResourceManager::GetI()->LoadSkinnedMesh(m_MeshPath, m_MeshSubsetIndex); 
 
 	DE_SERIALIZE_WSTRING_ARRAY(j, m_MaterialPaths, "m_MaterialPaths");
 	if (m_MaterialPaths.size() > 0)

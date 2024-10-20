@@ -3,6 +3,9 @@
 #include "EditorGUIResourceManager.h"
 #include "SkinnedMesh.h"
 
+// EditorDialog
+#include "MeshSelectEditorDialog.h"
+
 EditorTextStyle EditorGUI::defaultTextStyle = EditorTextStyle();
 
 void EditorGUI::RowSizedBox(float size)
@@ -331,26 +334,8 @@ bool EditorGUI::MeshField(string title, shared_ptr<Mesh>& mesh, int& subsetIndex
         }
         else
         {
-            ImGui::PushItemWidth(fieldWidth - (EDITOR_GUI_BUTTON_WIDTH + 4));
-
-            if (ImGui::BeginCombo("##Subset Dropdown", mesh->Subsets[subsetIndex].Name.c_str()))
-            {
-                for (int n = 0; n < mesh->Subsets.size(); n++)
-                {
-                    bool is_selected = (subsetIndex == n);
-                    if (ImGui::Selectable(mesh->Subsets[n].Name.c_str(), is_selected))
-                    {
-                        subsetIndex = n;
-                        isDirty = true;
-                    }
-                    if (is_selected)
-                    {
-                        ImGui::SetItemDefaultFocus();
-                    }
-                }
-                ImGui::EndCombo();
-            }
-            ImGui::PopItemWidth();
+            ImGui::PushItemWidth(fieldWidth - (EDITOR_GUI_BUTTON_WIDTH + 4)); 
+            ImGui::Text(mesh->Name.c_str()); 
         }
 
         ImGui::SameLine();
@@ -364,7 +349,7 @@ bool EditorGUI::MeshField(string title, shared_ptr<Mesh>& mesh, int& subsetIndex
 
             if (!filePath.empty())
             {
-                auto newMesh = ResourceManager::GetI()->LoadMesh(filePath);
+                auto newMesh = ResourceManager::GetI()->LoadMesh(filePath, 0);
                 if (newMesh)
                 {
                     mesh = newMesh;
@@ -402,25 +387,7 @@ bool EditorGUI::SkinnedMeshField(string title, shared_ptr<SkinnedMesh>& mesh, in
         else
         {
             ImGui::PushItemWidth(fieldWidth - (EDITOR_GUI_BUTTON_WIDTH + 4));
-
-            if (ImGui::BeginCombo("##Subset Dropdown", mesh->Subsets[subsetIndex].Name.c_str()))
-            {
-                for (int n = 0; n < mesh->Subsets.size(); n++)
-                {
-                    bool is_selected = (subsetIndex == n);
-                    if (ImGui::Selectable(mesh->Subsets[n].Name.c_str(), is_selected))
-                    {
-                        subsetIndex = n;
-                        isDirty = true;
-                    }
-                    if (is_selected)
-                    {
-                        ImGui::SetItemDefaultFocus();
-                    }
-                }
-                ImGui::EndCombo();
-            }
-            ImGui::PopItemWidth();
+            ImGui::Text(mesh->Name.c_str());
         }
 
         ImGui::SameLine();
@@ -429,20 +396,22 @@ bool EditorGUI::SkinnedMeshField(string title, shared_ptr<SkinnedMesh>& mesh, in
 
         if (EditorGUI::Button("+", Vec2(20, 20), Color(0.20f, 0.20f, 0.20f, 1.0f)))
         {
-            wstring filePath = EditorUtility::OpenFileDialog(PathManager::GetI()->GetMovePathW(L"Assets\\"), L"Mesh", { L"fbx" });
-            filePath = PathManager::GetI()->GetCutSolutionPath(filePath);
+            MeshSelectEditorDialog::Open(nullptr, mesh.get(), subsetIndex); 
 
-            if (!filePath.empty())
-            {
-                auto newMesh = ResourceManager::GetI()->LoadSkinnedMesh(filePath);
-                if (newMesh)
-                {
-                    mesh = newMesh;
-                    mesh->Path = filePath;
-                    subsetIndex = 0;
-                    isDirty = true;
-                }
-            }
+            //wstring filePath = EditorUtility::OpenFileDialog(PathManager::GetI()->GetMovePathW(L"Assets\\"), L"Mesh", { L"fbx" });
+            //filePath = PathManager::GetI()->GetCutSolutionPath(filePath);
+            //
+            //if (!filePath.empty())
+            //{
+            //    auto newMesh = ResourceManager::GetI()->LoadSkinnedMesh(filePath);
+            //    if (newMesh)
+            //    {
+            //        mesh = newMesh;
+            //        mesh->Path = filePath;
+            //        subsetIndex = 0;
+            //        isDirty = true;
+            //    }
+            //}
         }
     }
     ImGui::EndChild();

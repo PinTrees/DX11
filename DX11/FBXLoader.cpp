@@ -126,7 +126,7 @@ bool FBXLoader::LoadFBX(
     return true;
 }
 
-bool FBXLoader::LoadModelFbx(const std::string& filename, MeshFile* skinnedModel, vector<FbxMaterial>& materials)
+bool FBXLoader::LoadModelFbx(const std::string& filename, MeshFile* skinnedModel)
 {
     Assimp::Importer importer; 
     const aiScene* scene = importer.ReadFile(
@@ -142,42 +142,6 @@ bool FBXLoader::LoadModelFbx(const std::string& filename, MeshFile* skinnedModel
     {
         printf("ERROR::ASSIMP:: %s\n", importer.GetErrorString());
         return false;
-    }
-
-    // Process materials
-    materials.resize(scene->mNumMaterials);
-    for (UINT i = 0; i < scene->mNumMaterials; ++i)
-    {
-        aiMaterial* mat = scene->mMaterials[i];
-        aiString name;
-
-        materials[i].ambient = XMFLOAT3(0.2f, 0.2f, 0.2f);
-        materials[i].diffuse = XMFLOAT3(0.8f, 0.8f, 0.8f);
-        materials[i].specular = XMFLOAT3(1.0f, 1.0f, 1.0f);
-        materials[i].reflect = XMFLOAT3(0.0f, 0.0f, 0.0f);
-        materials[i].shininess = 0.0f;
-
-        aiColor3D color(0.f, 0.f, 0.f);
-        if (AI_SUCCESS == mat->Get(AI_MATKEY_COLOR_AMBIENT, color))
-            materials[i].ambient = XMFLOAT3(color.r, color.g, color.b);
-        if (AI_SUCCESS == mat->Get(AI_MATKEY_COLOR_DIFFUSE, color))
-            materials[i].diffuse = XMFLOAT3(color.r, color.g, color.b);
-        if (AI_SUCCESS == mat->Get(AI_MATKEY_COLOR_SPECULAR, color))
-            materials[i].specular = XMFLOAT3(color.r, color.g, color.b);
-        if (AI_SUCCESS == mat->Get(AI_MATKEY_SHININESS, materials[i].shininess))
-            materials[i].shininess = materials[i].shininess;
-
-        if (mat->GetTextureCount(aiTextureType_DIFFUSE) > 0)
-        {
-            mat->GetTexture(aiTextureType_DIFFUSE, 0, &name);
-            materials[i].DiffuseMapName = std::wstring(name.C_Str(), name.C_Str() + name.length);
-        }
-
-        if (mat->GetTextureCount(aiTextureType_NORMALS) > 0)
-        {
-            mat->GetTexture(aiTextureType_NORMALS, 0, &name);
-            materials[i].NormalMapName = std::wstring(name.C_Str(), name.C_Str() + name.length);
-        }
     }
 
     if (scene->mRootNode)
@@ -198,6 +162,25 @@ void FBXLoader::ParsingMeshNode(aiNode* node, const aiScene* scene, MeshFile* mo
             SkinnedMesh* mesh = new SkinnedMesh; 
             model->SkinnedMeshs.push_back(mesh); 
             mesh->Name = node->mName.C_Str();   
+            mesh->Mat.resize(scene->mNumMaterials);  
+            for (UINT i = 0; i < scene->mNumMaterials; ++i) 
+            {
+                aiMaterial* mat = scene->mMaterials[i]; 
+                aiString name; 
+            
+                mesh->Mat[i].Ambient = XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
+                mesh->Mat[i].Diffuse = XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f);
+                mesh->Mat[i].Specular = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+                mesh->Mat[i].Reflect = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
+            
+                aiColor3D color(0.f, 0.f, 0.f);
+                if (AI_SUCCESS == mat->Get(AI_MATKEY_COLOR_AMBIENT, color))
+                    mesh->Mat[i].Ambient = XMFLOAT4(color.r, color.g, color.b, 1.0f);
+                if (AI_SUCCESS == mat->Get(AI_MATKEY_COLOR_DIFFUSE, color))
+                    mesh->Mat[i].Diffuse = XMFLOAT4(color.r, color.g, color.b, 1.0f);
+                if (AI_SUCCESS == mat->Get(AI_MATKEY_COLOR_SPECULAR, color))
+                    mesh->Mat[i].Specular = XMFLOAT4(color.r, color.g, color.b, 1.0f);
+            }
 
             for (UINT i = 0; i < node->mNumMeshes; ++i)
             {
@@ -207,12 +190,33 @@ void FBXLoader::ParsingMeshNode(aiNode* node, const aiScene* scene, MeshFile* mo
                 ProcessMeshSkinned(aiMesh, scene, mesh->Vertices, mesh->Indices, subset); 
                 mesh->Subsets.push_back(subset);
             }
+
+            mesh->Setup(); 
         }
         else
         {
             Mesh* mesh = new Mesh;
             model->Meshs.push_back(mesh);
             mesh->Name = node->mName.C_Str();
+            mesh->Mat.resize(scene->mNumMaterials);
+            for (UINT i = 0; i < scene->mNumMaterials; ++i)
+            {
+                aiMaterial* mat = scene->mMaterials[i];
+                aiString name;
+
+                mesh->Mat[i].Ambient = XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
+                mesh->Mat[i].Diffuse = XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f);
+                mesh->Mat[i].Specular = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+                mesh->Mat[i].Reflect = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
+
+                aiColor3D color(0.f, 0.f, 0.f);
+                if (AI_SUCCESS == mat->Get(AI_MATKEY_COLOR_AMBIENT, color))
+                    mesh->Mat[i].Ambient = XMFLOAT4(color.r, color.g, color.b, 1.0f);
+                if (AI_SUCCESS == mat->Get(AI_MATKEY_COLOR_DIFFUSE, color))
+                    mesh->Mat[i].Diffuse = XMFLOAT4(color.r, color.g, color.b, 1.0f);
+                if (AI_SUCCESS == mat->Get(AI_MATKEY_COLOR_SPECULAR, color))
+                    mesh->Mat[i].Specular = XMFLOAT4(color.r, color.g, color.b, 1.0f);
+            }
 
             for (UINT i = 0; i < node->mNumMeshes; ++i)
             {
@@ -222,6 +226,7 @@ void FBXLoader::ParsingMeshNode(aiNode* node, const aiScene* scene, MeshFile* mo
                 ProcessMesh(aiMesh, scene, mesh->Vertices, mesh->Indices, subset);
                 mesh->Subsets.push_back(subset);
             }
+            mesh->Setup();
         }
     }
 
@@ -326,6 +331,7 @@ void FBXLoader::ProcessMeshSkinned(
     subset.FaceStart = indices.size() / 3;
     subset.VertexCount = mesh->mNumVertices;
     subset.FaceCount = mesh->mNumFaces;
+    subset.MaterialIndex = mesh->mMaterialIndex; 
 
     for (UINT i = 0; i < mesh->mNumVertices; ++i)
     {

@@ -77,6 +77,7 @@ namespace ed = ax::NodeEditor;
 // EDITOR - ONLY
 #include "EditorUtility.h"
 #include "EditorWindow.h"
+#include "EditorDailog.h"
 #include "EditorGUIManager.h"
 #include "EditorSettingManager.h"
 #include "SelectionManager.h"

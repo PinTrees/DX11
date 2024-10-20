@@ -24,17 +24,16 @@ class SkinnedMesh
 {
 public: 
 	SkinnedMesh();
-	SkinnedMesh(ComPtr<ID3D11Device> device, TextureMgr& texMgr, const std::string& modelFilename, const std::wstring& texturePath);
 	SkinnedMesh(ComPtr<ID3D11Device> device, const std::string& modelFilename);
 	~SkinnedMesh();
 
+public:
+	void Setup();
+	void from_byte(ifstream& inStream);
 	void to_byte(ofstream& outStream);
 
 	uint32					SubsetCount;
 	std::vector<Material>	Mat;
-
-	std::vector<ComPtr<ID3D11ShaderResourceView>> DiffuseMapSRV;
-	std::vector<ComPtr<ID3D11ShaderResourceView>> NormalMapSRV;
 
 	// Keep CPU copies of the mesh data to read from.  
 	std::vector<Vertex::PosNormalTexTanSkinned> Vertices;
@@ -59,15 +58,17 @@ public:
 	vector<SkinnedMesh*> SkinnedMeshs;
 	vector<Mesh*>		Meshs; 
 	wstring				Path;  
+	string				FullPath;
 	string				Name;
 
 public:
 	void OnInspectorGUI();
 
 public:
-	void Save(); 
+	void ImportFile(); 
 	friend void from_json(const json& j, MeshFile& m);
 	friend void to_json(json& j, const MeshFile& m);
 
+	void from_byte(ifstream& inStream);
 	void to_byte(ofstream& outStream);
 };

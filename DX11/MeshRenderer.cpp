@@ -57,25 +57,26 @@ void MeshRenderer::Render()
 		Effects::InstancedBasicFX->SetShadowTransform(world * RenderManager::GetI()->shadowTransform);
 		Effects::InstancedBasicFX->SetTexTransform(XMMatrixScaling(1.0f, 1.0f, 1.0f));
 
-		for (auto mat : m_pMaterials)
+		for (int i = 0; i < m_Mesh->Subsets.size(); ++i)
 		{
-			if (mat != nullptr)
+			auto material = m_pMaterials[m_Mesh->Subsets[i].MaterialIndex];
+			if (material != nullptr)
 			{
-				Effects::InstancedBasicFX->SetMaterial(mat->Mat);
-				Effects::InstancedBasicFX->SetDiffuseMap(mat->GetBaseMapSRV());
-				Effects::InstancedBasicFX->SetNormalMap(mat->GetNormalMapSRV());
-				Effects::InstancedBasicFX->SetShaderSetting(mat->GetShaderSetting());
+				Effects::InstancedBasicFX->SetMaterial(material->Mat);  
+				Effects::InstancedBasicFX->SetDiffuseMap(material->GetBaseMapSRV()); 
+				Effects::InstancedBasicFX->SetNormalMap(material->GetNormalMapSRV()); 
+				Effects::InstancedBasicFX->SetShaderSetting(material->GetShaderSetting()); 
 			}
 			else
 			{
-				ShaderSetting shaderSetting;
-				Effects::InstancedBasicFX->SetMaterial(m_Mesh->Mat[m_MeshSubsetIndex]);
-				Effects::InstancedBasicFX->SetShaderSetting(shaderSetting);
-			}
-		}
+				ShaderSetting shaderSetting; 
+				Effects::InstancedBasicFX->SetMaterial(m_Mesh->Mat[m_Mesh->Subsets[i].MaterialIndex]); 
+				Effects::InstancedBasicFX->SetShaderSetting(shaderSetting); 
+			} 
 
-		tech->GetPassByIndex(p)->Apply(0, deviceContext);
-		m_Mesh->ModelMesh.Draw(deviceContext, m_MeshSubsetIndex);
+			tech->GetPassByIndex(p)->Apply(0, deviceContext);  
+			m_Mesh->ModelMesh.Draw(deviceContext, i); 
+		}
 	}
 }
 
@@ -187,8 +188,11 @@ void MeshRenderer::RenderShadow()
 		Effects::BuildShadowMapFX->SetWorldViewProj(worldViewProj);
 		Effects::BuildShadowMapFX->SetTexTransform(::XMMatrixScaling(1.0f, 1.0f, 1.0f));
 
-		tech->GetPassByIndex(p)->Apply(0, deviceContext);
-		m_Mesh->ModelMesh.Draw(deviceContext, m_MeshSubsetIndex);
+		for (int i = 0; i < m_Mesh->Subsets.size(); ++i)
+		{
+			tech->GetPassByIndex(p)->Apply(0, deviceContext);
+			m_Mesh->ModelMesh.Draw(deviceContext, i);
+		}
 	}
 }
 
@@ -264,8 +268,11 @@ void MeshRenderer::RenderShadowNormal()
 		Effects::SsaoNormalDepthFX->SetWorldViewProj(worldViewProj);
 		Effects::SsaoNormalDepthFX->SetTexTransform(XMMatrixScaling(1.0f, 1.0f, 1.0f));
 
-		tech->GetPassByIndex(p)->Apply(0, deviceContext);
-		m_Mesh->ModelMesh.Draw(deviceContext, m_MeshSubsetIndex);
+		for (int i = 0; i < m_Mesh->Subsets.size(); ++i)
+		{
+			tech->GetPassByIndex(p)->Apply(0, deviceContext);
+			m_Mesh->ModelMesh.Draw(deviceContext, i); 
+		}
 	}
 }
 
@@ -407,8 +414,8 @@ GENERATE_COMPONENT_FUNC_FROMJSON(MeshRenderer)
 	DE_SERIALIZE_INT(j, m_MeshSubsetIndex, "subsetIndex");
 	DE_SERIALIZE_WSTRING(j, m_MeshPath, "meshPath");
 	if (m_MeshPath != L"")
-		m_Mesh = ResourceManager::GetI()->LoadMesh(m_MeshPath);
-
+		m_Mesh = ResourceManager::GetI()->LoadMesh(m_MeshPath, m_MeshSubsetIndex);  
+	 
 	DE_SERIALIZE_WSTRING_ARRAY(j, m_MaterialPaths, "m_MaterialPaths");
 	if (m_MaterialPaths.size() > 0)
 	{

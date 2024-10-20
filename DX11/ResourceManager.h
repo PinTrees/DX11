@@ -22,9 +22,10 @@ public:
 
 	ComPtr<ID3D11ShaderResourceView> LoadTexture(wstring filename);
 	shared_ptr<UMaterial>	LoadMaterial(string filename);
-	shared_ptr<Mesh>		LoadMesh(wstring filename);
-	shared_ptr<SkinnedMesh> LoadSkinnedMesh(wstring filename);
+	shared_ptr<Mesh>		LoadMesh(wstring filename, int index);
+	shared_ptr<SkinnedMesh> LoadSkinnedMesh(wstring filename, int index);
 
 	shared_ptr<MeshFile> LoadFbxModel(string filename);
+	shared_ptr<MeshFile> LoadMeshFile(string filename);
 };
 

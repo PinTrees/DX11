@@ -13,6 +13,7 @@ EditorGUIManager::EditorGUIManager()
 EditorGUIManager::~EditorGUIManager()
 {
     Safe_Delete_Vec(m_pEditorWindows);
+    Safe_Delete_Vec(m_pEditorDialogs); 
 }
 
 void EditorGUIManager::Init()
@@ -95,10 +96,30 @@ void EditorGUIManager::RenderEditorWindows()
         window->Render();
     }
 
+    for (auto& dialog : m_pEditorDialogs)
+    {
+        dialog->Render();
+    }
+
     ImGui::PopStyleVar(3);
 }
 
 void EditorGUIManager::RegisterWindow(EditorWindow* window)
 {
     m_pEditorWindows.push_back(window);
+}
+
+void EditorGUIManager::RegisterEditorDialog(EditorDialog* dialog)
+{
+    m_pEditorDialogs.push_back(dialog); 
+}
+
+void EditorGUIManager::RemoveEditorDialog(EditorDialog* dialog)
+{
+    auto it = std::remove(m_pEditorDialogs.begin(), m_pEditorDialogs.end(), dialog);
+
+    if (it != m_pEditorDialogs.end())
+    {
+        m_pEditorDialogs.erase(it, m_pEditorDialogs.end());
+    }
 }

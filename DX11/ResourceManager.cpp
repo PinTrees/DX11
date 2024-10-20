@@ -64,7 +64,7 @@ shared_ptr<UMaterial> ResourceManager::LoadMaterial(string filename)
 	return material;
 }
 
-shared_ptr<Mesh> ResourceManager::LoadMesh(wstring filename)
+shared_ptr<Mesh> ResourceManager::LoadMesh(wstring filename, int index)
 {
 	shared_ptr<Mesh> mesh = nullptr;
 
@@ -74,25 +74,39 @@ shared_ptr<Mesh> ResourceManager::LoadMesh(wstring filename)
 	}
 	else
 	{
-		mesh = make_shared<Mesh>(Application::GetI()->GetDevice(), wstring_to_string(filename));
-		m_Meshs[filename] = mesh;
+		auto meshFile = LoadMeshFile(wstring_to_string(filename)); 
+		if (meshFile)
+		{
+			if (meshFile->Meshs.size() > index)
+			{
+				mesh = std::shared_ptr<Mesh>(meshFile->Meshs[index]); 
+				m_Meshs[filename] = mesh; 
+			} 
+		} 
 	}
 
 	return mesh;
 }
 
-shared_ptr<SkinnedMesh> ResourceManager::LoadSkinnedMesh(wstring filename)
+shared_ptr<SkinnedMesh> ResourceManager::LoadSkinnedMesh(wstring filename, int index)
 {
 	shared_ptr<SkinnedMesh> mesh = nullptr;
 
 	if (m_SkinnedMeshs.find(filename) != m_SkinnedMeshs.end())
 	{
 		mesh = m_SkinnedMeshs[filename];
-	}
+	} 
 	else
 	{
-		mesh = make_shared<SkinnedMesh>(Application::GetI()->GetDevice(), wstring_to_string(filename));
-		m_SkinnedMeshs[filename] = mesh;
+		auto meshFile = LoadMeshFile(wstring_to_string(filename));  
+		if (meshFile)
+		{
+			if (meshFile->SkinnedMeshs.size() > index)
+			{
+				mesh = std::shared_ptr<SkinnedMesh>(meshFile->SkinnedMeshs[index]);
+				m_SkinnedMeshs[filename] = mesh;    
+			}
+		}
 	}
 
 	return mesh;
@@ -110,6 +124,23 @@ shared_ptr<MeshFile> ResourceManager::LoadFbxModel(string filename)
 	{
 		model = make_shared<MeshFile>(filename); 
 		m_FbxModels[filename] = model;
+	}
+
+	return model;
+}
+
+shared_ptr<MeshFile> ResourceManager::LoadMeshFile(string filename)
+{
+	shared_ptr<MeshFile> model = nullptr;
+
+	if (m_FbxModels.find(filename) != m_FbxModels.end())
+	{
+		model = m_FbxModels[filename];
+	}
+	else
+	{
+		model = make_shared<MeshFile>(filename); 
+		m_FbxModels[filename] = model;  
 	}
 
 	return model;

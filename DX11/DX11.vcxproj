@@ -212,6 +212,7 @@
     <ClInclude Include="Debug.h" />
     <ClInclude Include="define.h" />
     <ClInclude Include="EditorCamera.h" />
+    <ClInclude Include="EditorDailog.h" />
     <ClInclude Include="EditorGUI.h" />
     <ClInclude Include="EditorGUIManager.h" />
     <ClInclude Include="EditorGUIResourceManager.h" />
@@ -252,8 +253,10 @@
     <ClInclude Include="MathHelper.h" />
     <ClInclude Include="Matrix3.h" />
     <ClInclude Include="Mesh.h" />
+    <ClInclude Include="MeshFilter.h" />
     <ClInclude Include="MeshGeometry.h" />
     <ClInclude Include="MeshRenderer.h" />
+    <ClInclude Include="MeshSelectEditorDialog.h" />
     <ClInclude Include="MeshUtility.h" />
     <ClInclude Include="NormalMapSkinnedShader.h" />
     <ClInclude Include="Octree.h" />
@@ -347,6 +350,7 @@
     <ClCompile Include="Debug.cpp" />
     <ClCompile Include="define.cpp" />
     <ClCompile Include="EditorCamera.cpp" />
+    <ClCompile Include="EditorDailog.cpp" />
     <ClCompile Include="EditorGUI.cpp" />
     <ClCompile Include="EditorGUIManager.cpp" />
     <ClCompile Include="EditorGUIResourceManager.cpp" />
@@ -407,8 +411,10 @@
     <ClCompile Include="MathHelper.cpp" />
     <ClCompile Include="Matrix3.cpp" />
     <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="MeshFilter.cpp" />
     <ClCompile Include="MeshGeometry.cpp" />
     <ClCompile Include="MeshRenderer.cpp" />
+    <ClCompile Include="MeshSelectEditorDialog.cpp" />
     <ClCompile Include="MeshUtility.cpp" />
     <ClCompile Include="NormalMapSkinnedShader.cpp" />
     <ClCompile Include="Octree.cpp" />

@@ -34,9 +34,6 @@
     <Filter Include="0. Engine\Component\0. Base">
       <UniqueIdentifier>{bbf8b30a-36f1-43f2-8961-015eaca623f4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="0. Engine\Component\MeshRenderer">
-      <UniqueIdentifier>{eb1a1ad1-bab8-46b3-a863-c00453045ab6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="0. Engine\Component\RigidBody">
       <UniqueIdentifier>{d1556633-cadd-4c30-9d2a-3c53c423e46e}</UniqueIdentifier>
     </Filter>
@@ -96,21 +93,6 @@
     </Filter>
     <Filter Include="0. Engine\ImguiContainer\0. Editor">
       <UniqueIdentifier>{829e1245-bd97-4ef9-a3de-5d7765c7e85f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="0. Engine\ImguiContainer\0. Editor\InspectorEditorWindow">
-      <UniqueIdentifier>{32910d32-b0b7-478a-9151-c7a197ae73dc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="0. Engine\ImguiContainer\0. Editor\ProjectEditorWindow">
-      <UniqueIdentifier>{9cdf2c29-136c-436c-a9b0-b70b465778ad}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="0. Engine\ImguiContainer\0. Editor\SceneEditorWindow">
-      <UniqueIdentifier>{89d6f2cb-5cb6-4d9c-9451-591c104f1bdb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="0. Engine\ImguiContainer\0. Editor\SceneHierarchyWindow">
-      <UniqueIdentifier>{a009764f-5f0b-4b42-9bc1-4bcf19eb46cc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="0. Engine\ImguiContainer\0. Editor\ConsoleEditorWindow">
-      <UniqueIdentifier>{60e6a2ee-9abf-43bc-b205-3d829eb44405}</UniqueIdentifier>
     </Filter>
     <Filter Include="0. Engine\98. Utils">
       <UniqueIdentifier>{861c456f-060b-45fd-a1c8-ee2f466bf87a}</UniqueIdentifier>
@@ -175,12 +157,6 @@
     <Filter Include="0. Engine\ImguiContainer\0. Core\0. NodeEditor">
       <UniqueIdentifier>{7ca90e6c-d596-41fc-824f-9e99b50efffc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="0. Engine\ImguiContainer\0. Editor\GameViewEditorWindow">
-      <UniqueIdentifier>{4a9f6bbf-fa1e-4f20-a06e-54309e41c38a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="0. Engine\ImguiContainer\0. Editor\AnimatorEditorWindow">
-      <UniqueIdentifier>{d0d51dd0-9bd0-4ea6-bf76-45d5c964e916}</UniqueIdentifier>
-    </Filter>
     <Filter Include="0. Engine\InstancingBuffer">
       <UniqueIdentifier>{a30ab9b5-0a54-4489-98ec-ec292a346234}</UniqueIdentifier>
     </Filter>
@@ -192,9 +168,6 @@
     </Filter>
     <Filter Include="0. Engine\Manager\LightManager">
       <UniqueIdentifier>{fd6523cb-ce43-458a-9ae2-4f6e90851713}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="0. Engine\Component\SkinnedMeshRenderer">
-      <UniqueIdentifier>{236aa10c-fcd5-4c30-8f4d-bdceee42c467}</UniqueIdentifier>
     </Filter>
     <Filter Include="0. Engine\Mesh">
       <UniqueIdentifier>{f361951b-ac9d-439a-ba8d-ce4e092a2f11}</UniqueIdentifier>
@@ -213,6 +186,51 @@
     </Filter>
     <Filter Include="0. Engine\System">
       <UniqueIdentifier>{83998bea-30b5-4e4f-ba61-d28a1c96bed0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="0. Engine\Component\Renderer">
+      <UniqueIdentifier>{108eb639-ce77-48e8-9995-302a8daece4f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="0. Engine\Component\Renderer\MeshRenderer">
+      <UniqueIdentifier>{eb1a1ad1-bab8-46b3-a863-c00453045ab6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="0. Engine\Component\Renderer\SkinnedMeshRenderer">
+      <UniqueIdentifier>{236aa10c-fcd5-4c30-8f4d-bdceee42c467}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="0. Engine\Component\Renderer\MeshFilter">
+      <UniqueIdentifier>{36403c99-994f-4510-988b-dd61804b6186}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="0. Engine\ImguiContainer\0. Editor\Dialog">
+      <UniqueIdentifier>{b624ca82-4773-4df8-a3e8-20170caa8928}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="0. Engine\ImguiContainer\0. Editor\Window">
+      <UniqueIdentifier>{8942a0a1-260d-4081-9cf0-025238428f32}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="0. Engine\ImguiContainer\0. Editor\Window\InspectorEditorWindow">
+      <UniqueIdentifier>{32910d32-b0b7-478a-9151-c7a197ae73dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="0. Engine\ImguiContainer\0. Editor\Window\GameViewEditorWindow">
+      <UniqueIdentifier>{4a9f6bbf-fa1e-4f20-a06e-54309e41c38a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="0. Engine\ImguiContainer\0. Editor\Window\ConsoleEditorWindow">
+      <UniqueIdentifier>{60e6a2ee-9abf-43bc-b205-3d829eb44405}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="0. Engine\ImguiContainer\0. Editor\Window\AnimatorEditorWindow">
+      <UniqueIdentifier>{d0d51dd0-9bd0-4ea6-bf76-45d5c964e916}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="0. Engine\ImguiContainer\0. Editor\Window\ProjectEditorWindow">
+      <UniqueIdentifier>{9cdf2c29-136c-436c-a9b0-b70b465778ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="0. Engine\ImguiContainer\0. Editor\Window\SceneEditorWindow">
+      <UniqueIdentifier>{89d6f2cb-5cb6-4d9c-9451-591c104f1bdb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="0. Engine\ImguiContainer\0. Editor\Window\SceneHierarchyWindow">
+      <UniqueIdentifier>{a009764f-5f0b-4b42-9bc1-4bcf19eb46cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="0. Engine\ImguiContainer\0. Editor\Dialog\MeshSelectEditorDialog">
+      <UniqueIdentifier>{67f0205e-2566-43de-87a3-f41cf4800e09}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="0. Engine\ImguiContainer\1. Base\EditorDialog">
+      <UniqueIdentifier>{e08ae979-f41c-4070-90b0-6911cc8a525d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -373,7 +391,7 @@
       <Filter>0. Engine\GameObject</Filter>
     </ClCompile>
     <ClCompile Include="MeshRenderer.cpp">
-      <Filter>0. Engine\Component\MeshRenderer</Filter>
+      <Filter>0. Engine\Component\Renderer\MeshRenderer</Filter>
     </ClCompile>
     <ClCompile Include="Shader.cpp">
       <Filter>0. Engine\Shader</Filter>
@@ -442,19 +460,19 @@
       <Filter>0. Engine\App</Filter>
     </ClCompile>
     <ClCompile Include="SceneHierachyEditorWindow.cpp">
-      <Filter>0. Engine\ImguiContainer\0. Editor\SceneHierarchyWindow</Filter>
+      <Filter>0. Engine\ImguiContainer\0. Editor\Window\SceneHierarchyWindow</Filter>
     </ClCompile>
     <ClCompile Include="EditorWindow.cpp">
       <Filter>0. Engine\ImguiContainer\1. Base\EditorWindow</Filter>
     </ClCompile>
     <ClCompile Include="ProjectEditorWindow.cpp">
-      <Filter>0. Engine\ImguiContainer\0. Editor\ProjectEditorWindow</Filter>
+      <Filter>0. Engine\ImguiContainer\0. Editor\Window\ProjectEditorWindow</Filter>
     </ClCompile>
     <ClCompile Include="SceneEditorWindow.cpp">
-      <Filter>0. Engine\ImguiContainer\0. Editor\SceneEditorWindow</Filter>
+      <Filter>0. Engine\ImguiContainer\0. Editor\Window\SceneEditorWindow</Filter>
     </ClCompile>
     <ClCompile Include="InspectorEditorWindow.cpp">
-      <Filter>0. Engine\ImguiContainer\0. Editor\InspectorEditorWindow</Filter>
+      <Filter>0. Engine\ImguiContainer\0. Editor\Window\InspectorEditorWindow</Filter>
     </ClCompile>
     <ClCompile Include="Main.cpp">
       <Filter>0. Engine</Filter>
@@ -520,7 +538,7 @@
       <Filter>0. Engine\Manager\PostProcessingManager</Filter>
     </ClCompile>
     <ClCompile Include="GameViewEditorWindow.cpp">
-      <Filter>0. Engine\ImguiContainer\0. Editor\GameViewEditorWindow</Filter>
+      <Filter>0. Engine\ImguiContainer\0. Editor\Window\GameViewEditorWindow</Filter>
     </ClCompile>
     <ClCompile Include="Camera.cpp">
       <Filter>0. Engine\Component\Camera</Filter>
@@ -529,7 +547,7 @@
       <Filter>0. Engine\Component\Collider\SphereCollider</Filter>
     </ClCompile>
     <ClCompile Include="ConsoleEditorWindow.cpp">
-      <Filter>0. Engine\ImguiContainer\0. Editor\ConsoleEditorWindow</Filter>
+      <Filter>0. Engine\ImguiContainer\0. Editor\Window\ConsoleEditorWindow</Filter>
     </ClCompile>
     <ClCompile Include="Debug.cpp">
       <Filter>1. Editor\Debug</Filter>
@@ -562,7 +580,7 @@
       <Filter>0. Engine\ImguiContainer\0. Core\0. NodeEditor</Filter>
     </ClCompile>
     <ClCompile Include="AnimatorEditorWindow.cpp">
-      <Filter>0. Engine\ImguiContainer\0. Editor\AnimatorEditorWindow</Filter>
+      <Filter>0. Engine\ImguiContainer\0. Editor\Window\AnimatorEditorWindow</Filter>
     </ClCompile>
     <ClCompile Include="PathManager.cpp">
       <Filter>0. Engine\Manager\PathManager</Filter>
@@ -585,13 +603,22 @@
     <ClCompile Include="Task.cpp" />
     <ClCompile Include="TaskSystem.cpp" />
     <ClCompile Include="SkinnedMeshRenderer.cpp">
-      <Filter>0. Engine\Component\SkinnedMeshRenderer</Filter>
+      <Filter>0. Engine\Component\Renderer\SkinnedMeshRenderer</Filter>
     </ClCompile>
     <ClCompile Include="File.cpp">
       <Filter>0. Engine\System</Filter>
     </ClCompile>
     <ClCompile Include="MeshUtility.cpp">
       <Filter>0. Engine\System</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshFilter.cpp">
+      <Filter>0. Engine\Component\Renderer\MeshFilter</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshSelectEditorDialog.cpp">
+      <Filter>0. Engine\ImguiContainer\0. Editor\Dialog\MeshSelectEditorDialog</Filter>
+    </ClCompile>
+    <ClCompile Include="EditorDailog.cpp">
+      <Filter>0. Engine\ImguiContainer\1. Base\EditorDialog</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -752,7 +779,7 @@
       <Filter>0. Engine\GameObject</Filter>
     </ClInclude>
     <ClInclude Include="MeshRenderer.h">
-      <Filter>0. Engine\Component\MeshRenderer</Filter>
+      <Filter>0. Engine\Component\Renderer\MeshRenderer</Filter>
     </ClInclude>
     <ClInclude Include="Shader.h">
       <Filter>0. Engine\Shader</Filter>
@@ -825,19 +852,19 @@
       <Filter>0. Engine\App</Filter>
     </ClInclude>
     <ClInclude Include="SceneHierachyEditorWindow.h">
-      <Filter>0. Engine\ImguiContainer\0. Editor\SceneHierarchyWindow</Filter>
+      <Filter>0. Engine\ImguiContainer\0. Editor\Window\SceneHierarchyWindow</Filter>
     </ClInclude>
     <ClInclude Include="EditorWindow.h">
       <Filter>0. Engine\ImguiContainer\1. Base\EditorWindow</Filter>
     </ClInclude>
     <ClInclude Include="ProjectEditorWindow.h">
-      <Filter>0. Engine\ImguiContainer\0. Editor\ProjectEditorWindow</Filter>
+      <Filter>0. Engine\ImguiContainer\0. Editor\Window\ProjectEditorWindow</Filter>
     </ClInclude>
     <ClInclude Include="SceneEditorWindow.h">
-      <Filter>0. Engine\ImguiContainer\0. Editor\SceneEditorWindow</Filter>
+      <Filter>0. Engine\ImguiContainer\0. Editor\Window\SceneEditorWindow</Filter>
     </ClInclude>
     <ClInclude Include="InspectorEditorWindow.h">
-      <Filter>0. Engine\ImguiContainer\0. Editor\InspectorEditorWindow</Filter>
+      <Filter>0. Engine\ImguiContainer\0. Editor\Window\InspectorEditorWindow</Filter>
     </ClInclude>
     <ClInclude Include="29. MeshViewDemo.h">
       <Filter>2. Game\App</Filter>
@@ -903,7 +930,7 @@
       <Filter>0. Engine\Manager\PostProcessingManager</Filter>
     </ClInclude>
     <ClInclude Include="GameViewEditorWindow.h">
-      <Filter>0. Engine\ImguiContainer\0. Editor\GameViewEditorWindow</Filter>
+      <Filter>0. Engine\ImguiContainer\0. Editor\Window\GameViewEditorWindow</Filter>
     </ClInclude>
     <ClInclude Include="Camera.h">
       <Filter>0. Engine\Component\Camera</Filter>
@@ -912,7 +939,7 @@
       <Filter>0. Engine\Component\Collider\SphereCollider</Filter>
     </ClInclude>
     <ClInclude Include="ConsoleEditorWindow.h">
-      <Filter>0. Engine\ImguiContainer\0. Editor\ConsoleEditorWindow</Filter>
+      <Filter>0. Engine\ImguiContainer\0. Editor\Window\ConsoleEditorWindow</Filter>
     </ClInclude>
     <ClInclude Include="Debug.h">
       <Filter>1. Editor\Debug</Filter>
@@ -951,7 +978,7 @@
       <Filter>0. Engine\ImguiContainer\0. Core\0. NodeEditor</Filter>
     </ClInclude>
     <ClInclude Include="AnimatorEditorWindow.h">
-      <Filter>0. Engine\ImguiContainer\0. Editor\AnimatorEditorWindow</Filter>
+      <Filter>0. Engine\ImguiContainer\0. Editor\Window\AnimatorEditorWindow</Filter>
     </ClInclude>
     <ClInclude Include="PathManager.h">
       <Filter>0. Engine\Manager\PathManager</Filter>
@@ -974,13 +1001,22 @@
     <ClInclude Include="Task.h" />
     <ClInclude Include="TaskSystem.h" />
     <ClInclude Include="SkinnedMeshRenderer.h">
-      <Filter>0. Engine\Component\SkinnedMeshRenderer</Filter>
+      <Filter>0. Engine\Component\Renderer\SkinnedMeshRenderer</Filter>
     </ClInclude>
     <ClInclude Include="File.h">
       <Filter>0. Engine\System</Filter>
     </ClInclude>
     <ClInclude Include="MeshUtility.h">
       <Filter>0. Engine\System</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshFilter.h">
+      <Filter>0. Engine\Component\Renderer\MeshFilter</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshSelectEditorDialog.h">
+      <Filter>0. Engine\ImguiContainer\0. Editor\Dialog\MeshSelectEditorDialog</Filter>
+    </ClInclude>
+    <ClInclude Include="EditorDailog.h">
+      <Filter>0. Engine\ImguiContainer\1. Base\EditorDialog</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

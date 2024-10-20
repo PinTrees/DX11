@@ -19,7 +19,7 @@ private:
 
 	shared_ptr<SkinnedMesh> m_Mesh; 
 	wstring					m_MeshPath;
-	int						m_MeshSubsetIndex;
+	int						m_MeshSubsetIndex;		// 로드 시 사용 
 
 	vector<shared_ptr<UMaterial>>	m_pMaterials;
 	vector<wstring>					m_MaterialPaths;

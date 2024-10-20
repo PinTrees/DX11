@@ -40,9 +40,9 @@ void MeshGeometry::Draw(ComPtr<ID3D11DeviceContext> dc, uint32 subsetId)
 	dc->IASetIndexBuffer(_ib.Get(), _indexBufferFormat, 0);
 
 	dc->DrawIndexed(
-		_subsetTable[subsetId].FaceCount * 3, 
-		_subsetTable[subsetId].FaceStart * 3, 
-		_subsetTable[subsetId].VertexStart); 
+		_subsetTable[subsetId].FaceCount * 3,
+		_subsetTable[subsetId].FaceStart * 3,
+		_subsetTable[subsetId].VertexStart);
 }
 
 void MeshGeometry::InstancingDraw(ComPtr<ID3D11DeviceContext> dc, uint32 subsetId, uint32 instancingSize)

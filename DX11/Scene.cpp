@@ -90,7 +90,7 @@ void Scene::RenderScene()
         {
             for (auto& component : gameObject->GetComponents())
             {
-                component->Render();
+                component->Render(); 
             }
         }
     }
