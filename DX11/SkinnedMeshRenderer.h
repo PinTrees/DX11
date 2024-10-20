@@ -1,0 +1,55 @@
+#pragma once
+#include "Component.h"
+
+class Model;
+class Shader;
+class Effect;
+class UMaterial;
+class InstancingBuffer;
+
+class SkinnedMeshRenderer : public Component
+{
+	using Super = Component;
+
+private:
+	Shader*					m_Shader;
+	wstring					m_ShaderPath;
+
+	shared_ptr<Effect>		m_Effect;
+
+	shared_ptr<SkinnedMesh> m_Mesh; 
+	wstring					m_MeshPath;
+	int						m_MeshSubsetIndex;
+
+	vector<shared_ptr<UMaterial>>	m_pMaterials;
+	vector<wstring>					m_MaterialPaths;
+
+public:
+	SkinnedMeshRenderer();
+	virtual ~SkinnedMeshRenderer();
+
+	void AddMaterial(shared_ptr<UMaterial> mat) { m_pMaterials.push_back(mat); }
+	void SetMesh(shared_ptr<SkinnedMesh> mesh) { m_Mesh = mesh; }
+	void SetShader(Shader* shader) { m_Shader = shader; }
+	void SetShader(shared_ptr<Effect> effect) { m_Effect = effect; }
+
+	shared_ptr<SkinnedMesh> GetMesh() { return m_Mesh; }
+
+	// ¿ŒΩ∫≈œΩÃ ID, mesh and material and setting
+	InstanceID GetInstanceID()
+	{
+		return make_tuple((uint64)m_Mesh.get(), 0, 0);
+	}
+
+public:
+	virtual void OnInspectorGUI() override;
+
+public:
+	virtual void Render() override;
+	void RenderShadow();
+	void RenderShadowNormal();
+
+	GENERATE_COMPONENT_BODY(SkinnedMeshRenderer)
+};
+
+REGISTER_COMPONENT(SkinnedMeshRenderer)

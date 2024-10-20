@@ -13,6 +13,7 @@ wstring SelectionManager::m_SelectedFilePath = L"";
 GameObject* SelectionManager::m_SelectedGameObject = nullptr;
 
 shared_ptr<UMaterial> SelectionManager::m_SelectedFile_Material = nullptr;
+shared_ptr<MeshFile> SelectionManager::m_SelectFile_FbxModel = nullptr;
 
 SelectionManager::SelectionManager()
 {
@@ -30,6 +31,7 @@ void SelectionManager::ClearSelection()
 	m_SelectedSubType = SelectionSubType::NONE; 
 	m_SelectedGameObject = nullptr; 
 	m_SelectedFile_Material = nullptr;
+	m_SelectFile_FbxModel = nullptr;
 }
 
 void SelectionManager::SetSelectedFile(const std::wstring& filePath)
@@ -46,6 +48,13 @@ void SelectionManager::SetSelectedFile(const std::wstring& filePath)
 
 		m_SelectedFile_Material = ResourceManager::GetI()->LoadMaterial(cutPath);
 		m_SelectedSubType = SelectionSubType::MATERIAL;
+	}
+	else if (path.extension() == ".fbx" || path.extension() == ".FBX")
+	{
+		string cutPath = PathManager::GetI()->GetCutSolutionPath(wstring_to_string(filePath));
+
+		m_SelectFile_FbxModel = ResourceManager::GetI()->LoadFbxModel(cutPath);
+		m_SelectedSubType = SelectionSubType::FBX;
 	}
 	else
 	{

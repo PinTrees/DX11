@@ -6,9 +6,8 @@
 
 class Mesh
 {
-private:
-	float ComputeRadius(const Vec3& center, const std::vector<Vertex::PosNormalTexTan2>& vertices);
 public:
+	Mesh();
 	Mesh(ComPtr<ID3D11Device> device, TextureMgr& texMgr, const std::string& modelFilename, const std::wstring& texturePath);
 	Mesh(ComPtr<ID3D11Device> device, const std::string& modelFilename);
 	~Mesh();
@@ -29,7 +28,13 @@ public:
 	MeshGeometry ModelMesh;
 	BouncingBall Ball;
 
+	string Name;
 	wstring Path;
+
+public:
+	friend void from_json(const json& j, Mesh& m);
+	friend void to_json(json& j, const Mesh& m);
+	void to_byte(ofstream& outStream);
 };
 
 // 사용하지 않음 - 제거

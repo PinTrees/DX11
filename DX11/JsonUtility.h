@@ -54,6 +54,31 @@ Quaternion SafeGetQuaternion(const json& j, const std::string& key, const Quater
 }
 
 
+#define SERIALIZE_PosNormalTexTan2_ARRAY(JSON, VECTOR, KEY)                                                         \
+{                                                                                                                   \
+    json array_json = json::array();                                                                                \
+    for (const auto& vertex : VECTOR)                                                                               \
+    {                                                                                                               \
+        json vertex_json;                                                                                           \
+        vertex_json["pos"] = { vertex.pos.x, vertex.pos.y, vertex.pos.z };                                          \
+        vertex_json["normal"] = { vertex.normal.x, vertex.normal.y, vertex.normal.z };                              \
+        vertex_json["tex"] = { vertex.tex.x, vertex.tex.y };                                                        \
+        vertex_json["tangentU"] = { vertex.tangentU.x, vertex.tangentU.y, vertex.tangentU.z, vertex.tangentU.w };   \
+        array_json.push_back(vertex_json);                                                                          \
+    }                                                                                                               \
+    JSON[KEY] = array_json;                                                                                         \
+}
+
+#define SERIALIZE_USHORT_ARRAY(JSON, VECTOR, KEY)          \
+{                                                          \
+    json array_json = json::array();                       \
+    for (const auto& val : VECTOR)                         \
+    {                                                      \
+        array_json.push_back(val);                         \
+    }                                                      \
+    JSON[KEY] = array_json;                                \
+}
+ 
 
 #define SERIALIZE_FLOAT4(JSON, VALUE, VALUE_NAME) JSON[VALUE_NAME] = { VALUE.x, VALUE.y,VALUE.z, VALUE.w };
 #define DE_SERIALIZE_FLOAT4(JSON, VALUE, VALUE_NAME) if (JSON.contains(VALUE_NAME)) {                                                   \

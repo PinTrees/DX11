@@ -142,10 +142,10 @@ void Scene::RenderSceneShadow()
         for (auto& gameObject : m_arrGameObjects[0])
         {
             MeshRenderer* meshRenderer = gameObject->GetComponent<MeshRenderer>();
-            if (meshRenderer == nullptr) // 이 부분에서 제어 -> 그림자의 영향을 주는 오브젝트에 대한 제어
-                continue;
+            if (meshRenderer) meshRenderer->RenderShadow();
 
-            meshRenderer->RenderShadow();
+            SkinnedMeshRenderer* skinnedMeshRenderer = gameObject->GetComponent<SkinnedMeshRenderer>();
+            if (skinnedMeshRenderer) skinnedMeshRenderer->RenderShadow();
         }
     }
 }
@@ -195,10 +195,10 @@ void Scene::RenderSceneShadowNormal()
         for (const auto& gameObject : m_arrGameObjects[0])
         {
             MeshRenderer* meshRenderer = gameObject->GetComponent<MeshRenderer>();
-            if (meshRenderer == nullptr)
-                continue;
+            if (meshRenderer) meshRenderer->RenderShadowNormal();
 
-            meshRenderer->RenderShadowNormal();
+            SkinnedMeshRenderer* skinnedMeshRenderer = gameObject->GetComponent<SkinnedMeshRenderer>();
+            if (skinnedMeshRenderer) skinnedMeshRenderer->RenderShadowNormal();
         }
     }
 }

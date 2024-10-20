@@ -2,6 +2,11 @@
 #include "SkinnedMesh.h"
 #include "FBXLoader.h"
 #include "SkinnedData.h"
+#include "LoadM3d.h"
+#include "MathHelper.h"
+#include "File.h"
+#include "MeshUtility.h"
+#include "EditorGUI.h"
 
 SkinnedMesh::SkinnedMesh(ComPtr<ID3D11Device> device, TextureMgr& texMgr, const std::string& modelFilename, const std::wstring& texturePath)
 {
@@ -27,6 +32,51 @@ SkinnedMesh::SkinnedMesh(ComPtr<ID3D11Device> device, TextureMgr& texMgr, const 
 	}
 }
 
+SkinnedMesh::SkinnedMesh(ComPtr<ID3D11Device> device, const std::string& modelFilename)
+{
+	string modelfilepath = PathManager::GetI()->GetMovePathS(modelFilename);
+
+	std::string fileExtension = File::GetExtension(modelfilepath); 
+
+	if (fileExtension == "fbx" || fileExtension == "FBX")
+	{
+		std::vector<FbxMaterial> mats;
+
+		FBXLoader fbxLoader;
+		fbxLoader.LoadFBX(modelfilepath, Vertices, Indices, Subsets, mats, SkinnedData); 
+
+		Vec3 minVertex = { +MathHelper::Infinity, +MathHelper::Infinity, +MathHelper::Infinity };
+		Vec3 maxVertex = { -MathHelper::Infinity, -MathHelper::Infinity, -MathHelper::Infinity };
+		for (int i = 0; i < Vertices.size(); i++)
+		{
+			if (Vertices[i].pos.x < minVertex.x) minVertex.x = Vertices[i].pos.x;
+			if (Vertices[i].pos.y < minVertex.y) minVertex.y = Vertices[i].pos.y;
+			if (Vertices[i].pos.z < minVertex.z) minVertex.z = Vertices[i].pos.z;
+
+			if (Vertices[i].pos.x > maxVertex.x) maxVertex.x = Vertices[i].pos.x;
+			if (Vertices[i].pos.y > maxVertex.y) maxVertex.y = Vertices[i].pos.y;
+			if (Vertices[i].pos.z > maxVertex.z) maxVertex.z = Vertices[i].pos.z;
+		}
+
+		Ball.center.x = (minVertex.x + maxVertex.x) / 2;
+		Ball.center.y = (minVertex.y + maxVertex.y) / 2;
+		Ball.center.z = (minVertex.z + maxVertex.z) / 2;
+
+		Ball.radius =  MeshUtility::ComputeBoundingRadius(Ball.center, Vertices);
+
+		ModelMesh.SetVertices(device, &Vertices[0], Vertices.size());
+		ModelMesh.SetIndices(device, &Indices[0], Indices.size());
+		ModelMesh.SetSubsetTable(Subsets);
+
+		SubsetCount = mats.size();
+
+		for (uint32 i = 0; i < SubsetCount; ++i)
+		{
+			Mat.push_back(mats[i].Mat);
+		}
+	}
+}
+
 SkinnedMesh::~SkinnedMesh()
 {
 }
@@ -40,4 +90,102 @@ void SkinnedMeshlInstance::Update(float dt)
 	// Loop animation
 	if (TimePos > Model->SkinnedData.GetClipEndTime(ClipName))
 		TimePos = 0.0f;
+}
+
+
+
+MeshFile::MeshFile()
+{
+}
+
+MeshFile::MeshFile(string path)
+{
+	string modelfilepath = PathManager::GetI()->GetMovePathS(path);
+	Path = string_to_wstring(path);
+	Name = PathManager::GetI()->GetFileName(path); 
+
+	std::string fileExtension = File::GetExtension(modelfilepath);
+
+	if (fileExtension == "fbx" || fileExtension == "FBX")
+	{
+		std::vector<FbxMaterial> mats;
+
+		FBXLoader fbxLoader;
+		fbxLoader.LoadModelFbx(modelfilepath, this, mats);  
+	}
+}
+
+MeshFile::~MeshFile()
+{
+}
+
+void MeshFile::OnInspectorGUI()
+{
+	EditorGUI::LabelHeader(Name + " Fbx Import Setting");
+
+	ImGui::Dummy(ImVec2(0, 4));
+
+	if (EditorGUI::Button("Import Fbx Mesh"))
+	{
+		// FBX 파싱 후 해당 경로에 .fbx.meta 간단한 데이터를 .fbx.meta;
+		// 복잡한 내부 버텍스 데이터를 .fbx.rawdata 로 저장
+
+		Save();
+	}
+}
+
+void MeshFile::Save()
+{
+	wstring savePath = Path + L".mesh";
+	std::ofstream outStream(PathManager::GetI()->GetMovePathS(wstring_to_string(savePath)), std::ios::binary);
+
+	if (!outStream)
+	{
+		std::cerr << "파일을 열 수 없습니다: " << PathManager::GetI()->GetMovePathS(wstring_to_string(savePath)) << std::endl;
+		return;
+	}
+
+	// FbxModel 바이너리 저장
+	to_byte(outStream);
+	outStream.close();
+}
+
+void MeshFile::to_byte(ofstream& outStream)
+{
+	if (!outStream.is_open())
+	{
+		std::cerr << "File stream is not open!" << std::endl;
+		return;
+	}
+
+	size_t nameLength = Name.size();
+	outStream.write(reinterpret_cast<const char*>(&nameLength), sizeof(size_t));
+	outStream.write(Name.c_str(), nameLength);
+
+	size_t meshCount = Meshs.size();
+	outStream.write(reinterpret_cast<const char*>(&meshCount), sizeof(size_t));
+
+	for (const auto& mesh : Meshs)
+	{
+		mesh->to_byte(outStream);
+	}
+}
+
+void from_json(const json& j, MeshFile& m)
+{
+
+}
+
+void to_json(json& j, const MeshFile& m)
+{
+	SERIALIZE_TYPE(j, MeshFile);
+	SERIALIZE_STRING(j, m.Name, "name");
+
+	json meshes_json = json::array();
+	for (const auto& mesh : m.Meshs)
+	{
+		json mesh_json = *mesh;
+		meshes_json.push_back(mesh_json); 
+	}
+	j["meshes"] = meshes_json; 
 }

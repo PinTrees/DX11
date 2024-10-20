@@ -11,14 +11,9 @@ public:
     CollisionDetector();
       
 public:
-    /* 충돌을 검출하고 충돌 정보를 contacts 에 저장한다 */
     void DetectCollision(std::vector<Contact*>& contacts, std::unordered_map<unsigned int, Collider*>& colliders);
 
-
 private:
-    /* 충돌 검사 함수들.
-        충돌이 있다면 충돌 정보 구조체를 생성하고 contacts 에 푸쉬하고 true 를 반환한다.
-        총돌이 없다면 false 를 반환한다 */
     bool CheckSphereSphereCollision(std::vector<Contact*>& contacts, SphereCollider* sphere1, SphereCollider* sphere2);
     bool CheckSphereBoxCollision(std::vector<Contact*>& contacts, SphereCollider* sphere, BoxCollider* box);
     bool CheckBoxBoxCollision(std::vector<Contact*>& contacts, BoxCollider* box1, BoxCollider* box2);

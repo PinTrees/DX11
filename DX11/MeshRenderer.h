@@ -16,16 +16,13 @@ private:
 	Shader*				m_Shader;
 	wstring				m_ShaderPath;
 
-	shared_ptr<Effect>  m_Effect;
-
 	shared_ptr<Mesh>	m_Mesh;
 	wstring				m_MeshPath;
 	int					m_MeshSubsetIndex;
 
-	vector<shared_ptr<UMaterial>> m_pMaterials;
-	vector<wstring> m_MaterialPaths;
+	vector<shared_ptr<UMaterial>>	m_pMaterials;
+	vector<wstring>					m_MaterialPaths;
 
-	//bool m_createShadowMap; // 그림자맵 생성 단계에서 오브젝트를 그릴지에 대한 여부(영향을 주는 오브젝트)
 public:
 	MeshRenderer();
 	virtual ~MeshRenderer();
@@ -33,7 +30,6 @@ public:
 	void AddMaterial(shared_ptr<UMaterial> mat) { m_pMaterials.push_back(mat); }
 	void SetMesh(shared_ptr<Mesh> mesh) { m_Mesh = mesh; }
 	void SetShader(Shader* shader) { m_Shader = shader; }
-	void SetShader(shared_ptr<Effect> effect) { m_Effect = effect; }
 
 	shared_ptr<Mesh> GetMesh() { if (m_Mesh) return m_Mesh; else return nullptr; }
 

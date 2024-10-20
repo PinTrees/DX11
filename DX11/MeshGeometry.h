@@ -8,13 +8,18 @@ public:
 	{
 		Subset() :
 			Id(-1),
-			VertexStart(0), VertexCount(0),
-			FaceStart(0), FaceCount(0)
+			VertexStart(0),
+			VertexCount(0),
+			FaceStart(0),
+			FaceCount(0),
+			MaterialIndex(0),
+			Name("")
 		{
 		}
 
 		string Name; 
 		uint32 Id;
+		uint32 MaterialIndex;
 		uint32 VertexStart;
 		uint32 VertexCount;
 		uint32 FaceStart;

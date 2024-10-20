@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "EditorGUI.h"
 #include "EditorGUIResourceManager.h"
+#include "SkinnedMesh.h"
 
 EditorTextStyle EditorGUI::defaultTextStyle = EditorTextStyle();
 
@@ -364,6 +365,76 @@ bool EditorGUI::MeshField(string title, shared_ptr<Mesh>& mesh, int& subsetIndex
             if (!filePath.empty())
             {
                 auto newMesh = ResourceManager::GetI()->LoadMesh(filePath);
+                if (newMesh)
+                {
+                    mesh = newMesh;
+                    mesh->Path = filePath;
+                    subsetIndex = 0;
+                    isDirty = true;
+                }
+            }
+        }
+    }
+    ImGui::EndChild();
+
+    EditorGUI::DropFieldStylePop();
+
+    return isDirty;
+}
+
+bool EditorGUI::SkinnedMeshField(string title, shared_ptr<SkinnedMesh>& mesh, int& subsetIndex)
+{
+    bool isDirty = false;
+    float fieldWidth = EDITOR_GUI_FIELD_WIDTH;
+
+    EDITOR_GUI_FIELD_PADDING;
+    EditorGUI::Label(title);
+    EDITOR_GUI_FIELD_SPACING(fieldWidth - 8);
+
+    EditorGUI::DropFieldStylePush();
+
+    if (ImGui::BeginChild("Mesh Field", ImVec2(fieldWidth, FIELD_DEFAULT_HEIGHT), true, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse))
+    {
+        if (mesh == nullptr)
+        {
+            EditorGUI::Label("None");
+        }
+        else
+        {
+            ImGui::PushItemWidth(fieldWidth - (EDITOR_GUI_BUTTON_WIDTH + 4));
+
+            if (ImGui::BeginCombo("##Subset Dropdown", mesh->Subsets[subsetIndex].Name.c_str()))
+            {
+                for (int n = 0; n < mesh->Subsets.size(); n++)
+                {
+                    bool is_selected = (subsetIndex == n);
+                    if (ImGui::Selectable(mesh->Subsets[n].Name.c_str(), is_selected))
+                    {
+                        subsetIndex = n;
+                        isDirty = true;
+                    }
+                    if (is_selected)
+                    {
+                        ImGui::SetItemDefaultFocus();
+                    }
+                }
+                ImGui::EndCombo();
+            }
+            ImGui::PopItemWidth();
+        }
+
+        ImGui::SameLine();
+        ImGui::Dummy(ImVec2(ImGui::GetContentRegionAvail().x - EDITOR_GUI_BUTTON_WIDTH, 0));
+        ImGui::SameLine();
+
+        if (EditorGUI::Button("+", Vec2(20, 20), Color(0.20f, 0.20f, 0.20f, 1.0f)))
+        {
+            wstring filePath = EditorUtility::OpenFileDialog(PathManager::GetI()->GetMovePathW(L"Assets\\"), L"Mesh", { L"fbx" });
+            filePath = PathManager::GetI()->GetCutSolutionPath(filePath);
+
+            if (!filePath.empty())
+            {
+                auto newMesh = ResourceManager::GetI()->LoadSkinnedMesh(filePath);
                 if (newMesh)
                 {
                     mesh = newMesh;

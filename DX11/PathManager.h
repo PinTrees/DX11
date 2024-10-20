@@ -15,6 +15,8 @@ public:
 	wstring GetMovePathW(wstring movePath);
 	string GetMovePathS(string movePath);
 
+	string GetFileName(string fullpath);
+
 	wstring GetCutSolutionPath(wstring path);
 	string GetCutSolutionPath(string path);
 };

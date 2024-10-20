@@ -221,6 +221,7 @@
     <ClInclude Include="EditorWindow.h" />
     <ClInclude Include="Effects.h" />
     <ClInclude Include="FBXLoader.h" />
+    <ClInclude Include="File.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GameTimer.h" />
     <ClInclude Include="GameViewEditorWindow.h" />
@@ -253,6 +254,7 @@
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MeshGeometry.h" />
     <ClInclude Include="MeshRenderer.h" />
+    <ClInclude Include="MeshUtility.h" />
     <ClInclude Include="NormalMapSkinnedShader.h" />
     <ClInclude Include="Octree.h" />
     <ClInclude Include="ParticleSystem.h" />
@@ -278,6 +280,7 @@
     <ClInclude Include="SimpleMath.h" />
     <ClInclude Include="SkinnedData.h" />
     <ClInclude Include="SkinnedMesh.h" />
+    <ClInclude Include="SkinnedMeshRenderer.h" />
     <ClInclude Include="SkinnedModel.h" />
     <ClInclude Include="Sky.h" />
     <ClInclude Include="SphereCollider.h" />
@@ -353,6 +356,7 @@
     <ClCompile Include="EditorWindow.cpp" />
     <ClCompile Include="Effects.cpp" />
     <ClCompile Include="FBXLoader.cpp" />
+    <ClCompile Include="File.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GameViewEditorWindow.cpp" />
     <ClCompile Include="GeometryGenerator.cpp" />
@@ -405,6 +409,7 @@
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="MeshGeometry.cpp" />
     <ClCompile Include="MeshRenderer.cpp" />
+    <ClCompile Include="MeshUtility.cpp" />
     <ClCompile Include="NormalMapSkinnedShader.cpp" />
     <ClCompile Include="Octree.cpp" />
     <ClCompile Include="ParticleSystem.cpp" />
@@ -434,6 +439,7 @@
     <ClCompile Include="SimpleMath.cpp" />
     <ClCompile Include="SkinnedData.cpp" />
     <ClCompile Include="SkinnedMesh.cpp" />
+    <ClCompile Include="SkinnedMeshRenderer.cpp" />
     <ClCompile Include="SkinnedModel.cpp" />
     <ClCompile Include="Sky.cpp" />
     <ClCompile Include="SphereCollider.cpp" />

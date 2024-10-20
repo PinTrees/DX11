@@ -74,6 +74,12 @@ string PathManager::GetMovePathS(string movePath)
 	return result;
 }
 
+string PathManager::GetFileName(string fullpath)
+{
+	string filename = filesystem::path(fullpath).stem().string();
+	return filename;
+}
+
 wstring PathManager::GetCutSolutionPath(wstring path)
 {
 	wstring result = path;

@@ -7,6 +7,8 @@
 #include "MeshGeometry.h"
 #include "SkinnedData.h"
 
+class MeshFile;
+
 struct FbxMaterial
 {
     Material Mat;
@@ -47,7 +49,17 @@ public:
         vector<FbxMaterial>& materials,
         SkinnedData& skinInfo);
 
+    bool LoadModelFbx( 
+        const std::string& filename, 
+        MeshFile* skinnedModel,
+        vector<FbxMaterial>& materials);
+
 private:
+    void ParsingMeshNode(
+        aiNode* node,
+        const aiScene* scene,
+        MeshFile* model); 
+
     void ProcessNode(
         aiNode* node,
         const aiScene* scene,

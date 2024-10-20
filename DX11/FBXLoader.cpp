@@ -126,6 +126,91 @@ bool FBXLoader::LoadFBX(
     return true;
 }
 
+bool FBXLoader::LoadModelFbx(const std::string& filename, MeshFile* skinnedModel, vector<FbxMaterial>& materials)
+{
+    Assimp::Importer importer; 
+    const aiScene* scene = importer.ReadFile(
+        filename,
+        aiProcess_ConvertToLeftHanded |
+        aiProcess_Triangulate |
+        aiProcess_GenUVCoords |
+        aiProcess_GenNormals |
+        aiProcess_CalcTangentSpace
+    );
+
+    if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
+    {
+        printf("ERROR::ASSIMP:: %s\n", importer.GetErrorString());
+        return false;
+    }
+
+    // Process materials
+    materials.resize(scene->mNumMaterials);
+    for (UINT i = 0; i < scene->mNumMaterials; ++i)
+    {
+        aiMaterial* mat = scene->mMaterials[i];
+        aiString name;
+
+        materials[i].ambient = XMFLOAT3(0.2f, 0.2f, 0.2f);
+        materials[i].diffuse = XMFLOAT3(0.8f, 0.8f, 0.8f);
+        materials[i].specular = XMFLOAT3(1.0f, 1.0f, 1.0f);
+        materials[i].reflect = XMFLOAT3(0.0f, 0.0f, 0.0f);
+        materials[i].shininess = 0.0f;
+
+        aiColor3D color(0.f, 0.f, 0.f);
+        if (AI_SUCCESS == mat->Get(AI_MATKEY_COLOR_AMBIENT, color))
+            materials[i].ambient = XMFLOAT3(color.r, color.g, color.b);
+        if (AI_SUCCESS == mat->Get(AI_MATKEY_COLOR_DIFFUSE, color))
+            materials[i].diffuse = XMFLOAT3(color.r, color.g, color.b);
+        if (AI_SUCCESS == mat->Get(AI_MATKEY_COLOR_SPECULAR, color))
+            materials[i].specular = XMFLOAT3(color.r, color.g, color.b);
+        if (AI_SUCCESS == mat->Get(AI_MATKEY_SHININESS, materials[i].shininess))
+            materials[i].shininess = materials[i].shininess;
+
+        if (mat->GetTextureCount(aiTextureType_DIFFUSE) > 0)
+        {
+            mat->GetTexture(aiTextureType_DIFFUSE, 0, &name);
+            materials[i].DiffuseMapName = std::wstring(name.C_Str(), name.C_Str() + name.length);
+        }
+
+        if (mat->GetTextureCount(aiTextureType_NORMALS) > 0)
+        {
+            mat->GetTexture(aiTextureType_NORMALS, 0, &name);
+            materials[i].NormalMapName = std::wstring(name.C_Str(), name.C_Str() + name.length);
+        }
+    }
+
+    if (scene->mRootNode)
+    {
+        ParsingMeshNode(scene->mRootNode, scene, skinnedModel);
+    }
+
+    return true;
+}
+
+
+void FBXLoader::ParsingMeshNode(aiNode* node, const aiScene* scene, MeshFile* model)
+{
+    if (node->mNumMeshes > 0) 
+    {
+        Mesh* mesh = new Mesh;
+        model->Meshs.push_back(mesh);
+        mesh->Name = node->mName.C_Str();
+
+        for (UINT i = 0; i < node->mNumMeshes; ++i)
+        {
+            aiMesh* aiMesh = scene->mMeshes[node->mMeshes[i]];
+            MeshGeometry::Subset subset;
+            ProcessMesh(aiMesh, scene, mesh->Vertices, mesh->Indices, subset);
+            mesh->Subsets.push_back(subset);
+        }
+    }
+
+    for (UINT i = 0; i < node->mNumChildren; ++i)
+    {
+        ParsingMeshNode(node->mChildren[i], scene, model);
+    }
+}
 
 void FBXLoader::ProcessNode(
     aiNode* node,
@@ -160,6 +245,7 @@ void FBXLoader::ProcessMesh(
     subset.FaceStart = indices.size() / 3;
     subset.VertexCount = mesh->mNumVertices;
     subset.FaceCount = mesh->mNumFaces;
+    subset.MaterialIndex = mesh->mMaterialIndex;
 
     for (UINT i = 0; i < mesh->mNumVertices; ++i)
     {
@@ -197,6 +283,7 @@ void FBXLoader::ProcessNodeSkinned(
     {
         aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
         MeshGeometry::Subset subset;
+        subset.Name = node->mName.C_Str();
         ProcessMeshSkinned(mesh, scene, vertices, indices, subset);
         subsets.push_back(subset);
     }
@@ -215,6 +302,7 @@ void FBXLoader::ProcessMeshSkinned(
     vector<USHORT>& indices,
     MeshGeometry::Subset& subset)
 {
+    subset.Name = mesh->mName.C_Str(); 
     subset.VertexStart = vertices.size();
     subset.FaceStart = indices.size() / 3;
     subset.VertexCount = mesh->mNumVertices;
@@ -225,11 +313,13 @@ void FBXLoader::ProcessMeshSkinned(
         Vertex::PosNormalTexTanSkinned vertex;
         vertex.pos = XMFLOAT3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z);
         vertex.normal = XMFLOAT3(mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z);
-        vertex.tex = XMFLOAT2(mesh->mTextureCoords[0] ? mesh->mTextureCoords[0][i].x : 0.0f,
-            mesh->mTextureCoords[0] ? mesh->mTextureCoords[0][i].y : 0.0f);
-        vertex.tangentU = XMFLOAT4(mesh->mTangents[i].x, mesh->mTangents[i].y, mesh->mTangents[i].z, 1.0f);
 
-        // Initialize bone indices and weights to zero
+        // UV
+        if (mesh->HasTextureCoords(0))
+            ::memcpy(&vertex.tex, &mesh->mTextureCoords[0][i], sizeof(Vec2));
+        
+        //vertex.tangentU = XMFLOAT4(mesh->mTangents[i].x, mesh->mTangents[i].y, mesh->mTangents[i].z, 1.0f);
+
         memset(vertex.boneIndices, 0, sizeof(vertex.boneIndices));
         vertex.weights = XMFLOAT3(0.0f, 0.0f, 0.0f);
 

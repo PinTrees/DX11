@@ -13,6 +13,9 @@
 									ImGui::Dummy(ImVec2(ImGui::GetContentRegionAvail().x - s - 4, 0));	\
 									ImGui::SameLine()													\
 
+class Mesh;
+class SkinnedMesh;
+
 class EditorGUI
 {
 public:
@@ -39,6 +42,7 @@ public:
 	static bool Vector3Field(string title, Vec3& vec3);
 	static bool MaterialField(string title, shared_ptr<UMaterial>& material, wstring& materialPath);
 	static bool MeshField(string title, shared_ptr<Mesh>& mesh, int& subsetIndex);
+	static bool SkinnedMeshField(string title, shared_ptr<SkinnedMesh>& mesh, int& subsetIndex);
 
 public:
 	static void DropFieldStylePush();

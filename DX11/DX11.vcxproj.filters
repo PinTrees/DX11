@@ -70,21 +70,6 @@
     <Filter Include="0. Engine\Shader\Material">
       <UniqueIdentifier>{5228a916-4096-4730-8e48-9bc69cd498d7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="0. Engine\Mesh">
-      <UniqueIdentifier>{f361951b-ac9d-439a-ba8d-ce4e092a2f11}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="0. Engine\Mesh\0. Base">
-      <UniqueIdentifier>{dc3edd8b-10fc-4be8-8bcd-1a5693b16035}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="0. Engine\Mesh\97. Model">
-      <UniqueIdentifier>{b17c13cc-9cf4-4e46-b42c-e6ceef0ddb80}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="0. Engine\Mesh\SkinnedMesh">
-      <UniqueIdentifier>{7fbb894e-5caa-4ceb-9109-4328a848cc7d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="0. Engine\Mesh\Mesh">
-      <UniqueIdentifier>{65164ee6-eab6-4db4-b2ea-503a225c10a9}</UniqueIdentifier>
-    </Filter>
     <Filter Include="0. Engine\Scene">
       <UniqueIdentifier>{553b740f-09ad-4fca-860c-5fb7bfcc62ae}</UniqueIdentifier>
     </Filter>
@@ -207,6 +192,27 @@
     </Filter>
     <Filter Include="0. Engine\Manager\LightManager">
       <UniqueIdentifier>{fd6523cb-ce43-458a-9ae2-4f6e90851713}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="0. Engine\Component\SkinnedMeshRenderer">
+      <UniqueIdentifier>{236aa10c-fcd5-4c30-8f4d-bdceee42c467}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="0. Engine\Mesh">
+      <UniqueIdentifier>{f361951b-ac9d-439a-ba8d-ce4e092a2f11}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="0. Engine\Mesh\0. Base">
+      <UniqueIdentifier>{dc3edd8b-10fc-4be8-8bcd-1a5693b16035}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="0. Engine\Mesh\97. Model">
+      <UniqueIdentifier>{b17c13cc-9cf4-4e46-b42c-e6ceef0ddb80}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="0. Engine\Mesh\SkinnedMesh">
+      <UniqueIdentifier>{7fbb894e-5caa-4ceb-9109-4328a848cc7d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="0. Engine\Mesh\Mesh">
+      <UniqueIdentifier>{65164ee6-eab6-4db4-b2ea-503a225c10a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="0. Engine\System">
+      <UniqueIdentifier>{83998bea-30b5-4e4f-ba61-d28a1c96bed0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -572,6 +578,20 @@
     </ClCompile>
     <ClCompile Include="ShaderSetting.cpp">
       <Filter>0. Engine\00. Header</Filter>
+    </ClCompile>
+    <ClCompile Include="EditorGUI.cpp" />
+    <ClCompile Include="EditorGUIResourceManager.cpp" />
+    <ClCompile Include="EditorGUIStyle.cpp" />
+    <ClCompile Include="Task.cpp" />
+    <ClCompile Include="TaskSystem.cpp" />
+    <ClCompile Include="SkinnedMeshRenderer.cpp">
+      <Filter>0. Engine\Component\SkinnedMeshRenderer</Filter>
+    </ClCompile>
+    <ClCompile Include="File.cpp">
+      <Filter>0. Engine\System</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshUtility.cpp">
+      <Filter>0. Engine\System</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -947,6 +967,20 @@
     </ClInclude>
     <ClInclude Include="ShaderSetting.h">
       <Filter>0. Engine\00. Header</Filter>
+    </ClInclude>
+    <ClInclude Include="EditorGUI.h" />
+    <ClInclude Include="EditorGUIResourceManager.h" />
+    <ClInclude Include="EditorGUIStyle.h" />
+    <ClInclude Include="Task.h" />
+    <ClInclude Include="TaskSystem.h" />
+    <ClInclude Include="SkinnedMeshRenderer.h">
+      <Filter>0. Engine\Component\SkinnedMeshRenderer</Filter>
+    </ClInclude>
+    <ClInclude Include="File.h">
+      <Filter>0. Engine\System</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshUtility.h">
+      <Filter>0. Engine\System</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

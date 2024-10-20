@@ -92,10 +92,14 @@ namespace ed = ax::NodeEditor;
 #include "Shader.h"
 #include "UMaterial.h"
 
-// Component
+// Data
 #include "Mesh.h"
+#include "SkinnedMesh.h"
+
+// Component
 #include "GameObject.h"
 #include "MeshRenderer.h"
+#include "SkinnedMeshRenderer.h"
 #include "Camera.h"
 #include "RigidBody.h"
 #include "SphereCollider.h"

@@ -107,25 +107,25 @@
                 },
                 {
                     "directionalLightAmbient": [
-                        0.6000000238418579,
-                        0.6000000238418579,
-                        0.6000000238418579,
+                        1.5,
+                        1.5,
+                        1.5,
                         1.0
                     ],
                     "directionalLightDiffuse": [
-                        0.800000011920929,
-                        0.699999988079071,
-                        0.699999988079071,
+                        1.0,
+                        1.0,
+                        1.0,
                         1.0
                     ],
                     "directionalLightLength": [
-                        20.0,
-                        20.0
+                        100.0,
+                        100.0
                     ],
                     "directionalLightSpecular": [
-                        0.6000000238418579,
-                        0.6000000238418579,
-                        0.699999988079071,
+                        1.0,
+                        1.0,
+                        1.0,
                         1.0
                     ],
                     "lightType": 0,
@@ -234,7 +234,123 @@
                     "type": "MeshRenderer"
                 }
             ],
-            "name": "GameObject"
+            "name": "RockMesh1\u0000"
+        },
+        {
+            "children": [],
+            "components": [
+                {
+                    "m_EulerAngles": [
+                        -0.0,
+                        -5.9285540886244714e-12,
+                        -0.0
+                    ],
+                    "m_LocalEulerAngles": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "m_LocalEulerRadians": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "m_LocalPosition": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "m_LocalRotation": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "m_LocalScale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "m_Position": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "m_Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "type": "Transform"
+                },
+                {
+                    "m_MaterialPaths": [
+                        ""
+                    ],
+                    "meshPath": "Assets\\Art\\Character\\Model_Unity_Ver1.FBX",
+                    "shaderPath": "",
+                    "subsetIndex": 0,
+                    "type": "SkinnedMeshRenderer"
+                }
+            ],
+            "name": "UnityModel"
+        },
+        {
+            "children": [],
+            "components": [
+                {
+                    "m_EulerAngles": [
+                        0.0,
+                        -64.00000762939453,
+                        0.0
+                    ],
+                    "m_LocalEulerAngles": [
+                        0.0,
+                        -64.0,
+                        0.0
+                    ],
+                    "m_LocalEulerRadians": [
+                        0.0,
+                        -1.1170107126235962,
+                        0.0
+                    ],
+                    "m_LocalPosition": [
+                        37.70000076293945,
+                        -28.200000762939453,
+                        0.0
+                    ],
+                    "m_LocalRotation": {
+                        "w": 0.8480480909347534,
+                        "x": 0.0,
+                        "y": -0.5299192667007446,
+                        "z": 0.0
+                    },
+                    "m_LocalScale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "m_Position": [
+                        37.70000076293945,
+                        -28.200000762939453,
+                        0.0
+                    ],
+                    "m_Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "type": "Transform"
+                },
+                {
+                    "m_MaterialPaths": [],
+                    "meshPath": "Assets\\Art\\ENV\\Rock\\Mossy_rock_var8.fbx",
+                    "shaderPath": "",
+                    "subsetIndex": 0,
+                    "type": "MeshRenderer"
+                }
+            ],
+            "name": "RockMesh2\u0000"
         }
     ]
 }

@@ -231,6 +231,14 @@ void ProjectEditorWindow::RenderFileEntry(const fs::directory_entry& entry, bool
         EditorGUI::RowSizedBox(8);
         RenderFileEntry_FBX(entry, isSelected);
     }
+    else if (extention == ".mesh")
+    {
+        EditorGUI::Image(L"\\ProjectSetting\\icons\\icon_json.png", ImVec2(18, 18));
+        EditorGUI::RowSizedBox(8);
+        if (ImGui::Selectable(filename.c_str(), isSelected))
+        {
+        }
+    }
     else if (extention == ".png" || extention == ".PNG")
     {
         EditorGUI::Image(L"\\ProjectSetting\\icons\\icon_img.png", ImVec2(18, 18));
@@ -324,7 +332,7 @@ void ProjectEditorWindow::RenderFileEntry_FBX(const fs::directory_entry& entry, 
 
     wstring path = PathManager::GetI()->GetCutSolutionPath(entry.path().wstring());
 
-    shared_ptr<Mesh> mesh_fbx = ResourceManager::GetI()->LoadMesh(path);
+    shared_ptr<MeshFile> mesh_fbx = ResourceManager::GetI()->LoadFbxModel(wstring_to_string(path));
 
     if (mesh_fbx == nullptr)
         return;
@@ -337,6 +345,13 @@ void ProjectEditorWindow::RenderFileEntry_FBX(const fs::directory_entry& entry, 
     // TreeNode의 상태를 관리
     bool treeNodeOpened = ImGui::TreeNodeEx(wstring_to_string(filename).c_str(), treeFlag);
 
+    if (!isSelected && ImGui::IsItemHovered() && ImGui::IsMouseClicked(0))
+    {
+        // 파일 선택 처리
+        SelectionManager::SetSelectedFile(entry.path().wstring());
+        isSelected = true;
+    }
+
     // 트리 노드에 대한 드래그 앤 드롭 소스 설정
     if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
     {
@@ -348,10 +363,10 @@ void ProjectEditorWindow::RenderFileEntry_FBX(const fs::directory_entry& entry, 
 
     if (treeNodeOpened)
     {
-        for (size_t i = 0; i < mesh_fbx->Subsets.size(); ++i)
+        for (size_t i = 0; i < mesh_fbx->Meshs.size(); ++i)
         {
-            const auto& subset = mesh_fbx->Subsets[i];
-            std::wstring subsetName = string_to_wstring(subset.Name) + std::to_wstring(i + 1);
+            const auto& subset = mesh_fbx->Meshs[i];
+            std::wstring subsetName = string_to_wstring(subset->Name) + std::to_wstring(i + 1);
 
             bool isSubsetSelected = (SelectionManager::GetSelectedFile() == (filename + L"\\" + subsetName));
             ImGui::PushID(static_cast<int>(i));

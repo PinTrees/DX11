@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "InspectorEditorWindow.h"
 #include <filesystem>
+#include "SkinnedMesh.h"
 
 namespace fs = std::filesystem;
 
@@ -39,6 +40,14 @@ void InspectorEditorWindow::OnRender()
 				return;
 
 			material->OnInspectorGUI();
+		}
+		else if (SelectionManager::GetSelectedSubType() == SelectionSubType::FBX)
+		{
+			auto fbxObject = SelectionManager::GetSelectFbxModel();
+			if (fbxObject == nullptr)
+				return;
+
+			fbxObject->OnInspectorGUI();
 		}
 	}
 }

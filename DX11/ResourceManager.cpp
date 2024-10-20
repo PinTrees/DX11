@@ -80,3 +80,37 @@ shared_ptr<Mesh> ResourceManager::LoadMesh(wstring filename)
 
 	return mesh;
 }
+
+shared_ptr<SkinnedMesh> ResourceManager::LoadSkinnedMesh(wstring filename)
+{
+	shared_ptr<SkinnedMesh> mesh = nullptr;
+
+	if (m_SkinnedMeshs.find(filename) != m_SkinnedMeshs.end())
+	{
+		mesh = m_SkinnedMeshs[filename];
+	}
+	else
+	{
+		mesh = make_shared<SkinnedMesh>(Application::GetI()->GetDevice(), wstring_to_string(filename));
+		m_SkinnedMeshs[filename] = mesh;
+	}
+
+	return mesh;
+}
+
+shared_ptr<MeshFile> ResourceManager::LoadFbxModel(string filename)
+{
+	shared_ptr<MeshFile> model = nullptr;
+
+	if (m_FbxModels.find(filename) != m_FbxModels.end())
+	{
+		model = m_FbxModels[filename];
+	}
+	else
+	{
+		model = make_shared<MeshFile>(filename); 
+		m_FbxModels[filename] = model;
+	}
+
+	return model;
+}
