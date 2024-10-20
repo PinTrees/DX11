@@ -6,18 +6,18 @@
 atomic<uint64> GameObject::g_NextInstanceID = 0;
 
 GameObject::GameObject()
-	: m_InstanceID(g_NextInstanceID++),
-	m_LayerIndex(0),
-	m_pParentGameObject(nullptr)
+	: m_InstanceID(g_NextInstanceID++)
+	, m_LayerIndex(0)
+	, m_pParentGameObject(nullptr)
 {
     m_pTransform = AddComponent<Transform>();
 }
 
 GameObject::GameObject(const string& name)
-	: m_Name(name),
-	m_InstanceID(g_NextInstanceID++),
-	m_LayerIndex(0),
-	m_pParentGameObject(nullptr)
+	: m_Name(name)
+	, m_InstanceID(g_NextInstanceID++)
+	, m_LayerIndex(0)
+	, m_pParentGameObject(nullptr)
 {
     m_pTransform = AddComponent<Transform>();
 }
@@ -109,6 +109,15 @@ void GameObject::FixedUpdate()
 {
 }
 
+void GameObject::LastUpdate()
+{
+    for (auto& action : m_Editor_LastUpdateActions)
+    {
+        action();
+    }
+    m_Editor_LastUpdateActions.clear(); 
+}
+
 void GameObject::ApplyPendingComponents()
 {
     for (const auto& component : m_ComponentsToAdd)
@@ -130,11 +139,49 @@ void GameObject::OnInspectorGUI()
     {
         // 이름 변경 시 필요한 추가 작업이 있으면 여기에 추가
     }
-    ImGui::Dummy(ImVec2(0, 4));
 
-    for (const auto& component : m_Components)
+    ImGui::Dummy(ImVec2(0, 4));
+    for (auto it = m_Components.begin(); it != m_Components.end(); ++it)
     {
-        component->RenderInspectorGUI();
+        ImGui::Dummy(ImVec2(ImGui::GetContentRegionAvail().x, 6));
+        if (ImGui::BeginDragDropTarget())
+        {
+            if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("COMPONENT_DRAG")) 
+            {
+                Component* component = *(Component**)payload->Data; 
+                int componentInstanceId = component->GetInstanceID();
+
+                // 드래그된 컴포넌트를 현재 인덱스 위치로 이동
+                if (componentInstanceId != (*it)->GetInstanceID())
+                {
+                    auto draggedIt = std::find_if(m_Components.begin(), m_Components.end(),
+                        [componentInstanceId](const std::shared_ptr<Component>& comp)
+                        {
+                            return comp->GetInstanceID() == componentInstanceId;
+                        });
+
+                    if (draggedIt != m_Components.end())
+                    {
+                        int draggedIndex = std::distance(m_Components.begin(), draggedIt);
+                        int targetIndex = std::distance(m_Components.begin(), it);
+
+                        m_Editor_LastUpdateActions.push_back([this, draggedIndex, targetIndex]()
+                        {
+                            auto draggedIt = m_Components.begin() + draggedIndex; 
+                            auto targetIt = m_Components.begin() + targetIndex; 
+
+                            // 컴포넌트를 타겟 위치에 삽입하고 기존 위치에서 제거
+                            m_Components.insert(targetIt, *draggedIt);
+                            // 삽입 후, 원래 위치의 요소를 제거해야 하므로, draggedIt 재계산 필요
+                            m_Components.erase(m_Components.begin() + (draggedIndex > targetIndex ? draggedIndex + 1 : draggedIndex));
+                        });
+                    }
+                }
+            }
+            ImGui::EndDragDropTarget();
+        }
+
+        (*it)->RenderInspectorGUI();
     }
 
     if (ImGui::Button("Add Component"))

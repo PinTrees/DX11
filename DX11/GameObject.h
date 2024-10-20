@@ -29,6 +29,9 @@ private:
 	vector<GameObject*> m_pChildGameObjects;
 	Transform* m_pTransform;
 
+	// Editor
+	vector<std::function<void()>> m_Editor_LastUpdateActions; 
+
 public:
 	GameObject();
 	GameObject(const string& name);
@@ -48,6 +51,7 @@ public:
 	void Update();
 	void LateUpdate();
 	void FixedUpdate();
+	void LastUpdate(); 
 
 	void SetLayerIndex(uint8 layer) { m_LayerIndex = layer; }
 	uint8 GetLayerIndex() { return m_LayerIndex; }

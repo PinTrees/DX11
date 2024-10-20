@@ -230,7 +230,8 @@ void Scene::LastFramUpdate()
 {
     for (auto& gameObject : m_arrGameObjects[0])
     {
-        gameObject->ApplyPendingComponents();
+        gameObject->LastUpdate(); 
+        gameObject->ApplyPendingComponents(); 
     }
 }
 

@@ -8,6 +8,10 @@
 #include "MeshUtility.h"
 #include "EditorGUI.h"
 
+SkinnedMesh::SkinnedMesh()
+{
+}
+
 SkinnedMesh::SkinnedMesh(ComPtr<ID3D11Device> device, TextureMgr& texMgr, const std::string& modelFilename, const std::wstring& texturePath)
 {
 	std::vector<FbxMaterial> mats;
@@ -79,6 +83,50 @@ SkinnedMesh::SkinnedMesh(ComPtr<ID3D11Device> device, const std::string& modelFi
 
 SkinnedMesh::~SkinnedMesh()
 {
+}
+
+void SkinnedMesh::to_byte(ofstream& outStream)
+{
+	if (!outStream.is_open())
+	{
+		std::cerr << "File stream is not open!" << std::endl;
+		return;
+	}
+
+	// 1. 이름 저장 (문자열) 
+	size_t nameLength = Name.size(); 
+	outStream.write(reinterpret_cast<const char*>(&nameLength), sizeof(size_t)); 
+	outStream.write(Name.c_str(), nameLength); 
+
+	// 2. Vertices 저장 (PosNormalTexTan2 배열)
+	size_t vertexCount = Vertices.size(); 
+	outStream.write(reinterpret_cast<const char*>(&vertexCount), sizeof(size_t)); 
+	outStream.write(reinterpret_cast<const char*>(Vertices.data()), vertexCount * sizeof(Vertex::PosNormalTexTanSkinned));
+
+	// 3. Indices 저장 (USHORT 배열)
+	size_t indexCount = Indices.size(); 
+	outStream.write(reinterpret_cast<const char*>(&indexCount), sizeof(size_t)); 
+	outStream.write(reinterpret_cast<const char*>(Indices.data()), indexCount * sizeof(USHORT)); 
+
+	// 4. Subsets 저장
+	size_t subsetCount = Subsets.size(); 
+	outStream.write(reinterpret_cast<const char*>(&subsetCount), sizeof(size_t)); 
+
+	for (const auto& subset : Subsets)
+	{
+		// 이름 저장 (문자열)
+		size_t subsetNameLength = subset.Name.size(); 
+		outStream.write(reinterpret_cast<const char*>(&subsetNameLength), sizeof(size_t)); 
+		outStream.write(subset.Name.c_str(), subsetNameLength); 
+
+		// 다른 필드들 저장 (Id, MaterialIndex, VertexStart, VertexCount, FaceStart, FaceCount)
+		outStream.write(reinterpret_cast<const char*>(&subset.Id), sizeof(subset.Id));
+		outStream.write(reinterpret_cast<const char*>(&subset.MaterialIndex), sizeof(subset.MaterialIndex));
+		outStream.write(reinterpret_cast<const char*>(&subset.VertexStart), sizeof(subset.VertexStart));
+		outStream.write(reinterpret_cast<const char*>(&subset.VertexCount), sizeof(subset.VertexCount));
+		outStream.write(reinterpret_cast<const char*>(&subset.FaceStart), sizeof(subset.FaceStart));
+		outStream.write(reinterpret_cast<const char*>(&subset.FaceCount), sizeof(subset.FaceCount));
+	}
 }
 
 
@@ -169,6 +217,10 @@ void MeshFile::to_byte(ofstream& outStream)
 	{
 		mesh->to_byte(outStream);
 	}
+	for (const auto& skinnedMesh : SkinnedMeshs)
+	{
+		skinnedMesh->to_byte(outStream);
+	}
 }
 
 void from_json(const json& j, MeshFile& m)
@@ -186,6 +238,10 @@ void to_json(json& j, const MeshFile& m)
 	{
 		json mesh_json = *mesh;
 		meshes_json.push_back(mesh_json); 
+	}
+	for (const auto& skinnedMesh : m.SkinnedMeshs)
+	{
+
 	}
 	j["meshes"] = meshes_json; 
 }

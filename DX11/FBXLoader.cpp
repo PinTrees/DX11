@@ -193,16 +193,35 @@ void FBXLoader::ParsingMeshNode(aiNode* node, const aiScene* scene, MeshFile* mo
 {
     if (node->mNumMeshes > 0) 
     {
-        Mesh* mesh = new Mesh;
-        model->Meshs.push_back(mesh);
-        mesh->Name = node->mName.C_Str();
-
-        for (UINT i = 0; i < node->mNumMeshes; ++i)
+        if (scene->mMeshes[node->mMeshes[0]]->HasBones())
         {
-            aiMesh* aiMesh = scene->mMeshes[node->mMeshes[i]];
-            MeshGeometry::Subset subset;
-            ProcessMesh(aiMesh, scene, mesh->Vertices, mesh->Indices, subset);
-            mesh->Subsets.push_back(subset);
+            SkinnedMesh* mesh = new SkinnedMesh; 
+            model->SkinnedMeshs.push_back(mesh); 
+            mesh->Name = node->mName.C_Str();   
+
+            for (UINT i = 0; i < node->mNumMeshes; ++i)
+            {
+                aiMesh* aiMesh = scene->mMeshes[node->mMeshes[i]];
+
+                MeshGeometry::Subset subset; 
+                ProcessMeshSkinned(aiMesh, scene, mesh->Vertices, mesh->Indices, subset); 
+                mesh->Subsets.push_back(subset);
+            }
+        }
+        else
+        {
+            Mesh* mesh = new Mesh;
+            model->Meshs.push_back(mesh);
+            mesh->Name = node->mName.C_Str();
+
+            for (UINT i = 0; i < node->mNumMeshes; ++i)
+            {
+                aiMesh* aiMesh = scene->mMeshes[node->mMeshes[i]];
+
+                MeshGeometry::Subset subset;
+                ProcessMesh(aiMesh, scene, mesh->Vertices, mesh->Indices, subset);
+                mesh->Subsets.push_back(subset);
+            }
         }
     }
 

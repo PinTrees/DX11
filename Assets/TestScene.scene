@@ -348,6 +348,34 @@
                     "shaderPath": "",
                     "subsetIndex": 0,
                     "type": "MeshRenderer"
+                },
+                {
+                    "aspect": 1.0,
+                    "cameraType": 0,
+                    "farZ": 1000.0,
+                    "fovY": 0.7853981852531433,
+                    "nearZ": 1.0,
+                    "type": "Camera"
+                },
+                {
+                    "offset": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "size": [
+                        5.0,
+                        5.0,
+                        5.0
+                    ],
+                    "type": "BoxCollider"
+                },
+                {
+                    "angularDamping": 0.9900000095367432,
+                    "isKinematic": false,
+                    "m_LinearDamping": 0.9900000095367432,
+                    "mass": 1.0,
+                    "type": "RigidBody"
                 }
             ],
             "name": "RockMesh2\u0000"

@@ -22,10 +22,13 @@ struct SkinnedMeshlInstance
 
 class SkinnedMesh
 {
-public:
+public: 
+	SkinnedMesh();
 	SkinnedMesh(ComPtr<ID3D11Device> device, TextureMgr& texMgr, const std::string& modelFilename, const std::wstring& texturePath);
 	SkinnedMesh(ComPtr<ID3D11Device> device, const std::string& modelFilename);
 	~SkinnedMesh();
+
+	void to_byte(ofstream& outStream);
 
 	uint32					SubsetCount;
 	std::vector<Material>	Mat;
@@ -43,7 +46,7 @@ public:
 
 	BouncingBall	Ball;
 	wstring			Path;
-	wstring			Name;
+	string			Name;
 };
 
 class MeshFile
