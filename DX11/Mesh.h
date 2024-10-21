@@ -8,8 +8,6 @@ class Mesh
 {
 public:
 	Mesh();
-	Mesh(ComPtr<ID3D11Device> device, TextureMgr& texMgr, const std::string& modelFilename, const std::wstring& texturePath);
-	Mesh(ComPtr<ID3D11Device> device, const std::string& modelFilename);
 	~Mesh();
 	
 	void Setup();

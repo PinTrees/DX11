@@ -35,35 +35,19 @@ struct Subset
 class FBXLoader
 {
 public:
-    bool LoadFBX(const std::string& filename,
-        std::vector<Vertex::PosNormalTexTan2>& vertices,
-        std::vector<USHORT>& indices,
-        std::vector<MeshGeometry::Subset>& subsets,
-        std::vector<FbxMaterial>& mats);
-
-    bool LoadFBX(
-        const std::string& filename,
-        vector<Vertex::PosNormalTexTanSkinned>& vertices,
-        vector<USHORT>& indices,
-        vector<MeshGeometry::Subset>& subsets,
-        vector<FbxMaterial>& materials,
-        SkinnedData& skinInfo);
-
     bool LoadModelFbx( 
         const std::string& filename, 
         MeshFile* skinnedModel);
+
+    bool LoadAnimation(
+        const std::string& filename,
+        SkinnedData& skinnedData); 
 
 private:
     void ParsingMeshNode(
         aiNode* node,
         const aiScene* scene,
         MeshFile* model); 
-
-    void ProcessNode(
-        aiNode* node,
-        const aiScene* scene,
-        vector<Vertex::PosNormalTexTan2>& vertices,
-        vector<USHORT>& indices, vector<MeshGeometry::Subset>& subsets);
 
     void ProcessMesh(
         aiMesh* mesh,
@@ -76,4 +60,7 @@ private:
         const aiScene* scene,
         vector<Vertex::PosNormalTexTanSkinned>& vertices, 
         vector<USHORT>& indices, MeshGeometry::Subset& subset);
+
+    void ParseAnimations(const aiScene* scene, SkinnedData& skinnedData);
+    void ReadAnimationNode(const aiAnimation* aiAnimation, SkinnedData& skinnedData);
 };

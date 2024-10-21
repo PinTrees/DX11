@@ -44,12 +44,16 @@ struct AnimationClip
 
 	void Interpolate(float t, std::vector<XMFLOAT4X4>& boneTransforms)const;
 
-	std::vector<BoneAnimation> BoneAnimations;
+	std::vector<BoneAnimation>	BoneAnimations;
+	string						Name;
 };
 
 class SkinnedData
 {
 public:
+	SkinnedData(); 
+	~SkinnedData(); 
+
 	uint32 BoneCount() const;
 
 	float GetClipStartTime(const std::string& clipName) const;
@@ -65,6 +69,9 @@ public:
 	// the same timePos.
 	void GetFinalTransforms(const std::string& clipName, float timePos,
 		std::vector<XMFLOAT4X4>& finalTransforms)const;
+
+public:
+	vector<AnimationClip> AnimationClips; 
 
 private:
 	// Gives parentIndex of ith bone.

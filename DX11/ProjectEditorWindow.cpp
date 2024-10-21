@@ -366,7 +366,7 @@ void ProjectEditorWindow::RenderFileEntry_FBX(const fs::directory_entry& entry, 
         for (size_t i = 0; i < mesh_fbx->SkinnedMeshs.size(); ++i)
         {
             const auto& subset = mesh_fbx->SkinnedMeshs[i]; 
-            std::wstring subsetName = L"Skinned - " + string_to_wstring(subset->Name) + std::to_wstring(i + 1);
+            std::wstring subsetName = L"Skinned - " + string_to_wstring(subset->Name);
 
             bool isSubsetSelected = (SelectionManager::GetSelectedFile() == (filename + L"\\" + subsetName));
             ImGui::PushID(static_cast<int>(i));
@@ -389,7 +389,7 @@ void ProjectEditorWindow::RenderFileEntry_FBX(const fs::directory_entry& entry, 
         for (size_t i = 0; i < mesh_fbx->Meshs.size(); ++i)
         {
             const auto& subset = mesh_fbx->Meshs[i];
-            std::wstring subsetName = L"Static - " + string_to_wstring(subset->Name) + std::to_wstring(i + 1);
+            std::wstring subsetName = L"Static - " + string_to_wstring(subset->Name);
 
             bool isSubsetSelected = (SelectionManager::GetSelectedFile() == (filename + L"\\" + subsetName));
             ImGui::PushID(static_cast<int>(i));
@@ -406,7 +406,19 @@ void ProjectEditorWindow::RenderFileEntry_FBX(const fs::directory_entry& entry, 
                 ImGui::Text("Dragging %s", wstring_to_string(subsetName).c_str());
                 ImGui::EndDragDropSource();
             }
-
+            ImGui::PopID();
+        }
+        for (size_t i = 0; i < mesh_fbx->SkinnedData.AnimationClips.size(); ++i) 
+        {
+            auto animationClip = mesh_fbx->SkinnedData.AnimationClips[i]; 
+            std::wstring subsetName = L"AnimationClip - " + string_to_wstring(animationClip.Name); 
+        
+            bool isSubsetSelected = (SelectionManager::GetSelectedFile() == (filename + L"\\" + subsetName));  
+            ImGui::PushID(static_cast<int>(i)); 
+            if (ImGui::Selectable(wstring_to_string(subsetName).c_str(), isSubsetSelected)) 
+            {
+                SelectionManager::SetSelectedFile(filename + L"\\" + subsetName);
+            } 
             ImGui::PopID();
         }
         ImGui::TreePop();

@@ -75,8 +75,9 @@ namespace Vertex
 		XMFLOAT3 normal;
 		XMFLOAT2 tex;
 		XMFLOAT4 tangentU;
-		XMFLOAT3 weights;
-		BYTE boneIndices[4];
+		XMFLOAT3 weights; 
+		BYTE boneIndices[4];   
+		//BYTE color[4];
 	};
 }
  

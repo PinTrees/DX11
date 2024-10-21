@@ -196,10 +196,16 @@ void MeshFile::OnInspectorGUI()
 	EditorGUI::LabelHeader(Name + " Fbx Import Setting");
 
 	ImGui::Dummy(ImVec2(0, 4));
+	//EditorGUI::LabelHeader("Vertices", );
+	ImGui::Dummy(ImVec2(0, 4));
 
 	if (EditorGUI::Button("Import Fbx Mesh"))
 	{
 		ImportFile(); 
+	}
+	if (EditorGUI::Button("Import Aninmations"))
+	{
+		ImportAnimation();
 	}
 }
 
@@ -217,6 +223,14 @@ void MeshFile::ImportFile()
 	// FbxModel 바이너리 저장
 	to_byte(outStream);
 	outStream.close();
+}
+
+void MeshFile::ImportAnimation()
+{
+	SkinnedData.AnimationClips.clear();
+
+	FBXLoader fbxLoader;
+	fbxLoader.LoadAnimation(FullPath, SkinnedData);
 }
 
 

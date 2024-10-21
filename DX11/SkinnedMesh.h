@@ -56,6 +56,8 @@ public:
 
 	vector<SkinnedMesh*> SkinnedMeshs;
 	vector<Mesh*>		Meshs; 
+	SkinnedData			SkinnedData;
+
 	wstring				Path;  
 	string				FullPath;
 	string				Name;
@@ -65,6 +67,7 @@ public:
 
 public:
 	void ImportFile(); 
+	void ImportAnimation();
 
 	void from_byte(ifstream& inStream);
 	void to_byte(ofstream& outStream);

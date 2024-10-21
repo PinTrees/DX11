@@ -156,21 +156,21 @@ bool SkinnedMeshDemo::Init()
 	modelOffset = ::XMMatrixTranslation(2.0f, 0.0f, -7.0f);
 	::XMStoreFloat4x4(&_characterInstance2.World, modelScale * modelRot * modelOffset);
 
-	model = make_shared<Mesh>(_device, _texMgr, "../Resources/Meshs/Banana.fbx", L"../Resources/Textures/");
-
-	for (int i = 0; i < 1; ++i)
-	{
-		MeshInstance rockInstance1;
-
-		rockInstance1.Model = model;
-
-		modelScale = ::XMMatrixScaling(1.0f, 1.0f, 1.0f);
-		modelRot = ::XMMatrixRotationY(MathHelper::Pi);
-		modelOffset = ::XMMatrixTranslation(2.0f, 0.0f, -8.0f);
-		::XMStoreFloat4x4(&rockInstance1.World, modelScale * modelRot * modelOffset);
-
-		_modelInstances.push_back(rockInstance1);
-	}
+	//model = make_shared<Mesh>(_device, _texMgr, "../Resources/Meshs/Banana.fbx", L"../Resources/Textures/");
+	//
+	//for (int i = 0; i < 1; ++i)
+	//{
+	//	MeshInstance rockInstance1;
+	//
+	//	rockInstance1.Model = model;
+	//
+	//	modelScale = ::XMMatrixScaling(1.0f, 1.0f, 1.0f);
+	//	modelRot = ::XMMatrixRotationY(MathHelper::Pi);
+	//	modelOffset = ::XMMatrixTranslation(2.0f, 0.0f, -8.0f);
+	//	::XMStoreFloat4x4(&rockInstance1.World, modelScale * modelRot * modelOffset);
+	//
+	//	_modelInstances.push_back(rockInstance1);
+	//}
 
 	return true;
 }

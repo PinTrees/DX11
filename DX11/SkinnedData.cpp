@@ -122,6 +122,14 @@ float SkinnedData::GetClipEndTime(const std::string& clipName)const
 	return clip->second.GetClipEndTime();
 }
 
+SkinnedData::SkinnedData()
+{
+}
+
+SkinnedData::~SkinnedData()
+{
+}
+
 uint32 SkinnedData::BoneCount()const
 {
 	return _boneHierarchy.size();
