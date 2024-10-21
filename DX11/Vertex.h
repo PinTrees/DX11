@@ -79,6 +79,7 @@ namespace Vertex
 		BYTE boneIndices[4];
 	};
 }
+ 
 
 class InputLayoutDesc
 {

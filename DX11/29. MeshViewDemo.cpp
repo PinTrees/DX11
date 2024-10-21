@@ -92,22 +92,25 @@ bool MeshViewDemo::Init()
 		auto ssss = transform->GetWorldMatrix();
 		XMMATRIX world = XMLoadFloat4x4(&ssss);
 
-		for (uint32 j = 0; j < meshRenderer->GetMesh()->Vertices.size(); ++j)
+		if (meshRenderer->GetMesh() != nullptr)
 		{
-			XMFLOAT3 localPos = meshRenderer->GetMesh()->Vertices[j].pos;
-			XMVECTOR localPosVec = XMLoadFloat3(&localPos);
-			XMVECTOR worldPosVec = XMVector3TransformCoord(localPosVec, world);
+			for (uint32 j = 0; j < meshRenderer->GetMesh()->Vertices.size(); ++j)
+			{
+				XMFLOAT3 localPos = meshRenderer->GetMesh()->Vertices[j].pos;
+				XMVECTOR localPosVec = XMLoadFloat3(&localPos);
+				XMVECTOR worldPosVec = XMVector3TransformCoord(localPosVec, world);
 
-			XMFLOAT3 worldPos;
-			XMStoreFloat3(&worldPos, worldPosVec);
+				XMFLOAT3 worldPos;
+				XMStoreFloat3(&worldPos, worldPosVec);
 
-			minPt.x = MathHelper::Min(minPt.x, worldPos.x);
-			minPt.y = MathHelper::Min(minPt.y, worldPos.y);
-			minPt.z = MathHelper::Min(minPt.z, worldPos.z);
+				minPt.x = MathHelper::Min(minPt.x, worldPos.x);
+				minPt.y = MathHelper::Min(minPt.y, worldPos.y);
+				minPt.z = MathHelper::Min(minPt.z, worldPos.z);
 
-			maxPt.x = MathHelper::Max(maxPt.x, worldPos.x);
-			maxPt.y = MathHelper::Max(maxPt.y, worldPos.y);
-			maxPt.z = MathHelper::Max(maxPt.z, worldPos.z);
+				maxPt.x = MathHelper::Max(maxPt.x, worldPos.x);
+				maxPt.y = MathHelper::Max(maxPt.y, worldPos.y);
+				maxPt.z = MathHelper::Max(maxPt.z, worldPos.z);
+			}
 		}
 	}
 	

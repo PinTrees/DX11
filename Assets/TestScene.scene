@@ -182,53 +182,54 @@
             "components": [
                 {
                     "m_EulerAngles": [
-                        -0.0,
-                        -5.9285540886244714e-12,
-                        -0.0
+                        90.0,
+                        68.80000305175781,
+                        -9.44375824474264e-06
                     ],
                     "m_LocalEulerAngles": [
-                        0.0,
-                        0.0,
+                        90.0,
+                        68.80000305175781,
                         0.0
                     ],
                     "m_LocalEulerRadians": [
-                        0.0,
-                        0.0,
+                        1.5707963705062866,
+                        1.2007865905761719,
                         0.0
                     ],
                     "m_LocalPosition": [
-                        58.70000076293945,
-                        0.0,
-                        42.400001525878906
+                        72.30000305175781,
+                        -5.400000095367432,
+                        57.0
                     ],
                     "m_LocalRotation": {
-                        "w": 1.0,
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
+                        "w": 0.5834433436393738,
+                        "x": 0.5834433436393738,
+                        "y": 0.3994919955730438,
+                        "z": -0.3994920253753662
                     },
                     "m_LocalScale": [
-                        1.0,
-                        1.0,
-                        1.0
+                        0.5,
+                        0.5,
+                        0.5
                     ],
                     "m_Position": [
-                        58.70000076293945,
-                        0.0,
-                        42.400001525878906
+                        72.30000305175781,
+                        -5.400000095367432,
+                        57.0
                     ],
                     "m_Scale": [
-                        1.0,
-                        1.0,
-                        1.0
+                        0.5,
+                        0.5,
+                        0.5
                     ],
                     "type": "Transform"
                 },
                 {
                     "m_MaterialPaths": [
-                        "Assets\\Art\\New Material.mat",
-                        "Assets\\Art\\New Material.mat",
-                        "Assets\\Art\\New Material.mat",
+                        "Assets\\Art\\Character\\New Material.mat",
+                        "Assets\\Art\\Character\\New Material.mat",
+                        "Assets\\Art\\Character\\New Material.mat",
+                        "Assets\\Art\\Character\\New Material.mat",
                         ""
                     ],
                     "meshPath": "Assets\\Art\\Character\\Model_Unity_Ver1.FBX",
@@ -244,9 +245,9 @@
             "components": [
                 {
                     "m_EulerAngles": [
-                        0.0,
-                        0.0,
-                        0.0
+                        -0.0,
+                        -5.9285540886244714e-12,
+                        -0.0
                     ],
                     "m_LocalEulerAngles": [
                         0.0,
@@ -280,9 +281,9 @@
                         0.0
                     ],
                     "m_Scale": [
-                        0.0,
-                        0.0,
-                        0.0
+                        1.0,
+                        1.0,
+                        1.0
                     ],
                     "type": "Transform"
                 },
@@ -292,11 +293,189 @@
                     ],
                     "meshPath": "Assets\\Art\\ENV\\Rock\\Mossy_rock_var8.fbx",
                     "shaderPath": "",
-                    "subsetIndex": 0,
+                    "subsetIndex": 1,
                     "type": "MeshRenderer"
                 }
             ],
             "name": "RockMesh\u0000t"
+        },
+        {
+            "children": [],
+            "components": [
+                {
+                    "m_EulerAngles": [
+                        180.0,
+                        -81.6999740600586,
+                        180.0
+                    ],
+                    "m_LocalEulerAngles": [
+                        0.0,
+                        -98.30000305175781,
+                        0.0
+                    ],
+                    "m_LocalEulerRadians": [
+                        0.0,
+                        -1.7156586647033691,
+                        0.0
+                    ],
+                    "m_LocalPosition": [
+                        69.0999984741211,
+                        -6.199999809265137,
+                        -35.400001525878906
+                    ],
+                    "m_LocalRotation": {
+                        "w": 0.6540809273719788,
+                        "x": 0.0,
+                        "y": -0.7564245462417603,
+                        "z": 0.0
+                    },
+                    "m_LocalScale": [
+                        0.30000001192092896,
+                        0.30000001192092896,
+                        0.30000001192092896
+                    ],
+                    "m_Position": [
+                        69.0999984741211,
+                        -6.199999809265137,
+                        -35.400001525878906
+                    ],
+                    "m_Scale": [
+                        0.30000001192092896,
+                        0.30000001192092896,
+                        0.30000001192092896
+                    ],
+                    "type": "Transform"
+                },
+                {
+                    "m_MaterialPaths": [
+                        "Assets\\Art\\Model\\SM_barricade\\New Material.mat",
+                        "Assets\\Art\\Model\\SM_barricade\\New Material.mat"
+                    ],
+                    "meshPath": "Assets\\Art\\Model\\SM_barricade\\SM_barricade.fbx",
+                    "shaderPath": "",
+                    "subsetIndex": 3,
+                    "type": "MeshRenderer"
+                }
+            ],
+            "name": "Barricade\u0000"
+        },
+        {
+            "children": [],
+            "components": [
+                {
+                    "m_EulerAngles": [
+                        -0.0,
+                        36.60000228881836,
+                        -0.0
+                    ],
+                    "m_LocalEulerAngles": [
+                        0.0,
+                        36.599998474121094,
+                        0.0
+                    ],
+                    "m_LocalEulerRadians": [
+                        0.0,
+                        0.638790488243103,
+                        0.0
+                    ],
+                    "m_LocalPosition": [
+                        54.400001525878906,
+                        -9.800000190734863,
+                        41.20000076293945
+                    ],
+                    "m_LocalRotation": {
+                        "w": 0.949425458908081,
+                        "x": 0.0,
+                        "y": 0.313992440700531,
+                        "z": 0.0
+                    },
+                    "m_LocalScale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "m_Position": [
+                        54.400001525878906,
+                        -9.800000190734863,
+                        41.20000076293945
+                    ],
+                    "m_Scale": [
+                        0.9999999403953552,
+                        1.0,
+                        0.9999999403953552
+                    ],
+                    "type": "Transform"
+                },
+                {
+                    "m_MaterialPaths": [
+                        "Assets\\Art\\ENV\\Forest_Ground_scans\\Forest_ground_scan_var3\\New Material.mat"
+                    ],
+                    "meshPath": "Assets\\Art\\ENV\\Forest_Ground_scans\\Forest_ground_scan_var3\\Forest_ground_scan_var3.fbx",
+                    "shaderPath": "",
+                    "subsetIndex": 2,
+                    "type": "MeshRenderer"
+                }
+            ],
+            "name": "Ground\u0000ect"
+        },
+        {
+            "children": [],
+            "components": [
+                {
+                    "m_EulerAngles": [
+                        -0.0,
+                        -5.9285540886244714e-12,
+                        -0.0
+                    ],
+                    "m_LocalEulerAngles": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "m_LocalEulerRadians": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "m_LocalPosition": [
+                        -64.19999694824219,
+                        0.0,
+                        0.0
+                    ],
+                    "m_LocalRotation": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "m_LocalScale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "m_Position": [
+                        -64.19999694824219,
+                        0.0,
+                        0.0
+                    ],
+                    "m_Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "type": "Transform"
+                },
+                {
+                    "m_MaterialPaths": [
+                        ""
+                    ],
+                    "meshPath": "",
+                    "shaderPath": "",
+                    "subsetIndex": 0,
+                    "type": "MeshRenderer"
+                }
+            ],
+            "name": "BaseBody\u0000\u0000"
         }
     ]
 }

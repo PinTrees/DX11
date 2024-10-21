@@ -71,12 +71,6 @@ private:
         vector<Vertex::PosNormalTexTan2>& vertices,
         vector<USHORT>& indices, MeshGeometry::Subset& subset);
 
-    void ProcessNodeSkinned(
-        aiNode* node,
-        const aiScene* scene,
-        vector<Vertex::PosNormalTexTanSkinned>& vertices, 
-        vector<USHORT>& indices, vector<MeshGeometry::Subset>& subsets);
-
     void ProcessMeshSkinned(
         aiMesh* mesh,
         const aiScene* scene,

@@ -233,6 +233,8 @@ void Mesh::from_byte(ifstream& inStream)
 		inStream.read(reinterpret_cast<char*>(&subset.FaceStart), sizeof(subset.FaceStart));
 		inStream.read(reinterpret_cast<char*>(&subset.FaceCount), sizeof(subset.FaceCount));
 	}
+
+	Setup();
 }
 
 void Mesh::to_byte(ofstream& outStream)

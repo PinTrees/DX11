@@ -24,7 +24,6 @@ class SkinnedMesh
 {
 public: 
 	SkinnedMesh();
-	SkinnedMesh(ComPtr<ID3D11Device> device, const std::string& modelFilename);
 	~SkinnedMesh();
 
 public:
@@ -66,8 +65,6 @@ public:
 
 public:
 	void ImportFile(); 
-	friend void from_json(const json& j, MeshFile& m);
-	friend void to_json(json& j, const MeshFile& m);
 
 	void from_byte(ifstream& inStream);
 	void to_byte(ofstream& outStream);

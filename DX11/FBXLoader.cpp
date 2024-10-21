@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "FBXLoader.h"
 
-
 bool FBXLoader::LoadFBX(
     const std::string& filename,
     vector<Vertex::PosNormalTexTan2>& vertices,
@@ -120,23 +119,23 @@ bool FBXLoader::LoadFBX(
         }
     }
 
-    // Process nodes (and meshes)
-    ProcessNodeSkinned(scene->mRootNode, scene, vertices, indices, subsets);
-
     return true;
 }
 
 bool FBXLoader::LoadModelFbx(const std::string& filename, MeshFile* skinnedModel)
 {
     Assimp::Importer importer; 
-    const aiScene* scene = importer.ReadFile(
-        filename,
-        aiProcess_ConvertToLeftHanded |
-        aiProcess_Triangulate |
-        aiProcess_GenUVCoords |
-        aiProcess_GenNormals |
-        aiProcess_CalcTangentSpace
-    );
+    //const aiScene* scene = importer.ReadFile(filename, aiProcess_Triangulate | aiProcess_ConvertToLeftHanded);
+    const aiScene* scene = importer.ReadFile( 
+        filename, 
+        aiProcess_ConvertToLeftHanded |  
+        aiProcess_Triangulate |  
+        aiProcess_GenUVCoords |  
+        aiProcess_GenNormals |  
+        aiProcess_CalcTangentSpace |
+        aiProcess_JoinIdenticalVertices |
+        aiProcess_SortByPType 
+    ); 
 
     if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
     {
@@ -151,7 +150,6 @@ bool FBXLoader::LoadModelFbx(const std::string& filename, MeshFile* skinnedModel
 
     return true;
 }
-
 
 void FBXLoader::ParsingMeshNode(aiNode* node, const aiScene* scene, MeshFile* model)
 {
@@ -182,7 +180,8 @@ void FBXLoader::ParsingMeshNode(aiNode* node, const aiScene* scene, MeshFile* mo
                     mesh->Mat[i].Specular = XMFLOAT4(color.r, color.g, color.b, 1.0f);
             }
 
-            for (UINT i = 0; i < node->mNumMeshes; ++i)
+            mesh->Vertices.clear(); 
+            for (UINT i = 0; i < node->mNumMeshes; ++i) 
             {
                 aiMesh* aiMesh = scene->mMeshes[node->mMeshes[i]];
 
@@ -218,9 +217,10 @@ void FBXLoader::ParsingMeshNode(aiNode* node, const aiScene* scene, MeshFile* mo
                     mesh->Mat[i].Specular = XMFLOAT4(color.r, color.g, color.b, 1.0f);
             }
 
-            for (UINT i = 0; i < node->mNumMeshes; ++i)
+            for (uint32 i = 0; i < node->mNumMeshes; ++i) 
             {
-                aiMesh* aiMesh = scene->mMeshes[node->mMeshes[i]];
+                uint32 index = node->mMeshes[i];
+                aiMesh* aiMesh = scene->mMeshes[index]; 
 
                 MeshGeometry::Subset subset;
                 ProcessMesh(aiMesh, scene, mesh->Vertices, mesh->Indices, subset);
@@ -271,11 +271,15 @@ void FBXLoader::ProcessMesh(
     subset.FaceCount = mesh->mNumFaces;
     subset.MaterialIndex = mesh->mMaterialIndex;
 
+
     for (UINT i = 0; i < mesh->mNumVertices; ++i)
     {
         Vertex::PosNormalTexTan2 vertex;
         vertex.pos = XMFLOAT3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z);
-        vertex.normal = XMFLOAT3(mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z);
+
+        // Normal
+        if (mesh->HasNormals())
+            ::memcpy(&vertex.normal, &mesh->mNormals[i], sizeof(XMFLOAT3));  
 
         // UV
         if (mesh->HasTextureCoords(0))
@@ -296,29 +300,6 @@ void FBXLoader::ProcessMesh(
     }
 }
 
-void FBXLoader::ProcessNodeSkinned(
-    aiNode* node, 
-    const aiScene* scene,
-    vector<Vertex::PosNormalTexTanSkinned>& vertices,
-    vector<USHORT>& indices, 
-    vector<MeshGeometry::Subset>& subsets)
-{
-    for (UINT i = 0; i < node->mNumMeshes; ++i)
-    {
-        aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-        MeshGeometry::Subset subset;
-        subset.Name = node->mName.C_Str();
-        ProcessMeshSkinned(mesh, scene, vertices, indices, subset);
-        subsets.push_back(subset);
-    }
-
-    for (UINT i = 0; i < node->mNumChildren; ++i)
-    {
-        ProcessNodeSkinned(node->mChildren[i], scene, vertices, indices, subsets);
-    }
-}
-
-
 void FBXLoader::ProcessMeshSkinned(
     aiMesh* mesh, 
     const aiScene* scene, 
@@ -328,18 +309,22 @@ void FBXLoader::ProcessMeshSkinned(
 {
     subset.Name = mesh->mName.C_Str(); 
     subset.VertexStart = vertices.size();
-    subset.FaceStart = indices.size() / 3;
-    subset.VertexCount = mesh->mNumVertices;
+    subset.FaceStart = indices.size() / 3; 
+    subset.VertexCount = mesh->mNumVertices; 
     subset.FaceCount = mesh->mNumFaces;
     subset.MaterialIndex = mesh->mMaterialIndex; 
 
-    for (UINT i = 0; i < mesh->mNumVertices; ++i)
+    const uint32 startVertex = vertices.size();
+
+    for (uint32 i = 0; i < mesh->mNumVertices; ++i) 
     {
         Vertex::PosNormalTexTanSkinned vertex;
         vertex.pos = XMFLOAT3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z);
-        vertex.normal = XMFLOAT3(mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z);
 
-        // UV
+        // Normal
+        if (mesh->HasNormals())
+            ::memcpy(&vertex.normal, &mesh->mNormals[i], sizeof(XMFLOAT3));
+
         if (mesh->HasTextureCoords(0))
             ::memcpy(&vertex.tex, &mesh->mTextureCoords[0][i], sizeof(Vec2));
         
@@ -347,21 +332,20 @@ void FBXLoader::ProcessMeshSkinned(
 
         memset(vertex.boneIndices, 0, sizeof(vertex.boneIndices));
         vertex.weights = XMFLOAT3(0.0f, 0.0f, 0.0f);
-
-        vertices.push_back(vertex);
+        vertices.push_back(vertex); // 새 버텍스 추가
     }
 
     for (UINT i = 0; i < mesh->mNumBones; ++i)
     {
         aiBone* bone = mesh->mBones[i];
         int boneID = i;
-
+    
         for (UINT j = 0; j < bone->mNumWeights; ++j)
         {
-            UINT vertexID = bone->mWeights[j].mVertexId;
+            UINT vertexID = bone->mWeights[j].mVertexId; // 오프셋을 더해 올바른 버텍스 참조  
             float weight = bone->mWeights[j].mWeight;
-
-            // Assign the bone weight and index to the vertex
+    
+            // Assign the bone weight and index to the vertex 
             for (int k = 0; k < 4; ++k)
             {
                 if (vertices[vertexID].weights.x == 0.0f)
@@ -386,12 +370,13 @@ void FBXLoader::ProcessMeshSkinned(
         }
     }
 
+    // 인덱스 추가
     for (UINT i = 0; i < mesh->mNumFaces; ++i)
     {
         aiFace face = mesh->mFaces[i];
         for (UINT j = 0; j < face.mNumIndices; ++j)
         {
-            indices.push_back(face.mIndices[j]);
+            indices.push_back(face.mIndices[j]); // 버텍스의 오프셋을 더하여 올바른 인덱스 참조 
         }
     }
 }

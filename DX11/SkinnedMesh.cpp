@@ -12,51 +12,6 @@ SkinnedMesh::SkinnedMesh()
 {
 }
 
-SkinnedMesh::SkinnedMesh(ComPtr<ID3D11Device> device, const std::string& modelFilename)
-{
-	string modelfilepath = PathManager::GetI()->GetMovePathS(modelFilename);
-
-	std::string fileExtension = File::GetExtension(modelfilepath); 
-
-	if (fileExtension == "fbx" || fileExtension == "FBX")
-	{
-		std::vector<FbxMaterial> mats;
-
-		FBXLoader fbxLoader;
-		fbxLoader.LoadFBX(modelfilepath, Vertices, Indices, Subsets, mats, SkinnedData); 
-
-		Vec3 minVertex = { +MathHelper::Infinity, +MathHelper::Infinity, +MathHelper::Infinity };
-		Vec3 maxVertex = { -MathHelper::Infinity, -MathHelper::Infinity, -MathHelper::Infinity };
-		for (int i = 0; i < Vertices.size(); i++)
-		{
-			if (Vertices[i].pos.x < minVertex.x) minVertex.x = Vertices[i].pos.x;
-			if (Vertices[i].pos.y < minVertex.y) minVertex.y = Vertices[i].pos.y;
-			if (Vertices[i].pos.z < minVertex.z) minVertex.z = Vertices[i].pos.z;
-
-			if (Vertices[i].pos.x > maxVertex.x) maxVertex.x = Vertices[i].pos.x;
-			if (Vertices[i].pos.y > maxVertex.y) maxVertex.y = Vertices[i].pos.y;
-			if (Vertices[i].pos.z > maxVertex.z) maxVertex.z = Vertices[i].pos.z;
-		}
-
-		Ball.center.x = (minVertex.x + maxVertex.x) / 2;
-		Ball.center.y = (minVertex.y + maxVertex.y) / 2;
-		Ball.center.z = (minVertex.z + maxVertex.z) / 2;
-
-		Ball.radius =  MeshUtility::ComputeBoundingRadius(Ball.center, Vertices);
-
-		ModelMesh.SetVertices(device, &Vertices[0], Vertices.size());
-		ModelMesh.SetIndices(device, &Indices[0], Indices.size());
-		ModelMesh.SetSubsetTable(Subsets);
-
-		SubsetCount = mats.size();
-
-		for (uint32 i = 0; i < SubsetCount; ++i)
-		{
-			Mat.push_back(mats[i].Mat);
-		}
-	}
-}
-
 SkinnedMesh::~SkinnedMesh()
 {
 }
@@ -273,8 +228,6 @@ void MeshFile::from_byte(ifstream& inStream)
 		return;
 	}
 
-	// 이름의 길이를 읽고, 그 길이만큼 문자열을 읽음
-// 이름의 길이를 읽고, 그 길이만큼 문자열을 읽음
 	size_t nameLength = 0;
 	inStream.read(reinterpret_cast<char*>(&nameLength), sizeof(size_t));
 
@@ -334,27 +287,4 @@ void MeshFile::to_byte(ofstream& outStream)
 	{
 		skinnedMesh->to_byte(outStream);
 	}
-}
-
-void from_json(const json& j, MeshFile& m)
-{
-
-}
-
-void to_json(json& j, const MeshFile& m)
-{
-	SERIALIZE_TYPE(j, MeshFile);
-	SERIALIZE_STRING(j, m.Name, "name");
-
-	json meshes_json = json::array();
-	for (const auto& mesh : m.Meshs)
-	{
-		json mesh_json = *mesh;
-		meshes_json.push_back(mesh_json); 
-	}
-	for (const auto& skinnedMesh : m.SkinnedMeshs)
-	{
-
-	}
-	j["meshes"] = meshes_json; 
 }

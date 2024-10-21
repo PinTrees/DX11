@@ -61,6 +61,7 @@ void MeshSelectEditorDialog::OnRender()
 {
     static Mesh* selectMesh = nullptr;
     static SkinnedMesh* selectSkinnedMesh = nullptr;
+    static int index = 0;
 
     // 스크롤 가능한 영역을 시작 (ID를 부여)
     ImGui::BeginChild("ScrollableRegion", ImVec2(0, -40), true, ImGuiWindowFlags_HorizontalScrollbar);
@@ -75,6 +76,7 @@ void MeshSelectEditorDialog::OnRender()
 
         if (m_SelectMesh)
         {
+            int i = 0; 
             for (auto mesh : meshFile->Meshs)
             {
                 EditorGUI::Image(L"\\ProjectSetting\\icons\\icon_mesh.png", ImVec2(18, 18));
@@ -83,11 +85,14 @@ void MeshSelectEditorDialog::OnRender()
                 if (ImGui::Selectable(("Static - " + mesh->Name).c_str(), selectMesh == mesh))
                 {
                     selectMesh = mesh;
+                    index = i;
                 }
+                i++;
             }
         }
         if (m_SelectSkinnedMesh)
         {
+            int i = 0;
             for (auto skinnedMesh : meshFile->SkinnedMeshs)
             {
                 EditorGUI::Image(L"\\ProjectSetting\\icons\\icon_mesh.png", ImVec2(18, 18));
@@ -96,7 +101,9 @@ void MeshSelectEditorDialog::OnRender()
                 if (ImGui::Selectable(("Skinned - " + skinnedMesh->Name).c_str(), selectSkinnedMesh == skinnedMesh))
                 {
                     selectSkinnedMesh = skinnedMesh;
+                    index = i;
                 }
+                i++;
             }
         }
     }
@@ -106,8 +113,14 @@ void MeshSelectEditorDialog::OnRender()
     {
         if (m_SelectSkinnedMesh) 
         { 
-            m_SelectSkinnedMesh = selectSkinnedMesh;  
+            *m_SelectSkinnedMesh = *selectSkinnedMesh;  
+            m_SelectSubsetIndex = index;  
         } 
+        if (m_SelectMesh)
+        {
+            *m_SelectMesh = *selectMesh; 
+            m_SelectSubsetIndex = index;
+        }
         Close();  
     }
 }

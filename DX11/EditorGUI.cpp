@@ -344,20 +344,7 @@ bool EditorGUI::MeshField(string title, shared_ptr<Mesh>& mesh, int& subsetIndex
 
         if (EditorGUI::Button("+", Vec2(20, 20), Color(0.20f, 0.20f, 0.20f, 1.0f)))
         {
-            wstring filePath = EditorUtility::OpenFileDialog(PathManager::GetI()->GetMovePathW(L"Assets\\"), L"Mesh", { L"fbx" });
-            filePath = PathManager::GetI()->GetCutSolutionPath(filePath);
-
-            if (!filePath.empty())
-            {
-                auto newMesh = ResourceManager::GetI()->LoadMesh(filePath, 0);
-                if (newMesh)
-                {
-                    mesh = newMesh;
-                    mesh->Path = filePath;
-                    subsetIndex = 0;
-                    isDirty = true;
-                }
-            }
+            MeshSelectEditorDialog::Open(mesh.get(), nullptr, subsetIndex);
         }
     }
     ImGui::EndChild();
@@ -397,21 +384,6 @@ bool EditorGUI::SkinnedMeshField(string title, shared_ptr<SkinnedMesh>& mesh, in
         if (EditorGUI::Button("+", Vec2(20, 20), Color(0.20f, 0.20f, 0.20f, 1.0f)))
         {
             MeshSelectEditorDialog::Open(nullptr, mesh.get(), subsetIndex); 
-
-            //wstring filePath = EditorUtility::OpenFileDialog(PathManager::GetI()->GetMovePathW(L"Assets\\"), L"Mesh", { L"fbx" });
-            //filePath = PathManager::GetI()->GetCutSolutionPath(filePath);
-            //
-            //if (!filePath.empty())
-            //{
-            //    auto newMesh = ResourceManager::GetI()->LoadSkinnedMesh(filePath);
-            //    if (newMesh)
-            //    {
-            //        mesh = newMesh;
-            //        mesh->Path = filePath;
-            //        subsetIndex = 0;
-            //        isDirty = true;
-            //    }
-            //}
         }
     }
     ImGui::EndChild();

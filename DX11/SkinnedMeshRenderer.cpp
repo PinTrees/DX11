@@ -70,13 +70,13 @@ void SkinnedMeshRenderer::Render()
 				else
 				{
 					ShaderSetting shaderSetting; 
-					Effects::InstancedBasicFX->SetMaterial(m_Mesh->Mat[i]);   
+					Effects::InstancedBasicFX->SetMaterial(m_Mesh->Mat[m_Mesh->Subsets[i].MaterialIndex]); 
 					Effects::InstancedBasicFX->SetShaderSetting(shaderSetting); 
 				}
+			} 
 
-				tech->GetPassByIndex(p)->Apply(0, deviceContext);   
-				m_Mesh->ModelMesh.Draw(deviceContext, i);   
-			}
+			tech->GetPassByIndex(p)->Apply(0, deviceContext); 
+			m_Mesh->ModelMesh.Draw(deviceContext, i); 
 		}
 	}
 }
@@ -126,8 +126,6 @@ void SkinnedMeshRenderer::RenderShadow()
 
 void SkinnedMeshRenderer::RenderShadowNormal()
 {
-	return;
-
 	if (m_Mesh == nullptr)
 		return;
 
@@ -176,6 +174,11 @@ void SkinnedMeshRenderer::OnInspectorGUI()
 	if (changed)
 	{
 		m_MeshPath = m_Mesh->Path;
+	}
+
+	if (m_Mesh)
+	{
+		EditorGUI::Label("  V: " + to_string(m_Mesh->Vertices.size()) + ", I: " + to_string(m_Mesh->Indices.size())); 
 	}
 
 	EditorGUI::LabelHeader("Materials");

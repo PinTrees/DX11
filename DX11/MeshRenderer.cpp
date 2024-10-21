@@ -38,7 +38,7 @@ void MeshRenderer::Render()
 
 	for (uint32 p = 0; p < techDesc.Passes; ++p)
 	{
-		if (m_MeshSubsetIndex >= m_Mesh->Subsets.size())
+		if (m_Mesh->Subsets.size() <= 0)
 			break;
 
 		Transform* transform = m_pGameObject->GetComponent<Transform>();
@@ -59,20 +59,23 @@ void MeshRenderer::Render()
 
 		for (int i = 0; i < m_Mesh->Subsets.size(); ++i)
 		{
-			auto material = m_pMaterials[m_Mesh->Subsets[i].MaterialIndex];
-			if (material != nullptr)
+			if (m_pMaterials.size() > m_Mesh->Subsets[i].MaterialIndex)
 			{
-				Effects::InstancedBasicFX->SetMaterial(material->Mat);  
-				Effects::InstancedBasicFX->SetDiffuseMap(material->GetBaseMapSRV()); 
-				Effects::InstancedBasicFX->SetNormalMap(material->GetNormalMapSRV()); 
-				Effects::InstancedBasicFX->SetShaderSetting(material->GetShaderSetting()); 
+				auto material = m_pMaterials[m_Mesh->Subsets[i].MaterialIndex];
+				if (material != nullptr)
+				{
+					Effects::InstancedBasicFX->SetMaterial(material->Mat);
+					Effects::InstancedBasicFX->SetDiffuseMap(material->GetBaseMapSRV());
+					Effects::InstancedBasicFX->SetNormalMap(material->GetNormalMapSRV());
+					Effects::InstancedBasicFX->SetShaderSetting(material->GetShaderSetting());
+				}
+				else
+				{
+					ShaderSetting shaderSetting;
+					//Effects::InstancedBasicFX->SetMaterial(m_Mesh->Mat[m_Mesh->Subsets[i].MaterialIndex]);
+					Effects::InstancedBasicFX->SetShaderSetting(shaderSetting);
+				}
 			}
-			else
-			{
-				ShaderSetting shaderSetting; 
-				Effects::InstancedBasicFX->SetMaterial(m_Mesh->Mat[m_Mesh->Subsets[i].MaterialIndex]); 
-				Effects::InstancedBasicFX->SetShaderSetting(shaderSetting); 
-			} 
 
 			tech->GetPassByIndex(p)->Apply(0, deviceContext);  
 			m_Mesh->ModelMesh.Draw(deviceContext, i); 
@@ -176,7 +179,7 @@ void MeshRenderer::RenderShadow()
 
 	for (uint32 p = 0; p < techDesc.Passes; ++p)
 	{
-		if (m_MeshSubsetIndex >= m_Mesh->Subsets.size())
+		if (m_Mesh->Subsets.size() <= 0) 
 			break;
 
 		world = transform->GetWorldMatrix();
@@ -254,7 +257,7 @@ void MeshRenderer::RenderShadowNormal()
 	tech->GetDesc(&techDesc);
 	for (uint32 p = 0; p < techDesc.Passes; ++p)
 	{
-		if (m_MeshSubsetIndex >= m_Mesh->Subsets.size())
+		if (m_Mesh->Subsets.size() <= 0) 
 			break;
 
 		world = transform->GetWorldMatrix();
@@ -336,6 +339,11 @@ void MeshRenderer::OnInspectorGUI()
 	if (changed)
 	{
 		m_MeshPath = m_Mesh->Path; 
+	}
+
+	if (m_Mesh)
+	{
+		EditorGUI::Label("  V: " + to_string(m_Mesh->Vertices.size()) + ", I: " + to_string(m_Mesh->Indices.size()));
 	}
 
 	EditorGUI::LabelHeader("Materials");
