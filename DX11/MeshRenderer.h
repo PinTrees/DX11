@@ -7,8 +7,7 @@ class Effect;
 class UMaterial;
 class InstancingBuffer;
 
-class MeshRenderer 
-	: public Component
+class MeshRenderer : public Component
 {
 	using Super = Component;
 
@@ -50,6 +49,10 @@ public:
 	void RenderInstancing(shared_ptr<class InstancingBuffer>& buffer);
 	void RenderShadowInstancing(shared_ptr<class InstancingBuffer>& buffer);
 	void RenderShadowNormalInstancing(shared_ptr<class InstancingBuffer>& buffer);
+
+public:
+	virtual void _Editor_Render();
+	virtual void _Editor_RenderShadowNormal();
 
 	GENERATE_COMPONENT_BODY(MeshRenderer)
 };

@@ -49,8 +49,7 @@ void SceneEditorWindow::InitRenderTarget(UINT width, UINT height)
 
     float aspectRatio = static_cast<float>(width) / height;
     m_Camera->SetLens(0.25f * MathHelper::Pi, aspectRatio, 1.0f, 1000.0f);
-    PostProcessingManager::GetI()->SetEditorSSAO(width, height, m_Camera);
-    
+    PostProcessingManager::GetI()->_EditorSetSSAO(width, height, m_Camera);
     RenderManager::GetI()->SetEditorViewport(width, height);
 }
 
@@ -80,7 +79,7 @@ void SceneEditorWindow::RenderScene()
     XMMATRIX view = m_Camera->View();
     XMMATRIX proj = m_Camera->Proj();
     XMMATRIX viewProj = m_Camera->ViewProj();
-    RenderManager::GetI()->cameraViewProjectionMatrix = view * proj;
+    RenderManager::GetI()->EditorCameraViewProjectionMatrix = view * proj;
     
     auto context = Application::GetI()->GetDeviceContext();
     
@@ -91,7 +90,7 @@ void SceneEditorWindow::RenderScene()
     context->OMSetRenderTargets(1, &renderTargetView, nullptr);
 
     // ¾À ·»´õ
-    Application::GetI()->GetApp()->OnEditorSceneRender(renderTargetView, m_Camera);
+    Application::GetI()->GetApp()->_Editor_OnSceneRender(renderTargetView, m_Camera);
 
     if (oldRenderTarget == nullptr)
         return;

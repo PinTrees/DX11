@@ -27,7 +27,10 @@ public:
 	virtual void Update() { }
 	virtual void LateUpdate()  { }
 	virtual void FixedUpdate() { }
+
 	virtual void Render() { }
+	virtual void _Editor_Render() { }
+	virtual void _Editor_Update() { }
 
 	// Editor Only
 	void RenderInspectorGUI();

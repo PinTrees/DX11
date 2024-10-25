@@ -156,6 +156,8 @@ bool App::Init()
 		SceneManager::GetI()->LoadScene(L"");
 	}
 
+	DisplayManager::GetI()->Init();
+
 	// TimeManager Init
 	TimeManager::GetI()->Init();
 

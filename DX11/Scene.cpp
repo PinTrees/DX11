@@ -203,6 +203,30 @@ void Scene::RenderSceneShadowNormal()
     }
 }
 
+void Scene::_Editor_RenderScene()
+{
+    for (auto& gameObject : m_arrGameObjects[0]) 
+    {
+        MeshRenderer* meshRenderer = gameObject->GetComponent<MeshRenderer>();
+        if (meshRenderer) meshRenderer->_Editor_Render();
+
+        SkinnedMeshRenderer* skinnedMeshRenderer = gameObject->GetComponent<SkinnedMeshRenderer>();
+        if (skinnedMeshRenderer) skinnedMeshRenderer->_Editor_Render();
+    }
+}
+
+void Scene::_Editor_RenderSceneShadowNormal()
+{
+    for (const auto& gameObject : m_arrGameObjects[0])
+    {
+        MeshRenderer* meshRenderer = gameObject->GetComponent<MeshRenderer>(); 
+        if (meshRenderer) meshRenderer->_Editor_RenderShadowNormal();  
+
+        SkinnedMeshRenderer* skinnedMeshRenderer = gameObject->GetComponent<SkinnedMeshRenderer>();  
+        if (skinnedMeshRenderer) skinnedMeshRenderer->_Editor_RenderShadowNormal();
+    } 
+}
+
 void Scene::RenderSceneGizmos()
 {
     if (SelectionManager::GetSelectedObjectType() == SelectionType::GAMEOBJECT)

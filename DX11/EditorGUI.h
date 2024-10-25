@@ -39,6 +39,7 @@ public:
 
 public:
 	static bool FloatField(string title, float& v, ImVec2 size);
+	static bool FloatField(string title, float& v);
 	static bool Vector3Field(string title, Vec3& vec3);
 	static bool MaterialField(string title, shared_ptr<UMaterial>& material, wstring& materialPath);
 	static bool MeshField(string title, shared_ptr<Mesh>& mesh, int& subsetIndex);

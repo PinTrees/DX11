@@ -9,6 +9,8 @@
 #include "Scene.h"
 #include "Light.h"
 #include "LightManager.h"
+#include "EditorGUI.h"
+
 Camera::Camera()
 {
 	m_InspectorTitleName = "Camera";
@@ -259,10 +261,9 @@ void Camera::LateUpdate()
 	::XMStoreFloat4x4(&_view, V);
 
 	ProjUpdate();
-
 	// OnPreCull 권장(Unity 생명주기)
 	FrustumUpdate();
-	GetFrustumCulling();
+	//GetFrustumCulling();
 }
 
 void Camera::GetFrustumCulling()
@@ -409,11 +410,6 @@ string Camera::GetStringCameraType(ProjectionType type)
 	}
 }
 
-void Camera::Render()
-{
-
-}
-
 void Camera::OnInspectorGUI()
 {
 	// CameraType 선택GUI
@@ -434,22 +430,32 @@ void Camera::OnInspectorGUI()
 	}
 
 	// Camera 값들 설정
-	ImGui::Text("NearZ");
-	ImGui::DragFloat("##NearZ", reinterpret_cast<float*>(&m_nearZ), 0.1f);
-	ImGui::Text("FarZ");
-	ImGui::DragFloat("##FarZ", reinterpret_cast<float*>(&m_farZ), 0.1f);
+	if (EditorGUI::FloatField("Near", m_nearZ)) {
+		m_nearZ = max(m_nearZ, 0.001f);
+	}
+	if (EditorGUI::FloatField("Far", m_farZ)) {
+		m_nearZ = min(m_nearZ, 9999);
+	}
+
 	if (ProjectionType::Perspective == m_cameraType)
 	{
-		ImGui::Text("Aspect");
-		ImGui::DragFloat("##Aspect", reinterpret_cast<float*>(&m_aspect), 0.1f);
-		ImGui::Text("FovY");
-		ImGui::DragFloat("##FovY", reinterpret_cast<float*>(&m_fovY), 0.1f);
+		float fov_degree = XMConvertToDegrees(m_fovY);
+		if (EditorGUI::FloatField("Field Of View", fov_degree)) { 
+			fov_degree = max(fov_degree, 1);  
+			fov_degree = min(fov_degree, 360);
+			m_fovY = XMConvertToRadians(fov_degree); 
+		} 
+
+		//ImGui::Text("Aspect");
+		//ImGui::DragFloat("##Aspect", reinterpret_cast<float*>(&m_aspect), 0.1f);
 	}
 }
 
 // 카메라 렌더 범위Draw
 void Camera::OnDrawGizmos()
 {
+	Transform* transform = GetGameObject()->GetTransform();
+	Gizmo::DrawFrustum(transform->GetWorldMatrix(), m_nearZ, m_farZ, XMConvertToDegrees(m_fovY));
 }
 
 GENERATE_COMPONENT_FUNC_TOJSON(Camera)

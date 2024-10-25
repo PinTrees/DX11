@@ -6,6 +6,7 @@
 #define _DEBUG 
 
 class EditorCamera;
+class Camera;
 
 class App
 {
@@ -27,7 +28,9 @@ public:
 	virtual void OnResize(); 
 	virtual void UpdateScene(float dt) = 0;
 	virtual void RenderApplication();
-	virtual void OnEditorSceneRender(ID3D11RenderTargetView* renderTargetView, EditorCamera* camera) { }
+
+	virtual void OnSceneRender(ID3D11RenderTargetView* renderTargetView, Camera* camera) { } 
+	virtual void _Editor_OnSceneRender(ID3D11RenderTargetView* renderTargetView, EditorCamera* camera) { }
 
 	virtual LRESULT MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 

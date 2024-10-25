@@ -49,6 +49,10 @@ public:
 	void RenderShadow();
 	void RenderShadowNormal();
 
+public:
+	virtual void _Editor_Render();
+	virtual void _Editor_RenderShadowNormal();
+
 	GENERATE_COMPONENT_BODY(SkinnedMeshRenderer)
 };
 

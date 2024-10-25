@@ -43,13 +43,13 @@ void SkinnedMeshRenderer::Render()
 
 		XMMATRIX world = transform->GetWorldMatrix();
 		XMMATRIX worldInvTranspose = MathHelper::InverseTranspose(world);
-		XMMATRIX vi = RenderManager::GetI()->cameraViewMatrix;
-		XMMATRIX pr = RenderManager::GetI()->cameraProjectionMatrix;
-		XMMATRIX worldViewProj = world * RenderManager::GetI()->cameraViewProjectionMatrix;
+		XMMATRIX vi = RenderManager::GetI()->CameraViewMatrix;
+		XMMATRIX pr = RenderManager::GetI()->CameraProjectionMatrix;
+		XMMATRIX worldViewProj = world * RenderManager::GetI()->CameraViewProjectionMatrix;
 
 		Effects::InstancedBasicFX->SetWorld(world);
 		Effects::InstancedBasicFX->SetWorldInvTranspose(worldInvTranspose);
-		Effects::InstancedBasicFX->SetViewProj(RenderManager::GetI()->cameraViewProjectionMatrix);
+		Effects::InstancedBasicFX->SetViewProj(RenderManager::GetI()->CameraViewProjectionMatrix);
 		Effects::InstancedBasicFX->SetWorldViewProj(worldViewProj);
 		Effects::InstancedBasicFX->SetWorldViewProjTex(worldViewProj * toTexSpace);
 		Effects::InstancedBasicFX->SetShadowTransform(world * RenderManager::GetI()->shadowTransform);
@@ -109,7 +109,7 @@ void SkinnedMeshRenderer::RenderShadow()
 		 
 		world = transform->GetWorldMatrix(); 
 		worldInvTranspose = MathHelper::InverseTranspose(world); 
-		worldViewProj = world * RenderManager::GetI()->directinalLightViewProjection; 
+		worldViewProj = world * RenderManager::GetI()->DirectinalLightViewProjection; 
 
 		Effects::BuildShadowMapFX->SetWorld(world); 
 		Effects::BuildShadowMapFX->SetWorldInvTranspose(worldInvTranspose); 
@@ -151,9 +151,9 @@ void SkinnedMeshRenderer::RenderShadowNormal()
 
 		world = transform->GetWorldMatrix(); 
 		worldInvTranspose = MathHelper::InverseTranspose(world); 
-		worldView = world * RenderManager::GetI()->cameraViewMatrix; 
-		worldInvTransposeView = worldInvTranspose * RenderManager::GetI()->cameraViewMatrix; 
-		worldViewProj = world * RenderManager::GetI()->cameraViewProjectionMatrix; 
+		worldView = world * RenderManager::GetI()->CameraViewMatrix; 
+		worldInvTransposeView = worldInvTranspose * RenderManager::GetI()->CameraViewMatrix; 
+		worldViewProj = world * RenderManager::GetI()->CameraViewProjectionMatrix; 
 
 		Effects::SsaoNormalDepthFX->SetWorldView(worldView); 
 		Effects::SsaoNormalDepthFX->SetWorldInvTransposeView(worldInvTransposeView); 
@@ -164,6 +164,114 @@ void SkinnedMeshRenderer::RenderShadowNormal()
 		{
 			tech->GetPassByIndex(p)->Apply(0, deviceContext); 
 			m_Mesh->ModelMesh.Draw(deviceContext, i);  
+		}
+	}
+}
+
+void SkinnedMeshRenderer::_Editor_Render()
+{
+	if (m_Mesh == nullptr)
+		return;
+
+	auto deviceContext = Application::GetI()->GetDeviceContext();
+	ComPtr<ID3DX11EffectTechnique> tech = Effects::InstancedBasicFX->Tech;
+
+	D3DX11_TECHNIQUE_DESC techDesc;
+	tech->GetDesc(&techDesc);
+
+	XMMATRIX toTexSpace(
+		0.5f, 0.0f, 0.0f, 0.0f,
+		0.0f, -0.5f, 0.0f, 0.0f,
+		0.0f, 0.0f, 1.0f, 0.0f,
+		0.5f, 0.5f, 0.0f, 1.0f);
+
+	for (uint32 p = 0; p < techDesc.Passes; ++p)
+	{
+		if (m_Mesh->Subsets.size() <= 0)
+			break;
+
+		Transform* transform = m_pGameObject->GetComponent<Transform>();
+
+		XMMATRIX world = transform->GetWorldMatrix();
+		XMMATRIX worldInvTranspose = MathHelper::InverseTranspose(world);
+		XMMATRIX vi = RenderManager::GetI()->EditorCameraViewMatrix;
+		XMMATRIX pr = RenderManager::GetI()->EditorCameraProjectionMatrix;
+		XMMATRIX worldViewProj = world * RenderManager::GetI()->EditorCameraViewProjectionMatrix;
+
+		Effects::InstancedBasicFX->SetWorld(world);
+		Effects::InstancedBasicFX->SetWorldInvTranspose(worldInvTranspose);
+		Effects::InstancedBasicFX->SetViewProj(RenderManager::GetI()->EditorCameraViewProjectionMatrix);
+		Effects::InstancedBasicFX->SetWorldViewProj(worldViewProj);
+		Effects::InstancedBasicFX->SetWorldViewProjTex(worldViewProj * toTexSpace);
+		Effects::InstancedBasicFX->SetShadowTransform(world * RenderManager::GetI()->shadowTransform);
+		Effects::InstancedBasicFX->SetTexTransform(XMMatrixScaling(1.0f, 1.0f, 1.0f));
+
+		for (int i = 0; i < m_Mesh->Subsets.size(); ++i)
+		{
+			if (m_pMaterials.size() > m_Mesh->Subsets[i].MaterialIndex)
+			{
+				auto material = m_pMaterials[m_Mesh->Subsets[i].MaterialIndex];
+				if (material != nullptr)
+				{
+					Effects::InstancedBasicFX->SetMaterial(material->Mat);
+					Effects::InstancedBasicFX->SetDiffuseMap(material->GetBaseMapSRV());
+					Effects::InstancedBasicFX->SetNormalMap(material->GetNormalMapSRV());
+					Effects::InstancedBasicFX->SetShaderSetting(material->GetShaderSetting());
+				}
+				else
+				{
+					ShaderSetting shaderSetting;
+					Effects::InstancedBasicFX->SetMaterial(m_Mesh->Mat[m_Mesh->Subsets[i].MaterialIndex]);
+					Effects::InstancedBasicFX->SetShaderSetting(shaderSetting);
+				}
+			}
+
+			tech->GetPassByIndex(p)->Apply(0, deviceContext);
+			m_Mesh->ModelMesh.Draw(deviceContext, i);
+		}
+	}
+}
+
+void SkinnedMeshRenderer::_Editor_RenderShadowNormal()
+{
+	if (m_Mesh == nullptr)
+		return;
+
+	auto deviceContext = Application::GetI()->GetDeviceContext();
+	Transform* transform = m_pGameObject->GetComponent<Transform>();
+	ComPtr<ID3DX11EffectTechnique> tech = Effects::SsaoNormalDepthFX->NormalDepthTech;
+
+	XMMATRIX world;
+	XMMATRIX worldInvTranspose;
+	XMMATRIX worldView;
+	XMMATRIX worldInvTransposeView;
+	XMMATRIX worldViewProj;
+
+	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	deviceContext->IASetInputLayout(InputLayouts::PosNormalTexTanSkinned.Get());
+
+	D3DX11_TECHNIQUE_DESC techDesc;
+	tech->GetDesc(&techDesc);
+	for (uint32 p = 0; p < techDesc.Passes; ++p)
+	{
+		if (m_Mesh->Subsets.size() <= 0)
+			break;
+
+		world = transform->GetWorldMatrix();
+		worldInvTranspose = MathHelper::InverseTranspose(world);
+		worldView = world * RenderManager::GetI()->EditorCameraViewMatrix;
+		worldInvTransposeView = worldInvTranspose * RenderManager::GetI()->EditorCameraViewMatrix;
+		worldViewProj = world * RenderManager::GetI()->EditorCameraViewProjectionMatrix;
+
+		Effects::SsaoNormalDepthFX->SetWorldView(worldView);
+		Effects::SsaoNormalDepthFX->SetWorldInvTransposeView(worldInvTransposeView);
+		Effects::SsaoNormalDepthFX->SetWorldViewProj(worldViewProj);
+		Effects::SsaoNormalDepthFX->SetTexTransform(XMMatrixScaling(1.0f, 1.0f, 1.0f));
+
+		for (int i = 0; i < m_Mesh->Subsets.size(); ++i)
+		{
+			tech->GetPassByIndex(p)->Apply(0, deviceContext);
+			m_Mesh->ModelMesh.Draw(deviceContext, i);
 		}
 	}
 }

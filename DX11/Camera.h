@@ -54,8 +54,6 @@ public:
 	Camera();
 	~Camera();
 
-	
-
 	// Get/Set world camera position.
 	XMVECTOR GetPositionXM();
 	XMFLOAT3 GetPosition()const;
@@ -112,7 +110,7 @@ public:
 public:
 	virtual void Update() override;
 	virtual void LateUpdate() override;
-	virtual void Render() override;
+	
 	virtual void OnInspectorGUI() override;
 	virtual void OnDrawGizmos() override;
 

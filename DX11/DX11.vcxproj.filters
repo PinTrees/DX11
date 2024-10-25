@@ -232,6 +232,9 @@
     <Filter Include="0. Engine\ImguiContainer\1. Base\EditorDialog">
       <UniqueIdentifier>{e08ae979-f41c-4070-90b0-6911cc8a525d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="0. Engine\Manager\DisplayManager">
+      <UniqueIdentifier>{e2177798-7d6b-4d80-b0f8-c6633550736c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="01. InitDemo.cpp">
@@ -619,6 +622,9 @@
     </ClCompile>
     <ClCompile Include="EditorDailog.cpp">
       <Filter>0. Engine\ImguiContainer\1. Base\EditorDialog</Filter>
+    </ClCompile>
+    <ClCompile Include="DisplayManager.cpp">
+      <Filter>0. Engine\Manager\DisplayManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1017,6 +1023,9 @@
     </ClInclude>
     <ClInclude Include="EditorDailog.h">
       <Filter>0. Engine\ImguiContainer\1. Base\EditorDialog</Filter>
+    </ClInclude>
+    <ClInclude Include="DisplayManager.h">
+      <Filter>0. Engine\Manager\DisplayManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

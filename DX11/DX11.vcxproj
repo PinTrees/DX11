@@ -211,6 +211,7 @@
     <ClInclude Include="ConsoleEditorWindow.h" />
     <ClInclude Include="Debug.h" />
     <ClInclude Include="define.h" />
+    <ClInclude Include="DisplayManager.h" />
     <ClInclude Include="EditorCamera.h" />
     <ClInclude Include="EditorDailog.h" />
     <ClInclude Include="EditorGUI.h" />
@@ -349,6 +350,7 @@
     <ClCompile Include="ConsoleEditorWindow.cpp" />
     <ClCompile Include="Debug.cpp" />
     <ClCompile Include="define.cpp" />
+    <ClCompile Include="DisplayManager.cpp" />
     <ClCompile Include="EditorCamera.cpp" />
     <ClCompile Include="EditorDailog.cpp" />
     <ClCompile Include="EditorGUI.cpp" />

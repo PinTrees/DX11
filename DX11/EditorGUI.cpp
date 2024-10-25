@@ -234,6 +234,49 @@ bool EditorGUI::FloatField(string title, float& v, ImVec2 size)
     return isDirty;
 }
 
+bool EditorGUI::FloatField(string title, float& v)
+{
+    bool isDirty = false;
+    float fieldWidth = EDITOR_GUI_FIELD_WIDTH;
+
+    EDITOR_GUI_FIELD_PADDING;
+    EditorGUI::Label(title);
+    EDITOR_GUI_FIELD_SPACING(fieldWidth - 8);
+
+    EditorGUI::FieldStylePush();
+
+    string id = title + "FloatField";
+    if (ImGui::BeginChild(id.c_str(), ImVec2(fieldWidth, FIELD_DEFAULT_HEIGHT), true,
+        ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse))
+    {
+        EditorGUI::DropFieldStylePush();
+        if (ImGui::BeginChild((title + "Float Field").c_str(), ImVec2(ImGui::GetContentRegionAvail().x, FIELD_DEFAULT_HEIGHT), true,
+            ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse))
+        {
+            string field_id = "##" + title;
+            ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+
+            ImGui::PushStyleColor(ImGuiCol_FrameBg, ImVec4(0, 0, 0, 0));            // 드래그 필드 배경을 투명하게 설정 
+            ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, ImVec4(0, 0, 0, 0));     // 호버 시 배경색도 투명하게 설정 
+            ImGui::PushStyleColor(ImGuiCol_FrameBgActive, ImVec4(0, 0, 0, 0));      // 클릭 시 배경색도 투명하게 설정 
+
+            if (ImGui::DragFloat(id.c_str(), &v, 0.1f, -FLT_MAX, FLT_MAX, "%.3f"))
+            {
+                isDirty = true;
+            }
+            ImGui::PopStyleColor(3);
+            ImGui::PopItemWidth();
+        }
+        ImGui::EndChild();  // Child 끝
+        EditorGUI::DropFieldStylePop();
+    }
+    ImGui::EndChild();
+
+    EditorGUI::FieldStylePop();
+
+    return isDirty;
+}
+
 bool EditorGUI::Vector3Field(string title, Vec3& vec3)
 {
     bool isDirty = false;

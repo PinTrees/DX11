@@ -14,10 +14,14 @@ private:
 
 public:
 	void Init();
-	void RenderEditorSSAO(EditorCamera* camera);
-	//void RenderGameSSAO(ID3D11RenderTargetView* renderTargetView, Camera* camera);
 
-	void SetEditorSSAO(int32 screenWidth, int32 screenHeight, EditorCamera* camera);
-	Ssao* GetEditorSSAO() { return m_EditorSSAO.get(); }
+	void RenderSSAO(Camera* camera);
+	void SetSSAO(int32 screenWidth, int32 screenHeight, Camera* camera);
+	Ssao* GetSSAO() { return m_GameSSAO.get(); }
+
+	// Editor
+	void _Editor_RenderSSAO(EditorCamera* camera);
+	void _EditorSetSSAO(int32 screenWidth, int32 screenHeight, EditorCamera* camera);
+	Ssao* _EditorGetSSAO() { return m_EditorSSAO.get(); }
 };
 

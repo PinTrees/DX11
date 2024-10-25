@@ -9,18 +9,28 @@ class RenderManager
 public:
 	XMMATRIX shadowTransform;
 
-	XMMATRIX cameraViewMatrix;
-	XMMATRIX cameraProjectionMatrix;
-	XMMATRIX cameraViewProjectionMatrix;
+	// Common
+	shared_ptr<class ShadowMap> BaseShadowMap;
 
-	XMMATRIX directinalLightViewProjection;
+
+	// Editor Only
+	XMMATRIX EditorCameraViewMatrix;
+	XMMATRIX EditorCameraProjectionMatrix;
+	XMMATRIX EditorCameraViewProjectionMatrix;
+	D3D11_VIEWPORT EditorViewport;
+
+	// Game Only
+	XMMATRIX CameraViewMatrix;
+	XMMATRIX CameraProjectionMatrix;
+	XMMATRIX CameraViewProjectionMatrix;
+	D3D11_VIEWPORT Viewport; 
+
+	XMMATRIX DirectinalLightViewProjection;
 
 	// Editor Only
 public:
 	static const int SMapSize = 2048;
-	shared_ptr<class ShadowMap> editorShadowMap;
 
-	D3D11_VIEWPORT EditorViewport;
 	bool WireFrameMode;
 	bool InstancingMode;
 public:
@@ -29,5 +39,6 @@ public:
 	// Editor Only
 public:
 	void SetEditorViewport(UINT width, UINT height);
+	void SetViewport(UINT width, UINT height);
 };
 

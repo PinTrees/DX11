@@ -19,7 +19,9 @@ public:
 	void OnResize();
 	void UpdateScene(float dt);
 	void RenderApplication();
-	virtual void OnEditorSceneRender(ID3D11RenderTargetView* renderTargetView, EditorCamera* camera) override;
+
+	virtual void OnSceneRender(ID3D11RenderTargetView* renderTargetView, Camera* camera) override; 
+	virtual void _Editor_OnSceneRender(ID3D11RenderTargetView* renderTargetView, EditorCamera* camera) override;
 
 	void OnMouseDown(WPARAM btnState, int32 x, int32 y);
 	void OnMouseUp(WPARAM btnState, int32 x, int32 y);

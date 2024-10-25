@@ -62,6 +62,10 @@ public:
 	string				FullPath;
 	string				Name;
 
+	// metadata setting
+	bool				UseImportAnimation; 
+	float				ScaleFactor;
+
 public:
 	void OnInspectorGUI();
 
@@ -71,4 +75,8 @@ public:
 
 	void from_byte(ifstream& inStream);
 	void to_byte(ofstream& outStream);
+
+	// meta setting file
+	void to_json();
+	void from_json();
 };

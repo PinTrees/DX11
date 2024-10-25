@@ -160,7 +160,7 @@ void MeshViewDemo::RenderApplication()
 
 }
 
-void MeshViewDemo::OnEditorSceneRender(ID3D11RenderTargetView* renderTargetView, EditorCamera* camera)
+void MeshViewDemo::OnSceneRender(ID3D11RenderTargetView* renderTargetView, Camera* camera)
 {
 	vector<DirectionalLight>& dirLight = LightManager::GetI()->GetDirLights();
 	vector<PointLight>& pointLight = LightManager::GetI()->GetPointLights();
@@ -168,24 +168,23 @@ void MeshViewDemo::OnEditorSceneRender(ID3D11RenderTargetView* renderTargetView,
 	vector<shared_ptr<Light>>& lights = LightManager::GetI()->GetLights();
 	BuildShadowTransform();
 
-	RenderManager::GetI()->cameraViewMatrix = camera->View();
-	RenderManager::GetI()->cameraProjectionMatrix = camera->Proj();
-	RenderManager::GetI()->cameraViewProjectionMatrix = XMMatrixMultiply(camera->View(), camera->Proj());
-	//RenderManager::GetI()->directinalLightViewProjection = XMMatrixMultiply(XMLoadFloat4x4(&_lightView), XMLoadFloat4x4(&_lightProj));
+	RenderManager::GetI()->CameraViewMatrix = camera->View();
+	RenderManager::GetI()->CameraProjectionMatrix = camera->Proj();
+	RenderManager::GetI()->CameraViewProjectionMatrix = XMMatrixMultiply(camera->View(), camera->Proj()); 
 
 	// LateUpdate 로직이 없어서 주석처리
-	if(lights.size() > 0 && dirLight.size() > 0)
-		RenderManager::GetI()->directinalLightViewProjection = lights[0]->GetLightViewProj();
+	if (lights.size() > 0 && dirLight.size() > 0)
+		RenderManager::GetI()->DirectinalLightViewProjection = lights[0]->GetLightViewProj();
 
 	// 와이어프레임 제어처럼 전체 그림자맵 제어도 가능하게
-	auto shadowMap = RenderManager::GetI()->editorShadowMap;
+	auto shadowMap = RenderManager::GetI()->BaseShadowMap;
 	shadowMap->BindDsvAndSetNullRenderTarget(_deviceContext);
 
-	auto viewport = RenderManager::GetI()->EditorViewport;
+	auto viewport = RenderManager::GetI()->Viewport;
 
 	// Light수 만큼 ShadowMap을 그려야함.
 	Effects::BuildShadowMapFX->SetEyePosW(camera->GetPosition());
-	Effects::BuildShadowMapFX->SetViewProj(RenderManager::GetI()->directinalLightViewProjection);
+	Effects::BuildShadowMapFX->SetViewProj(RenderManager::GetI()->DirectinalLightViewProjection);
 
 	if (RenderManager::GetI()->WireFrameMode)
 		_deviceContext->RSSetState(RenderStates::WireframeRS.Get());
@@ -199,11 +198,8 @@ void MeshViewDemo::OnEditorSceneRender(ID3D11RenderTargetView* renderTargetView,
 	_deviceContext->RSSetViewports(1, &viewport);
 
 	// PostProcessing - SSAO
-	auto ssao = PostProcessingManager::GetI()->GetEditorSSAO();
-	ssao->SetNormalDepthRenderTarget(_depthStencilView.Get());
-
-	if (RenderManager::GetI()->WireFrameMode)
-		_deviceContext->RSSetState(RenderStates::WireframeRS.Get());
+	auto ssao = PostProcessingManager::GetI()->GetSSAO();
+	ssao->SetNormalDepthRenderTarget(_depthStencilView.Get()); 
 
 	// Draw Scene Objects
 	SceneManager::GetI()->GetCurrentScene()->RenderSceneShadowNormal();
@@ -211,7 +207,7 @@ void MeshViewDemo::OnEditorSceneRender(ID3D11RenderTargetView* renderTargetView,
 	_deviceContext->RSSetState(0);
 
 	// PostProcessing - SSAO
-	PostProcessingManager::GetI()->RenderEditorSSAO(camera);
+	PostProcessingManager::GetI()->RenderSSAO(camera);
 
 	ID3D11RenderTargetView* renderTargets[1] = { renderTargetView };
 	_deviceContext->OMSetRenderTargets(1, renderTargets, _depthStencilView.Get());
@@ -222,16 +218,98 @@ void MeshViewDemo::OnEditorSceneRender(ID3D11RenderTargetView* renderTargetView,
 
 	float blendFactor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
 
-	//Effects::NormalMapFX->SetDirLights(_dirLights);
-	//Effects::NormalMapFX->SetEyePosW(camera->GetPosition());
-	//Effects::NormalMapFX->SetCubeMap(_sky->CubeMapSRV().Get());
-	//Effects::NormalMapFX->SetShadowMap(shadowMap->DepthMapSRV().Get());
-	//Effects::NormalMapFX->SetSsaoMap(ssao->AmbientSRV().Get());
+	if (dirLight.size() > 0) Effects::InstancedBasicFX->SetDirLights(dirLight.data(), dirLight.size());
+
+	Effects::InstancedBasicFX->SetEyePosW(camera->GetPosition());
+	Effects::InstancedBasicFX->SetCubeMap(_sky->CubeMapSRV().Get());
+	Effects::InstancedBasicFX->SetShadowMap(shadowMap->DepthMapSRV().Get());
+	Effects::InstancedBasicFX->SetSsaoMap(ssao->AmbientSRV().Get());
+
+	RenderManager::GetI()->shadowTransform = XMLoadFloat4x4(&_shadowTransform);
+
+	uint32 stride = sizeof(Vertex::PosNormalTexTan);
+	uint32 offset = 0;
+
+	_deviceContext->IASetInputLayout(InputLayouts::PosNormalTexTan.Get());
+
+	SceneManager::GetI()->GetCurrentScene()->RenderScene();
+
+	_deviceContext->RSSetState(0);
+	_deviceContext->OMSetDepthStencilState(0, 0);
+
+	//_sky->Draw(_deviceContext, _camera);
+
+	_deviceContext->RSSetState(0);
+	_deviceContext->OMSetDepthStencilState(0, 0);
+
+	ID3D11ShaderResourceView* nullSRV[128] = { 0 };
+	_deviceContext->PSSetShaderResources(0, 128, nullSRV);
+}
+
+void MeshViewDemo::_Editor_OnSceneRender(ID3D11RenderTargetView* renderTargetView, EditorCamera* camera)
+{
+	vector<DirectionalLight>& dirLight = LightManager::GetI()->GetDirLights();
+	vector<PointLight>& pointLight = LightManager::GetI()->GetPointLights();
+	vector<SpotLight>& spotLight = LightManager::GetI()->GetSpotLights();
+	vector<shared_ptr<Light>>& lights = LightManager::GetI()->GetLights();
+	BuildShadowTransform();
+
+	RenderManager::GetI()->EditorCameraViewMatrix = camera->View();
+	RenderManager::GetI()->EditorCameraProjectionMatrix = camera->Proj();
+	RenderManager::GetI()->EditorCameraViewProjectionMatrix = XMMatrixMultiply(camera->View(), camera->Proj());
+	//RenderManager::GetI()->directinalLightViewProjection = XMMatrixMultiply(XMLoadFloat4x4(&_lightView), XMLoadFloat4x4(&_lightProj));
+
+	// LateUpdate 로직이 없어서 주석처리
+	if(lights.size() > 0 && dirLight.size() > 0)
+		RenderManager::GetI()->DirectinalLightViewProjection = lights[0]->GetLightViewProj();
+
+	// 와이어프레임 제어처럼 전체 그림자맵 제어도 가능하게
+	auto shadowMap = RenderManager::GetI()->BaseShadowMap;
+	shadowMap->BindDsvAndSetNullRenderTarget(_deviceContext);
+
+	auto viewport = RenderManager::GetI()->EditorViewport;
+
+	// Light수 만큼 ShadowMap을 그려야함.
+	Effects::BuildShadowMapFX->SetEyePosW(camera->GetPosition());
+	Effects::BuildShadowMapFX->SetViewProj(RenderManager::GetI()->DirectinalLightViewProjection);
+
+	if (RenderManager::GetI()->WireFrameMode)
+		_deviceContext->RSSetState(RenderStates::WireframeRS.Get());
+
+	// Draw Scene Objects
+	SceneManager::GetI()->GetCurrentScene()->RenderSceneShadow();
+
+	_deviceContext->RSSetState(0);
+
+	_deviceContext->ClearDepthStencilView(_depthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+	_deviceContext->RSSetViewports(1, &viewport);
+
+	// PostProcessing - SSAO
+	auto ssao = PostProcessingManager::GetI()->_EditorGetSSAO();
+	ssao->SetNormalDepthRenderTarget(_depthStencilView.Get());
+
+	if (RenderManager::GetI()->WireFrameMode)
+		_deviceContext->RSSetState(RenderStates::WireframeRS.Get());
+
+	// Draw Scene Objects
+	SceneManager::GetI()->GetCurrentScene()->_Editor_RenderSceneShadowNormal(); 
+
+	_deviceContext->RSSetState(0);
+
+	// PostProcessing - SSAO
+	PostProcessingManager::GetI()->_Editor_RenderSSAO(camera);
+
+	ID3D11RenderTargetView* renderTargets[1] = { renderTargetView };
+	_deviceContext->OMSetRenderTargets(1, renderTargets, _depthStencilView.Get());
+	_deviceContext->RSSetViewports(1, &viewport);
+	_deviceContext->ClearRenderTargetView(renderTargetView, reinterpret_cast<const float*>(&Colors::Silver));
+
+	_deviceContext->OMSetDepthStencilState(RenderStates::EqualsDSS.Get(), 0);
+
+	float blendFactor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
 
 	//Effects::InstancedBasicFX->SetDirLights(_dirLights,1);
 	if (dirLight.size() > 0) Effects::InstancedBasicFX->SetDirLights(dirLight.data(), dirLight.size());
-	//if (pointLight.size() > 0) Effects::InstancedBasicFX->SetPointLights(pointLight.data(), pointLight.size());
-	//if (spotLight.size() > 0) Effects::InstancedBasicFX->SetSpotLights(spotLight.data(), spotLight.size());
 
 	Effects::InstancedBasicFX->SetEyePosW(camera->GetPosition());
 	Effects::InstancedBasicFX->SetCubeMap(_sky->CubeMapSRV().Get());
@@ -248,7 +326,7 @@ void MeshViewDemo::OnEditorSceneRender(ID3D11RenderTargetView* renderTargetView,
 	if (RenderManager::GetI()->WireFrameMode)
 		_deviceContext->RSSetState(RenderStates::WireframeRS.Get());
 
-	SceneManager::GetI()->GetCurrentScene()->RenderScene();
+	SceneManager::GetI()->GetCurrentScene()->_Editor_RenderScene();
 
 	_deviceContext->RSSetState(0);
 	_deviceContext->OMSetDepthStencilState(0, 0);

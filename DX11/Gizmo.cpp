@@ -14,7 +14,7 @@ void Gizmo::DrawVector(const Matrix worldMatrix, const Vec3 vector)
     auto context = Application::GetI()->GetDeviceContext();
 
     // 카메라의 뷰 프로젝션 행렬 가져오기
-    Matrix viewProj = RenderManager::GetI()->cameraViewProjectionMatrix;
+    Matrix viewProj = RenderManager::GetI()->EditorCameraViewProjectionMatrix;
     Matrix worldViewProj = worldMatrix * viewProj;
 
     // 뷰포트 크기 가져오기
@@ -81,7 +81,7 @@ void Gizmo::DrawCube(const XMMATRIX& worldMatrix, const Vec3& size)
     };
 
     // 카메라의 뷰 프로젝션 행렬 가져오기
-    XMMATRIX viewProj = RenderManager::GetI()->cameraViewProjectionMatrix;
+    XMMATRIX viewProj = RenderManager::GetI()->EditorCameraViewProjectionMatrix;
     XMMATRIX worldViewProj = worldMatrix * viewProj;
 
     // 뷰포트 크기 가져오기
@@ -136,7 +136,7 @@ void Gizmo::DrawSphere(const XMMATRIX& worldMatrix, float radius)
     vertices.reserve(circleSegments + 1);
 
     // 카메라의 뷰 프로젝션 행렬 가져오기
-    XMMATRIX viewProj = RenderManager::GetI()->cameraViewProjectionMatrix;
+    XMMATRIX viewProj = RenderManager::GetI()->EditorCameraViewProjectionMatrix;
     XMMATRIX worldViewProj = worldMatrix * viewProj;
 
     // 뷰포트 크기 가져오기
@@ -223,7 +223,7 @@ void Gizmo::DrawArrow(Vector3 position, Vec3 dir, ImVec4 color)
     Matrix worldMatrix = Matrix::CreateTranslation(position);
 
     auto context = Application::GetI()->GetDeviceContext();
-    Matrix viewProj = RenderManager::GetI()->cameraViewProjectionMatrix;
+    Matrix viewProj = RenderManager::GetI()->EditorCameraViewProjectionMatrix;
 
     // 위치를 추출
     Vector3 pos = position;
@@ -272,6 +272,97 @@ void Gizmo::DrawArrow(Vector3 position, Vec3 dir, ImVec4 color)
     DrawwPoinVector(handlePos, endPos, color);
 }
 
+void Gizmo::DrawFrustum(const XMMATRIX& worldMatrix, float _near, float _far, float fieldOfView)
+{
+    auto context = Application::GetI()->GetDeviceContext();
+
+    // 카메라의 종횡비 (가로 세로 비율) 가져오기 - 예제에서는 16:9로 고정
+    float aspectRatio = 16.0f / 9.0f;
+
+    // 시야각을 라디안으로 변환하고 tangent 값 계산
+    float tanFov = tanf(XMConvertToRadians(fieldOfView) * 0.5f);
+
+    // 근평면과 원평면의 반높이 및 반너비 계산
+    float nearHeight = _near * tanFov;
+    float nearWidth = nearHeight * aspectRatio;
+    float farHeight = _far * tanFov;
+    float farWidth = farHeight * aspectRatio;
+
+    // 근평면과 원평면의 꼭짓점 정의
+    XMFLOAT3 nearVertices[4] = {
+        { -nearWidth, nearHeight, _near },  // 좌상
+        { nearWidth, nearHeight, _near },   // 우상
+        { nearWidth, -nearHeight, _near },  // 우하
+        { -nearWidth, -nearHeight, _near }  // 좌하
+    };
+
+    XMFLOAT3 farVertices[4] = {
+        { -farWidth, farHeight, _far },  // 좌상
+        { farWidth, farHeight, _far },   // 우상
+        { farWidth, -farHeight, _far },  // 우하
+        { -farWidth, -farHeight, _far }  // 좌하
+    };
+
+    // 카메라의 뷰 프로젝션 행렬 가져오기
+    XMMATRIX viewProj = RenderManager::GetI()->EditorCameraViewProjectionMatrix;
+    XMMATRIX worldViewProj = worldMatrix * viewProj;
+
+    // 뷰포트 크기 가져오기
+    D3D11_VIEWPORT viewport;
+    UINT numViewports = 1;
+    context->RSGetViewports(&numViewports, &viewport);
+
+    // 현재 창의 위치와 크기를 가져옴
+    ImVec2 windowPos = ImGui::GetWindowPos();
+    ImVec2 contentRegionMin = ImGui::GetWindowContentRegionMin();
+    ImVec2 contentRegionMax = ImGui::GetWindowContentRegionMax();
+    ImVec2 offset = ImVec2(contentRegionMin.x + windowPos.x, contentRegionMin.y + windowPos.y);
+
+    // 근평면과 원평면의 꼭짓점을 스크린 좌표로 변환
+    ImVec2 screenNearVertices[4];
+    ImVec2 screenFarVertices[4];
+    for (int i = 0; i < 4; ++i)
+    {
+        XMVECTOR nearPos = XMVector3TransformCoord(XMLoadFloat3(&nearVertices[i]), worldViewProj);
+        XMVECTOR farPos = XMVector3TransformCoord(XMLoadFloat3(&farVertices[i]), worldViewProj);
+
+        // NDC to screen space conversion
+        float nearX = (XMVectorGetX(nearPos) / XMVectorGetW(nearPos)) * 0.5f + 0.5f;
+        float nearY = (XMVectorGetY(nearPos) / XMVectorGetW(nearPos)) * -0.5f + 0.5f;
+        screenNearVertices[i] = ImVec2(nearX * (contentRegionMax.x - contentRegionMin.x) + offset.x,
+            nearY * (contentRegionMax.y - contentRegionMin.y) + offset.y);
+
+        float farX = (XMVectorGetX(farPos) / XMVectorGetW(farPos)) * 0.5f + 0.5f;
+        float farY = (XMVectorGetY(farPos) / XMVectorGetW(farPos)) * -0.5f + 0.5f;
+        screenFarVertices[i] = ImVec2(farX * (contentRegionMax.x - contentRegionMin.x) + offset.x,
+            farY * (contentRegionMax.y - contentRegionMin.y) + offset.y);
+    }
+
+    // ImGui를 사용하여 프러스텀의 엣지를 그림
+    const ImU32 color = IM_COL32(255, 255, 255, 255); // 하얀색
+    const float thickness = 1.0f;
+
+    // 근평면 그리기
+    for (int i = 0; i < 4; ++i)
+    {
+        int next = (i + 1) % 4;
+        ImGui::GetWindowDrawList()->AddLine(screenNearVertices[i], screenNearVertices[next], color, thickness);
+    }
+
+    // 원평면 그리기
+    for (int i = 0; i < 4; ++i)
+    {
+        int next = (i + 1) % 4;
+        ImGui::GetWindowDrawList()->AddLine(screenFarVertices[i], screenFarVertices[next], color, thickness);
+    }
+
+    // 근평면과 원평면을 연결하는 엣지 그리기
+    for (int i = 0; i < 4; ++i)
+    {
+        ImGui::GetWindowDrawList()->AddLine(screenNearVertices[i], screenFarVertices[i], color, thickness);
+    }
+}
+
 void Gizmo::DrawTransformHandler(Transform* transform)
 {
     EditorCamera* sceneViewCamera = SceneViewManager::GetI()->m_LastActiveSceneEditorWindow->GetSceneCamera();
@@ -279,7 +370,7 @@ void Gizmo::DrawTransformHandler(Transform* transform)
     XMMATRIX worldMatrix = transform->GetWorldMatrix();
 
     auto context = Application::GetI()->GetDeviceContext();
-    XMMATRIX viewProj = RenderManager::GetI()->cameraViewProjectionMatrix;
+    XMMATRIX viewProj = RenderManager::GetI()->EditorCameraViewProjectionMatrix;
 
     // 위치를 추출
     XMVECTOR position = transform->GetPosition();
