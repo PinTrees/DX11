@@ -178,7 +178,7 @@ MeshFile::MeshFile(string path)
 		std::ifstream inStream(FullPath, std::ios::binary); 
 		try
 		{
-			from_byte(inStream);
+			load_mesh(inStream);
 		}
 		catch (const std::exception&)
 		{
@@ -197,44 +197,48 @@ void MeshFile::OnInspectorGUI()
 
 	ImGui::Dummy(ImVec2(0, 4));
 	//EditorGUI::LabelHeader("Vertices", );
-	ImGui::Dummy(ImVec2(0, 4));
+	ImGui::Dummy(ImVec2(0, 8));
 
+	EditorGUI::BoolField("Import Animations", UseImportAnimation);
+	ImGui::Dummy(ImVec2(0, 4));
 	if (EditorGUI::Button("Import Fbx Mesh"))
 	{
 		ImportFile(); 
 	}
-	if (EditorGUI::Button("Import Aninmations"))
-	{
-		ImportAnimation();
-	}
+
 }
 
 void MeshFile::ImportFile() 
 {
-	wstring savePath = Path + L".mesh";
-	std::ofstream outStream(PathManager::GetI()->GetMovePathS(wstring_to_string(savePath)), std::ios::binary);
-
-	if (!outStream)
+	if (UseImportAnimation) 
 	{
-		std::cerr << "파일을 열 수 없습니다: " << PathManager::GetI()->GetMovePathS(wstring_to_string(savePath)) << std::endl;
+		SkinnedData.AnimationClips.clear(); 
+		FBXLoader fbxLoader; 
+		fbxLoader.LoadAnimation(FullPath, SkinnedData); 
+
+		wstring save_path_animations = Path + L".animations"; 
+		std::ofstream out_stream_animations(PathManager::GetI()->GetMovePathS(wstring_to_string(save_path_animations)), std::ios::binary);
+		if (!out_stream_animations)	return; 
+		save_animations(out_stream_animations); 
+		out_stream_animations.close(); 
+	}
+
+	wstring save_path_mesh = Path + L".mesh";
+	std::ofstream out_stream_mesh(PathManager::GetI()->GetMovePathS(wstring_to_string(save_path_mesh)), std::ios::binary);
+
+	if (!out_stream_mesh)
+	{
+		std::cerr << "파일을 열 수 없습니다: " << PathManager::GetI()->GetMovePathS(wstring_to_string(save_path_mesh)) << std::endl;
 		return;
 	}
 
 	// FbxModel 바이너리 저장
-	to_byte(outStream);
-	outStream.close();
-}
-
-void MeshFile::ImportAnimation()
-{
-	SkinnedData.AnimationClips.clear();
-
-	FBXLoader fbxLoader;
-	fbxLoader.LoadAnimation(FullPath, SkinnedData);
+	save_mesh(out_stream_mesh);
+	out_stream_mesh.close();
 }
 
 
-void MeshFile::from_byte(ifstream& inStream)
+void MeshFile::load_mesh(ifstream& inStream)
 {
 	if (!inStream.is_open())
 	{
@@ -273,8 +277,7 @@ void MeshFile::from_byte(ifstream& inStream)
 		SkinnedMeshs[i]->from_byte(inStream);  // 각 SkinnedMesh 객체의 from_byte 호출
 	}
 }
-
-void MeshFile::to_byte(ofstream& outStream)
+void MeshFile::save_mesh(ofstream& outStream)
 {
 	if (!outStream.is_open())
 	{
@@ -301,4 +304,16 @@ void MeshFile::to_byte(ofstream& outStream)
 	{
 		skinnedMesh->to_byte(outStream);
 	}
+
+
+}
+
+
+void MeshFile::load_animations(ifstream& inStream)
+{
+	SkinnedData.from_byte(inStream); 
+}
+void MeshFile::save_animations(ofstream& outStream)
+{
+	SkinnedData.to_byte(outStream); 
 }

@@ -48,6 +48,9 @@ using namespace Microsoft::WRL;
 #include "ImGuiNodeEditor/imgui_node_editor.h" 
 namespace ed = ax::NodeEditor;  
 
+// FONT AWSEAM
+#include "IconsFontAwesome/IconsFontAwesome6.h"
+
 // LIB
 #include <DirectXTex/DirectXTex.h>
 #include <DirectXTex/DirectXTex.inl>

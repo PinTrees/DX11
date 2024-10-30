@@ -4,7 +4,7 @@
 #include "EditorGUI.h"
 
 SceneHierachyEditorWindow::SceneHierachyEditorWindow()
-	: EditorWindow("SceneHerachy")
+	: EditorWindow("Hierachy", ICON_FA_LIST)
 {
 }
 
@@ -19,13 +19,18 @@ void SceneHierachyEditorWindow::OnRender()
 	if (currentScene == nullptr)
 		return;
 
-	vector<GameObject*> rootGameObjects = currentScene->GetRootGameObjects();
+	// Top Tab Bar
+	ImGui::BeginChild("##FixedTopBar", ImVec2(0, 30), false, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
+	EditorGUI::IconButton_FA(ICON_FA_PLUS, EditorGUI::DefaultTextStyle, ImVec2(30, 30), 30);
+	EditorGUI::Divider(Color(0.2f, 0.2f, 0.2f, 1.0f), 4.0f);
+	ImGui::EndChild();
 
-	for (int i = 0; i < rootGameObjects.size(); ++i)
-	{
-		GameObject* gameObject = rootGameObjects[i];
-		DrawGameObject(gameObject);
+	// Root GameObject UI
+	ImGui::BeginChild("##RootGameObjectRegion", ImVec2(0, 0), true);
+	for (const auto& g : currentScene->GetRootGameObjects()) {
+		DrawGameObject(g); 
 	}
+	ImGui::EndChild();
 
 	// 전체 화면을 드래그 앤 드롭 영역으로 확장
 	ImVec2 windowPos = ImGui::GetWindowPos(); // 창의 위치
@@ -87,42 +92,29 @@ void SceneHierachyEditorWindow::OnRender()
 void SceneHierachyEditorWindow::DrawGameObject(GameObject* gameObject)
 {
 	ImGui::PushID(gameObject->GetInstanceID()); 
-	
-	ImGui::Dummy(ImVec2(8, 0));
-	ImGui::SameLine();
-	EditorGUI::Image(L"\\ProjectSetting\\icons\\icon_gameobject.png", ImVec2(18, 18));
-	ImGui::SameLine();
-
 	bool isSelected = (SelectionManager::GetSelectedGameObject() == gameObject);
 
-	if (ImGui::TreeNodeEx(gameObject->GetName().c_str(), isSelected ? ImGuiTreeNodeFlags_Selected : 0))
-	{
-		if (ImGui::IsItemClicked())
-		{
-			SelectionManager::SetSelectedGameObject(gameObject);
-		}
+	ImGui::PushStyleColor(ImGuiCol_Button, isSelected ? ImVec4(0.172f, 0.36f, 0.529f, 1.0f) : EDITOR_GUI_COLOR_TRANSPARENT);     // 기본 버튼 색상 
+	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, isSelected ? ImVec4(0.172f, 0.36f, 0.529f, 1.0f) : EDITOR_GUI_COLOR_BUTTON_HOBER);			// 호버 시 색상 
+	ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.172f, 0.36f, 0.529f, 1.0f));				// 클릭 시 색상 
+	ImGui::PushStyleColor(ImGuiCol_Text, EDITOR_GUI_COLOR_LABEL);									// 텍스트 색상
+	ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, 0.0f);
 
-		std::vector<GameObject*> children = gameObject->GetChildren();
-		for (int i = 0; i < children.size(); ++i)
-		{
-			DrawGameObject(children[i]);
-		}
-		ImGui::TreePop();
-	}
-	else if (ImGui::IsItemClicked())
-	{
+	ImVec2 availableSize = ImGui::GetContentRegionAvail();
+	string gamobject_entry_id = "##" + gameObject->GetName() + to_string(gameObject->GetInstanceID());
+	ImGui::SetCursorPosX(26);
+	if (ImGui::Button(gamobject_entry_id.c_str(), ImVec2(availableSize.x, 26))) {
 		SelectionManager::SetSelectedGameObject(gameObject);
 	}
-
-	// 드래그 앤 드롭 소스
-	if (ImGui::BeginDragDropSource()) 
+	// Drag GameObject
+	if (ImGui::BeginDragDropSource())
 	{
-		ImGui::SetDragDropPayload("GAME_OBJECT", &gameObject, sizeof(GameObject*)); 
-		ImGui::Text("Dragging %s", gameObject->GetName().c_str()); 
-		ImGui::EndDragDropSource(); 
+		ImGui::SetDragDropPayload("GAME_OBJECT", &gameObject, sizeof(GameObject*));
+		ImGui::Text("Dragging %s", gameObject->GetName().c_str());
+		ImGui::EndDragDropSource();
 	}
 
-	// 드래그 앤 드롭 처리 (특정 오브젝트에 드롭)
+	// Drop In This GameObject
 	if (ImGui::BeginDragDropTarget())
 	{
 		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("FBX_FILE"))
@@ -131,14 +123,54 @@ void SceneHierachyEditorWindow::DrawGameObject(GameObject* gameObject)
 			HandleFbxFileDrop(std::string(filePath), gameObject);
 		}
 
-		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("GAME_OBJECT")) 
+		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("GAME_OBJECT"))
 		{
-			GameObject* droppedObject = *(GameObject**)payload->Data; 
-			droppedObject->SetParent(gameObject); 
+			GameObject* droppedObject = *(GameObject**)payload->Data;
+			droppedObject->SetParent(gameObject);
 		}
 		ImGui::EndDragDropTarget();
 	}
 
+	bool hasChild = gameObject->GetChildCount() > 0; 
+	if (hasChild)
+	{
+		// Open Hierachy -----
+		bool hierachy_opened = gameObject->m_Editor_HierachOpened;
+		ImGui::SameLine();
+		ImGui::SetCursorPosX(0);
+		ImGui::SetCursorPosY(ImGui::GetCursorPosY());
+		if (ImGui::Button("##HierachyOpenButton", ImVec2(26, 26))) {
+			gameObject->m_Editor_HierachOpened = !gameObject->m_Editor_HierachOpened;
+		}
+		ImGui::SameLine();
+		ImGui::SetCursorPosX(8);
+		ImGui::SetCursorPosY(ImGui::GetCursorPosY() - (hierachy_opened ? 6 : 0));
+		EditorGUI::Label(hierachy_opened ? ICON_FA_SORT_DOWN : ICON_FA_CARET_RIGHT, EditorGUI::DefaultTextStyle, EDITOR_GUI_COLOR_LABEL_D);
+		// --------------------
+	}
+
+	ImGui::SameLine();
+	ImGui::SetCursorPosX(32);
+	ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2);
+	EditorGUI::Image(L"\\ProjectSetting\\icons\\icon_gameobject_1.png", ImVec2(22, 26));
+
+	ImGui::SameLine();
+	ImGui::SetCursorPosX(60);
+	ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 2);
+	EditorGUI::Label(gameObject->GetName(), EditorGUI::DefaultTextStyle, EDITOR_GUI_COLOR_LABEL); 
+
+	if (gameObject->m_Editor_HierachOpened) {
+		std::vector<GameObject*> children = gameObject->GetChildren();
+		ImGui::Indent(18.0f);
+		ImGui::BeginChild("##ChildRegion", ImVec2(0, 0), false); 
+		for (const auto& g : children) { 
+			DrawGameObject(g);   
+		}
+		ImGui::EndChild();
+	}
+	
+	ImGui::PopStyleVar(1);  
+	ImGui::PopStyleColor(4);
 	ImGui::PopID(); // ImGui ID 스택에서 팝
 }
 

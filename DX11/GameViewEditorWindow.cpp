@@ -4,7 +4,7 @@
 #include "App.h"
 
 GameViewEditorWindow::GameViewEditorWindow()
-	: EditorWindow("Game"),
+	: EditorWindow("Game", ICON_FA_GAMEPAD),  
     windowWidth(800),
     windowHeight(600)
 {
@@ -78,7 +78,7 @@ void GameViewEditorWindow::CleanUpRenderTarget()
 
 void GameViewEditorWindow::RenderScene()
 {
-    auto camera = DisplayManager::GetI()->GetActiveCamera();  
+    shared_ptr<Camera> camera = DisplayManager::GetI()->GetActiveCamera();   
 
     if (camera == nullptr)
         return;

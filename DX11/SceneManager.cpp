@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "SceneManager.h"
 #include "Scene.h"
+#include "LightManager.h"
+
 
 SINGLE_BODY(SceneManager)
 
@@ -12,7 +14,7 @@ SceneManager::SceneManager()
 
 SceneManager::~SceneManager()
 {
-
+	Safe_Delete_Map(m_Scenes); 
 }
 
 void SceneManager::Init()
@@ -43,6 +45,7 @@ void SceneManager::LoadScene(wstring scenePath)
 	}
 
 	m_pCurrScene->Enter();
+	DisplayManager::GetI()->Init(); 
 }
 
 void SceneManager::UpdateScene()
@@ -96,22 +99,19 @@ void SceneManager::HandleStop()
 	if (m_pCurrScene == nullptr)
 		return;
 
-	m_pCurrScene->Exit();
-
 	wstring scenePath = m_pCurrScene->GetScenePath();
-	Scene* scene = Scene::Load(scenePath); 
+
+	// Delete Scene
+	m_pCurrScene->Exit();
+	delete m_pCurrScene;
 
 	m_pCurrScene = nullptr;
+	m_Scenes.erase(scenePath); 
 
-	if (m_Scenes.find(scenePath) != m_Scenes.end())  
-	{
-		delete m_Scenes[scenePath];
-		m_Scenes[scenePath] = scene;
-	}
-
-	m_pCurrScene = scene;
+	// Load Scene
+	SceneManager::LoadScene(scenePath); 
 }
-#include "LightManager.h"
+
 void SceneManager::CreateScene()
 {
 	m_pCurrScene = new Scene;

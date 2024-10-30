@@ -2,7 +2,7 @@
 
 struct EditorTextStyle
 {
-	int FontSize = 17;
+	int FontSize = 24;
 	bool Bold = false;
 };
 

@@ -13,8 +13,11 @@ private:
 
 protected:
 	GameObject* m_pGameObject;
-	string m_InspectorTitleName = "";
 	int m_InstanceId;
+
+	// Editor
+	string	m_InspectorTitleName = "";
+	bool	m_InspectorOpened;
 
 public:
 	Component();
@@ -27,6 +30,8 @@ public:
 	virtual void Update() { }
 	virtual void LateUpdate()  { }
 	virtual void FixedUpdate() { }
+
+	virtual void LastUpdate() { }
 
 	virtual void Render() { }
 	virtual void _Editor_Render() { }

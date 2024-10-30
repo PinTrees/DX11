@@ -29,8 +29,13 @@ private:
 	vector<GameObject*> m_pChildGameObjects;
 	Transform* m_pTransform;
 
+	// Runtime Value
+	bool m_IsActive;  
+
 	// Editor
-	vector<std::function<void()>> m_Editor_LastUpdateActions; 
+	vector<std::function<void()>>	m_Editor_LastUpdateActions; 
+public:
+	bool							m_Editor_HierachOpened;
 
 public:
 	GameObject();
@@ -41,6 +46,7 @@ public:
 	uint64 GetInstanceID() const { return m_InstanceID; }
 	const string& GetName() { return m_Name; }
 	vector<GameObject*> GetChildren() { return m_pChildGameObjects; }
+	int GetChildCount() { return m_pChildGameObjects.size(); }
 	Transform* GetTransform() { return m_pTransform; }
 	
 	void SetParent(GameObject* parent);
@@ -53,8 +59,10 @@ public:
 	void FixedUpdate();
 	void LastUpdate(); 
 
-	void SetLayerIndex(uint8 layer) { m_LayerIndex = layer; }
-	uint8 GetLayerIndex() { return m_LayerIndex; }
+	void OnDestroy(); 
+
+	void SetLayerIndex(uint8 layer) { m_LayerIndex = layer; } 
+	uint8 GetLayerIndex() { return m_LayerIndex; } 
 
 	void ApplyPendingComponents();
 	template <class T>

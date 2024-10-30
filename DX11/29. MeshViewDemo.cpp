@@ -15,7 +15,7 @@
 MeshViewDemo::MeshViewDemo(HINSTANCE hInstance)
 	: App(hInstance)
 {
-	_mainWindowCaption = L"MeshView Demo";
+	_mainWindowCaption = L"Fake Unity - 0.0.1";
 
 	_lastMousePos.x = 0;
 	_lastMousePos.y = 0;

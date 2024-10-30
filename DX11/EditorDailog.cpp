@@ -67,6 +67,8 @@ void EditorDialog::Render()
     ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 1.0f, 1.0f)); // 텍스트 흰색
 
     // 윈도우를 시작합니다. 두 번째 인자로 창 열림 상태를 전달 
+    // 창을 최상위로 설정
+    ImGui::SetNextWindowFocus(); 
     if (ImGui::Begin(m_WindowName.c_str(), &m_WindowOpen, windowFlags)) 
     {
         ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));

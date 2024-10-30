@@ -71,12 +71,14 @@ public:
 
 public:
 	void ImportFile(); 
-	void ImportAnimation();
 
-	void from_byte(ifstream& inStream);
-	void to_byte(ofstream& outStream);
+	void load_mesh(ifstream& inStream);
+	void save_mesh(ofstream& outStream);
 
+	void load_animations(ifstream& inStream); 
+	void save_animations(ofstream& outStream);
+	 
 	// meta setting file
-	void to_json();
-	void from_json();
+	void save_meta();
+	void load_meta();
 };

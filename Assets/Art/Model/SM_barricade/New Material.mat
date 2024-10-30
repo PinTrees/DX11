@@ -6,7 +6,7 @@
         1.0,
         1.0
     ],
-    "BaseMapPath": "Assets\\Art\\Model\\SM_barricade\\T_Bark_01_basecolor.png",
+    "BaseMapPath": "Assets\\Art\\Model\\SM_barricade\\T_Wood_02_basecolor.png",
     "Diffuse": [
         1.0,
         1.0,
@@ -27,7 +27,7 @@
         0.0,
         0.0,
         0.0,
-        1.0
+        0.9686274528503418
     ],
     "UseNormalMap": 1,
     "UseShadowMap": 1,

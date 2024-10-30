@@ -63,7 +63,7 @@ bool Splitter(bool split_vertically, float thickness, float* size1, float* size2
 }
 
 ProjectEditorWindow::ProjectEditorWindow()
-    : EditorWindow("Project")
+    : EditorWindow("Project", ICON_FA_FOLDER)
 {
     //solutionDirectory = Application::GetDataPath();
     solutionDirectory = PathManager::GetI()->GetMovePathW(L"Assets\\");
@@ -225,19 +225,21 @@ void ProjectEditorWindow::RenderFileEntry(const fs::directory_entry& entry, bool
         EditorGUI::RowSizedBox(8);
         RenderFileEntry_Directory(entry, isSelected);
     }
+    // .mesh file owner
     else if (extention == ".fbx" || extention == ".FBX")
     {
-        EditorGUI::Image(L"\\ProjectSetting\\icons\\icon_mesh.png", ImVec2(18, 18));
+        EditorGUI::Image(L"\\ProjectSetting\\icons\\icon_mesh.png", ImVec2(24, 24));
         EditorGUI::RowSizedBox(8);
         RenderFileEntry_FBX(entry, isSelected);
     }
+    // .mesh file - Hidden
     else if (extention == ".mesh")
     {
-        EditorGUI::Image(L"\\ProjectSetting\\icons\\icon_json.png", ImVec2(18, 18));
-        EditorGUI::RowSizedBox(8);
-        if (ImGui::Selectable(filename.c_str(), isSelected))
-        {
-        }
+        //EditorGUI::Image(L"\\ProjectSetting\\icons\\icon_json.png", ImVec2(18, 18));
+        //EditorGUI::RowSizedBox(8);
+        //if (ImGui::Selectable(filename.c_str(), isSelected))
+        //{
+        //}
     }
     else if (extention == ".png" || extention == ".PNG")
     {
@@ -247,7 +249,7 @@ void ProjectEditorWindow::RenderFileEntry(const fs::directory_entry& entry, bool
     }
     else if (extention == ".mat" || extention == ".MAT")
     {
-        EditorGUI::Image(L"\\ProjectSetting\\icons\\icon_material.png", ImVec2(18, 18));
+        EditorGUI::Image(L"\\ProjectSetting\\icons\\icon_material.png", ImVec2(24, 24));
         EditorGUI::RowSizedBox(8);
         RenderFileEntry_MAT(entry, isSelected);
     }

@@ -7,6 +7,7 @@ int Component::nextInstanceId = 0;
 Component::Component()  
 	: m_InstanceId(nextInstanceId++) 
 	, m_pGameObject(nullptr)
+	, m_InspectorOpened(true)
 { 
 }
 
@@ -19,8 +20,8 @@ void Component::RenderInspectorGUI()
 	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
 
 	EditorGUI::ComponentDivider();
-	bool isOpened = EditorGUI::ComponentHeader(m_InspectorTitleName);
-
+	bool isOpened = EditorGUI::ComponentHeader(m_InspectorTitleName, L"ProjectSetting\\icons\\icon_camera.png", m_InspectorOpened);
+	 
 	// 드래그 앤 드롭 소스 (드래그할 컴포넌트)
 	if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
 	{
@@ -31,7 +32,7 @@ void Component::RenderInspectorGUI()
 		ImGui::EndDragDropSource();
 	}
 
-	EditorGUI::Divider(Color(0.15f, 0.15f, 0.15f, 1.0f), 1.4f);
+	EditorGUI::Divider(Color(0.18f, 0.18f, 0.18f, 1.0f), 2.0f);
 
 	EditorGUI::Label("Instance ID: " + to_string(m_InstanceId)); 
 

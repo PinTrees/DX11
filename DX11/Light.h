@@ -45,6 +45,9 @@ public:
 	virtual void Update() override;
 	virtual void LateUpdate() override;
 	virtual void FixedUpdate() override;
+
+	virtual void LastUpdate() override;
+
 	virtual void Render() override;
 	virtual void OnInspectorGUI() override;
 	virtual void OnDestroy() override;

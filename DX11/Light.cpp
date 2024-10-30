@@ -54,37 +54,41 @@ void Light::Update()
 
 void Light::LateUpdate()
 {
-	XMVECTOR pos = m_pGameObject->GetTransform()->GetPosition();
-	XMVECTOR dir = m_pGameObject->GetTransform()->GetLook();
-	XMVECTOR target = pos + dir;
-	XMVECTOR up = m_pGameObject->GetTransform()->GetUp();
-	XMMATRIX V;
-
-	Vec3 r;
-
-	switch (m_lightType)
-	{
-	case LightType::Directional:
-		r = m_pGameObject->GetTransform()->GetLocalEulerRadians();
-		XMStoreFloat3(&m_directionalDesc.Direction, r);
-		break;
-	case LightType::Point:
-		XMStoreFloat3(&m_pointDesc.Position, pos);
-		break;
-	case LightType::Spot:
-		r = m_pGameObject->GetTransform()->GetLocalEulerRadians();
-		XMStoreFloat3(&m_spotDesc.Position, pos);
-		XMStoreFloat3(&m_spotDesc.Direction, r);
-		break;
-	default:
-		break;
-	}
-
-	m_lightView = ::XMMatrixLookAtLH(pos, target, up);
 }
 
 void Light::FixedUpdate()
 {
+}
+
+void Light::LastUpdate()
+{
+	XMVECTOR pos = m_pGameObject->GetTransform()->GetPosition(); 
+	XMVECTOR dir = m_pGameObject->GetTransform()->GetLook(); 
+	XMVECTOR target = pos + dir; 
+	XMVECTOR up = m_pGameObject->GetTransform()->GetUp(); 
+	XMMATRIX V; 
+
+	Vec3 r; 
+
+	switch (m_lightType) 
+	{
+	case LightType::Directional: 
+		r = m_pGameObject->GetTransform()->GetLocalEulerRadians(); 
+		XMStoreFloat3(&m_directionalDesc.Direction, r);  
+		break;
+	case LightType::Point: 
+		XMStoreFloat3(&m_pointDesc.Position, pos); 
+		break;
+	case LightType::Spot: 
+		r = m_pGameObject->GetTransform()->GetLocalEulerRadians(); 
+		XMStoreFloat3(&m_spotDesc.Position, pos); 
+		XMStoreFloat3(&m_spotDesc.Direction, r); 
+		break; 
+	default: 
+		break; 
+	} 
+
+	m_lightView = ::XMMatrixLookAtLH(pos, target, up); 
 }
 
 void Light::Render()
@@ -245,21 +249,9 @@ GENERATE_COMPONENT_FUNC_FROMJSON(Light)
 
 	// Directional
 	{
-		if (j.contains("directionalLightAmbient"))
-		{
-			auto ambient = j.at("directionalLightAmbient").get<std::vector<float>>();
-			m_directionalDesc.Ambient = XMFLOAT4{ ambient[0], ambient[1], ambient[2], ambient[3] };
-		}
-		if (j.contains("directionalLightDiffuse"))
-		{
-			auto diffuse = j.at("directionalLightDiffuse").get<std::vector<float>>();
-			m_directionalDesc.Diffuse = XMFLOAT4{ diffuse[0], diffuse[1], diffuse[2], diffuse[3] };
-		}
-		if (j.contains("directionalLightSpecular"))
-		{
-			auto specular = j.at("directionalLightSpecular").get<std::vector<float>>();
-			m_directionalDesc.Specular = XMFLOAT4{ specular[0], specular[1], specular[2], specular[3] };
-		}
+		DE_SERIALIZE_FLOAT4(j, m_directionalDesc.Ambient, "directionalLightAmbient");
+		DE_SERIALIZE_FLOAT4(j, m_directionalDesc.Diffuse, "directionalLightDiffuse");
+		DE_SERIALIZE_FLOAT4(j, m_directionalDesc.Specular, "directionalLightSpecular");
 		if (j.contains("directionalLightLength"))
 		{
 			auto length = j.at("directionalLightLength").get<std::vector<float>>();
@@ -269,55 +261,20 @@ GENERATE_COMPONENT_FUNC_FROMJSON(Light)
 
 	// Point
 	{
-		if (j.contains("pointLightAmbient"))
-		{
-			auto ambient = j.at("pointLightAmbient").get<std::vector<float>>();
-			m_pointDesc.Ambient = XMFLOAT4{ ambient[0], ambient[1], ambient[2], ambient[3] };
-		}
-		if (j.contains("pointLightDiffuse"))
-		{
-			auto diffuse = j.at("pointLightDiffuse").get<std::vector<float>>();
-			m_pointDesc.Diffuse = XMFLOAT4{ diffuse[0], diffuse[1], diffuse[2], diffuse[3] };
-		}
-		if (j.contains("pointLightSpecular"))
-		{
-			auto specular = j.at("pointLightSpecular").get<std::vector<float>>();
-			m_pointDesc.Specular = XMFLOAT4{ specular[0], specular[1], specular[2], specular[3] };
-		}
-		if (j.contains("pointLightRange"))
-		{
-			auto range = j.at("pointLightRange").get<float>();
-			m_pointDesc.Range = range;
-		}
+		DE_SERIALIZE_FLOAT4(j, m_pointDesc.Ambient, "pointLightAmbient");
+		DE_SERIALIZE_FLOAT4(j, m_pointDesc.Diffuse, "pointLightDiffuse");
+		DE_SERIALIZE_FLOAT4(j, m_pointDesc.Specular, "pointLightSpecular");
+		DE_SERIALIZE_FLOAT(j, m_pointDesc.Range, "pointLightRange"); 
 	}
 
 	// Spot
 	{
-		if (j.contains("spotLightAmbient"))
-		{
-			auto ambient = j.at("spotLightAmbient").get<std::vector<float>>();
-			m_spotDesc.Ambient = XMFLOAT4{ ambient[0], ambient[1], ambient[2], ambient[3] };
-		}
-		if (j.contains("spotLightDiffuse"))
-		{
-			auto diffuse = j.at("spotLightDiffuse").get<std::vector<float>>();
-			m_spotDesc.Diffuse = XMFLOAT4{ diffuse[0], diffuse[1], diffuse[2], diffuse[3] };
-		}
-		if (j.contains("spotLightSpecular"))
-		{
-			auto specular = j.at("spotLightSpecular").get<std::vector<float>>();
-			m_spotDesc.Specular = XMFLOAT4{ specular[0], specular[1], specular[2], specular[3] };
-		}
-		if (j.contains("spotLightRange"))
-		{
-			auto range = j.at("spotLightRange").get<float>();
-			m_spotDesc.Range = range;
-		}
-		if (j.contains("spotLightSpot"))
-		{
-			auto spot = j.at("spotLightSpot").get<float>();
-			m_spotDesc.Spot = spot;
-		}
+		DE_SERIALIZE_FLOAT4(j, m_spotDesc.Ambient, "spotLightAmbient");
+		DE_SERIALIZE_FLOAT4(j, m_spotDesc.Diffuse, "spotLightDiffuse");
+		DE_SERIALIZE_FLOAT4(j, m_spotDesc.Specular, "spotLightSpecular");
+		DE_SERIALIZE_FLOAT(j, m_spotDesc.Range, "spotLightRange");
+		DE_SERIALIZE_FLOAT(j, m_spotDesc.Spot, "spotLightSpot");
+	
 		if (j.contains("spotLightLength"))
 		{
 			auto length = j.at("spotLightLength").get<std::vector<float>>();

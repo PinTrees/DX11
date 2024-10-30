@@ -12,7 +12,11 @@ Scene::Scene()
 
 Scene::~Scene()
 {
+    for (const auto& g : m_RootGameObjects)
+        g->OnDestroy(); 
+
 	Safe_Delete_Vec(m_RootGameObjects);
+    m_arrGameObjects[0].clear();
 }
 
 void Scene::Enter()
@@ -280,7 +284,6 @@ void Scene::UpdateScene()
 
 Scene* Scene::Load(wstring scenePath)
 {
-    //std::ifstream is(wstring_to_string(scenePath));
     std::ifstream is(wstring_to_string(PathManager::GetI()->GetMovePathW(scenePath)));
 
     if (!is)

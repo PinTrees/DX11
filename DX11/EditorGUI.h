@@ -3,15 +3,31 @@
 
 #define FIELD_DEFAULT_HEIGHT	20.f
 
-#define EDITOR_GUI_FIELD_WIDTH (ImGui::GetContentRegionAvail().x * 0.65f)
+#define EDITOR_GUI_FIELD_WIDTH (ImGui::GetContentRegionAvail().x * 0.6f)
+#define EDITOR_GUI_LARGE_FIELD_WIDTH (ImGui::GetContentRegionAvail().x * 0.7f) 
 #define EDITOR_GUI_BUTTON_WIDTH  20
 
-#define EDITOR_GUI_FIELD_PADDING    ImGui::Dummy(ImVec2(4, 0));	\
-									ImGui::SameLine()			\
+#define EDITOR_GUI_FIELD_PADDING    ImGui::Dummy(ImVec2(12, 0));	\
+									ImGui::SameLine()				\
 
 #define EDITOR_GUI_FIELD_SPACING(s)	ImGui::SameLine();													\
 									ImGui::Dummy(ImVec2(ImGui::GetContentRegionAvail().x - s - 4, 0));	\
 									ImGui::SameLine()													\
+
+// Style
+#define EDITOR_GUI_STYLE_TAB_ROUNDING   ImGui::PushStyleVar(ImGuiStyleVar_TabRounding, 24.0f)
+// Color 
+#define EDITOR_GUI_COLOR_TRANSPARENT	ImVec4(0.f, 0.f, 0.f, 0.f)
+#define EDITOR_GUI_COLOR_BG				ImVec4(0.07f, 0.07f, 0.07f, 1.0f)
+#define EDITOR_GUI_COLOR_TAB_HEADER_BG	ImGui::PushStyleColor(ImGuiCol_TableHeaderBg, ImVec4(0.07f, 0.07f, 0.07f, 1.0f))  
+#define EDITOR_GUI_COLOR_LABEL			ImVec4(0.8f, 0.8f, 0.8f, 1.0f)
+#define EDITOR_GUI_COLOR_LABEL_D		ImVec4(0.75f, 0.75f, 0.75f, 1.0f)
+#define EDITOR_GUI_COLOR_BUTTON_BG		ImVec4(0.25f, 0.25f, 0.25f, 1.0f)
+#define EDITOR_GUI_COLOR_BUTTON_HOBER	ImVec4(0.35f, 0.35f, 0.35f, 1.0f)
+
+// Sise
+#define EDITOR_GUI_SIZE_ICON			ImVec2(24, 24)
+#define EDITOR_GUI_SIZE_CHECKBOX		ImVec2(22, 22)
 
 class Mesh;
 class SkinnedMesh;
@@ -19,25 +35,28 @@ class SkinnedMesh;
 class EditorGUI
 {
 public:
-	static EditorTextStyle defaultTextStyle;
+	static EditorTextStyle DefaultTextStyle;
 
 public:
 	static void RowSizedBox(float size);
 
-	static void Image(wstring path, ImVec2 size);
-	static void Checkbox();
+	static void Image(wstring path, ImVec2 size=EDITOR_GUI_SIZE_ICON); 
+	static bool Checkbox(bool& active);
 	static bool InputField(string& inputText);
-	static void Label(string text, EditorTextStyle guiStyle = defaultTextStyle);
+	static void Label(string text, EditorTextStyle guiStyle = DefaultTextStyle, ImVec4 color = EDITOR_GUI_COLOR_LABEL);
 	static void LabelHeader(string text);
 	static bool Button(string text, Vec2 size = Vec2(0, 20), Color color = Color(0.31f, 0.31f, 0.31f, 1.0f));
+	static bool IconButton_FA(string text, EditorTextStyle guiStyle = DefaultTextStyle, ImVec2 size = ImVec2(0, 20), int iconSize=24);
+	static bool ImageButton(wstring path, ImVec2 size, ImVec2 padding=ImVec2(2,2));
 
-	static bool ComponentHeader(string title);
+	static bool ComponentHeader(string title, wstring icon, bool& isOpened);
 	static void ComponentDivider();
-	static void Divider(Color color, float height = 1.8f);
+	static void Divider(Color color, float height = 2.8f);
 	static void Spacing(Vec2 size);
 
 
 public:
+	static bool BoolField(string title, bool& active);
 	static bool FloatField(string title, float& v, ImVec2 size);
 	static bool FloatField(string title, float& v);
 	static bool Vector3Field(string title, Vec3& vec3);

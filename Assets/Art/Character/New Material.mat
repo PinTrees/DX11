@@ -30,7 +30,7 @@
         0.0
     ],
     "UseNormalMap": 0,
-    "UseShadowMap": 0,
-    "UseSsaoMap": 0,
+    "UseShadowMap": 1,
+    "UseSsaoMap": 1,
     "UseTexture": 0
 }

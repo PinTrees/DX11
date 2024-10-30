@@ -3,8 +3,8 @@
 #include "Debug.h"
 
 ConsoleEditorWindow::ConsoleEditorWindow()
-	: EditorWindow("Console")
-{
+	: EditorWindow("Console", ICON_FA_FILE_LINES) 
+{ 
 }
 
 ConsoleEditorWindow::~ConsoleEditorWindow()

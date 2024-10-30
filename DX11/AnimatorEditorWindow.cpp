@@ -3,20 +3,22 @@
 # include "ImGui/imgui_internal.h"
 
 AnimatorEditorWindow::AnimatorEditorWindow()
-	: EditorWindow("Animator")
+	: EditorWindow("Animator", ICON_FA_CIRCLE_PLAY)
 {
-	ed::Config config;
-	config.SettingsFile = "Simple.json";
-	m_Context = ed::CreateEditor(&config);
+	//ed::Config config;
+	//config.SettingsFile = "Simple.json";
+	//m_Context = ed::CreateEditor(&config);
 }
 
 AnimatorEditorWindow::~AnimatorEditorWindow()
 {
-	ed::DestroyEditor(m_Context);
+	//ed::DestroyEditor(m_Context);
 }
 
 void AnimatorEditorWindow::OnRender()
 {
+    return;
+
     auto& io = ImGui::GetIO();
 
     // Node Editor Widget

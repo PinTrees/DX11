@@ -78,6 +78,45 @@ void BoneAnimation::Interpolate(float t, XMFLOAT4X4& M)const
 	}
 }
 
+
+
+void BoneAnimation::to_byte(std::ofstream& outStream) const
+{
+	// Keyframes 크기 쓰기
+	uint32_t keyframeCount = Keyframes.size();
+	outStream.write(reinterpret_cast<const char*>(&keyframeCount), sizeof(keyframeCount));
+
+	// 각 Keyframe 쓰기
+	for (const auto& keyframe : Keyframes)
+	{
+		// Keyframe의 각 멤버 변수 직렬화
+		outStream.write(reinterpret_cast<const char*>(&keyframe.TimePos), sizeof(keyframe.TimePos));
+		outStream.write(reinterpret_cast<const char*>(&keyframe.Translation), sizeof(keyframe.Translation));
+		outStream.write(reinterpret_cast<const char*>(&keyframe.Scale), sizeof(keyframe.Scale));
+		outStream.write(reinterpret_cast<const char*>(&keyframe.RotationQuat), sizeof(keyframe.RotationQuat));
+	}
+}
+
+void BoneAnimation::from_byte(std::ifstream& inStream)
+{
+	// Keyframes 크기 읽기
+	uint32_t keyframeCount;
+	inStream.read(reinterpret_cast<char*>(&keyframeCount), sizeof(keyframeCount));
+	Keyframes.resize(keyframeCount);
+
+	// 각 Keyframe 읽기
+	for (auto& keyframe : Keyframes)
+	{
+		// Keyframe의 각 멤버 변수 역직렬화
+		inStream.read(reinterpret_cast<char*>(&keyframe.TimePos), sizeof(keyframe.TimePos));
+		inStream.read(reinterpret_cast<char*>(&keyframe.Translation), sizeof(keyframe.Translation));
+		inStream.read(reinterpret_cast<char*>(&keyframe.Scale), sizeof(keyframe.Scale));
+		inStream.read(reinterpret_cast<char*>(&keyframe.RotationQuat), sizeof(keyframe.RotationQuat));
+	}
+}
+
+
+
 float AnimationClip::GetClipStartTime()const
 {
 	// Find smallest start time over all bones in this clip.
@@ -110,6 +149,45 @@ void AnimationClip::Interpolate(float t, std::vector<XMFLOAT4X4>& boneTransforms
 	}
 }
 
+void AnimationClip::to_byte(std::ofstream& outStream) const
+{
+	// 애니메이션 이름 길이와 데이터 쓰기
+	uint32_t nameLength = Name.size();
+	outStream.write(reinterpret_cast<const char*>(&nameLength), sizeof(nameLength));
+	outStream.write(Name.c_str(), nameLength);
+
+	// BoneAnimations 쓰기
+	uint32_t boneAnimCount = BoneAnimations.size();
+	outStream.write(reinterpret_cast<const char*>(&boneAnimCount), sizeof(boneAnimCount));
+	for (const auto& boneAnim : BoneAnimations)
+	{
+		boneAnim.to_byte(outStream); // BoneAnimation 클래스의 to_byte 호출 
+	}
+}
+
+void AnimationClip::from_byte(std::ifstream& inStream)
+{
+	// 애니메이션 이름 읽기
+	uint32_t nameLength;
+	inStream.read(reinterpret_cast<char*>(&nameLength), sizeof(nameLength));
+	Name.resize(nameLength);
+	inStream.read(&Name[0], nameLength);
+
+	// BoneAnimations 읽기
+	uint32_t boneAnimCount;
+	inStream.read(reinterpret_cast<char*>(&boneAnimCount), sizeof(boneAnimCount));
+	BoneAnimations.resize(boneAnimCount);
+	for (auto& boneAnim : BoneAnimations)
+	{
+		boneAnim.from_byte(inStream); // BoneAnimation 클래스의 from_byte 호출
+	}
+}
+
+
+
+
+
+
 float SkinnedData::GetClipStartTime(const std::string& clipName)const
 {
 	auto clip = _animations.find(clipName);
@@ -132,21 +210,21 @@ SkinnedData::~SkinnedData()
 
 uint32 SkinnedData::BoneCount()const
 {
-	return _boneHierarchy.size();
+	return BoneHierarchy.size();
 }
 
 void SkinnedData::Set(std::vector<int>& boneHierarchy,
 	std::vector<XMFLOAT4X4>& boneOffsets,
 	std::map<std::string, AnimationClip>& animations)
 {
-	_boneHierarchy = boneHierarchy;
-	_boneOffsets = boneOffsets;
+	BoneHierarchy = boneHierarchy;
+	BoneOffsets = boneOffsets;
 	_animations = animations;
 }
 
 void SkinnedData::GetFinalTransforms(const std::string& clipName, float timePos, std::vector<XMFLOAT4X4>& finalTransforms)const
 {
-	uint32 numBones = _boneOffsets.size();
+	uint32 numBones = BoneOffsets.size();
 
 	std::vector<XMFLOAT4X4> toParentTransforms(numBones);
 
@@ -169,7 +247,7 @@ void SkinnedData::GetFinalTransforms(const std::string& clipName, float timePos,
 	{
 		XMMATRIX toParent = XMLoadFloat4x4(&toParentTransforms[i]);
 
-		int parentIndex = _boneHierarchy[i];
+		int parentIndex = BoneHierarchy[i];
 		XMMATRIX parentToRoot = XMLoadFloat4x4(&toRootTransforms[parentIndex]);
 
 		XMMATRIX toRoot = XMMatrixMultiply(toParent, parentToRoot);
@@ -180,8 +258,66 @@ void SkinnedData::GetFinalTransforms(const std::string& clipName, float timePos,
 	// Premultiply by the bone offset transform to get the final transform.
 	for (uint32 i = 0; i < numBones; ++i)
 	{
-		XMMATRIX offset = XMLoadFloat4x4(&_boneOffsets[i]);
+		XMMATRIX offset = XMLoadFloat4x4(&BoneOffsets[i]);
 		XMMATRIX toRoot = XMLoadFloat4x4(&toRootTransforms[i]);
 		XMStoreFloat4x4(&finalTransforms[i], XMMatrixMultiply(offset, toRoot));
+	}
+}
+
+void SkinnedData::from_byte(ifstream& inStream)
+{
+	// _boneHierarchy 읽기
+	uint32_t boneCount;
+	inStream.read(reinterpret_cast<char*>(&boneCount), sizeof(boneCount));  
+	BoneHierarchy.resize(boneCount); 
+	inStream.read(reinterpret_cast<char*>(BoneHierarchy.data()), boneCount * sizeof(int)); 
+
+	// _boneOffsets 읽기
+	uint32_t offsetCount;
+	inStream.read(reinterpret_cast<char*>(&offsetCount), sizeof(offsetCount));
+	BoneOffsets.resize(offsetCount);
+	inStream.read(reinterpret_cast<char*>(BoneOffsets.data()), offsetCount * sizeof(XMFLOAT4X4));
+
+	// _animations 읽기
+	uint32_t animCount;
+	inStream.read(reinterpret_cast<char*>(&animCount), sizeof(animCount));
+	for (uint32_t i = 0; i < animCount; ++i)
+	{
+		uint32_t nameLength;
+		inStream.read(reinterpret_cast<char*>(&nameLength), sizeof(nameLength));
+
+		std::string clipName(nameLength, ' ');
+		inStream.read(clipName.data(), nameLength);
+
+		AnimationClip animation;
+		animation.from_byte(inStream); // AnimationClip 클래스에 from_byte 함수 필요
+
+		AnimationClips.push_back(animation); 
+	}
+}
+
+void SkinnedData::to_byte(ofstream& outStream)
+{
+	// _boneHierarchy 쓰기
+	uint32_t boneCount = BoneHierarchy.size();
+	outStream.write(reinterpret_cast<const char*>(&boneCount), sizeof(boneCount));
+	outStream.write(reinterpret_cast<const char*>(BoneHierarchy.data()), boneCount * sizeof(int));
+
+	// _boneOffsets 쓰기
+	uint32_t offsetCount = BoneOffsets.size();
+	outStream.write(reinterpret_cast<const char*>(&offsetCount), sizeof(offsetCount));
+	outStream.write(reinterpret_cast<const char*>(BoneOffsets.data()), offsetCount * sizeof(XMFLOAT4X4));
+
+	// _animations 쓰기
+	uint32_t animCount = AnimationClips.size();
+	outStream.write(reinterpret_cast<const char*>(&animCount), sizeof(animCount));
+	for (const auto& animation : AnimationClips) 
+	{
+		uint32_t nameLength = animation.Name.size();
+		outStream.write(reinterpret_cast<const char*>(&nameLength), sizeof(nameLength));
+		outStream.write(animation.Name.c_str(), nameLength);  
+
+		// AnimationClip 클래스에 to_byte가 있어야 함
+		animation.to_byte(outStream);
 	}
 }

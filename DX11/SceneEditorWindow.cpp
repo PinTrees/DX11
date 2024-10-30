@@ -5,7 +5,7 @@
 #include "MathHelper.h"
 
 SceneEditorWindow::SceneEditorWindow()
-    : EditorWindow("Scene"),
+    : EditorWindow("Scene", ICON_FA_BORDER_ALL),
     windowWidth(800),
     windowHeight(600)
 {

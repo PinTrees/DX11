@@ -9,6 +9,8 @@ GameObject::GameObject()
 	: m_InstanceID(g_NextInstanceID++)
 	, m_LayerIndex(0)
 	, m_pParentGameObject(nullptr)
+    , m_IsActive(true)
+    , m_Editor_HierachOpened(false)
 {
     m_pTransform = AddComponent<Transform>();
 }
@@ -18,6 +20,8 @@ GameObject::GameObject(const string& name)
 	, m_InstanceID(g_NextInstanceID++)
 	, m_LayerIndex(0)
 	, m_pParentGameObject(nullptr)
+    , m_IsActive(true)
+    , m_Editor_HierachOpened(false)
 {
     m_pTransform = AddComponent<Transform>();
 }
@@ -116,6 +120,20 @@ void GameObject::LastUpdate()
         action();
     }
     m_Editor_LastUpdateActions.clear(); 
+
+    for (const auto& c : m_Components)
+    {
+        c->LastUpdate();
+    }
+}
+
+void GameObject::OnDestroy()
+{
+    for (const auto& c : m_Components) {
+        c->OnDestroy();
+    }
+
+    m_Components.clear(); 
 }
 
 void GameObject::ApplyPendingComponents()
@@ -133,7 +151,7 @@ void GameObject::OnInspectorGUI()
     ImGui::Dummy(ImVec2(0, 4));
     ImGui::Dummy(ImVec2(2, 0));
     ImGui::SameLine();
-    EditorGUI::Checkbox();
+    EditorGUI::Checkbox(m_IsActive);
     ImGui::SameLine();
     if (EditorGUI::InputField(m_Name))
     {
@@ -184,6 +202,12 @@ void GameObject::OnInspectorGUI()
         (*it)->RenderInspectorGUI();
     }
 
+    EditorGUI::ComponentDivider(); 
+    ImGui::Dummy(ImVec2(0, 18)); 
+    if (EditorGUI::Button("Add Component")) 
+    {
+        ImGui::OpenPopup("add_component_popup");
+    }
     if (ImGui::Button("Add Component"))
     {
         ImGui::OpenPopup("add_component_popup");

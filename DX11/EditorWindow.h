@@ -4,12 +4,14 @@
 class EditorWindow
 {
 private:
-	string windowName;
-	bool isDocked;
-	ImVec2 dockedPos;
+	string m_WindowTitleName;
+	string m_Icon; 
+
+	bool m_IsDocked; 
+	ImVec2 dockedPos; 
 
 public:
-	EditorWindow(const std::string& name);
+	EditorWindow(const string& name, const string& icon="");  
 	~EditorWindow();
 
 	void Render();

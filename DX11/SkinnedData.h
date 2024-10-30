@@ -8,18 +8,21 @@ struct Keyframe
 	Keyframe();
 	~Keyframe();
 
-	float TimePos;
-	XMFLOAT3 Translation;
-	XMFLOAT3 Scale;
-	XMFLOAT4 RotationQuat;
+public:
+	float TimePos;				// 파싱됨
+	XMFLOAT3 Translation;		// 파싱됨
+	XMFLOAT3 Scale;				// 파싱됨
+	XMFLOAT4 RotationQuat;		// 파싱됨
 };
 
+
+
+
 ///<summary>
-/// A BoneAnimation is defined by a list of keyframes.  For time
-/// values inbetween two keyframes, we interpolate between the
-/// two nearest keyframes that bound the time.  
+/// BoneAnimation은 키프레임 목록으로 정의됩니다. 두 개의 키프레임 사이의 시간 값에 대해서는, 
+/// 그 시간을 포함하는 두 가장 가까운 키프레임을 이용해 보간합니다. 
 ///
-/// We assume an animation always has two keyframes.
+/// 애니메이션은 항상 최소 두 개의 키프레임을 가집니다.
 ///</summary>
 struct BoneAnimation
 {
@@ -28,25 +31,44 @@ struct BoneAnimation
 
 	void Interpolate(float t, XMFLOAT4X4& M)const;
 
-	std::vector<Keyframe> Keyframes;
+public:
+	std::vector<Keyframe> Keyframes;		// 파싱됨
 
+public:
+	// Editor
+	void to_byte(std::ofstream& outStream) const;
+	void from_byte(std::ifstream& inStream);
 };
 
+
+
+
 ///<summary>
-/// Examples of AnimationClips are "Walk", "Run", "Attack", "Defend".
-/// An AnimationClip requires a BoneAnimation for every bone to form
-/// the animation clip.    
+/// "Walk", "Run", "Attack", "Defend"와 같은 애니메이션 클립을 예로 들 수 있습니다.
+/// AnimationClip은 애니메이션 클립을 구성하기 위해 모든 뼈에 대한 BoneAnimation을 필요로 합니다.
 ///</summary>
 struct AnimationClip
 {
 	float GetClipStartTime()const;
 	float GetClipEndTime()const;
 
-	void Interpolate(float t, std::vector<XMFLOAT4X4>& boneTransforms)const;
+	void Interpolate(float t, vector<XMFLOAT4X4>& boneTransforms)const;
 
-	std::vector<BoneAnimation>	BoneAnimations;
-	string						Name;
+public:
+	vector<BoneAnimation>	BoneAnimations;			// 파싱됨
+	string					Name;					// 파싱됨
+
+
+public:
+	// Editor
+	void to_byte(std::ofstream& outStream) const; 
+	void from_byte(std::ifstream& inStream); 
 };
+
+
+
+
+
 
 class SkinnedData
 {
@@ -71,13 +93,16 @@ public:
 		std::vector<XMFLOAT4X4>& finalTransforms)const;
 
 public:
-	vector<AnimationClip> AnimationClips; 
+	vector<AnimationClip>	AnimationClips;		// 파싱됨
+	vector<int>				BoneHierarchy;		// 파싱됨
+	vector<XMFLOAT4X4>		BoneOffsets;		// 파싱됨
 
 private:
 	// Gives parentIndex of ith bone.
-	std::vector<int> _boneHierarchy;
-
-	std::vector<XMFLOAT4X4> _boneOffsets;
-
 	std::map<std::string, AnimationClip> _animations;
+
+public:
+	// Editor
+	void from_byte(ifstream& inStream);
+	void to_byte(ofstream& outStream);
 };

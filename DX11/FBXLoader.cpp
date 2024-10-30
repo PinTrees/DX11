@@ -122,50 +122,61 @@ bool FBXLoader::LoadAnimation(const std::string& filename, SkinnedData& skinnedD
         return false;
     }
 
+    map<string, int> boneMapping;
+    ParseBonesFromNodes(scene->mRootNode, boneMapping); 
+
+    skinnedData.BoneHierarchy.resize(boneMapping.size(), -1); 
+    ParseBoneHierarchy(scene->mRootNode, boneMapping, skinnedData.BoneHierarchy, -1); 
+    ParseBoneOffsets(scene, boneMapping, skinnedData.BoneOffsets);
+
     // 애니메이션을 파싱
     for (UINT animIndex = 0; animIndex < scene->mNumAnimations; ++animIndex)
     {
         aiAnimation* animation = scene->mAnimations[animIndex];
-
-        // 애니메이션 이름 및 기간 정보를 SkinnedData에 추가
         AnimationClip animationClip;
-        animationClip.Name = animation->mName.C_Str();
-        //animationClip.Duration = static_cast<float>(animation->mDuration);
-        //animationClip.TicksPerSecond = static_cast<float>(animation->mTicksPerSecond ? animation->mTicksPerSecond : 25.0);
-
-        // 각 본의 애니메이션 채널 파싱
+        animationClip.Name = animation->mName.C_Str(); 
+        
         for (UINT channelIndex = 0; channelIndex < animation->mNumChannels; ++channelIndex)
         {
             aiNodeAnim* nodeAnim = animation->mChannels[channelIndex];
+            string boneName = nodeAnim->mNodeName.C_Str();
 
             BoneAnimation boneAnim;
-            //boneAnim.BoneName = nodeAnim->mNodeName.C_Str();
 
-            // 키프레임 데이터 파싱 (포지션, 스케일, 회전)
-            for (UINT positionIndex = 0; positionIndex < nodeAnim->mNumPositionKeys; ++positionIndex)
+            // 키프레임을 파싱
+            for (UINT keyIndex = 0; keyIndex < nodeAnim->mNumPositionKeys; ++keyIndex)
             {
-                const aiVectorKey& posKey = nodeAnim->mPositionKeys[positionIndex];
                 Keyframe keyframe;
-                keyframe.TimePos = static_cast<float>(posKey.mTime);
-                keyframe.Translation = XMFLOAT3(posKey.mValue.x, posKey.mValue.y, posKey.mValue.z);
+                keyframe.TimePos = (float)nodeAnim->mPositionKeys[keyIndex].mTime;
 
-                if (positionIndex < nodeAnim->mNumRotationKeys)
-                {
-                    const aiQuatKey& rotKey = nodeAnim->mRotationKeys[positionIndex];
-                    keyframe.RotationQuat = XMFLOAT4(rotKey.mValue.x, rotKey.mValue.y, rotKey.mValue.z, rotKey.mValue.w);
-                }
+                keyframe.Translation = XMFLOAT3(
+                    nodeAnim->mPositionKeys[keyIndex].mValue.x,
+                    nodeAnim->mPositionKeys[keyIndex].mValue.y,
+                    nodeAnim->mPositionKeys[keyIndex].mValue.z
+                );
 
-                if (positionIndex < nodeAnim->mNumScalingKeys)
-                {
-                    const aiVectorKey& scaleKey = nodeAnim->mScalingKeys[positionIndex];
-                    keyframe.Scale = XMFLOAT3(scaleKey.mValue.x, scaleKey.mValue.y, scaleKey.mValue.z);
-                }
+                // 같은 방식으로 Scale 및 Rotation 키프레임 추가
+                keyframe.Scale = XMFLOAT3(
+                    nodeAnim->mScalingKeys[keyIndex].mValue.x,
+                    nodeAnim->mScalingKeys[keyIndex].mValue.y,
+                    nodeAnim->mScalingKeys[keyIndex].mValue.z
+                );
+
+                keyframe.RotationQuat = XMFLOAT4(
+                    nodeAnim->mRotationKeys[keyIndex].mValue.x,
+                    nodeAnim->mRotationKeys[keyIndex].mValue.y,
+                    nodeAnim->mRotationKeys[keyIndex].mValue.z,
+                    nodeAnim->mRotationKeys[keyIndex].mValue.w
+                );
 
                 boneAnim.Keyframes.push_back(keyframe);
             }
 
-            //animationClip.BoneAnimations[boneAnim.BoneName] = boneAnim;
+            // 본 애니메이션을 애니메이션 클립에 추가
+            animationClip.BoneAnimations.push_back(boneAnim);
         }
+        //animationClip.Duration = static_cast<float>(animation->mDuration);
+        //animationClip.TicksPerSecond = static_cast<float>(animation->mTicksPerSecond ? animation->mTicksPerSecond : 25.0);
 
         // SkinnedData에 애니메이션 클립 추가
         skinnedData.AnimationClips.push_back(animationClip);
@@ -403,6 +414,65 @@ void FBXLoader::ProcessMeshSkinned(
         {
             indices.push_back(face.mIndices[j]); // 버텍스의 오프셋을 더하여 올바른 인덱스 참조 
         }
+    }
+}
+
+void FBXLoader::ParseBonesFromNodes(aiNode* node, std::map<std::string, int>& boneMapping)
+{
+    std::string nodeName(node->mName.C_Str());
+
+    if (boneMapping.find(nodeName) == boneMapping.end())
+    {
+        int boneIndex = static_cast<int>(boneMapping.size());  
+        boneMapping[nodeName] = boneIndex;
+    }
+
+    for (unsigned int i = 0; i < node->mNumChildren; ++i)
+    {
+        ParseBonesFromNodes(node->mChildren[i], boneMapping); 
+    }
+}
+
+void FBXLoader::ParseBoneOffsets(const aiScene* scene, const std::map<std::string, int>& boneMapping, std::vector<XMFLOAT4X4>& boneOffsets)
+{
+    boneOffsets.resize(boneMapping.size(), XMFLOAT4X4()); // 기본 단위 행렬로 초기화
+
+    // 모든 본에 대해 오프셋 행렬 설정
+    for (const auto& [boneName, boneIndex] : boneMapping)
+    {
+        aiNode* boneNode = scene->mRootNode->FindNode(boneName.c_str());
+        if (boneNode)
+        {
+            aiMatrix4x4 offsetMatrix = boneNode->mTransformation;
+            XMMATRIX mat = XMLoadFloat4x4(reinterpret_cast<XMFLOAT4X4*>(&offsetMatrix));
+
+            // 행렬 전환 후 저장
+            XMStoreFloat4x4(&boneOffsets[boneIndex], XMMatrixTranspose(mat));
+        }
+        else
+        {
+            // 본 노드가 없다면 기본 단위 행렬 사용
+            XMStoreFloat4x4(&boneOffsets[boneIndex], XMMatrixIdentity());
+        }
+    }
+}
+
+void FBXLoader::ParseBoneHierarchy(aiNode* node, std::map<std::string, int>& boneMapping, std::vector<int>& boneHierarchy, int parentIndex)
+{
+    // 현재 노드가 본인지 확인 
+    auto it = boneMapping.find(node->mName.C_Str()); 
+    int currentIndex = it != boneMapping.end() ? it->second : -1; 
+
+    // 본이 확인되면 부모-자식 관계 설정
+    if (currentIndex != -1) 
+    {
+        boneHierarchy[currentIndex] = parentIndex; 
+    }
+
+    // 자식 노드에 대해 재귀적으로 호출
+    for (unsigned int i = 0; i < node->mNumChildren; ++i) 
+    {
+        ParseBoneHierarchy(node->mChildren[i], boneMapping, boneHierarchy, currentIndex); 
     }
 }
 

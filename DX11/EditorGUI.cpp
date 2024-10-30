@@ -6,7 +6,7 @@
 // EditorDialog
 #include "MeshSelectEditorDialog.h"
 
-EditorTextStyle EditorGUI::defaultTextStyle = EditorTextStyle();
+EditorTextStyle EditorGUI::DefaultTextStyle = EditorTextStyle();
 
 void EditorGUI::RowSizedBox(float size)
 {
@@ -20,15 +20,14 @@ void EditorGUI::Image(wstring path, ImVec2 size)
     ComPtr<ID3D11ShaderResourceView> icon = ResourceManager::GetI()->LoadTexture(path);
     if (icon)
     {
-        ImGui::Image((void*)icon.Get(), ImVec2(18, 18));
+        ImGui::Image((void*)icon.Get(), size); 
     }
 }
 
-void EditorGUI::Checkbox()
+bool EditorGUI::Checkbox(bool& active)
 {
-    bool isChecked = true;
+    bool isDirty = false;
     // 체크박스 크기 설정
-    ImVec2 checkBoxSize(18, 18);
 
     // 스타일 적용
     ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.15f, 0.15f, 0.15f, 1.0f));         // 기본 배경 색상
@@ -40,19 +39,20 @@ void EditorGUI::Checkbox()
     ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, 1.0f); // 테두리 두께 적용
 
     // 20x20 크기의 버튼을 체크박스로 사용
-    if (ImGui::Button("##Checkbox", checkBoxSize))
+    if (ImGui::Button("##Checkbox", EDITOR_GUI_SIZE_CHECKBOX))
     {
-        isChecked = !isChecked;  // 클릭 시 체크 상태 반전
+        active = !active; 
+        isDirty = true;
     }
 
     // 체크 상태에 따라 체크 표시 그리기
-    ImDrawList* draw_list = ImGui::GetWindowDrawList();
-    ImVec2 p_min = ImGui::GetItemRectMin();
-    ImVec2 p_max = ImGui::GetItemRectMax();
-
-    if (true)
+    // 체크 표시 (V 표시를 그리는 부분)
+    if (active)
     {
-        // 체크 표시 (V 표시를 그리는 부분)
+        ImDrawList* draw_list = ImGui::GetWindowDrawList();
+        ImVec2 p_min = ImGui::GetItemRectMin();
+        ImVec2 p_max = ImGui::GetItemRectMax();
+  
         ImVec2 center = ImVec2((p_min.x + p_max.x) * 0.5f, (p_min.y + p_max.y) * 0.5f);
         draw_list->AddLine(ImVec2(p_min.x + 4, center.y), ImVec2(center.x - 2, p_max.y - 4), ImColor(255, 255, 255, 255), 2.0f); // 왼쪽 아래로
         draw_list->AddLine(ImVec2(center.x - 2, p_max.y - 4), ImVec2(p_max.x - 4, p_min.y + 4), ImColor(255, 255, 255, 255), 2.0f); // 오른쪽 위로
@@ -61,6 +61,8 @@ void EditorGUI::Checkbox()
     // 스타일 복원
     ImGui::PopStyleVar(2);  // 라운딩과 테두리 복원
     ImGui::PopStyleColor(4); // 색상 복원
+
+    return isDirty;
 }
 
 bool EditorGUI::InputField(string& inputText)
@@ -78,7 +80,7 @@ bool EditorGUI::InputField(string& inputText)
     return changed;
 }
 
-void EditorGUI::Label(string text, EditorTextStyle guiStyle)
+void EditorGUI::Label(string text, EditorTextStyle guiStyle, ImVec4 color) 
 {
     ImFont* font = EditorGUIResourceManager::GetI()->LoadFont(guiStyle);
 
@@ -89,14 +91,16 @@ void EditorGUI::Label(string text, EditorTextStyle guiStyle)
     }
 
     ImGui::PushFont(font);
-    ImGui::Text(text.c_str());
+    ImGui::PushStyleColor(ImGuiCol_Text, color); 
+    ImGui::Text(text.c_str()); 
+    ImGui::PopStyleColor();
     ImGui::PopFont();
 }
 
 void EditorGUI::LabelHeader(string text)
 {
     EditorTextStyle style;
-    style.FontSize = 18;
+    style.FontSize = 24;
     style.Bold = true;
     ImFont* font = EditorGUIResourceManager::GetI()->LoadFont(style);
 
@@ -136,8 +140,70 @@ bool EditorGUI::Button(string text, Vec2 size, Color color)
     return clicked;
 }
 
-bool EditorGUI::ComponentHeader(string title)
+bool EditorGUI::IconButton_FA(string text, EditorTextStyle guiStyle, ImVec2 size, int iconSize)
 {
+    // Unity 버튼 색상에 맞는 ImGui 색상 설정
+    ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.f, 0.f, 0.f, 0.f));                 // (기본 버튼 배경)
+    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.37f, 0.37f, 0.37f, 1.0f));   // (마우스 올렸을 때)
+    ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.43f, 0.43f, 0.43f, 1.0f));    // (클릭했을 때)
+    ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.9f, 0.9f, 0.9f, 1.0f));               // (텍스트)
+    ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(0.1f, 0.1f, 0.1f, 1.0f));
+
+    ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(4, 0));  // 패딩 (좌우, 상하) 2px 설정
+    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));  // 패딩 (좌우, 상하) 2px 설정
+    ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 2.0f);         // 라운드 값 2 적용
+    ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, 1.4f);       // 테두리 두께 1 적용
+
+    EditorTextStyle style; 
+    style.FontSize = iconSize;
+    style.Bold = true; 
+    ImFont* font = EditorGUIResourceManager::GetI()->LoadFont(style); 
+
+    bool clicked = false;
+    if (font) 
+    { 
+        ImGui::PushFont(font);
+        clicked = ImGui::Button(text.c_str(), ImVec2(size.x, size.y));
+        ImGui::PopFont();
+    }
+
+    ImGui::PopStyleVar(4);   // 라운드와 테두리 두께 스타일 복원
+    ImGui::PopStyleColor(5); // 테두리와 버튼 색상 스타일 복원 (총 5개의 스타일 팝)
+
+    return clicked;
+}
+
+bool EditorGUI::ImageButton(wstring path, ImVec2 size, ImVec2 padding)
+{
+    // Texture 로드
+    ComPtr<ID3D11ShaderResourceView> icon = ResourceManager::GetI()->LoadTexture(path);
+    if (!icon)
+        return false;
+
+    // Unity 버튼 색상에 맞는 ImGui 색상 설정
+    Color color = Color(0.31f, 0.31f, 0.31f, 1.0f);
+    ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(color.x, color.y, color.z, color.w));  // (기본 버튼 배경)
+    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.37f, 0.37f, 0.37f, 1.0f));    // (마우스 올렸을 때)
+    ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.43f, 0.43f, 0.43f, 1.0f));     // (클릭했을 때)
+    ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(0.1f, 0.1f, 0.1f, 1.0f));
+
+    ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, padding);       // 패딩 
+    ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 6.0f);         // 라운드 값 2 적용
+    ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, 2.0f);       // 테두리 두께 1 적용
+
+    bool clicked = ImGui::ImageButton((void*)icon.Get(), size);
+
+    ImGui::PopStyleVar(3);   // 라운드와 테두리 두께 스타일 복원
+    ImGui::PopStyleColor(4); // 테두리와 버튼 색상 스타일 복원 (총 5개의 스타일 팝)
+
+    return clicked;
+}
+
+bool EditorGUI::ComponentHeader(string title, wstring icon, bool& isOpened)
+{
+    // 창의 너비를 가져와 버튼 크기로 설정
+    ImVec2 availableSize = ImGui::GetContentRegionAvail();
+
     // 회색 배경색 설정
     ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0.24f, 0.24f, 0.24f, 1.0f));            // 기본 상태
     ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(0.37f, 0.37f, 0.37f, 1.0f));     // 마우스 오버 시
@@ -148,22 +214,36 @@ bool EditorGUI::ComponentHeader(string title)
     ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, 0.0f);
     ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
 
-    EditorTextStyle fontStyle;
-    fontStyle.Bold = true;
-    fontStyle.FontSize = 16;
-    ImFont* font = EditorGUIResourceManager::GetI()->LoadFont(fontStyle);
+    ImGui::PushStyleColor(ImGuiCol_Button, EDITOR_GUI_COLOR_BUTTON_BG);             // 기본 버튼 색상 
+    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, EDITOR_GUI_COLOR_BUTTON_HOBER);   // 호버 시 색상 
+    ImGui::PushStyleColor(ImGuiCol_ButtonActive, EDITOR_GUI_COLOR_BUTTON_BG);       // 클릭 시 색상 
+    string component_inspector_id = "##ComponentInspectorHeaderButton" + title;
+    if (ImGui::Button(component_inspector_id.c_str(), ImVec2(availableSize.x, 32)))
+    {
+        isOpened = !isOpened; 
+    }
+    ImGui::PopStyleColor(3);
 
-    if (font != nullptr)
-        ImGui::PushFont(font);
+    ImGui::SameLine(); 
+    ImGui::SetCursorPosX(-2);
+    EditorGUI::LabelHeader(ICON_FA_SORT_DOWN); 
+    
+    ImGui::SameLine();
+    ImGui::SetCursorPosX(30); 
+    EditorGUI::Image(icon, ImVec2(32, 32));
 
-    bool isOpened = ImGui::CollapsingHeader(title.c_str(), ImGuiTreeNodeFlags_DefaultOpen);
+    ImGui::SameLine();
+    ImGui::SetCursorPosX(70);
+    ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 4);
+    EditorGUI::Checkbox(isOpened);
+
+    ImGui::SameLine();
+    ImGui::SetCursorPosX(88); 
+    EditorGUI::LabelHeader(title);  
 
     // 스타일 복원
     ImGui::PopStyleVar(3);
     ImGui::PopStyleColor(3);    // 색상 복원 (3개의 색상)
-
-    if (font != nullptr)
-        ImGui::PopFont();
 
     return isOpened;
 }
@@ -195,6 +275,34 @@ void EditorGUI::Divider(Color color, float height)
 void EditorGUI::Spacing(Vec2 size)
 {
     ImGui::Dummy(ImVec2(size.x, size.y));
+}
+
+bool EditorGUI::BoolField(string title, bool& active)
+{
+    bool isDirty = false;
+    float fieldWidth = EDITOR_GUI_FIELD_WIDTH;
+
+    EDITOR_GUI_FIELD_PADDING;
+    EditorGUI::Label(title);
+    EDITOR_GUI_FIELD_SPACING(fieldWidth - 8);
+
+    EditorGUI::FieldStylePush();
+
+    string id = title + "FloatField";
+    if (ImGui::BeginChild(id.c_str(), ImVec2(fieldWidth, FIELD_DEFAULT_HEIGHT), true,
+        ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse))
+    {
+        ImGui::Dummy(ImVec2(4, 0));
+        ImGui::SameLine();
+        if (Checkbox(active)) {  
+            isDirty = true; 
+        } 
+    }
+    ImGui::EndChild();
+
+    EditorGUI::FieldStylePop();
+
+    return isDirty;
 }
 
 bool EditorGUI::FloatField(string title, float& v, ImVec2 size)
@@ -280,7 +388,7 @@ bool EditorGUI::FloatField(string title, float& v)
 bool EditorGUI::Vector3Field(string title, Vec3& vec3)
 {
     bool isDirty = false;
-    float fieldWidth = EDITOR_GUI_FIELD_WIDTH;
+    float fieldWidth = EDITOR_GUI_LARGE_FIELD_WIDTH; 
 
     EDITOR_GUI_FIELD_PADDING;
     EditorGUI::Label(title);
@@ -477,13 +585,13 @@ void EditorGUI::FieldStylePop()
 
 void EditorGUI::ComponentBlockStylePush()
 {
-    // 진한 회색 배경 (#333333 in hex) 설정
-    ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.2f, 0.2f, 0.2f, 1.0f));
+    ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.219f, 0.219f, 0.219f, 1.0f));
     ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(0.1f, 0.1f, 0.1f, 1.0f));
 
     // 테두리 두께 설정
-    ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, 0.0f);
-    ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+    ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, 0.0f); 
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);  
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f); 
 
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(4, 4));
     ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, ImVec2(4, 4));
@@ -493,7 +601,7 @@ void EditorGUI::ComponentBlockStylePush()
 
 void EditorGUI::ComponentBlockStylePop()
 {
-    ImGui::PopStyleVar(6);
+    ImGui::PopStyleVar(7);
     ImGui::PopStyleColor(2);
 }
 

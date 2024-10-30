@@ -69,6 +69,11 @@ void EditorGUIResourceManager::LoadFontAsync(FontLoadContainer container)
 
     TaskSystem::mainThreadTasks.push([fontKey, fontPath, style, fontPromise, this]()
     {
+        ImFontConfig config;
+        config.MergeMode = true; // 기존 폰트와 합쳐 사용 
+        config.PixelSnapH = true;
+        static const ImWchar icons_ranges[] = { ICON_MIN_FA, ICON_MAX_FA, 0 }; // FontAwesome 범위   
+
         ImGuiIO& io = ImGui::GetIO(); 
         ImFont* font = io.Fonts->AddFontFromFileTTF( 
             fontPath.c_str(), 
@@ -76,7 +81,13 @@ void EditorGUIResourceManager::LoadFontAsync(FontLoadContainer container)
             NULL, 
             io.Fonts->GetGlyphRangesKorean() 
         );
-
+        // Font Awesome 폰트 추가
+        string fa_path = PathManager::GetI()->GetContentPathS() + "ProjectSetting\\fonts\\fa-solid-900.ttf";
+        io.Fonts->AddFontFromFileTTF( 
+            fa_path.c_str(),
+            style.FontSize - 2,
+            &config, icons_ranges);  
+         
         if (font)
         { 
             io.Fonts->Build(); 

@@ -89,15 +89,13 @@ int32 App::Run()
 				// Render
 				RenderApplication();
 
-				ImGui_ImplDX11_NewFrame();
-				ImGui_ImplWin32_NewFrame();
-				ImGui::NewFrame();
-
 				//Editor Render
 				EditorGUIManager::GetI()->RenderEditorWindows();
 
 				ImGui::Render(); 
 				ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData()); 
+
+				EditorGUIManager::GetI()->RenderAfter();
 
 				// Render End
 				HR(_swapChain->Present(0, 0)); 
@@ -112,6 +110,9 @@ int32 App::Run()
 			}
         }
     }
+
+	EditorGUIManager::GetI()->Destroy(); 
+	EditorGUIManager::GetI()->Dispose(); 
 
 	return (int)msg.wParam;
 }
@@ -132,6 +133,7 @@ bool App::Init()
 	PostProcessingManager::GetI()->Init();
 
 	EditorGUIManager::GetI()->Init();
+	EditorGUIManager::GetI()->OnResize(GetScreenSize());
 	EditorGUIManager::GetI()->RegisterWindow(new SceneEditorWindow);  
 	EditorGUIManager::GetI()->RegisterWindow(new SceneHierachyEditorWindow);
 	EditorGUIManager::GetI()->RegisterWindow(new InspectorEditorWindow); 
@@ -156,8 +158,6 @@ bool App::Init()
 		SceneManager::GetI()->LoadScene(L"");
 	}
 
-	DisplayManager::GetI()->Init();
-
 	// TimeManager Init
 	TimeManager::GetI()->Init();
 
@@ -176,6 +176,8 @@ void App::OnResize()
 	// Bind the render target view and depth/stencil view to the pipeline.`
 	_deviceContext->OMSetRenderTargets(1, _renderTargetView.GetAddressOf(), _depthStencilView.Get());
 
+	EditorGUIManager::GetI()->OnResize(Vec2(_clientWidth, _clientHeight));
+	
 	// Set the viewport transform.
 	//_viewport.TopLeftX = 0;
 	//_viewport.TopLeftY = 0;
@@ -183,8 +185,7 @@ void App::OnResize()
 	//_viewport.Height   = static_cast<float>(_clientHeight);
 	//_viewport.MinDepth = 0.0f;
 	//_viewport.MaxDepth = 1.0f;
-
-	//_deviceContext->RSSetViewports(1, &_viewport);
+	//_deviceContext->RSSetViewports(1, &_viewport); 
 }
 
 void App::RenderApplication()
@@ -201,9 +202,6 @@ LRESULT App::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 	switch( msg )
 	{
-	// WM_ACTIVATE is sent when the window is activated or deactivated.  
-	// We pause the game when the window is deactivated and unpause it 
-	// when it becomes active.  
 	case WM_ACTIVATE:
 		if( LOWORD(wParam) == WA_INACTIVE )
 		{
@@ -217,11 +215,21 @@ LRESULT App::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		}
 		return 0;
 
-	// WM_SIZE is sent when the user resizes the window.  
 	case WM_SIZE:
-		// Save the new client area dimensions.
-		_clientWidth  = LOWORD(lParam);
-		_clientHeight = HIWORD(lParam);
+	{
+		UINT dpi = 0;
+		dpi = GetDpiForWindow(hwnd);
+		float scaleFactor = dpi / 96.0f;            
+
+		int width = LOWORD(lParam);
+		int height = HIWORD(lParam);
+
+		int physicalWidth = static_cast<int>(width * scaleFactor);
+		int physicalHeight = static_cast<int>(height * scaleFactor);
+
+		_clientWidth = width;
+		_clientHeight = height;
+
 		if( _device )
 		{
 			if( wParam == SIZE_MINIMIZED )
@@ -240,7 +248,6 @@ LRESULT App::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			else if( wParam == SIZE_RESTORED )
 			{
 				
-				// Restoring from minimized state?
 				if( _minimized )
 				{
 					_appPaused = false;
@@ -248,7 +255,6 @@ LRESULT App::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 					OnResize();
 				}
 
-				// Restoring from maximized state?
 				else if( _maximized )
 				{
 					_appPaused = false;
@@ -257,23 +263,15 @@ LRESULT App::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 				}
 				else if( _resizing )
 				{
-					// If user is dragging the resize bars, we do not resize 
-					// the buffers here because as the user continuously 
-					// drags the resize bars, a stream of WM_SIZE messages are
-					// sent to the window, and it would be pointless (and slow)
-					// to resize for each WM_SIZE message received from dragging
-					// the resize bars.  So instead, we reset after the user is 
-					// done resizing the window and releases the resize bars, which 
-					// sends a WM_EXITSIZEMOVE message.
 				}
-				else // API call such as SetWindowPos or mSwapChain->SetFullscreenState.
+				else 
 				{
 					OnResize();
 				}
 			}
 		}
 		return 0;
-
+	}
 	// WM_EXITSIZEMOVE is sent when the user grabs the resize bars.
 	case WM_ENTERSIZEMOVE:
 		_appPaused = true;
@@ -336,6 +334,9 @@ void App::SetScreenSize(UINT width, UINT height)
 
 bool App::InitMainWindow()
 {
+	// DPI 인식을 설정
+	SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2); 
+
 	WNDCLASS wc;
 	wc.style         = CS_HREDRAW | CS_VREDRAW;
 	wc.lpfnWndProc   = MainWndProc; 

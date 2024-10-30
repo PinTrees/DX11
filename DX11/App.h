@@ -79,7 +79,7 @@ protected:
 	// Etc
 	std::wstring _mainWindowCaption = L"DX11 Application";
 	D3D_DRIVER_TYPE _driverType = D3D_DRIVER_TYPE_HARDWARE;
-	int32 _clientWidth = 1280;
-	int32 _clientHeight = 920;
+	int32 _clientWidth = 1920;
+	int32 _clientHeight = 1080;
 	bool _enable4xMsaa = false;
 };

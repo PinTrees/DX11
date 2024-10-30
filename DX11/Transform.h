@@ -69,8 +69,8 @@ public:
 
 	Vec3 GetAxis(int index) const;
 	Vec3 GetRight() { return m_WorldMatrix.Right(); }
-	Vec3 GetUp() { return m_WorldMatrix.Up(); }
-	Vec3 GetLook() { return m_WorldMatrix.Backward(); }
+	Vec3 GetUp() { return XMVector3Normalize(m_WorldMatrix.Up()); } 
+	Vec3 GetLook() { return XMVector3Normalize(m_WorldMatrix.Backward()); }
 	Vec3 GetForward() { return m_WorldMatrix.Forward(); }
 	Matrix GetWorldMatrix() { return m_WorldMatrix; }
 

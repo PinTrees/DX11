@@ -461,40 +461,33 @@ void Camera::OnDrawGizmos()
 GENERATE_COMPONENT_FUNC_TOJSON(Camera)
 {
 	json j = {};
-	j["type"] = "Camera";
-	j["cameraType"] = m_cameraType;
 
-	j["nearZ"] = m_nearZ;
-	j["farZ"] = m_farZ;
-	j["aspect"] = m_aspect;
-	j["fovY"] = m_fovY;
+	SERIALIZE_TYPE(j, Camera);
+	SERIALIZE_ENUM(j, m_cameraType, "cameraType");
+	 
+	SERIALIZE_FLOAT(j, m_nearZ, "nearZ");
+	SERIALIZE_FLOAT(j, m_farZ, "farZ"); 
+	SERIALIZE_FLOAT(j, m_aspect, "aspect"); 
+	SERIALIZE_FLOAT(j, m_fovY, "fovY");
 
 	return j;
 }
 
 GENERATE_COMPONENT_FUNC_FROMJSON(Camera) 
 {
-	if (j.contains("cameraType"))
-	{
-		m_cameraType = j.at("cameraType").get<ProjectionType>();
-	}
+	DE_SERIALIZE_ENUM(j, m_cameraType, "cameraType", ProjectionType);
 
-	if (j.contains("nearZ"))
-	{
-		m_nearZ = j.at("nearZ").get<float>();
-	}
-	if (j.contains("farZ"))
-	{
-		m_farZ = j.at("farZ").get<float>();
-	}
-	if (j.contains("aspect"))
-	{
-		m_aspect = j.at("aspect").get<float>();
-	}
-	if (j.contains("fovY"))
-	{
-		m_fovY = j.at("fovY").get<float>();
-	}
+	DE_SERIALIZE_FLOAT(j, m_nearZ, "nearZ");
+	DE_SERIALIZE_FLOAT(j, m_farZ, "farZ");
+	DE_SERIALIZE_FLOAT(j, m_aspect, "aspect");
+	DE_SERIALIZE_FLOAT(j, m_fovY, "fovY");
+
+	m_nearZ = max(m_nearZ, 0.001f);
+	m_nearZ = min(m_nearZ, 9999); 
+	float fov_degree = XMConvertToDegrees(m_fovY);
+	fov_degree = max(fov_degree, 1); 
+	fov_degree = min(fov_degree, 360); 
+	m_fovY = XMConvertToRadians(fov_degree); 
 
 	ProjUpdate();
 }

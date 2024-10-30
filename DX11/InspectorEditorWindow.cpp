@@ -6,7 +6,7 @@
 namespace fs = std::filesystem;
 
 InspectorEditorWindow::InspectorEditorWindow()
-	: EditorWindow("Inspector")
+	: EditorWindow("Inspector", ICON_FA_CIRCLE_INFO) 
 {
 }
 

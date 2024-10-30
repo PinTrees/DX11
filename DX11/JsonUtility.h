@@ -23,6 +23,14 @@ Quaternion SafeGetQuaternion(const json& j, const std::string& key, const Quater
 													VALUE = j.at(VALUE_NAME).get<int>();									\
 												  else VALUE = 0;															\
 
+#define SERIALIZE_FLOAT(JSON, VALUE, VALUE_NAME) JSON[VALUE_NAME] = VALUE;
+#define DE_SERIALIZE_FLOAT(JSON, VALUE, VALUE_NAME) if (JSON.contains(VALUE_NAME) && JSON.at(VALUE_NAME).is_number_float()) \
+													  VALUE = j.at(VALUE_NAME).get<float>();								\
+												  else VALUE = 0.f;			
+
+#define SERIALIZE_ENUM(JSON, VALUE, VALUE_NAME) JSON[VALUE_NAME] = VALUE;
+#define DE_SERIALIZE_ENUM(JSON, VALUE, VALUE_NAME, VALUE_TYPE) if (JSON.contains(VALUE_NAME))                  \
+													          VALUE = j.at(VALUE_NAME).get<VALUE_TYPE>();	   \
 
 #define SERIALIZE_TYPE(JSON, CLASS) JSON["type"] = #CLASS;
 #define SERIALIZE_STRING(JSON, VALUE, VALUE_NAME) JSON[VALUE_NAME] = VALUE;
