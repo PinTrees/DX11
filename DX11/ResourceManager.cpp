@@ -66,23 +66,24 @@ shared_ptr<UMaterial> ResourceManager::LoadMaterial(string filename)
 
 shared_ptr<Mesh> ResourceManager::LoadMesh(wstring filename, int index)
 {
+	tuple<wstring, int> key = make_tuple(filename, index); 
 	shared_ptr<Mesh> mesh = nullptr;
 
-	if (m_Meshs.find(filename) != m_Meshs.end())
+	if (m_Meshs.find(key) != m_Meshs.end()) 
 	{
-		mesh = m_Meshs[filename];
+		mesh = m_Meshs[key]; 
 	}
 	else
 	{
-		auto meshFile = LoadMeshFile(wstring_to_string(filename)); 
-		if (meshFile)
+		const auto& meshFile = LoadMeshFile(wstring_to_string(filename));
+		if (meshFile == nullptr)
+			return nullptr;
+
+		if (meshFile->Meshs.size() > index) 
 		{
-			if (meshFile->Meshs.size() > index)
-			{
-				mesh = std::shared_ptr<Mesh>(meshFile->Meshs[index]); 
-				m_Meshs[filename] = mesh; 
-			} 
-		} 
+			mesh = shared_ptr<Mesh>(meshFile->Meshs[index]); 
+			m_Meshs[key] = mesh; 
+		}
 	}
 
 	return mesh;
@@ -122,7 +123,8 @@ shared_ptr<MeshFile> ResourceManager::LoadFbxModel(string filename)
 	}
 	else
 	{
-		model = make_shared<MeshFile>(filename); 
+		MeshFile* meshFile = MeshFile::LoadFromFbxFile(filename);
+		model.reset(meshFile);
 		m_FbxModels[filename] = model;
 	}
 
@@ -139,9 +141,36 @@ shared_ptr<MeshFile> ResourceManager::LoadMeshFile(string filename)
 	}
 	else
 	{
-		model = make_shared<MeshFile>(filename); 
+		MeshFile* meshFile = MeshFile::LoadFromMetaFile(filename); 
+		// 메타파일 읽기 오류
+		if (meshFile == nullptr)
+			return nullptr;
+
+		model.reset(meshFile);
 		m_FbxModels[filename] = model;  
 	}
 
 	return model;
+}
+
+shared_ptr<AnimationClip> ResourceManager::LoadAnimationClip(string filename, int index)
+{
+	tuple<string, int> key = make_tuple(filename, index);
+	shared_ptr<AnimationClip> animationClip;
+
+	if (m_AnimationClips.find(key) != m_AnimationClips.end())
+	{
+		animationClip = m_AnimationClips[key];
+	}
+	else
+	{
+		// Load MeshFile;
+		shared_ptr<MeshFile> meshFile = ResourceManager::GetI()->LoadMeshFile(filename);
+		if (meshFile == nullptr)
+			return nullptr;
+
+		m_AnimationClips[key] = meshFile->SkinnedData.AnimationClips[index]; 
+	}
+
+	return animationClip;
 }

@@ -20,5 +20,16 @@ public:
 
 protected:
 	virtual void OnRender() {}
+
+private:
+	void PushStyle();
+	void PopStyle();
+
+	void PushStyle_TitleBar();
+	void PopStyle_TitleBar();
+
+protected:
+	void PushStyle_Body(); 
+	void PopStyle_Body(); 
 };
 

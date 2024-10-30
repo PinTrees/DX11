@@ -100,7 +100,6 @@ bool FBXLoader::LoadModelFbx(const std::string& filename, MeshFile* model)
     {
         ParsingMeshNode(scene->mRootNode, scene, model);
     }
-    ParseAnimations(scene, model->SkinnedData); 
     return true;
 }
 
@@ -133,8 +132,8 @@ bool FBXLoader::LoadAnimation(const std::string& filename, SkinnedData& skinnedD
     for (UINT animIndex = 0; animIndex < scene->mNumAnimations; ++animIndex)
     {
         aiAnimation* animation = scene->mAnimations[animIndex];
-        AnimationClip animationClip;
-        animationClip.Name = animation->mName.C_Str(); 
+        shared_ptr<AnimationClip> animationClip = make_shared<AnimationClip>();
+        animationClip->Name = animation->mName.C_Str(); 
         
         for (UINT channelIndex = 0; channelIndex < animation->mNumChannels; ++channelIndex)
         {
@@ -173,13 +172,13 @@ bool FBXLoader::LoadAnimation(const std::string& filename, SkinnedData& skinnedD
             }
 
             // 본 애니메이션을 애니메이션 클립에 추가
-            animationClip.BoneAnimations.push_back(boneAnim);
+            animationClip->BoneAnimations.push_back(boneAnim);
         }
         //animationClip.Duration = static_cast<float>(animation->mDuration);
         //animationClip.TicksPerSecond = static_cast<float>(animation->mTicksPerSecond ? animation->mTicksPerSecond : 25.0);
 
         // SkinnedData에 애니메이션 클립 추가
-        skinnedData.AnimationClips.push_back(animationClip);
+        skinnedData.AnimationClips.push_back(animationClip); 
     }
 
     return false;
@@ -228,27 +227,28 @@ void FBXLoader::ParsingMeshNode(aiNode* node, const aiScene* scene, MeshFile* mo
         }
         else
         {
-            Mesh* mesh = new Mesh;
-            model->Meshs.push_back(mesh);
-            mesh->Name = node->mName.C_Str();
-            mesh->Mat.resize(scene->mNumMaterials);
+            shared_ptr<Mesh> mesh_ptr = make_shared<Mesh>(); 
+
+            model->Meshs.push_back(mesh_ptr); 
+            mesh_ptr->Name = node->mName.C_Str();
+            mesh_ptr->Mat.resize(scene->mNumMaterials);
             for (UINT i = 0; i < scene->mNumMaterials; ++i)
             {
                 aiMaterial* mat = scene->mMaterials[i];
                 aiString name;
 
-                mesh->Mat[i].Ambient = XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
-                mesh->Mat[i].Diffuse = XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f);
-                mesh->Mat[i].Specular = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-                mesh->Mat[i].Reflect = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
+                mesh_ptr->Mat[i].Ambient = XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
+                mesh_ptr->Mat[i].Diffuse = XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f);
+                mesh_ptr->Mat[i].Specular = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+                mesh_ptr->Mat[i].Reflect = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
 
                 aiColor3D color(0.f, 0.f, 0.f);
                 if (AI_SUCCESS == mat->Get(AI_MATKEY_COLOR_AMBIENT, color))
-                    mesh->Mat[i].Ambient = XMFLOAT4(color.r, color.g, color.b, 1.0f);
+                    mesh_ptr->Mat[i].Ambient = XMFLOAT4(color.r, color.g, color.b, 1.0f);
                 if (AI_SUCCESS == mat->Get(AI_MATKEY_COLOR_DIFFUSE, color))
-                    mesh->Mat[i].Diffuse = XMFLOAT4(color.r, color.g, color.b, 1.0f);
+                    mesh_ptr->Mat[i].Diffuse = XMFLOAT4(color.r, color.g, color.b, 1.0f);
                 if (AI_SUCCESS == mat->Get(AI_MATKEY_COLOR_SPECULAR, color))
-                    mesh->Mat[i].Specular = XMFLOAT4(color.r, color.g, color.b, 1.0f);
+                    mesh_ptr->Mat[i].Specular = XMFLOAT4(color.r, color.g, color.b, 1.0f);
             }
 
             for (uint32 i = 0; i < node->mNumMeshes; ++i) 
@@ -256,11 +256,11 @@ void FBXLoader::ParsingMeshNode(aiNode* node, const aiScene* scene, MeshFile* mo
                 uint32 index = node->mMeshes[i];
                 aiMesh* aiMesh = scene->mMeshes[index]; 
 
-                MeshGeometry::Subset subset;
-                ProcessMesh(aiMesh, scene, mesh->Vertices, mesh->Indices, subset);
-                mesh->Subsets.push_back(subset);
+                MeshGeometry::Subset subset; 
+                ProcessMesh(aiMesh, scene, mesh_ptr->Vertices, mesh_ptr->Indices, subset); 
+                mesh_ptr->Subsets.push_back(subset); 
             }
-            mesh->Setup();
+            mesh_ptr->Setup(); 
         }
     }
 
@@ -474,71 +474,4 @@ void FBXLoader::ParseBoneHierarchy(aiNode* node, std::map<std::string, int>& bon
     {
         ParseBoneHierarchy(node->mChildren[i], boneMapping, boneHierarchy, currentIndex); 
     }
-}
-
-void FBXLoader::ParseAnimations(const aiScene* scene, SkinnedData& skinnedData)
-{
-    // 씬에서 애니메이션 클립을 순회합니다.
-    for (UINT animIndex = 0; animIndex < scene->mNumAnimations; ++animIndex)
-    {
-        aiAnimation* aiAnimation = scene->mAnimations[animIndex];
-        std::string animName = aiAnimation->mName.C_Str();
-
-        // 애니메이션 이름으로 클립을 만듭니다.
-        AnimationClip clip;  
-        clip.Name = animName; 
-        //clip.duration = static_cast<float>(aiAnimation->mDuration); 
-        //clip.ticksPerSecond = static_cast<float>(aiAnimation->mTicksPerSecond); 
-        //
-        //// 각 애니메이션 클립에 대해 본 애니메이션 데이터를 파싱합니다. 
-        ReadAnimationNode(aiAnimation, skinnedData);  
-        //
-        //// 클립을 SkinnedData에 저장
-        skinnedData.AnimationClips.push_back(clip); 
-    }
-}
-
-void FBXLoader::ReadAnimationNode(const aiAnimation* aiAnimation, SkinnedData& skinnedData)
-{
-    // aiAnimation은 애니메이션 클립을 나타냅니다.
-    //for (UINT channelIndex = 0; channelIndex < aiAnimation->mNumChannels; ++channelIndex)
-    //{
-    //    aiNodeAnim* aiChannel = aiAnimation->mChannels[channelIndex];
-    //    std::string boneName = aiChannel->mNodeName.C_Str();
-    //
-    //    BoneAnimation boneAnim;
-    //
-    //    // 1. Position KeyFrames (위치 키프레임)
-    //    for (UINT i = 0; i < aiChannel->mNumPositionKeys; ++i)
-    //    {
-    //        aiVectorKey positionKey = aiChannel->mPositionKeys[i];
-    //        BoneKeyframe keyframe;
-    //        keyframe.timePos = static_cast<float>(positionKey.mTime);
-    //        keyframe.translation = XMFLOAT3(positionKey.mValue.x, positionKey.mValue.y, positionKey.mValue.z);
-    //        boneAnim.keyframes.push_back(keyframe);
-    //    }
-    //
-    //    // 2. Rotation KeyFrames (회전 키프레임)
-    //    for (UINT i = 0; i < aiChannel->mNumRotationKeys; ++i)
-    //    {
-    //        aiQuatKey rotationKey = aiChannel->mRotationKeys[i];
-    //        BoneKeyframe keyframe;
-    //        keyframe.timePos = static_cast<float>(rotationKey.mTime);
-    //        keyframe.rotationQuat = XMFLOAT4(rotationKey.mValue.x, rotationKey.mValue.y, rotationKey.mValue.z, rotationKey.mValue.w);
-    //        boneAnim.keyframes.push_back(keyframe);
-    //    }
-    //
-    //    // 3. Scale KeyFrames (스케일 키프레임)
-    //    for (UINT i = 0; i < aiChannel->mNumScalingKeys; ++i)
-    //    {
-    //        aiVectorKey scalingKey = aiChannel->mScalingKeys[i];
-    //        BoneKeyframe keyframe;
-    //        keyframe.timePos = static_cast<float>(scalingKey.mTime);
-    //        keyframe.scale = XMFLOAT3(scalingKey.mValue.x, scalingKey.mValue.y, scalingKey.mValue.z);
-    //        boneAnim.keyframes.push_back(keyframe);
-    //    }
-    //
-    //    // 최종적으로 추출한 boneAnim을 skinnedData에 저장
-    //    skinnedData._animations[aiChannel->mNodeName.C_Str()] = boneAnim;
-    //}
 }

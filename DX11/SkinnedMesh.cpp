@@ -160,35 +160,72 @@ MeshFile::MeshFile()
 {
 }
 
-MeshFile::MeshFile(string path)
+MeshFile::~MeshFile()
 {
-	FullPath = PathManager::GetI()->GetMovePathS(path);
-	Path = string_to_wstring(path);
-	Name = PathManager::GetI()->GetFileName(path); 
+}
 
-	std::string fileExtension = File::GetExtension(FullPath);  
+MeshFile* MeshFile::LoadFromMetaFile(string path)
+{
+	MeshFile* loadMeshFile = new MeshFile; 
 
-	if (fileExtension == "fbx" || fileExtension == "FBX")
+	loadMeshFile->FullPath	= PathManager::GetI()->GetMovePathS(path); 
+	loadMeshFile->Path		= string_to_wstring(path); 
+	loadMeshFile->Name		= PathManager::GetI()->GetFileName(path); 
+
+	string fileExtension = File::GetExtension(loadMeshFile->FullPath); 
+	if (fileExtension != "FBX" && fileExtension != "fbx") 
 	{
-		FBXLoader fbxLoader;
-		fbxLoader.LoadModelFbx(FullPath, this);  
+		delete loadMeshFile;
+		return nullptr;
 	}
-	if (fileExtension == "mesh" || fileExtension == "MESH")
+
+	// Parsing
+	string load_path_mesh = loadMeshFile->FullPath + ".mesh";
+	string load_path_animations = loadMeshFile->FullPath + ".animations"; 
+
+	if (filesystem::exists(load_path_mesh))
 	{
-		std::ifstream inStream(FullPath, std::ios::binary); 
+		ifstream mesh_instream(load_path_mesh, ios::binary); 
+		loadMeshFile->load_mesh(mesh_instream); 
+		mesh_instream.close(); 
+	}
+	if (filesystem::exists(load_path_animations))
+	{
 		try
 		{
-			load_mesh(inStream);
+			ifstream animation_instream(load_path_animations, ios::binary);
+			loadMeshFile->load_animations(animation_instream);
+			animation_instream.close();
 		}
 		catch (const std::exception&)
 		{
+
 		}
-		inStream.close(); 
 	}
+
+	return loadMeshFile;  
 }
 
-MeshFile::~MeshFile()
+MeshFile* MeshFile::LoadFromFbxFile(string path)
 {
+	MeshFile* loadMeshFile = new MeshFile;
+
+	loadMeshFile->FullPath = PathManager::GetI()->GetMovePathS(path);
+	loadMeshFile->Path = string_to_wstring(path); 
+	loadMeshFile->Name = PathManager::GetI()->GetFileName(path); 
+
+	string fileExtension = File::GetExtension(loadMeshFile->FullPath);
+	if (fileExtension != "FBX" && fileExtension != "fbx")
+	{
+		delete loadMeshFile; 
+		return nullptr; 
+	}
+
+	// Parsing
+	FBXLoader fbxLoader;
+	fbxLoader.LoadModelFbx(loadMeshFile->FullPath, loadMeshFile);
+
+	return loadMeshFile;
 }
 
 void MeshFile::OnInspectorGUI()
@@ -262,8 +299,11 @@ void MeshFile::load_mesh(ifstream& inStream)
 	Meshs.resize(meshCount);
 	for (size_t i = 0; i < meshCount; ++i)
 	{
-		Meshs[i] = new Mesh;
-		Meshs[i]->from_byte(inStream);  // 각 Mesh 객체의 from_byte 호출
+		Mesh* mesh = new Mesh;
+		mesh->from_byte(inStream);
+		
+		shared_ptr<Mesh> mesh_ptr(mesh);
+		Meshs[i] = mesh_ptr;
 	}
 
 	// SkinnedMeshs 개수를 읽고, 그 개수만큼 SkinnedMesh 객체를 생성하고 로드

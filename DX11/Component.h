@@ -15,8 +15,10 @@ protected:
 	GameObject* m_pGameObject;
 	int m_InstanceId;
 
+protected:
 	// Editor
 	string	m_InspectorTitleName = "";
+	wstring	m_InspectorIconPath = L"";  
 	bool	m_InspectorOpened;
 
 public:

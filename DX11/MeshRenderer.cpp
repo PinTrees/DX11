@@ -443,11 +443,7 @@ void MeshRenderer::_Editor_RenderShadowNormal()
 
 void MeshRenderer::OnInspectorGUI()
 {
-	auto changed = EditorGUI::MeshField("Mesh", m_Mesh, m_MeshSubsetIndex);
-	if (changed)
-	{
-		m_MeshPath = m_Mesh->Path; 
-	}
+	auto changed = EditorGUI::MeshField("Mesh", m_Mesh, m_MeshPath, m_MeshSubsetIndex);
 
 	if (m_Mesh)
 	{

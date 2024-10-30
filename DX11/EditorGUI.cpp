@@ -5,6 +5,7 @@
 
 // EditorDialog
 #include "MeshSelectEditorDialog.h"
+#include "AnimationClipSelectEditorDialog.h"
 
 EditorTextStyle EditorGUI::DefaultTextStyle = EditorTextStyle();
 
@@ -140,10 +141,10 @@ bool EditorGUI::Button(string text, Vec2 size, Color color)
     return clicked;
 }
 
-bool EditorGUI::IconButton_FA(string text, EditorTextStyle guiStyle, ImVec2 size, int iconSize)
+bool EditorGUI::IconButton_FA(string text, EditorTextStyle guiStyle, ImVec2 size, int iconSize, ImVec4 backgroundColor)
 {
     // Unity 버튼 색상에 맞는 ImGui 색상 설정
-    ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.f, 0.f, 0.f, 0.f));                 // (기본 버튼 배경)
+    ImGui::PushStyleColor(ImGuiCol_Button, backgroundColor);                 // (기본 버튼 배경)
     ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.37f, 0.37f, 0.37f, 1.0f));   // (마우스 올렸을 때)
     ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.43f, 0.43f, 0.43f, 1.0f));    // (클릭했을 때)
     ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.9f, 0.9f, 0.9f, 1.0f));               // (텍스트)
@@ -466,7 +467,7 @@ bool EditorGUI::MaterialField(string title, shared_ptr<UMaterial>& material, wst
     return isDirty;
 }
 
-bool EditorGUI::MeshField(string title, shared_ptr<Mesh>& mesh, int& subsetIndex)
+bool EditorGUI::MeshField(string title, shared_ptr<Mesh>& mesh, wstring& meshFilePath, int& subsetIndex) 
 {
     bool isDirty = false;
     float fieldWidth = EDITOR_GUI_FIELD_WIDTH;
@@ -481,21 +482,28 @@ bool EditorGUI::MeshField(string title, shared_ptr<Mesh>& mesh, int& subsetIndex
     {
         if (mesh == nullptr)
         {
-            EditorGUI::Label("None");
+            EditorGUI::Label(" None (Mesh)");
         }
         else
         {
             ImGui::PushItemWidth(fieldWidth - (EDITOR_GUI_BUTTON_WIDTH + 4)); 
-            ImGui::Text(mesh->Name.c_str()); 
+            ImGui::Dummy(ImVec2(1, 0));
+            ImGui::SameLine();
+            ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 4);
+            EditorGUI::Image(L"\\ProjectSetting\\icons\\icon_mesh.png", ImVec2(20, 20));
+            ImGui::SameLine(); 
+            ImGui::Dummy(ImVec2(4, 0)); 
+            ImGui::SameLine(); 
+            EditorGUI::Label(mesh->Name); 
         }
 
         ImGui::SameLine();
-        ImGui::Dummy(ImVec2(ImGui::GetContentRegionAvail().x - EDITOR_GUI_BUTTON_WIDTH, 0));
+        ImGui::Dummy(ImVec2(ImGui::GetContentRegionAvail().x - 28, 0)); 
         ImGui::SameLine();
 
-        if (EditorGUI::Button("+", Vec2(20, 20), Color(0.20f, 0.20f, 0.20f, 1.0f)))
+        if (EditorGUI::Button(ICON_FA_CIRCLE_DOT, Vec2(28, 28))) 
         {
-            MeshSelectEditorDialog::Open(mesh.get(), nullptr, subsetIndex);
+            MeshSelectEditorDialog::Open(mesh, nullptr, meshFilePath, subsetIndex, MESH_SELECT_DIALOG_TYPE::MESH_STATIC); 
         }
     }
     ImGui::EndChild();
@@ -505,7 +513,7 @@ bool EditorGUI::MeshField(string title, shared_ptr<Mesh>& mesh, int& subsetIndex
     return isDirty;
 }
 
-bool EditorGUI::SkinnedMeshField(string title, shared_ptr<SkinnedMesh>& mesh, int& subsetIndex)
+bool EditorGUI::SkinnedMeshField(string title, shared_ptr<SkinnedMesh>& mesh, wstring& meshFilePath, int& subsetIndex)
 {
     bool isDirty = false;
     float fieldWidth = EDITOR_GUI_FIELD_WIDTH;
@@ -520,21 +528,29 @@ bool EditorGUI::SkinnedMeshField(string title, shared_ptr<SkinnedMesh>& mesh, in
     {
         if (mesh == nullptr)
         {
-            EditorGUI::Label("None");
+            EditorGUI::Label(" None (Skinned Mesh)");
         }
         else
         {
-            ImGui::PushItemWidth(fieldWidth - (EDITOR_GUI_BUTTON_WIDTH + 4));
-            ImGui::Text(mesh->Name.c_str());
+            ImGui::PushItemWidth(fieldWidth - (EDITOR_GUI_BUTTON_WIDTH + 4)); 
+            ImGui::Dummy(ImVec2(1, 0));
+            ImGui::SameLine(); 
+            ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 4);
+            EditorGUI::Image(L"\\ProjectSetting\\icons\\icon_mesh.png", ImVec2(20, 20));
+            ImGui::SameLine();
+            ImGui::Dummy(ImVec2(4, 0));
+            ImGui::SameLine(); 
+            EditorGUI::Label(mesh->Name); 
         }
 
         ImGui::SameLine();
-        ImGui::Dummy(ImVec2(ImGui::GetContentRegionAvail().x - EDITOR_GUI_BUTTON_WIDTH, 0));
+        ImGui::Dummy(ImVec2(ImGui::GetContentRegionAvail().x - 28, 0));
         ImGui::SameLine();
 
-        if (EditorGUI::Button("+", Vec2(20, 20), Color(0.20f, 0.20f, 0.20f, 1.0f)))
+        if (EditorGUI::Button(ICON_FA_CIRCLE_DOT, Vec2(28, 28)))
         {
-            MeshSelectEditorDialog::Open(nullptr, mesh.get(), subsetIndex); 
+            shared_ptr<Mesh> mesh_dummy = nullptr; 
+            MeshSelectEditorDialog::Open(mesh_dummy, mesh.get(), meshFilePath, subsetIndex, MESH_SELECT_DIALOG_TYPE::MESH_SKINNED); 
         }
     }
     ImGui::EndChild();
@@ -544,8 +560,51 @@ bool EditorGUI::SkinnedMeshField(string title, shared_ptr<SkinnedMesh>& mesh, in
     return isDirty;
 }
 
+bool EditorGUI::AnimationClipField(string title, shared_ptr<AnimationClip>& animationClip, string& animationClipPath, int index)
+{
+    bool isDirty = false;
+    float fieldWidth = EDITOR_GUI_FIELD_WIDTH;
 
+    EDITOR_GUI_FIELD_PADDING;
+    EditorGUI::Label(title);
+    EDITOR_GUI_FIELD_SPACING(fieldWidth - 8);
 
+    EditorGUI::DropFieldStylePush();
+
+    if (ImGui::BeginChild("AnimationClip Field", ImVec2(fieldWidth, FIELD_DEFAULT_HEIGHT), true, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse))
+    {
+        if (animationClip == nullptr)
+        {
+            EditorGUI::Label(" None (Animation Clip)");
+        }
+        else
+        {
+            ImGui::PushItemWidth(fieldWidth - (EDITOR_GUI_BUTTON_WIDTH + 4));
+            ImGui::Dummy(ImVec2(1, 0));
+            ImGui::SameLine();
+            ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 4);
+            EditorGUI::Image(L"\\ProjectSetting\\icons\\icon_animation_clip.png", ImVec2(20, 20));
+            ImGui::SameLine();
+            ImGui::Dummy(ImVec2(4, 0));
+            ImGui::SameLine();
+            EditorGUI::Label(animationClip->Name);
+        }
+
+        ImGui::SameLine();
+        ImGui::Dummy(ImVec2(ImGui::GetContentRegionAvail().x - 28, 0));
+        ImGui::SameLine();
+
+        if (EditorGUI::Button(ICON_FA_CIRCLE_DOT, Vec2(28, 28)))
+        {
+            AnimationClipSelectEditorDialog::Open(animationClip, animationClipPath, index);
+        }
+    }
+    ImGui::EndChild();
+
+    EditorGUI::DropFieldStylePop();
+
+    return isDirty;
+}
 
 void EditorGUI::DropFieldStylePush()
 {
@@ -554,8 +613,8 @@ void EditorGUI::DropFieldStylePush()
     ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(0.1f, 0.1f, 0.1f, 1.0f));
 
     // 차일드 창의 라운딩과 내부 패딩 적용
-    ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 4.0f);         // 차일드 창 라운드 값 2 적용 
-    ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 3.f);      // 차일드 창 테두리 두께 적용
+    ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 6.0f);         // 차일드 창 라운드 
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 4.f);       // 차일드 창 테두리 두께
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(4, 0)); // 차일드 창 내부 패딩
 }
 void EditorGUI::DropFieldStylePop()

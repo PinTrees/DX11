@@ -51,12 +51,13 @@ class MeshFile
 {
 public:
 	MeshFile();
-	MeshFile(string path);  
 	~MeshFile();
+	static MeshFile* LoadFromMetaFile(string path); 
+	static MeshFile* LoadFromFbxFile(string path); 
 
-	vector<SkinnedMesh*> SkinnedMeshs;
-	vector<Mesh*>		Meshs; 
-	SkinnedData			SkinnedData;
+	vector<SkinnedMesh*>		SkinnedMeshs;
+	vector<shared_ptr<Mesh>>	Meshs; 
+	SkinnedData					SkinnedData;
 
 	wstring				Path;  
 	string				FullPath;

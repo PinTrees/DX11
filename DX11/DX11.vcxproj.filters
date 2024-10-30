@@ -235,6 +235,18 @@
     <Filter Include="0. Engine\Manager\DisplayManager">
       <UniqueIdentifier>{e2177798-7d6b-4d80-b0f8-c6633550736c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="0. Engine\Component\Animation">
+      <UniqueIdentifier>{673a04fb-d4c4-494c-a3b9-b55dbae1e081}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="0. Engine\Component\Animation\Animation">
+      <UniqueIdentifier>{eee3ca21-828b-45df-985c-7e1aa824636b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="0. Engine\Component\Animation\Animator">
+      <UniqueIdentifier>{eace4985-22b4-436e-92b9-32653807d231}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="0. Engine\ImguiContainer\0. Editor\Dialog\AnimationClipSelectEditorDialog">
+      <UniqueIdentifier>{484925ee-770a-448a-bec8-72589f6d5508}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="01. InitDemo.cpp">
@@ -625,6 +637,12 @@
     </ClCompile>
     <ClCompile Include="DisplayManager.cpp">
       <Filter>0. Engine\Manager\DisplayManager</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationPlayer.cpp">
+      <Filter>0. Engine\Component\Animation\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationClipSelectEditorDialog.cpp">
+      <Filter>0. Engine\ImguiContainer\0. Editor\Dialog\AnimationClipSelectEditorDialog</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1026,6 +1044,12 @@
     </ClInclude>
     <ClInclude Include="DisplayManager.h">
       <Filter>0. Engine\Manager\DisplayManager</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationPlayer.h">
+      <Filter>0. Engine\Component\Animation\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationClipSelectEditorDialog.h">
+      <Filter>0. Engine\ImguiContainer\0. Editor\Dialog\AnimationClipSelectEditorDialog</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

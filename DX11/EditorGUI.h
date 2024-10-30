@@ -1,7 +1,7 @@
 #pragma once
 #include "EditorGUIStyle.h"
 
-#define FIELD_DEFAULT_HEIGHT	20.f
+#define FIELD_DEFAULT_HEIGHT	28.f
 
 #define EDITOR_GUI_FIELD_WIDTH (ImGui::GetContentRegionAvail().x * 0.6f)
 #define EDITOR_GUI_LARGE_FIELD_WIDTH (ImGui::GetContentRegionAvail().x * 0.7f) 
@@ -46,7 +46,7 @@ public:
 	static void Label(string text, EditorTextStyle guiStyle = DefaultTextStyle, ImVec4 color = EDITOR_GUI_COLOR_LABEL);
 	static void LabelHeader(string text);
 	static bool Button(string text, Vec2 size = Vec2(0, 20), Color color = Color(0.31f, 0.31f, 0.31f, 1.0f));
-	static bool IconButton_FA(string text, EditorTextStyle guiStyle = DefaultTextStyle, ImVec2 size = ImVec2(0, 20), int iconSize=24);
+	static bool IconButton_FA(string text, EditorTextStyle guiStyle = DefaultTextStyle, ImVec2 size = ImVec2(0, 20), int iconSize=24, ImVec4 backgroundColor=EDITOR_GUI_COLOR_BUTTON_BG);
 	static bool ImageButton(wstring path, ImVec2 size, ImVec2 padding=ImVec2(2,2));
 
 	static bool ComponentHeader(string title, wstring icon, bool& isOpened);
@@ -61,8 +61,9 @@ public:
 	static bool FloatField(string title, float& v);
 	static bool Vector3Field(string title, Vec3& vec3);
 	static bool MaterialField(string title, shared_ptr<UMaterial>& material, wstring& materialPath);
-	static bool MeshField(string title, shared_ptr<Mesh>& mesh, int& subsetIndex);
-	static bool SkinnedMeshField(string title, shared_ptr<SkinnedMesh>& mesh, int& subsetIndex);
+	static bool MeshField(string title, shared_ptr<Mesh>& mesh, wstring& meshFilePath, int& subsetIndex);
+	static bool SkinnedMeshField(string title, shared_ptr<SkinnedMesh>& mesh, wstring& meshFilePath, int& subsetIndex);
+	static bool AnimationClipField(string title, shared_ptr<AnimationClip>& animationClip, string& animationClipPath, int index);
 
 public:
 	static void DropFieldStylePush();

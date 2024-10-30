@@ -48,7 +48,7 @@
                     "type": "Transform"
                 },
                 {
-                    "aspect": 1.941176414489746,
+                    "aspect": 2.2458629608154297,
                     "cameraType": 0,
                     "farZ": 1000.0,
                     "fovY": 1.0471975803375244,
@@ -244,6 +244,9 @@
                     "m_LinearDamping": 0.9900000095367432,
                     "mass": 1.0,
                     "type": "RigidBody"
+                },
+                {
+                    "type": "AnimationPlayer"
                 }
             ],
             "name": "UnityModel"
@@ -301,7 +304,7 @@
                     ],
                     "meshPath": "Assets\\Art\\ENV\\Rock\\Mossy_rock_var8.fbx",
                     "shaderPath": "",
-                    "subsetIndex": 1,
+                    "subsetIndex": 0,
                     "type": "MeshRenderer"
                 }
             ],
@@ -431,45 +434,45 @@
             "components": [
                 {
                     "m_EulerAngles": [
-                        -0.0,
-                        -5.9285540886244714e-12,
-                        -0.0
+                        90.00000762939453,
+                        -40.400001525878906,
+                        -2.2422343590733362e-06
                     ],
                     "m_LocalEulerAngles": [
-                        0.0,
-                        0.0,
+                        90.0,
+                        -40.400001525878906,
                         0.0
                     ],
                     "m_LocalEulerRadians": [
-                        0.0,
-                        0.0,
+                        1.5707963705062866,
+                        -0.7051130533218384,
                         0.0
                     ],
                     "m_LocalPosition": [
-                        -64.19999694824219,
-                        0.0,
-                        0.0
+                        -2.299999952316284,
+                        25.200000762939453,
+                        -0.699999988079071
                     ],
                     "m_LocalRotation": {
-                        "w": 1.0,
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
+                        "w": 0.6636147499084473,
+                        "x": 0.663614809513092,
+                        "y": -0.24416270852088928,
+                        "z": 0.24416270852088928
                     },
                     "m_LocalScale": [
-                        1.0,
-                        1.0,
-                        1.0
+                        10.0,
+                        10.0,
+                        10.0
                     ],
                     "m_Position": [
-                        -64.19999694824219,
-                        0.0,
-                        0.0
+                        -2.299999952316284,
+                        25.200000762939453,
+                        -0.699999988079071
                     ],
                     "m_Scale": [
-                        1.0,
-                        1.0,
-                        1.0
+                        10.0,
+                        10.0,
+                        10.0
                     ],
                     "type": "Transform"
                 },
@@ -477,7 +480,7 @@
                     "m_MaterialPaths": [
                         ""
                     ],
-                    "meshPath": "",
+                    "meshPath": "Assets\\Art\\Character\\base_body_model.fbx",
                     "shaderPath": "",
                     "subsetIndex": 0,
                     "type": "MeshRenderer"

@@ -64,6 +64,4 @@ private:
     void ParseBonesFromNodes(aiNode* node, std::map<std::string, int>& boneMapping); 
     void ParseBoneOffsets(const aiScene* scene, const std::map<std::string, int>& boneMapping, std::vector<XMFLOAT4X4>& boneOffsets);
     void ParseBoneHierarchy(aiNode* node, std::map<std::string, int>& boneMapping, std::vector<int>& boneHierarchy, int parentIndex);
-    void ParseAnimations(const aiScene* scene, SkinnedData& skinnedData);
-    void ReadAnimationNode(const aiAnimation* aiAnimation, SkinnedData& skinnedData);
 };

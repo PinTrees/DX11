@@ -195,6 +195,8 @@
     <ClInclude Include="29. MeshViewDemo.h" />
     <ClInclude Include="30. QuatDemo.h" />
     <ClInclude Include="31. SkinnedMeshDemo.h" />
+    <ClInclude Include="AnimationClipSelectEditorDialog.h" />
+    <ClInclude Include="AnimationPlayer.h" />
     <ClInclude Include="AnimationHelper.h" />
     <ClInclude Include="AnimatorEditorWindow.h" />
     <ClInclude Include="App.h" />
@@ -334,6 +336,8 @@
     <ClCompile Include="29. MeshViewDemo.cpp" />
     <ClCompile Include="30. QuatDemo.cpp" />
     <ClCompile Include="31. SkinnedMeshDemo.cpp" />
+    <ClCompile Include="AnimationClipSelectEditorDialog.cpp" />
+    <ClCompile Include="AnimationPlayer.cpp" />
     <ClCompile Include="AnimationHelper.cpp" />
     <ClCompile Include="AnimatorEditorWindow.cpp" />
     <ClCompile Include="App.cpp" />

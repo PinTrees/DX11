@@ -4,13 +4,17 @@
 #include "EditorGUI.h"
 
 MeshSelectEditorDialog::MeshSelectEditorDialog(
-    Mesh* selectMesh, 
+    shared_ptr<Mesh>& selectMesh, 
     SkinnedMesh* selectSkinnedMesh, 
-    int& selectIndex) : EditorDialog("Mesh Select")
+    wstring&      selectMeshFilePath,
+    int& selectIndex,
+    MESH_SELECT_DIALOG_TYPE openType) : EditorDialog("Select Mesh")
     , m_MeshFiles{}
     , m_SelectMesh(selectMesh)
     , m_SelectSkinnedMesh(selectSkinnedMesh)
+    , m_SelectMeshFilePath(selectMeshFilePath)
     , m_SelectSubsetIndex(selectIndex)
+    , m_OpenMeshType(openType)
 {
 }
 
@@ -19,11 +23,18 @@ MeshSelectEditorDialog::~MeshSelectEditorDialog()
 }
 
 void MeshSelectEditorDialog::Open(
-    Mesh*        selectMesh,
+    shared_ptr<Mesh>& selectMesh,
     SkinnedMesh* selectSkinnedMesh,
-    int&         selectSubsetIndex)
+    wstring&      meshFilePath,
+    int&         selectSubsetIndex,
+    MESH_SELECT_DIALOG_TYPE openType)
 {
-	MeshSelectEditorDialog* view = new MeshSelectEditorDialog(selectMesh, selectSkinnedMesh, selectSubsetIndex);
+	MeshSelectEditorDialog* view = new MeshSelectEditorDialog( 
+        selectMesh, 
+        selectSkinnedMesh, 
+        meshFilePath,
+        selectSubsetIndex, 
+        openType);
 	view->Show();   
 }
 
@@ -31,23 +42,27 @@ void MeshSelectEditorDialog::Show()
 {
     EditorDialog::Show();
 
-    std::string path = wstring_to_string(PathManager::GetI()->GetContentPathW()) + "Assets\\";   // 탐색할 경로  
-    std::string extension = ".mesh";                                                            // 탐색할 파일 확장자
+    string path = wstring_to_string(PathManager::GetI()->GetContentPathW()) + "Assets\\";
+    string extension = ".fbx";
 
-    // 디렉터리 탐색
     for (const auto& entry : fs::recursive_directory_iterator(path))
     {
-        // 파일이 .mesh 확장자를 가졌는지 확인
-        if (entry.is_regular_file() && entry.path().extension() == extension)
+        if (entry.is_regular_file())
         {
-            std::string filePath = entry.path().string(); // 파일 경로
-            string assetPath = PathManager::GetI()->GetCutSolutionPath(filePath); 
+            string fileExtension = entry.path().extension().string();
+            transform(fileExtension.begin(), fileExtension.end(), fileExtension.begin(), ::tolower);
 
-            // .mesh 파일 로드
-            auto meshFile = ResourceManager::GetI()->LoadMeshFile(assetPath); 
+            if (fileExtension == extension)
+            {
+                string filePath = entry.path().string();
+                string assetPath = PathManager::GetI()->GetCutSolutionPath(filePath);
 
-            // 로드한 파일을 m_MeshFiles 리스트에 추가
-            m_MeshFiles.push_back(meshFile);
+                const auto& meshFile = ResourceManager::GetI()->LoadMeshFile(assetPath);
+                if (meshFile == nullptr)
+                    continue;
+
+                m_MeshFiles.push_back(meshFile);
+            }
         }
     }
 }
@@ -55,72 +70,77 @@ void MeshSelectEditorDialog::Show()
 void MeshSelectEditorDialog::Close()
 {
     EditorDialog::Close(); 
+    m_MeshFiles.clear();
 }
 
 void MeshSelectEditorDialog::OnRender()
 {
-    static Mesh* selectMesh = nullptr;
-    static SkinnedMesh* selectSkinnedMesh = nullptr;
-    static int index = 0;
-
-    // 스크롤 가능한 영역을 시작 (ID를 부여)
-    ImGui::BeginChild("ScrollableRegion", ImVec2(0, -40), true, ImGuiWindowFlags_HorizontalScrollbar);
-
-    for (auto meshFile : m_MeshFiles)
+    if (ImGui::BeginChild("ScrollableRegion", ImVec2(0, -40), true, ImGuiWindowFlags_HorizontalScrollbar))
     {
-        //EditorGUI::Label(meshFile->Name);
-        //EditorGUI::Label(wstring_to_string(meshFile->Path)); 
-        //EditorGUI::Label(meshFile->FullPath);
-        //EditorGUI::Label(to_string(meshFile->Meshs.size()));
-        //EditorGUI::Label(to_string(meshFile->SkinnedMeshs.size())); 
+        ImGui::Dummy(ImVec2(16, 16));
+        ImGui::SameLine();
+        ImGui::BeginGroup();
 
-        if (m_SelectMesh)
+        if (m_OpenMeshType == MESH_SELECT_DIALOG_TYPE::MESH_STATIC)
         {
-            int i = 0; 
-            for (auto mesh : meshFile->Meshs)
+            ImGui::Dummy(ImVec2(22, 22));
+            EditorGUI::RowSizedBox(8);
+            if (ImGui::Selectable("None", m_SystemSelectMesh == nullptr, NULL, ImVec2(0, 26)))
             {
-                EditorGUI::Image(L"\\ProjectSetting\\icons\\icon_mesh.png", ImVec2(18, 18));
-                EditorGUI::RowSizedBox(8);
-                // 선택 가능한 요소 생성
-                if (ImGui::Selectable(("Static - " + mesh->Name).c_str(), selectMesh == mesh))
+                m_SystemSelectMesh = nullptr; 
+            }
+
+            for (const auto& meshFile : m_MeshFiles)
+            {
+                for (int i = 0; i < meshFile->Meshs.size(); ++i)
                 {
-                    selectMesh = mesh;
-                    index = i;
+                    const auto& mesh = meshFile->Meshs[i];
+
+                    string entry_id = mesh->Name + wstring_to_string(mesh->Path) + to_string(i);
+                    ImGui::PushID(entry_id.c_str());
+
+                    EditorGUI::Image(L"\\ProjectSetting\\icons\\icon_mesh.png", ImVec2(22, 22));
+                    EditorGUI::RowSizedBox(8);
+                    if (ImGui::Selectable(("Static - " + mesh->Name).c_str(), m_SystemSelectMesh == mesh, NULL, ImVec2(0, 26)))
+                    {
+                        m_SystemSelectMesh = mesh;
+                        m_SystemSelectMeshIndex = i;
+                        m_SystemSelectMeshFilePath = meshFile->Path;  
+                    }
+                    if (ImGui::IsMouseDoubleClicked(0))
+                    {
+                        m_SelectMesh = m_SystemSelectMesh;
+                        m_SelectSubsetIndex = m_SystemSelectMeshIndex;
+                        m_SelectMeshFilePath = m_SystemSelectMeshFilePath;
+                        Close();
+                    }
+
+                    ImGui::PopID();
                 }
-                i++;
             }
         }
-        if (m_SelectSkinnedMesh)
+
+        for (const auto& meshFile : m_MeshFiles)
         {
-            int i = 0;
-            for (auto skinnedMesh : meshFile->SkinnedMeshs)
+            if (m_SelectSkinnedMesh)
             {
-                EditorGUI::Image(L"\\ProjectSetting\\icons\\icon_mesh.png", ImVec2(18, 18));
-                EditorGUI::RowSizedBox(8);
-                // 선택 가능한 요소 생성
-                if (ImGui::Selectable(("Skinned - " + skinnedMesh->Name).c_str(), selectSkinnedMesh == skinnedMesh))
+                int i = 0;
+                for (auto skinnedMesh : meshFile->SkinnedMeshs)
                 {
-                    selectSkinnedMesh = skinnedMesh;
-                    index = i;
+                    EditorGUI::Image(L"\\ProjectSetting\\icons\\icon_mesh.png", ImVec2(18, 18));
+                    EditorGUI::RowSizedBox(8);
+                    // 선택 가능한 요소 생성
+                    if (ImGui::Selectable(("Skinned - " + skinnedMesh->Name).c_str(), m_SystemSelectSkinnedMesh == skinnedMesh))
+                    {
+                        m_SystemSelectSkinnedMesh = skinnedMesh;
+                        m_SystemSelectMeshIndex = i;
+                    }
+                    i++;
                 }
-                i++;
             }
         }
-    }
-    ImGui::EndChild(); // 스크롤 가능한 영역 끝
 
-    if (EditorGUI::Button("Select")) 
-    {
-        if (m_SelectSkinnedMesh) 
-        { 
-            *m_SelectSkinnedMesh = *selectSkinnedMesh;  
-            m_SelectSubsetIndex = index;  
-        } 
-        if (m_SelectMesh)
-        {
-            *m_SelectMesh = *selectMesh; 
-            m_SelectSubsetIndex = index;
-        }
-        Close();  
+        ImGui::EndGroup();
     }
+    ImGui::EndChild();     
 }

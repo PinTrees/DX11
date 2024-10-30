@@ -93,9 +93,9 @@ public:
 		std::vector<XMFLOAT4X4>& finalTransforms)const;
 
 public:
-	vector<AnimationClip>	AnimationClips;		// ÆÄ½ÌµÊ
-	vector<int>				BoneHierarchy;		// ÆÄ½ÌµÊ
-	vector<XMFLOAT4X4>		BoneOffsets;		// ÆÄ½ÌµÊ
+	vector<shared_ptr<AnimationClip>>	AnimationClips;		// ÆÄ½ÌµÊ
+	vector<int>							BoneHierarchy;		// ÆÄ½ÌµÊ
+	vector<XMFLOAT4X4>					BoneOffsets;		// ÆÄ½ÌµÊ
 
 private:
 	// Gives parentIndex of ith bone.

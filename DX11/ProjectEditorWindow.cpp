@@ -413,7 +413,7 @@ void ProjectEditorWindow::RenderFileEntry_FBX(const fs::directory_entry& entry, 
         for (size_t i = 0; i < mesh_fbx->SkinnedData.AnimationClips.size(); ++i) 
         {
             auto animationClip = mesh_fbx->SkinnedData.AnimationClips[i]; 
-            std::wstring subsetName = L"AnimationClip - " + string_to_wstring(animationClip.Name); 
+            std::wstring subsetName = L"AnimationClip - " + string_to_wstring(animationClip->Name); 
         
             bool isSubsetSelected = (SelectionManager::GetSelectedFile() == (filename + L"\\" + subsetName));  
             ImGui::PushID(static_cast<int>(i)); 

@@ -278,11 +278,7 @@ void SkinnedMeshRenderer::_Editor_RenderShadowNormal()
 
 void SkinnedMeshRenderer::OnInspectorGUI()
 {
-	auto changed = EditorGUI::SkinnedMeshField("SkinnedMesh", m_Mesh, m_MeshSubsetIndex);
-	if (changed)
-	{
-		m_MeshPath = m_Mesh->Path;
-	}
+	auto changed = EditorGUI::SkinnedMeshField("SkinnedMesh", m_Mesh, m_MeshPath, m_MeshSubsetIndex); 
 
 	if (m_Mesh)
 	{

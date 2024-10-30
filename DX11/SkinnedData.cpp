@@ -289,10 +289,11 @@ void SkinnedData::from_byte(ifstream& inStream)
 		std::string clipName(nameLength, ' ');
 		inStream.read(clipName.data(), nameLength);
 
-		AnimationClip animation;
-		animation.from_byte(inStream); // AnimationClip 클래스에 from_byte 함수 필요
+		AnimationClip* animation = new AnimationClip;
+		animation->from_byte(inStream);		
+		shared_ptr<AnimationClip> animation_ptr(animation);
 
-		AnimationClips.push_back(animation); 
+		AnimationClips.push_back(animation_ptr); 
 	}
 }
 
@@ -313,11 +314,11 @@ void SkinnedData::to_byte(ofstream& outStream)
 	outStream.write(reinterpret_cast<const char*>(&animCount), sizeof(animCount));
 	for (const auto& animation : AnimationClips) 
 	{
-		uint32_t nameLength = animation.Name.size();
+		uint32_t nameLength = animation->Name.size();
 		outStream.write(reinterpret_cast<const char*>(&nameLength), sizeof(nameLength));
-		outStream.write(animation.Name.c_str(), nameLength);  
+		outStream.write(animation->Name.c_str(), nameLength);  
 
 		// AnimationClip 클래스에 to_byte가 있어야 함
-		animation.to_byte(outStream);
+		animation->to_byte(outStream);
 	}
 }
