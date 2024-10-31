@@ -112,6 +112,7 @@ namespace ed = ax::NodeEditor;
 #include "Light.h"
 #include "Scene.h"
 #include "SceneManager.h"
+#include "TerrainTool.h"
 
 #include "Transform.h"
 #include "Collider.h"

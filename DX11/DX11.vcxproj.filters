@@ -247,6 +247,9 @@
     <Filter Include="0. Engine\ImguiContainer\0. Editor\Dialog\AnimationClipSelectEditorDialog">
       <UniqueIdentifier>{484925ee-770a-448a-bec8-72589f6d5508}</UniqueIdentifier>
     </Filter>
+    <Filter Include="0. Engine\Component\TerrainTool">
+      <UniqueIdentifier>{f7983020-52dd-4ab8-9fa6-eabefe802d56}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="01. InitDemo.cpp">
@@ -643,6 +646,9 @@
     </ClCompile>
     <ClCompile Include="AnimationClipSelectEditorDialog.cpp">
       <Filter>0. Engine\ImguiContainer\0. Editor\Dialog\AnimationClipSelectEditorDialog</Filter>
+    </ClCompile>
+    <ClCompile Include="TerrainTool.cpp">
+      <Filter>0. Engine\Component\TerrainTool</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1050,6 +1056,9 @@
     </ClInclude>
     <ClInclude Include="AnimationClipSelectEditorDialog.h">
       <Filter>0. Engine\ImguiContainer\0. Editor\Dialog\AnimationClipSelectEditorDialog</Filter>
+    </ClInclude>
+    <ClInclude Include="TerrainTool.h">
+      <Filter>0. Engine\Component\TerrainTool</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

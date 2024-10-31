@@ -294,6 +294,7 @@
     <ClInclude Include="Task.h" />
     <ClInclude Include="TaskSystem.h" />
     <ClInclude Include="Terrain.h" />
+    <ClInclude Include="TerrainTool.h" />
     <ClInclude Include="TextureMgr.h" />
     <ClInclude Include="TimeManager.h" />
     <ClInclude Include="Transform.h" />
@@ -459,6 +460,7 @@
     <ClCompile Include="Task.cpp" />
     <ClCompile Include="TaskSystem.cpp" />
     <ClCompile Include="Terrain.cpp" />
+    <ClCompile Include="TerrainTool.cpp" />
     <ClCompile Include="TextureMgr.cpp" />
     <ClCompile Include="TimeManager.cpp" />
     <ClCompile Include="Transform.cpp" />
