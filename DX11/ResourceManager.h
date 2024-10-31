@@ -15,12 +15,14 @@ private:
 	map<string, shared_ptr<UMaterial>>				m_Materials;
 	map<wstring, shared_ptr<SkinnedMesh>>			m_SkinnedMeshs;
 
-	map<string, shared_ptr<MeshFile>>					m_FbxModels;
+	map<string, shared_ptr<MeshFile>>					m_FbxFiles;
+	map<string, shared_ptr<MeshFile>>					m_MeshFiles;
 	map<tuple<wstring, int>, shared_ptr<Mesh>>			m_Meshs; 
 	map<tuple<string, int>, shared_ptr<AnimationClip>>	m_AnimationClips;
 
 public:
 	void Init(ComPtr<ID3D11Device> device);
+	void Destroy();
 
 	ComPtr<ID3D11ShaderResourceView> LoadTexture(wstring filename);
 	shared_ptr<UMaterial>	LoadMaterial(string filename);

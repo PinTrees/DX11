@@ -21,6 +21,7 @@
 #define EDITOR_GUI_COLOR_BG				ImVec4(0.07f, 0.07f, 0.07f, 1.0f)
 #define EDITOR_GUI_COLOR_TAB_HEADER_BG	ImGui::PushStyleColor(ImGuiCol_TableHeaderBg, ImVec4(0.07f, 0.07f, 0.07f, 1.0f))  
 #define EDITOR_GUI_COLOR_LABEL			ImVec4(0.8f, 0.8f, 0.8f, 1.0f)
+#define EDITOR_GUI_COLOR_LABEL_A		ImVec4(0.95f, 0.95f, 0.95f, 1.0f)
 #define EDITOR_GUI_COLOR_LABEL_D		ImVec4(0.75f, 0.75f, 0.75f, 1.0f)
 #define EDITOR_GUI_COLOR_BUTTON_BG		ImVec4(0.25f, 0.25f, 0.25f, 1.0f)
 #define EDITOR_GUI_COLOR_BUTTON_HOBER	ImVec4(0.35f, 0.35f, 0.35f, 1.0f)
@@ -66,6 +67,9 @@ public:
 	static bool AnimationClipField(string title, shared_ptr<AnimationClip>& animationClip, string& animationClipPath, int index);
 
 public:
+	static void ContainerStylePush();
+	static void ContainerStylePop();
+
 	static void DropFieldStylePush();
 	static void DropFieldStylePop();
 

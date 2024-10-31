@@ -29,6 +29,8 @@ private:
 	Vec3 m_Torque;
 	
 	bool m_IsKinematic;				// Å°³×Æ½ ¿©ºÎ
+	bool m_AutomaticTensor;
+	bool m_UseGravity;
 
 public:
 	RigidBody();

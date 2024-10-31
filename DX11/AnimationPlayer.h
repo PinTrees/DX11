@@ -25,8 +25,8 @@ public:
 	// Editor
 	virtual void OnInspectorGUI() override;
 
-	GENERATE_COMPONENT_BODY(AnimationPlayer) 
+	GENERATE_COMPONENT_BODY(AnimationPlayer)  
 };
 
-REGISTER_COMPONENT(AnimationPlayer)
+REGISTER_COMPONENT(AnimationPlayer) 
  

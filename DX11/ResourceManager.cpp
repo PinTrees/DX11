@@ -19,6 +19,18 @@ void ResourceManager::Init(ComPtr<ID3D11Device> device)
 	m_Device = device;
 }
 
+void ResourceManager::Destroy()
+{
+	m_TextureSRV.clear();
+	m_Materials.clear();
+	m_SkinnedMeshs.clear();
+
+	m_FbxFiles.clear();
+	m_MeshFiles.clear();  
+	m_Meshs.clear(); 
+	m_AnimationClips.clear(); 
+}
+
 ComPtr<ID3D11ShaderResourceView> ResourceManager::LoadTexture(wstring filename)
 {
 	ComPtr<ID3D11ShaderResourceView> srv;
@@ -117,15 +129,15 @@ shared_ptr<MeshFile> ResourceManager::LoadFbxModel(string filename)
 {
 	shared_ptr<MeshFile> model = nullptr;
 
-	if (m_FbxModels.find(filename) != m_FbxModels.end())
+	if (m_FbxFiles.find(filename) != m_FbxFiles.end())
 	{
-		model = m_FbxModels[filename];
+		model = m_FbxFiles[filename];
 	}
 	else
 	{
 		MeshFile* meshFile = MeshFile::LoadFromFbxFile(filename);
 		model.reset(meshFile);
-		m_FbxModels[filename] = model;
+		m_FbxFiles[filename] = model;
 	}
 
 	return model;
@@ -133,11 +145,9 @@ shared_ptr<MeshFile> ResourceManager::LoadFbxModel(string filename)
 
 shared_ptr<MeshFile> ResourceManager::LoadMeshFile(string filename)
 {
-	shared_ptr<MeshFile> model = nullptr;
-
-	if (m_FbxModels.find(filename) != m_FbxModels.end())
+	if (m_MeshFiles.find(filename) != m_MeshFiles.end())
 	{
-		model = m_FbxModels[filename];
+		return m_MeshFiles[filename];
 	}
 	else
 	{
@@ -146,31 +156,27 @@ shared_ptr<MeshFile> ResourceManager::LoadMeshFile(string filename)
 		if (meshFile == nullptr)
 			return nullptr;
 
-		model.reset(meshFile);
-		m_FbxModels[filename] = model;  
+		shared_ptr<MeshFile> model(meshFile);
+		m_MeshFiles[filename] = model;
+		return m_MeshFiles[filename];
 	}
-
-	return model;
 }
 
 shared_ptr<AnimationClip> ResourceManager::LoadAnimationClip(string filename, int index)
 {
 	tuple<string, int> key = make_tuple(filename, index);
-	shared_ptr<AnimationClip> animationClip;
 
 	if (m_AnimationClips.find(key) != m_AnimationClips.end())
 	{
-		animationClip = m_AnimationClips[key];
+		return m_AnimationClips[key];
 	}
 	else
 	{
-		// Load MeshFile;
+		// Load MeshFile
 		shared_ptr<MeshFile> meshFile = ResourceManager::GetI()->LoadMeshFile(filename);
 		if (meshFile == nullptr)
 			return nullptr;
 
-		m_AnimationClips[key] = meshFile->SkinnedData.AnimationClips[index]; 
+		return m_AnimationClips[key] = meshFile->SkinnedData.AnimationClips[index];
 	}
-
-	return animationClip;
 }

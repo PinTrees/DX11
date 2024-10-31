@@ -13,6 +13,7 @@ MeshRenderer::MeshRenderer()
 	m_MaterialPaths({})
 {
 	m_InspectorTitleName = "MeshRenderer";
+	m_InspectorIconPath = L"mesh_renderer.png";
 }
 
 MeshRenderer::~MeshRenderer()

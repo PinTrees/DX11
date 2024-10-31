@@ -190,7 +190,7 @@ void FBXLoader::ParsingMeshNode(aiNode* node, const aiScene* scene, MeshFile* mo
     {
         if (scene->mMeshes[node->mMeshes[0]]->HasBones())
         {
-            SkinnedMesh* mesh = new SkinnedMesh; 
+            shared_ptr<SkinnedMesh> mesh = make_shared<SkinnedMesh>(); 
             model->SkinnedMeshs.push_back(mesh); 
             mesh->Name = node->mName.C_Str();   
             mesh->Mat.resize(scene->mNumMaterials);  

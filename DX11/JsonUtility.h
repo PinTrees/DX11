@@ -17,6 +17,10 @@ Quaternion SafeGetQuaternion(const json& j, const std::string& key, const Quater
 #define DE_SERIALIZE_VECTOR3(JSON, VALUE) VALUE = SafeGetVector3(JSON, #VALUE, Vector3::Zero);
 #define DE_SERIALIZE_VECTOR3_D(JSON, VALUE, Default) VALUE = SafeGetVector3(JSON, #VALUE, Default); 
 
+#define SERIALIZE_BOOL(JSON, VALUE, VALUE_NAME) JSON[VALUE_NAME] = VALUE;
+#define DE_SERIALIZE_BOOL(JSON, VALUE, VALUE_NAME) if (JSON.contains(VALUE_NAME) && JSON.at(VALUE_NAME).is_boolean())   \
+													    VALUE = j.at(VALUE_NAME).get<bool>();						    \
+												    else VALUE = 0;														\
 
 #define SERIALIZE_INT(JSON, VALUE, VALUE_NAME) JSON[VALUE_NAME] = VALUE;
 #define DE_SERIALIZE_INT(JSON, VALUE, VALUE_NAME) if (JSON.contains(VALUE_NAME) && JSON.at(VALUE_NAME).is_number_integer()) \
@@ -34,6 +38,10 @@ Quaternion SafeGetQuaternion(const json& j, const std::string& key, const Quater
 
 #define SERIALIZE_TYPE(JSON, CLASS) JSON["type"] = #CLASS;
 #define SERIALIZE_STRING(JSON, VALUE, VALUE_NAME) JSON[VALUE_NAME] = VALUE;
+#define DE_SERIALIZE_STRING(JSON, VALUE, VALUE_NAME) if (JSON.contains(VALUE_NAME)) {                   \
+                                                         VALUE = j.at(VALUE_NAME).get<string>();        \
+                                                      }                                                 \
+
 #define SERIALIZE_WSTRING(JSON, VALUE, VALUE_NAME) JSON[VALUE_NAME] = wstring_to_string(VALUE);
 #define DE_SERIALIZE_WSTRING(JSON, VALUE, VALUE_NAME) if (JSON.contains(VALUE_NAME)) {                              \
                                                          VALUE = string_to_wstring(j.at(VALUE_NAME).get<string>()); \

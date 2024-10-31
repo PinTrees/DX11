@@ -26,6 +26,7 @@ Quaternion Transform::CreateQuaternion(double roll, double pitch, double yaw) //
 Transform::Transform()
 {
 	m_InspectorTitleName = "Transform";
+	m_InspectorIconPath = L"transform.png";
 }
 
 Transform::~Transform()

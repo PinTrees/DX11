@@ -48,7 +48,7 @@
                     "type": "Transform"
                 },
                 {
-                    "aspect": 2.2458629608154297,
+                    "aspect": 2.5174999237060547,
                     "cameraType": 0,
                     "farZ": 1000.0,
                     "fovY": 1.0471975803375244,
@@ -241,11 +241,16 @@
                 {
                     "angularDamping": 0.9900000095367432,
                     "isKinematic": false,
+                    "m_AutomaticTensor": false,
                     "m_LinearDamping": 0.9900000095367432,
+                    "m_UseGravity": false,
                     "mass": 1.0,
                     "type": "RigidBody"
                 },
                 {
+                    "m_AnimationClipIndex": 0,
+                    "m_AnimationFilePath": "Assets\\Art\\Character\\Animations\\GreatSword_Idle_Root.FBX",
+                    "m_PlayAutomatically": true,
                     "type": "AnimationPlayer"
                 }
             ],

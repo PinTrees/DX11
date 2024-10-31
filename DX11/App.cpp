@@ -114,6 +114,9 @@ int32 App::Run()
 	EditorGUIManager::GetI()->Destroy(); 
 	EditorGUIManager::GetI()->Dispose(); 
 
+	ResourceManager::GetI()->Destroy();
+	ResourceManager::GetI()->Dispose(); 
+
 	return (int)msg.wParam;
 }
 

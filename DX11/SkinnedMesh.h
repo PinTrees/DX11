@@ -55,9 +55,9 @@ public:
 	static MeshFile* LoadFromMetaFile(string path); 
 	static MeshFile* LoadFromFbxFile(string path); 
 
-	vector<SkinnedMesh*>		SkinnedMeshs;
-	vector<shared_ptr<Mesh>>	Meshs; 
-	SkinnedData					SkinnedData;
+	vector<shared_ptr<SkinnedMesh>>	SkinnedMeshs;
+	vector<shared_ptr<Mesh>>		Meshs; 
+	SkinnedData						SkinnedData;
 
 	wstring				Path;  
 	string				FullPath;

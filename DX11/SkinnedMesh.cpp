@@ -313,7 +313,8 @@ void MeshFile::load_mesh(ifstream& inStream)
 	SkinnedMeshs.resize(skinnedMeshCount);
 	for (size_t i = 0; i < skinnedMeshCount; ++i)
 	{
-		SkinnedMeshs[i] = new SkinnedMesh; 
+		shared_ptr<SkinnedMesh> skinnedMesh = make_shared<SkinnedMesh>();
+		SkinnedMeshs[i] = skinnedMesh;
 		SkinnedMeshs[i]->from_byte(inStream);  // 각 SkinnedMesh 객체의 from_byte 호출
 	}
 }

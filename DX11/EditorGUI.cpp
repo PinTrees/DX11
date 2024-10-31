@@ -132,7 +132,6 @@ bool EditorGUI::Button(string text, Vec2 size, Color color)
     ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 2.0f);         // 라운드 값 2 적용
     ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, 1.4f);       // 테두리 두께 1 적용
 
-    // ImGui 버튼 생성
     bool clicked = ImGui::Button(text.c_str(), ImVec2(size.x, size.y));
 
     ImGui::PopStyleVar(4);   // 라운드와 테두리 두께 스타일 복원
@@ -310,39 +309,48 @@ bool EditorGUI::FloatField(string title, float& v, ImVec2 size)
 {
     bool isDirty = false;
 
-    if (ImGui::BeginChild((title + "Float Field Group").c_str(), ImVec2(size.x, FIELD_DEFAULT_HEIGHT + 2), true,
+    EditorGUI::ContainerStylePush();
+
+    if (ImGui::BeginChild((title + "Float Field Group").c_str(), ImVec2(size.x, FIELD_DEFAULT_HEIGHT), true,
         ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse))
     {
         EditorGUI::Label(title);
         ImGui::SameLine();
-
+        ImGui::Dummy(ImVec2(6, 0));
+        ImGui::SameLine();
+        
         EditorGUI::DropFieldStylePush();
-        if (ImGui::BeginChild((title + "Float Field").c_str(), ImVec2(ImGui::GetContentRegionAvail().x, FIELD_DEFAULT_HEIGHT), true,
+
+        string float_dropfield_id = title + "Float Container";
+        float float_dropfield_width = ImGui::GetContentRegionAvail().x;
+        if (ImGui::BeginChild(float_dropfield_id.c_str(), ImVec2(float_dropfield_width, FIELD_DEFAULT_HEIGHT), true, 
             ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse))
         {
-            string id = "##" + title;
+            string float_id = "##" + title + "Float";
             ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
 
             ImGui::PushStyleColor(ImGuiCol_FrameBg, ImVec4(0, 0, 0, 0));            // 드래그 필드 배경을 투명하게 설정
             ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, ImVec4(0, 0, 0, 0));     // 호버 시 배경색도 투명하게 설정
             ImGui::PushStyleColor(ImGuiCol_FrameBgActive, ImVec4(0, 0, 0, 0));      // 클릭 시 배경색도 투명하게 설정
+            ImGui::PushStyleColor(ImGuiCol_Text, EDITOR_GUI_COLOR_LABEL_A);       
 
-            if (ImGui::DragFloat(id.c_str(), &v, 0.1f, -FLT_MAX, FLT_MAX, "%.3f"))
-            {
-                isDirty = true;
-            }
-            ImGui::PopStyleColor(3);
+            ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 4);
+            isDirty = ImGui::DragFloat(float_id.c_str(), &v, 0.1f, -FLT_MAX, FLT_MAX, "%.3f");
+
+            ImGui::PopStyleColor(4);
 
             ImGui::PopItemWidth();
         }
-        ImGui::EndChild();  // Child 끝
+        ImGui::EndChild();  
+
         EditorGUI::DropFieldStylePop();
     }
-    ImGui::EndChild();  // Child 끝
+    ImGui::EndChild(); 
+
+    EditorGUI::ContainerStylePop();
 
     return isDirty;
 }
-
 bool EditorGUI::FloatField(string title, float& v)
 {
     bool isDirty = false;
@@ -352,73 +360,73 @@ bool EditorGUI::FloatField(string title, float& v)
     EditorGUI::Label(title);
     EDITOR_GUI_FIELD_SPACING(fieldWidth - 8);
 
-    EditorGUI::FieldStylePush();
+    EditorGUI::DropFieldStylePush();
 
     string id = title + "FloatField";
-    if (ImGui::BeginChild(id.c_str(), ImVec2(fieldWidth, FIELD_DEFAULT_HEIGHT), true,
+    float fieldWidth_container = fieldWidth;
+    if (ImGui::BeginChild(id.c_str(), ImVec2(fieldWidth_container, FIELD_DEFAULT_HEIGHT), true,
         ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse))
     {
-        EditorGUI::DropFieldStylePush();
-        if (ImGui::BeginChild((title + "Float Field").c_str(), ImVec2(ImGui::GetContentRegionAvail().x, FIELD_DEFAULT_HEIGHT), true,
-            ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse))
+        string field_id = "##" + title; 
+        ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x); 
+
+        ImGui::PushStyleColor(ImGuiCol_FrameBg, ImVec4(0, 0, 0, 0));            // 드래그 필드 배경을 투명하게 설정 
+        ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, ImVec4(0, 0, 0, 0));     // 호버 시 배경색도 투명하게 설정 
+        ImGui::PushStyleColor(ImGuiCol_FrameBgActive, ImVec4(0, 0, 0, 0));      // 클릭 시 배경색도 투명하게 설정 
+
+        if (ImGui::DragFloat(id.c_str(), &v, 0.1f, -FLT_MAX, FLT_MAX, "%.3f"))
         {
-            string field_id = "##" + title;
-            ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
-
-            ImGui::PushStyleColor(ImGuiCol_FrameBg, ImVec4(0, 0, 0, 0));            // 드래그 필드 배경을 투명하게 설정 
-            ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, ImVec4(0, 0, 0, 0));     // 호버 시 배경색도 투명하게 설정 
-            ImGui::PushStyleColor(ImGuiCol_FrameBgActive, ImVec4(0, 0, 0, 0));      // 클릭 시 배경색도 투명하게 설정 
-
-            if (ImGui::DragFloat(id.c_str(), &v, 0.1f, -FLT_MAX, FLT_MAX, "%.3f"))
-            {
-                isDirty = true;
-            }
-            ImGui::PopStyleColor(3);
-            ImGui::PopItemWidth();
+            isDirty = true;
         }
-        ImGui::EndChild();  // Child 끝
-        EditorGUI::DropFieldStylePop();
+
+        ImGui::PopStyleColor(3);
+        ImGui::PopItemWidth();
     }
     ImGui::EndChild();
 
-    EditorGUI::FieldStylePop();
+    EditorGUI::DropFieldStylePop();
 
     return isDirty;
 }
 
 bool EditorGUI::Vector3Field(string title, Vec3& vec3)
 {
+    EditorGUI::FieldStylePush();
+    ImGui::Dummy(ImVec2(0, 2));
+
     bool isDirty = false;
     float fieldWidth = EDITOR_GUI_LARGE_FIELD_WIDTH; 
 
     EDITOR_GUI_FIELD_PADDING;
     EditorGUI::Label(title);
-    EDITOR_GUI_FIELD_SPACING(fieldWidth - 8);
-
-    EditorGUI::FieldStylePush();
+    EDITOR_GUI_FIELD_SPACING(fieldWidth); 
 
     string id = title + "Vector3 Field";
     if (ImGui::BeginChild(id.c_str(), ImVec2(fieldWidth, FIELD_DEFAULT_HEIGHT), true,
         ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse))
     {
-        float inputWidth = (fieldWidth) / 3;
+        float inputWidth = (fieldWidth - 8) / 3;
 
-        if (EditorGUI::FloatField("X", vec3.x, ImVec2(inputWidth, 0)))
+        if (EditorGUI::FloatField("X", vec3.x, ImVec2(inputWidth - 6, 0)))
             isDirty = true;
         ImGui::SameLine();
-        if (EditorGUI::FloatField("Y", vec3.y, ImVec2(inputWidth, 0)))
+        ImGui::Dummy(ImVec2(10, 0));
+        ImGui::SameLine();
+        if (EditorGUI::FloatField("Y", vec3.y, ImVec2(inputWidth - 6, 0)))
             isDirty = true;
         ImGui::SameLine();
-        if (EditorGUI::FloatField("Z", vec3.z, ImVec2(inputWidth, 0)))
+        ImGui::Dummy(ImVec2(10, 0));
+        ImGui::SameLine();
+        if (EditorGUI::FloatField("Z", vec3.z, ImVec2(inputWidth - 6, 0)))
             isDirty = true;
     }
     ImGui::EndChild();
 
+    ImGui::Dummy(ImVec2(0, 2)); 
     EditorGUI::FieldStylePop();
 
     return isDirty;
 }
-
 bool EditorGUI::MaterialField(string title, shared_ptr<UMaterial>& material, wstring& materialPath)
 {
     bool isDirty = false;
@@ -466,7 +474,6 @@ bool EditorGUI::MaterialField(string title, shared_ptr<UMaterial>& material, wst
 
     return isDirty;
 }
-
 bool EditorGUI::MeshField(string title, shared_ptr<Mesh>& mesh, wstring& meshFilePath, int& subsetIndex) 
 {
     bool isDirty = false;
@@ -503,7 +510,8 @@ bool EditorGUI::MeshField(string title, shared_ptr<Mesh>& mesh, wstring& meshFil
 
         if (EditorGUI::Button(ICON_FA_CIRCLE_DOT, Vec2(28, 28))) 
         {
-            MeshSelectEditorDialog::Open(mesh, nullptr, meshFilePath, subsetIndex, MESH_SELECT_DIALOG_TYPE::MESH_STATIC); 
+            shared_ptr<SkinnedMesh> skinned_mesh_dummy;
+            MeshSelectEditorDialog::Open(mesh, skinned_mesh_dummy, meshFilePath, subsetIndex, MESH_SELECT_DIALOG_TYPE::MESH_STATIC);
         }
     }
     ImGui::EndChild();
@@ -550,7 +558,7 @@ bool EditorGUI::SkinnedMeshField(string title, shared_ptr<SkinnedMesh>& mesh, ws
         if (EditorGUI::Button(ICON_FA_CIRCLE_DOT, Vec2(28, 28)))
         {
             shared_ptr<Mesh> mesh_dummy = nullptr; 
-            MeshSelectEditorDialog::Open(mesh_dummy, mesh.get(), meshFilePath, subsetIndex, MESH_SELECT_DIALOG_TYPE::MESH_SKINNED); 
+            MeshSelectEditorDialog::Open(mesh_dummy, mesh, meshFilePath, subsetIndex, MESH_SELECT_DIALOG_TYPE::MESH_SKINNED); 
         }
     }
     ImGui::EndChild();
@@ -606,21 +614,36 @@ bool EditorGUI::AnimationClipField(string title, shared_ptr<AnimationClip>& anim
     return isDirty;
 }
 
+void EditorGUI::ContainerStylePush()
+{
+    ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.f, 0.f, 0.f, 0.f));
+    ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(0.f, 0.f, 0.f, 0.f));
+
+    ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 0.f);
+    ImGui::PushStyleVar(ImGuiStyleVar_ChildBorderSize, 0.f);
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.f);
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0)); 
+}
+void EditorGUI::ContainerStylePop()
+{
+    ImGui::PopStyleVar(4);
+    ImGui::PopStyleColor(2);
+}
+
 void EditorGUI::DropFieldStylePush()
 {
-    // 차일드 창의 배경 색상과 테두리 색상 적용
     ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.15f, 0.15f, 0.15f, 1.0f));
-    ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(0.1f, 0.1f, 0.1f, 1.0f));
+    ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(0.07f, 0.07f, 0.07f, 1.0f));
 
-    // 차일드 창의 라운딩과 내부 패딩 적용
-    ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 6.0f);         // 차일드 창 라운드 
-    ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 4.f);       // 차일드 창 테두리 두께
-    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(4, 0)); // 차일드 창 내부 패딩
+    ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 4.0f);          // 차일드 창 라운드 
+    ImGui::PushStyleVar(ImGuiStyleVar_ChildBorderSize, 1.4f);        // 차일드 창 라운드 
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 4.f);        // 차일드 창 테두리 두께
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(4, 0));  // 차일드 창 내부 패딩
 }
 void EditorGUI::DropFieldStylePop()
 {
     // 적용한 스타일 변수 및 색상 복원
-    ImGui::PopStyleVar(3);
+    ImGui::PopStyleVar(4);
     ImGui::PopStyleColor(2);
 }
 
@@ -631,14 +654,16 @@ void EditorGUI::FieldStylePush()
     ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(0.f, 0.f, 0.f, 0.f));
 
     // 차일드 창의 라운딩과 내부 패딩 적용
-    ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 4.0f);
-    ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 3.f);
-    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(4, 0)); // 차일드 창 내부 패딩
-}
+    ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 0.0f);
+    ImGui::PushStyleVar(ImGuiStyleVar_ChildBorderSize, 0.f);
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.f);
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(4, 0)); 
+    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
 
+}
 void EditorGUI::FieldStylePop()
 {
-    ImGui::PopStyleVar(3);
+    ImGui::PopStyleVar(5);
     ImGui::PopStyleColor(2);
 }
 
@@ -657,7 +682,6 @@ void EditorGUI::ComponentBlockStylePush()
     ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(4, 4));
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(4, 4));
 }
-
 void EditorGUI::ComponentBlockStylePop()
 {
     ImGui::PopStyleVar(7);
@@ -676,7 +700,6 @@ void EditorGUI::EditorWindowStylePush()
     // 창 패딩 설정 (0으로 설정하여 내부 여백 제거)
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
 }
-
 void EditorGUI::EditorWindowStylePop()
 {
     // 스타일 복원

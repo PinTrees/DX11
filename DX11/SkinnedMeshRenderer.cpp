@@ -11,6 +11,7 @@ SkinnedMeshRenderer::SkinnedMeshRenderer()
 	m_MaterialPaths({})
 {
 	m_InspectorTitleName = "SkinnedMeshRenderer";
+	m_InspectorIconPath = L"skinned_mesh_renderer.png";
 }
 
 SkinnedMeshRenderer::~SkinnedMeshRenderer()

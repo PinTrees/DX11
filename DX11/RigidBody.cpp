@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "RigidBody.h"
 #include "Debug.h"
+#include "EditorGUI.h"
 
 RigidBody::RigidBody()
 	: m_Velocity(0.0f, 0.0f, 0.0f),
@@ -14,6 +15,7 @@ RigidBody::RigidBody()
 	m_LinearDamping(0.99f)
 {
 	m_InspectorTitleName = "RigidBody";
+	m_InspectorIconPath = L"rigidbody.png"; 
 }
 
 RigidBody::~RigidBody()
@@ -163,32 +165,42 @@ void RigidBody::OnDrawGizmos()
 
 void RigidBody::OnInspectorGUI()
 {
-	if (ImGui::DragFloat("Mass", &m_Mass))
-	{
+	if (EditorGUI::FloatField("Mass", m_Mass)) {
 		SetMass(m_Mass);
 	}
-	ImGui::DragFloat("Linear Damping", &m_LinearDamping); 
-	ImGui::DragFloat("Angular Damping", &m_AngularDamping);
-	ImGui::Checkbox("Is Kinematic", &m_IsKinematic);
+	EditorGUI::FloatField("Linear Damping", m_LinearDamping);
+	EditorGUI::FloatField("Angular Damping", m_AngularDamping);
+	EditorGUI::BoolField("Automatic Tensor", m_AutomaticTensor);
+	EditorGUI::BoolField("Use Gravity", m_UseGravity);
+	EditorGUI::BoolField("Is Kinematic", m_IsKinematic);
 }	
 
 GENERATE_COMPONENT_FUNC_TOJSON(RigidBody)
 {
 	json j = {};
-	j["type"] = "RigidBody";
-	j["mass"] = m_Mass;
-	j["m_LinearDamping"] = m_LinearDamping;
-	j["angularDamping"] = m_AngularDamping;
-	j["isKinematic"] = m_IsKinematic;
 
-	// Dont save velocity
+	SERIALIZE_TYPE(j, RigidBody);
+
+	SERIALIZE_FLOAT(j, m_Mass, "mass");
+	SERIALIZE_FLOAT(j, m_LinearDamping, "m_LinearDamping");
+	SERIALIZE_FLOAT(j, m_AngularDamping, "angularDamping");
+	SERIALIZE_BOOL(j, m_AutomaticTensor, "m_AutomaticTensor");
+	SERIALIZE_BOOL(j, m_UseGravity, "m_UseGravity");
+	SERIALIZE_BOOL(j, m_IsKinematic, "isKinematic");
+
 	return j;
 }
 
 GENERATE_COMPONENT_FUNC_FROMJSON(RigidBody)
 {
-	SetMass(j.value("mass", 5.0f)); 
-	m_LinearDamping = j.value("m_LinearDamping", 0.05f);
-	m_AngularDamping = j.value("angularDamping", 0.05f);
-	m_IsKinematic = j.value("isKinematic", false);
+	DE_SERIALIZE_FLOAT(j, m_Mass, "mass");  
+
+	DE_SERIALIZE_FLOAT(j, m_LinearDamping, "m_LinearDamping");
+	DE_SERIALIZE_FLOAT(j, m_AngularDamping, "angularDamping");
+	DE_SERIALIZE_FLOAT(j, m_LinearDamping, "m_LinearDamping");
+	DE_SERIALIZE_BOOL(j, m_AutomaticTensor, "m_AutomaticTensor");
+	DE_SERIALIZE_BOOL(j, m_UseGravity, "m_UseGravity");
+	DE_SERIALIZE_BOOL(j, m_IsKinematic, "isKinematic");
+
+	SetMass(m_Mass);
 }

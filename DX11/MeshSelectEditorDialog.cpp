@@ -5,7 +5,7 @@
 
 MeshSelectEditorDialog::MeshSelectEditorDialog(
     shared_ptr<Mesh>& selectMesh, 
-    SkinnedMesh* selectSkinnedMesh, 
+    shared_ptr<SkinnedMesh>& selectSkinnedMesh, 
     wstring&      selectMeshFilePath,
     int& selectIndex,
     MESH_SELECT_DIALOG_TYPE openType) : EditorDialog("Select Mesh")
@@ -24,7 +24,7 @@ MeshSelectEditorDialog::~MeshSelectEditorDialog()
 
 void MeshSelectEditorDialog::Open(
     shared_ptr<Mesh>& selectMesh,
-    SkinnedMesh* selectSkinnedMesh,
+    shared_ptr<SkinnedMesh>& selectSkinnedMesh,
     wstring&      meshFilePath,
     int&         selectSubsetIndex,
     MESH_SELECT_DIALOG_TYPE openType)
@@ -119,23 +119,42 @@ void MeshSelectEditorDialog::OnRender()
                 }
             }
         }
-
-        for (const auto& meshFile : m_MeshFiles)
+        else if (m_OpenMeshType == MESH_SELECT_DIALOG_TYPE::MESH_SKINNED)
         {
-            if (m_SelectSkinnedMesh)
+            ImGui::Dummy(ImVec2(22, 22));
+            EditorGUI::RowSizedBox(8);
+            if (ImGui::Selectable("None", m_SystemSelectMesh == nullptr, NULL, ImVec2(0, 26)))
             {
-                int i = 0;
-                for (auto skinnedMesh : meshFile->SkinnedMeshs)
+                m_SystemSelectMesh = nullptr;
+            }
+
+            for (const auto& meshFile : m_MeshFiles)
+            {
+                for (int i = 0; i < meshFile->SkinnedMeshs.size(); ++i)
                 {
-                    EditorGUI::Image(L"\\ProjectSetting\\icons\\icon_mesh.png", ImVec2(18, 18));
+                    const auto& skinnedMesh = meshFile->SkinnedMeshs[i];
+
+                    string entry_id = skinnedMesh->Name + wstring_to_string(skinnedMesh->Path) + to_string(i); 
+                    ImGui::PushID(entry_id.c_str());
+
+                    EditorGUI::Image(L"\\ProjectSetting\\icons\\icon_mesh.png", ImVec2(22, 22));
                     EditorGUI::RowSizedBox(8);
-                    // 선택 가능한 요소 생성
+
                     if (ImGui::Selectable(("Skinned - " + skinnedMesh->Name).c_str(), m_SystemSelectSkinnedMesh == skinnedMesh))
                     {
                         m_SystemSelectSkinnedMesh = skinnedMesh;
+                        m_SystemSelectMeshFilePath = meshFile->Path;
                         m_SystemSelectMeshIndex = i;
                     }
-                    i++;
+                    if (ImGui::IsMouseDoubleClicked(0))
+                    {
+                        m_SelectSkinnedMesh = m_SystemSelectSkinnedMesh;
+                        m_SelectSubsetIndex = m_SystemSelectMeshIndex;
+                        m_SelectMeshFilePath = m_SystemSelectMeshFilePath;
+                        Close(); 
+                    }
+
+                    ImGui::PopID();
                 }
             }
         }

@@ -17,32 +17,32 @@ private:
 
 	// Runtime Value
 	shared_ptr<Mesh>&			m_SelectMesh;  
-	SkinnedMesh*				m_SelectSkinnedMesh; 
+	shared_ptr<SkinnedMesh>&	m_SelectSkinnedMesh;
 	wstring&					m_SelectMeshFilePath;
 	int&						m_SelectSubsetIndex; 
 	MESH_SELECT_DIALOG_TYPE		m_OpenMeshType;
 
 	// System Value
-	shared_ptr<Mesh>		m_SystemSelectMesh;
-	SkinnedMesh*			m_SystemSelectSkinnedMesh;
-	wstring					m_SystemSelectMeshFilePath;
-	int						m_SystemSelectMeshIndex;
+	shared_ptr<Mesh>			m_SystemSelectMesh;
+	shared_ptr<SkinnedMesh>		m_SystemSelectSkinnedMesh;
+	wstring						m_SystemSelectMeshFilePath;
+	int							m_SystemSelectMeshIndex;
 
 public:
 	MeshSelectEditorDialog(
-		shared_ptr<Mesh>&	selectMesh,
-		SkinnedMesh*		selectSkinnedMesh,
-		wstring&			selectMeshFilePath,
-		int&				selectSubsetIndex,
-		MESH_SELECT_DIALOG_TYPE openType);
+		shared_ptr<Mesh>&			selectMesh,
+		shared_ptr<SkinnedMesh>&	selectSkinnedMesh,
+		wstring&					selectMeshFilePath,
+		int&						selectSubsetIndex,
+		MESH_SELECT_DIALOG_TYPE		openType);
 	~MeshSelectEditorDialog();
 
 	static void Open(
-		shared_ptr<Mesh>&	selectMesh, 
-		SkinnedMesh*		selectSkinnedMesh,  
-		wstring&			meshFilePath, 
-		int&				meshIndex, 
-		MESH_SELECT_DIALOG_TYPE openType);
+		shared_ptr<Mesh>&			selectMesh, 
+		shared_ptr<SkinnedMesh>&	selectSkinnedMesh,
+		wstring&					meshFilePath, 
+		int&						meshIndex, 
+		MESH_SELECT_DIALOG_TYPE		openType);
 
 	virtual void Show() override;
 	virtual void Close() override;

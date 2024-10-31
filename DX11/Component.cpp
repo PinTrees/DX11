@@ -20,9 +20,12 @@ void Component::RenderInspectorGUI()
 	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
 
 	EditorGUI::ComponentDivider();
-	bool isOpened = EditorGUI::ComponentHeader(m_InspectorTitleName, L"ProjectSetting\\icons\\icon_camera.png", m_InspectorOpened);
-	 
-	// 드래그 앤 드롭 소스 (드래그할 컴포넌트)
+	bool isOpened = false;
+	if(m_InspectorIconPath != L"")
+		isOpened = EditorGUI::ComponentHeader(m_InspectorTitleName, L"ProjectSetting\\icons\\component\\" + m_InspectorIconPath, m_InspectorOpened);
+	else isOpened = EditorGUI::ComponentHeader(m_InspectorTitleName, L"ProjectSetting\\icons\\icon_camera.png", m_InspectorOpened);
+
+	// Drag this component
 	if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
 	{
 		// 컴포넌트의 주소를 페이로드에 넣음
