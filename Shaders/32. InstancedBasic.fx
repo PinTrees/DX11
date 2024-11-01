@@ -21,11 +21,17 @@ struct ShaderSetting
 cbuffer cbPerFrame
 {
     DirectionalLight gDirLights[LIGHT_SIZE];
-    PointLight gPointLight[LIGHT_SIZE];
-    SpotLight gSpotLight[LIGHT_SIZE];
+    PointLight gPointLights[LIGHT_SIZE];
+    SpotLight gSpotLights[LIGHT_SIZE];
     int gDirLightCount;
     int gPointLightCount;
     int gSpotLightCount;
+    
+    // Instancing -> Worldx, LightV * LightP * toTexSpace, Not Instancing -> World * LightV * LightP * toTexSpace
+    float4x4 gDirShadowTransforms[LIGHT_SIZE];
+    float4x4 gSpotShadowTransforms[LIGHT_SIZE];
+    float4x4 gPointShadowTransforms[LIGHT_MAX_SIZE];
+    
     float3 gEyePosW;
 
     float gFogStart;
@@ -48,16 +54,9 @@ cbuffer cbPerObject
     
     float4x4 gTexTransform;
     
-    // Instancing -> Worldx, LightV * LightP * toTexSpace, Not Instancing -> World * LightV * LightP * toTexSpace
-    float4x4 gDirShadowTransforms[LIGHT_SIZE];
-    float4x4 gSpotShadowTransforms[LIGHT_SIZE];
-    float4x4 gPointShadowTransforms[LIGHT_MAX_SIZE];
-    
     Material gMaterial;
     ShaderSetting gShaderSetting;
 }; 
-
-// 루프(for) 상수로만 돌려야함, Light별 shadowTransform, shadowMap 만들어야함, 혹은 3배로 늘리고 effects로 넘길 때 0~Light_MAX_SIZE and LIGHT_MAX_SIZE~LIGHT_MAX_SIZE*2
 
 cbuffer cbSkinned
 {
@@ -129,7 +128,7 @@ struct SkinnedVertexIn
 struct VertexOut
 {
     float4 PosH : SV_POSITION;
-    float3 PosW : POSITION;
+    float4 PosW : POSITION;
     float3 NormalW : NORMAL;
     float4 TangentW : TANGENT;
     float2 Tex : TEXCOORD0;
@@ -142,7 +141,7 @@ VertexOut VS(VertexIn vin)
     VertexOut vout;
 	
 	// Transform to world space space.
-    vout.PosW = mul(float4(vin.PosL, 1.0f), gWorld).xyz;
+    vout.PosW = mul(float4(vin.PosL, 1.0f), gWorld);
     vout.NormalW = mul(vin.NormalL, (float3x3) gWorldInvTranspose);
     vout.TangentW = mul(vin.TangentL, gWorld);
     
@@ -192,7 +191,7 @@ VertexOut VS_Instancing(VertexIn_Instancing vin)
     vout.PosH = mul(float4(vin.PosL, 1.0f), vin.World);
     
 	// Transform to world space space.
-    vout.PosW = vout.PosH.xyz; // World
+    vout.PosW = vout.PosH; // World
     
     vout.NormalW = mul(vin.NormalL, (float3x3) gWorldInvTranspose);
     vout.TangentW = mul(vin.TangentL, vin.World);
@@ -239,7 +238,7 @@ VertexOut VS_Skinned(SkinnedVertexIn vin)
     }
  
 	// Transform to world space space.
-    vout.PosW = mul(float4(posL, 1.0f), gWorld).xyz;
+    vout.PosW = mul(float4(posL, 1.0f), gWorld);
     vout.NormalW = mul(normalL, (float3x3) gWorldInvTranspose);
     vout.TangentW = float4(mul(tangentL, (float3x3) gWorld), vin.TangentL.w);
 
@@ -264,7 +263,7 @@ float4 PS(VertexOut pin) : SV_Target
     pin.NormalW = normalize(pin.NormalW);
 
 	// The toEye vector is used in lighting.
-    float3 toEye = gEyePosW - pin.PosW;
+    float3 toEye = gEyePosW - pin.PosW.xyz;
 
 	// Cache the distance to the eye from this surface point.
     float distToEye = length(toEye);
@@ -329,13 +328,13 @@ float4 PS(VertexOut pin) : SV_Target
             [unloll]
             for (int i = 0; i < LIGHT_SIZE; i++)
             {
-                dirShadow[i] = CalcShadowFactor(samShadow, gDirShadowMaps[i], mul(float4(pin.PosW,1.0f), gDirShadowTransforms[i]));
+                dirShadow[i] = CalcShadowFactor(samShadow, gDirShadowMaps[i], mul(pin.PosW, gDirShadowTransforms[i]));
             }
             
             [unloll]
             for (int j = 0; j < LIGHT_SIZE; j++)
             {
-                spotShadow[j] = CalcShadowFactor(samShadow, gSpotShadowMaps[j], mul(float4(pin.PosW, 1.0f), gSpotShadowTransforms[j]));
+                spotShadow[j] = CalcShadowFactor(samShadow, gSpotShadowMaps[j], mul(pin.PosW, gSpotShadowTransforms[j]));
             }
             
             [unloll]
@@ -345,7 +344,7 @@ float4 PS(VertexOut pin) : SV_Target
                 [unloll]
                 for (int s = 0; s < 6; s++)
                 {
-                    pointShadow[l] += CalcShadowFactor(samShadow, gPointShadowMaps[startIndex + s], mul(float4(pin.PosW, 1.0f), gPointShadowTransforms[startIndex + s]));
+                    pointShadow[l] += CalcShadowFactor(samShadow, gPointShadowMaps[startIndex + s], mul(pin.PosW, gPointShadowTransforms[startIndex + s]));
                 }
     
                 pointShadow[l] /= 6.0f; // 평균 내기
@@ -376,39 +375,39 @@ float4 PS(VertexOut pin) : SV_Target
         }
 
         [unloll]
-        for (int i = 0; i < LIGHT_SIZE; ++i)
+        for (int j = 0; j < LIGHT_SIZE; ++j)
         {
-            ComputeSpotLight(gMaterial, gSpotLight[i], pin.PosW, bumpedNormalW, toEye,
+            ComputeSpotLight(gMaterial, gSpotLights[j], pin.PosW.xyz, bumpedNormalW, toEye,
 				A, D, S);
 
             ambient += ambientAccess * A;
-            diffuse += spotShadow[i] * D;
-            spec += spotShadow[i] * S;
+            diffuse += spotShadow[j] * D;
+            spec += spotShadow[j] * S;
         }
         
         [unloll]
-        for (int i = 0; i < LIGHT_SIZE; ++i)
+        for (int l = 0; l < LIGHT_SIZE; ++l)
         {
-            ComputePointLight(gMaterial, gPointLight[i], pin.PosW, bumpedNormalW, toEye,
+            ComputePointLight(gMaterial, gPointLights[l], pin.PosW.xyz, bumpedNormalW, toEye,
 				A, D, S);
 
             ambient += ambientAccess * A;
-            diffuse += pointShadow[i] * D;
-            spec += pointShadow[i] * S;
+            diffuse += pointShadow[l] * D;
+            spec += pointShadow[l] * S;
         }
 		   
         litColor = texColor * (ambient + diffuse) + spec;
-		  
-        if (gShaderSetting.gReflectionEnabled)
-        {
-            float3 incident = -toEye;
-            float3 reflectionVector = reflect(incident, bumpedNormalW);
-            float4 reflectionColor = gCubeMap.Sample(samLinear, reflectionVector);
-
-            litColor += gMaterial.Reflect * reflectionColor;
-        }
     }
- 
+    
+    if (gShaderSetting.gReflectionEnabled)
+    {
+        float3 incident = -toEye;
+        float3 reflectionVector = reflect(incident, bumpedNormalW);
+        float4 reflectionColor = gCubeMap.Sample(samLinear, reflectionVector);
+
+        litColor += gMaterial.Reflect * reflectionColor;
+    }
+    
 	//
 	// Fogging
 	//

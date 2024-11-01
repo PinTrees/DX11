@@ -269,10 +269,12 @@ public:
 	void SetDirShadowTransforms(const XMMATRIX* M, int cnt) { DirShadowTransforms->SetMatrixArray(reinterpret_cast<const float*>(M), 0, cnt); }
 	void SetSpotShadowTransforms(const XMMATRIX* M, int cnt) { SpotShadowTransforms->SetMatrixArray(reinterpret_cast<const float*>(M), 0, cnt); }
 	void SetPointShadowTransforms(const XMMATRIX* M, int cnt) { PointShadowTransforms->SetMatrixArray(reinterpret_cast<const float*>(M), 0, cnt); }
+
 	void SetEyePosW(const XMFLOAT3& v) { EyePosW->SetRawValue(&v, 0, sizeof(XMFLOAT3)); }
 	void SetFogColor(const FXMVECTOR v) { FogColor->SetFloatVector(reinterpret_cast<const float*>(&v)); }
 	void SetFogStart(float f) { FogStart->SetFloat(f); }
 	void SetFogRange(float f) { FogRange->SetFloat(f); }
+
 	void SetDirLights(const DirectionalLight* lights, int cnt)
 	{ 
 		DirLights->SetRawValue(lights, 0, cnt * sizeof(DirectionalLight));
@@ -288,6 +290,7 @@ public:
 		SpotLights->SetRawValue(lights, 0, cnt * sizeof(SpotLight));
 		SpotLightCount->SetInt(cnt);
 	}
+
 	void SetMaterial(const Material& mat) { Mat->SetRawValue(&mat, 0, sizeof(Material)); }
 	void SetShaderSetting(const ShaderSetting& setting) { Setting->SetRawValue(&setting, 0, sizeof(ShaderSetting)); }
 	
@@ -296,6 +299,7 @@ public:
 	void SetDirShadowMaps(ID3D11ShaderResourceView** tex, int cnt) { DirShadowMaps->SetResourceArray(tex, 0, cnt); }
 	void SetSpotShadowMaps(ID3D11ShaderResourceView** tex, int cnt) { SpotShadowMaps->SetResourceArray(tex, 0, cnt); }
 	void SetPointShadowMaps(ID3D11ShaderResourceView** tex, int cnt) { PointShadowMaps->SetResourceArray(tex, 0, cnt); }
+
 	void SetNormalMap(ID3D11ShaderResourceView* tex) { NormalMap->SetResource(tex); }
 	void SetSsaoMap(ID3D11ShaderResourceView* tex) { SsaoMap->SetResource(tex); }
 	void SetCubeMap(ID3D11ShaderResourceView* tex) { CubeMap->SetResource(tex); }
@@ -319,16 +323,19 @@ public:
 	ComPtr<ID3DX11EffectMatrixVariable> DirShadowTransforms;
 	ComPtr<ID3DX11EffectMatrixVariable> SpotShadowTransforms;
 	ComPtr<ID3DX11EffectMatrixVariable> PointShadowTransforms;
+
 	ComPtr<ID3DX11EffectVectorVariable> EyePosW;
 	ComPtr<ID3DX11EffectVectorVariable> FogColor;
 	ComPtr<ID3DX11EffectScalarVariable> FogStart;
 	ComPtr<ID3DX11EffectScalarVariable> FogRange;
+
 	ComPtr<ID3DX11EffectVariable> DirLights;
 	ComPtr<ID3DX11EffectVariable> PointLights;
 	ComPtr<ID3DX11EffectVariable> SpotLights;
 	ComPtr<ID3DX11EffectScalarVariable> DirLightCount;
 	ComPtr<ID3DX11EffectScalarVariable> PointLightCount;
 	ComPtr<ID3DX11EffectScalarVariable> SpotLightCount;
+
 	ComPtr<ID3DX11EffectVariable> Mat;
 	ComPtr<ID3DX11EffectVariable> Setting;
 
@@ -337,6 +344,7 @@ public:
 	ComPtr<ID3DX11EffectShaderResourceVariable> DirShadowMaps;
 	ComPtr<ID3DX11EffectShaderResourceVariable> SpotShadowMaps;
 	ComPtr<ID3DX11EffectShaderResourceVariable> PointShadowMaps;
+
 	ComPtr<ID3DX11EffectShaderResourceVariable> NormalMap;
 	ComPtr<ID3DX11EffectShaderResourceVariable> SsaoMap;
 	ComPtr<ID3DX11EffectShaderResourceVariable> CubeMap;

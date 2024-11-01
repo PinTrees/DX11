@@ -53,9 +53,9 @@ Vec3 Transform::ToEulerRadians(Quaternion q)
 	radians.x = std::atan2(sinr_cosp, cosr_cosp);
 
 	// pitch (y-axis rotation)
-	double sinp = std::sqrt(1 + 2 * (q.w * q.y - q.x * q.z));
-	double cosp = std::sqrt(1 - 2 * (q.w * q.y - q.x * q.z));
-	radians.y = 2 * std::atan2(sinp, cosp) - PI / 2;
+	double sinp = 2 * (q.w * q.y + q.x * q.z);
+	double cosp = 1 - 2 * (q.y * q.y + q.z * q.z);
+	radians.y = std::atan2(sinp, cosp);
 
 	// yaw (z-axis rotation)
 	double siny_cosp = 2 * (q.w * q.z + q.x * q.y);

@@ -238,12 +238,14 @@ InstancedBasicEffect::InstancedBasicEffect(ComPtr<ID3D11Device> device, const st
 	FogColor = _fx->GetVariableByName("gFogColor")->AsVector();
 	FogStart = _fx->GetVariableByName("gFogStart")->AsScalar();
 	FogRange = _fx->GetVariableByName("gFogRange")->AsScalar();
+
 	DirLights = _fx->GetVariableByName("gDirLights");
 	PointLights = _fx->GetVariableByName("gPointLights");
 	SpotLights = _fx->GetVariableByName("gSpotLights");
 	DirLightCount = _fx->GetVariableByName("gDirLightCount")->AsScalar();
 	PointLightCount = _fx->GetVariableByName("gPointLightCount")->AsScalar();
 	SpotLightCount = _fx->GetVariableByName("gSpotLightCount")->AsScalar();
+
 	Mat = _fx->GetVariableByName("gMaterial");
 	Setting = _fx->GetVariableByName("gShaderSetting");
 	DiffuseMap = _fx->GetVariableByName("gDiffuseMap")->AsShaderResource();
@@ -251,6 +253,7 @@ InstancedBasicEffect::InstancedBasicEffect(ComPtr<ID3D11Device> device, const st
 	DirShadowMaps = _fx->GetVariableByName("gDirShadowMaps")->AsShaderResource();
 	SpotShadowMaps = _fx->GetVariableByName("gSpotShadowMaps")->AsShaderResource();
 	PointShadowMaps = _fx->GetVariableByName("gPointShadowMaps")->AsShaderResource();
+	
 	NormalMap = _fx->GetVariableByName("gNormalMap")->AsShaderResource();
 	SsaoMap = _fx->GetVariableByName("gSsaoMap")->AsShaderResource();
 	CubeMap = _fx->GetVariableByName("gCubeMap")->AsShaderResource();

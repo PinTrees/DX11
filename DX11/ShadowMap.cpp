@@ -17,6 +17,7 @@ ShadowMap::ShadowMap(ComPtr<ID3D11Device> device, uint32 width, uint32 height)
 		m_DepthMapDSV[i].resize(LIGHT_MAX_SIZE);
 		m_DepthMapSRV[i].resize(LIGHT_MAX_SIZE);
 	}
+
 	// Use typeless format because the DSV is going to interpret
 	// the bits as DXGI_FORMAT_D24_UNORM_S8_UINT, whereas the SRV is going to interpret
 	// the bits as DXGI_FORMAT_R24_UNORM_X8_TYPELESS.

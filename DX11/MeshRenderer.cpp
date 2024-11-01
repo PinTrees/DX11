@@ -308,17 +308,17 @@ void MeshRenderer::RenderShadowNormalInstancing(shared_ptr<class InstancingBuffe
 
 		world = transform->GetWorldMatrix();
 		worldInvTranspose = MathHelper::InverseTranspose(world);
-		worldView = world * RenderManager::GetI()->EditorCameraViewMatrix;
-		worldInvTransposeView = worldInvTranspose * RenderManager::GetI()->EditorCameraViewMatrix;
-		worldViewProj = world * RenderManager::GetI()->EditorCameraViewProjectionMatrix;
+		worldView = world * RenderManager::GetI()->CameraViewMatrix;
+		worldInvTransposeView = worldInvTranspose * RenderManager::GetI()->CameraViewMatrix;
+		worldViewProj = world * RenderManager::GetI()->CameraViewProjectionMatrix;
 
 		Effects::SsaoNormalDepthFX->SetWorldView(worldView);
 		Effects::SsaoNormalDepthFX->SetWorldInvTransposeView(worldInvTransposeView);
 		Effects::SsaoNormalDepthFX->SetWorldViewProj(worldViewProj);
 		Effects::SsaoNormalDepthFX->SetTexTransform(XMMatrixScaling(1.0f, 1.0f, 1.0f));
 
-		View = RenderManager::GetI()->EditorCameraViewMatrix;
-		Proj = RenderManager::GetI()->EditorCameraProjectionMatrix;
+		View = RenderManager::GetI()->CameraViewMatrix;
+		Proj = RenderManager::GetI()->CameraProjectionMatrix;
 
 		Effects::SsaoNormalDepthFX->SetView(View);
 		Effects::SsaoNormalDepthFX->SetProj(Proj);

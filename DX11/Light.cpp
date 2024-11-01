@@ -129,26 +129,7 @@ void Light::LastUpdate()
 		break;
 	case LightType::Point:
 		// 전방향이므로 6개의 매트릭스 필요, proj는 하나만이여도 상관없(범위)
-		// dir, up 값 6개
-		/*
-		D3DXVECTOR3 target[6] = {
-		{ lightPosition.x, lightPosition.y, lightPosition.z + 1.0f }, // +Z
-		{ lightPosition.x, lightPosition.y, lightPosition.z - 1.0f }, // -Z
-		{ lightPosition.x + 1.0f, lightPosition.y, lightPosition.z }, // +X
-		{ lightPosition.x - 1.0f, lightPosition.y, lightPosition.z }, // -X
-		{ lightPosition.x, lightPosition.y + 1.0f, lightPosition.z }, // +Y
-		{ lightPosition.x, lightPosition.y - 1.0f, lightPosition.z }  // -Y
-		};
 
-		D3DXVECTOR3 up[6] = {
-			{ 0, 1, 0 }, // +Z
-			{ 0, 1, 0 }, // -Z
-			{ 0, 1, 0 }, // +X
-			{ 0, 1, 0 }, // -X
-			{ 0, 0, 1 }, // +Y
-			{ 0, 0, -1 } // -Y
-		};
-		*/
 		backwardDir = m_pGameObject->GetTransform()->GetBackward();
 		leftDir = m_pGameObject->GetTransform()->GetLeft();
 		rightDir = m_pGameObject->GetTransform()->GetRight();
@@ -182,6 +163,8 @@ void Light::LastUpdate()
 	default:
 		break;
 	}
+
+	ProjUpdate();
 }
 
 void Light::Render()
@@ -281,7 +264,8 @@ void Light::OnInspectorGUI()
 		{
 			ProjectionChanged = true;
 		}
-
+		ImGui::Text("Att");
+		ImGui::DragFloat3("##Att", reinterpret_cast<float*>(&m_pointDesc.Att), 0.1f);
 		break;
 	case LightType::Spot:
 		ImGui::Text("Ambient");
@@ -300,6 +284,8 @@ void Light::OnInspectorGUI()
 		{
 			ProjectionChanged = true;
 		}
+		ImGui::Text("Att");
+		ImGui::DragFloat3("##Att", reinterpret_cast<float*>(&m_spotDesc.Att), 0.1f);
 		break;
 	default:
 		break;

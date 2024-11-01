@@ -259,6 +259,24 @@ void MeshViewDemo::OnSceneRender(ID3D11RenderTargetView* renderTargetView, Camer
 		}
 	}
 
+	Effects::InstancedBasicFX->SetEyePosW(camera->GetPosition());
+	Effects::InstancedBasicFX->SetCubeMap(_sky->CubeMapSRV().Get());
+
+	Effects::InstancedBasicFX->SetDirLights(dirLights.data(), dirLights.size());
+	Effects::InstancedBasicFX->SetPointLights(pointLights.data(), pointLights.size());
+	Effects::InstancedBasicFX->SetSpotLights(spotLights.data(), spotLights.size());
+
+	Effects::InstancedBasicFX->SetDirShadowMaps(shadowMap->DepthMapSRVArray(LightType::Directional).data(), shadowMap->DepthMapSRVArray(LightType::Directional).size());
+	Effects::InstancedBasicFX->SetSpotShadowMaps(shadowMap->DepthMapSRVArray(LightType::Spot).data(), shadowMap->DepthMapSRVArray(LightType::Spot).size());
+	Effects::InstancedBasicFX->SetPointShadowMaps(shadowMap->DepthMapSRVArray(LightType::Point).data(), shadowMap->DepthMapSRVArray(LightType::Point).size());
+
+	auto& dirShadowTransforms = RenderManager::GetI()->ShadowTransformArray[(uint32)LightType::Directional];
+	auto& spotShadowTransforms = RenderManager::GetI()->ShadowTransformArray[(uint32)LightType::Spot];
+	auto& pointShadowTransforms = RenderManager::GetI()->ShadowTransformArray[(uint32)LightType::Point];
+	Effects::InstancedBasicFX->SetDirShadowTransforms(dirShadowTransforms.data(), dirShadowTransforms.size());
+	Effects::InstancedBasicFX->SetSpotShadowTransforms(spotShadowTransforms.data(), spotShadowTransforms.size());
+	Effects::InstancedBasicFX->SetPointShadowTransforms(pointShadowTransforms.data(), pointShadowTransforms.size());
+
 	// PostProcessing - SSAO
 	auto ssao = PostProcessingManager::GetI()->GetSSAO();
 	ssao->SetNormalDepthRenderTarget(_depthStencilView.Get());
@@ -283,26 +301,6 @@ void MeshViewDemo::OnSceneRender(ID3D11RenderTargetView* renderTargetView, Camer
 
 	float blendFactor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
 
-	if (dirLights.size() > 0) Effects::InstancedBasicFX->SetDirLights(dirLights.data(), dirLights.size());
-	if (pointLights.size() > 0) Effects::InstancedBasicFX->SetPointLights(pointLights.data(), pointLights.size());
-	if (spotLights.size() > 0) Effects::InstancedBasicFX->SetSpotLights(spotLights.data(), spotLights.size());
-
-	auto& dirShadowTransforms = RenderManager::GetI()->ShadowTransformArray[(uint32)LightType::Directional];
-	auto& spotShadowTransforms = RenderManager::GetI()->ShadowTransformArray[(uint32)LightType::Spot];
-	auto& pointShadowTransforms = RenderManager::GetI()->ShadowTransformArray[(uint32)LightType::Point];
-
-	Effects::InstancedBasicFX->SetEyePosW(camera->GetPosition());
-	Effects::InstancedBasicFX->SetCubeMap(_sky->CubeMapSRV().Get());
-	//Effects::InstancedBasicFX->SetShadowMap(shadowMap->DepthMapSRV().Get());
-	Effects::InstancedBasicFX->SetDirShadowMaps(shadowMap->DepthMapSRVArray(LightType::Directional).data(), shadowMap->DepthMapSRVArray(LightType::Directional).size());
-	Effects::InstancedBasicFX->SetSpotShadowMaps(shadowMap->DepthMapSRVArray(LightType::Spot).data(), shadowMap->DepthMapSRVArray(LightType::Spot).size());
-	Effects::InstancedBasicFX->SetPointShadowMaps(shadowMap->DepthMapSRVArray(LightType::Point).data(), shadowMap->DepthMapSRVArray(LightType::Point).size());
-
-	Effects::InstancedBasicFX->SetDirShadowTransforms(dirShadowTransforms.data(), dirShadowTransforms.size());
-	Effects::InstancedBasicFX->SetSpotShadowTransforms(spotShadowTransforms.data(), spotShadowTransforms.size());
-	Effects::InstancedBasicFX->SetPointShadowTransforms(pointShadowTransforms.data(), pointShadowTransforms.size());
-
-	//Effects::InstancedBasicFX->SetShadowMap(shadowMap->DepthMapSRV().Get());
 	Effects::InstancedBasicFX->SetSsaoMap(ssao->AmbientSRV().Get());
 
 	uint32 stride = sizeof(Vertex::PosNormalTexTan);
@@ -329,13 +327,11 @@ void MeshViewDemo::_Editor_OnSceneRender(ID3D11RenderTargetView* renderTargetVie
 	vector<DirectionalLight> dirLights = LightManager::GetI()->GetEditorDirLights();
 	vector<PointLight> pointLights = LightManager::GetI()->GetEditorPointLights();
 	vector<SpotLight> spotLights = LightManager::GetI()->GetEditorSpotLights();
-	//BuildShadowTransform();
 
 	RenderManager::GetI()->EditorCameraViewMatrix = camera->View();
 	RenderManager::GetI()->EditorCameraProjectionMatrix = camera->Proj();
 	RenderManager::GetI()->EditorCameraViewProjectionMatrix = XMMatrixMultiply(camera->View(), camera->Proj());
 
-	// 와이어프레임 제어처럼 전체 그림자맵 제어도 가능하게
 	auto shadowMap = RenderManager::GetI()->EditorShadowMap;
 	auto viewport = RenderManager::GetI()->EditorViewport;
 	Effects::BuildShadowMapFX->SetEyePosW(camera->GetPosition());
@@ -422,6 +418,25 @@ void MeshViewDemo::_Editor_OnSceneRender(ID3D11RenderTargetView* renderTargetVie
 		}
 	}
 	
+	Effects::InstancedBasicFX->SetEyePosW(camera->GetPosition());
+	Effects::InstancedBasicFX->SetCubeMap(_sky->CubeMapSRV().Get());
+
+	// lights
+	Effects::InstancedBasicFX->SetDirLights(dirLights.data(), dirLights.size());
+	Effects::InstancedBasicFX->SetSpotLights(spotLights.data(), spotLights.size());
+	Effects::InstancedBasicFX->SetPointLights(pointLights.data(), pointLights.size());
+
+	Effects::InstancedBasicFX->SetDirShadowMaps(shadowMap->DepthMapSRVArray(LightType::Directional).data(), shadowMap->DepthMapSRVArray(LightType::Directional).size());
+	Effects::InstancedBasicFX->SetSpotShadowMaps(shadowMap->DepthMapSRVArray(LightType::Spot).data(), shadowMap->DepthMapSRVArray(LightType::Spot).size());
+	Effects::InstancedBasicFX->SetPointShadowMaps(shadowMap->DepthMapSRVArray(LightType::Point).data(), shadowMap->DepthMapSRVArray(LightType::Point).size());
+
+	auto& dirShadowTransforms = RenderManager::GetI()->EditorShadowTransformArray[(uint32)LightType::Directional];
+	auto& spotShadowTransforms = RenderManager::GetI()->EditorShadowTransformArray[(uint32)LightType::Spot];
+	auto& pointShadowTransforms = RenderManager::GetI()->EditorShadowTransformArray[(uint32)LightType::Point];
+	Effects::InstancedBasicFX->SetDirShadowTransforms(dirShadowTransforms.data(), dirShadowTransforms.size());
+	Effects::InstancedBasicFX->SetSpotShadowTransforms(spotShadowTransforms.data(), spotShadowTransforms.size());
+	Effects::InstancedBasicFX->SetPointShadowTransforms(pointShadowTransforms.data(), pointShadowTransforms.size());
+
 	// PostProcessing - SSAO
 	auto ssao = PostProcessingManager::GetI()->_EditorGetSSAO();
 	ssao->SetNormalDepthRenderTarget(_depthStencilView.Get());
@@ -446,26 +461,6 @@ void MeshViewDemo::_Editor_OnSceneRender(ID3D11RenderTargetView* renderTargetVie
 
 	float blendFactor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
 
-	if (dirLights.size() > 0) Effects::InstancedBasicFX->SetDirLights(dirLights.data(), dirLights.size());
-	if (pointLights.size() > 0) Effects::InstancedBasicFX->SetPointLights(pointLights.data(), pointLights.size());
-	if (spotLights.size() > 0) Effects::InstancedBasicFX->SetSpotLights(spotLights.data(), spotLights.size());
-
-	auto& dirShadowTransforms = RenderManager::GetI()->EditorShadowTransformArray[(uint32)LightType::Directional];
-	auto& spotShadowTransforms = RenderManager::GetI()->EditorShadowTransformArray[(uint32)LightType::Spot];
-	auto& pointShadowTransforms = RenderManager::GetI()->EditorShadowTransformArray[(uint32)LightType::Point];
-
-	Effects::InstancedBasicFX->SetEyePosW(camera->GetPosition());
-	Effects::InstancedBasicFX->SetCubeMap(_sky->CubeMapSRV().Get());
-	//Effects::InstancedBasicFX->SetShadowMap(shadowMap->DepthMapSRV().Get());
-	Effects::InstancedBasicFX->SetDirShadowMaps(shadowMap->DepthMapSRVArray(LightType::Directional).data(), shadowMap->DepthMapSRVArray(LightType::Directional).size());
-	Effects::InstancedBasicFX->SetSpotShadowMaps(shadowMap->DepthMapSRVArray(LightType::Spot).data(), shadowMap->DepthMapSRVArray(LightType::Spot).size());
-	Effects::InstancedBasicFX->SetPointShadowMaps(shadowMap->DepthMapSRVArray(LightType::Point).data(), shadowMap->DepthMapSRVArray(LightType::Point).size());
-
-	Effects::InstancedBasicFX->SetDirShadowTransforms(dirShadowTransforms.data(), dirShadowTransforms.size());
-	Effects::InstancedBasicFX->SetSpotShadowTransforms(spotShadowTransforms.data(), spotShadowTransforms.size());
-	Effects::InstancedBasicFX->SetPointShadowTransforms(pointShadowTransforms.data(), pointShadowTransforms.size());
-	
-	//Effects::InstancedBasicFX->SetShadowMap(shadowMap->DepthMapSRV().Get());
 	Effects::InstancedBasicFX->SetSsaoMap(ssao->AmbientSRV().Get());
 
 	uint32 stride = sizeof(Vertex::PosNormalTexTan);
