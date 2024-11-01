@@ -223,16 +223,13 @@ InstancedBasicEffect::InstancedBasicEffect(ComPtr<ID3D11Device> device, const st
 	WorldViewProj = _fx->GetVariableByName("gWorldViewProj")->AsMatrix();
 	WorldViewProjTex = _fx->GetVariableByName("gWorldViewProjTex")->AsMatrix();
 
-	//View = _fx->GetVariableByName("gView")->AsMatrix();
-	//Proj = _fx->GetVariableByName("gProj")->AsMatrix();
+	View = _fx->GetVariableByName("gView")->AsMatrix();
+	Proj = _fx->GetVariableByName("gProj")->AsMatrix();
 	ViewProj = _fx->GetVariableByName("gViewProj")->AsMatrix();
 	ViewProjTex = _fx->GetVariableByName("gViewProjTex")->AsMatrix();
 	BoneTransforms = _fx->GetVariableByName("gBoneTransforms")->AsMatrix();
 	TexTransform = _fx->GetVariableByName("gTexTransform")->AsMatrix();
-	
-	DirShadowTransforms = _fx->GetVariableByName("gDirShadowTransforms")->AsMatrix();
-	SpotShadowTransforms = _fx->GetVariableByName("gSpotShadowTransforms")->AsMatrix();
-	PointShadowTransforms = _fx->GetVariableByName("gPointShadowTransforms")->AsMatrix();
+	ShadowTransform = _fx->GetVariableByName("gShadowTransform")->AsMatrix();
 
 	EyePosW = _fx->GetVariableByName("gEyePosW")->AsVector();
 	FogColor = _fx->GetVariableByName("gFogColor")->AsVector();
@@ -247,10 +244,7 @@ InstancedBasicEffect::InstancedBasicEffect(ComPtr<ID3D11Device> device, const st
 	Mat = _fx->GetVariableByName("gMaterial");
 	Setting = _fx->GetVariableByName("gShaderSetting");
 	DiffuseMap = _fx->GetVariableByName("gDiffuseMap")->AsShaderResource();
-	
-	DirShadowMaps = _fx->GetVariableByName("gDirShadowMaps")->AsShaderResource();
-	SpotShadowMaps = _fx->GetVariableByName("gSpotShadowMaps")->AsShaderResource();
-	PointShadowMaps = _fx->GetVariableByName("gPointShadowMaps")->AsShaderResource();
+	ShadowMap = _fx->GetVariableByName("gShadowMap")->AsShaderResource();
 	NormalMap = _fx->GetVariableByName("gNormalMap")->AsShaderResource();
 	SsaoMap = _fx->GetVariableByName("gSsaoMap")->AsShaderResource();
 	CubeMap = _fx->GetVariableByName("gCubeMap")->AsShaderResource();

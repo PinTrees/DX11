@@ -1,5 +1,8 @@
 #include "07. LightHelper.fx"
 
+#define LIGHT_SIZE 4 // Light Size는 이 곳에서만 설정가능
+#define LIGHT_MULTYPLE 6
+#define LIGHT_MAX_SIZE (LIGHT_SIZE * LIGHT_MULTYPLE)
  
 struct ShaderSetting
 {
@@ -17,9 +20,9 @@ struct ShaderSetting
 
 cbuffer cbPerFrame
 {
-    DirectionalLight gDirLights[4];
-    PointLight gPointLight[4];
-    SpotLight gSpotLight[4];
+    DirectionalLight gDirLights[LIGHT_SIZE];
+    PointLight gPointLight[LIGHT_SIZE];
+    SpotLight gSpotLight[LIGHT_SIZE];
     int gDirLightCount;
     int gPointLightCount;
     int gSpotLightCount;
@@ -44,12 +47,17 @@ cbuffer cbPerObject
     float4x4 gViewProjTex;
     
     float4x4 gTexTransform;
-    float4x4 gShadowTransform; // Instancing -> Worldx, LightV * LightP * toTexSpace, Not Instancing -> World * LightV * LightP * toTexSpace
+    
+    // Instancing -> Worldx, LightV * LightP * toTexSpace, Not Instancing -> World * LightV * LightP * toTexSpace
+    float4x4 gDirShadowTransforms[LIGHT_SIZE];
+    float4x4 gSpotShadowTransforms[LIGHT_SIZE];
+    float4x4 gPointShadowTransforms[LIGHT_MAX_SIZE];
+    
     Material gMaterial;
     ShaderSetting gShaderSetting;
 }; 
 
-
+// 루프(for) 상수로만 돌려야함, Light별 shadowTransform, shadowMap 만들어야함, 혹은 3배로 늘리고 effects로 넘길 때 0~Light_MAX_SIZE and LIGHT_MAX_SIZE~LIGHT_MAX_SIZE*2
 
 cbuffer cbSkinned
 {
@@ -59,7 +67,9 @@ cbuffer cbSkinned
 // Nonnumeric values cannot be added to a cbuffer.
 
 // frame
-Texture2D gShadowMap;
+Texture2D gDirShadowMaps[LIGHT_SIZE];
+Texture2D gSpotShadowMaps[LIGHT_SIZE];
+Texture2D gPointShadowMaps[LIGHT_MAX_SIZE];
 Texture2D gSsaoMap;
 TextureCube gCubeMap;
 
@@ -123,8 +133,8 @@ struct VertexOut
     float3 NormalW : NORMAL;
     float4 TangentW : TANGENT;
     float2 Tex : TEXCOORD0;
-    float4 ShadowPosH : TEXCOORD1;
-    float4 SsaoPosH : TEXCOORD2;
+    //float4 ShadowPosH[LIGHT_MAX_SIZE] : TEXCOORD2;
+    float4 SsaoPosH : TEXCOORD1;
 };
 
 VertexOut VS(VertexIn vin)
@@ -143,7 +153,30 @@ VertexOut VS(VertexIn vin)
     vout.Tex = mul(float4(vin.Tex, 0.0f, 1.0f), gTexTransform).xy;
 
 	// Generate projective tex-coords to project shadow map onto scene.
-    vout.ShadowPosH = mul(float4(vin.PosL, 1.0f), gShadowTransform);
+    //vout.ShadowPosH = mul(float4(vin.PosL, 1.0f), gShadowTransform);
+    
+    //int i = 0;
+    //int j = gDirLightCount;
+    //int l = gSpotLightCount;
+   
+    //for (int i = 0; i < gDirLightCount;i++)
+    //{
+    //    vout.ShadowPosH[i] = mul(float4(vout.PosW, 1.0f), gShadowTransform[i]);
+    //}
+    //int startIndex = gDirLightCount;
+    //for (int j = 0; j < gSpotLightCount; j++)
+    //{
+    //    vout.ShadowPosH[j + startIndex] = mul(float4(vout.PosW, 1.0f), gShadowTransform[j + startIndex]);
+    //}
+    //startIndex = gDirLightCount + gSpotLightCount;
+    //for (int l = 0; l < gPointLightCount; l += 6)
+    //{
+
+    //    for (int s = 0; s < 6;s++)
+    //    {
+    //        vout.ShadowPosH[l + s + startIndex] = mul(float4(vout.PosW, 1.0f), gShadowTransform[l + s + startIndex]);
+    //    }
+    //}
 
 	// Generate projective tex-coords to project SSAO map onto scene.
     vout.SsaoPosH = mul(float4(vin.PosL, 1.0f), gWorldViewProjTex);
@@ -168,7 +201,7 @@ VertexOut VS_Instancing(VertexIn_Instancing vin)
     vout.Tex = mul(float4(vin.Tex, 0.0f, 1.0f), gTexTransform).xy;
 
 	// Generate projective tex-coords to project shadow map onto scene.
-    vout.ShadowPosH = mul(vout.PosH, gShadowTransform);
+    //vout.ShadowPosH = mul(vout.PosH, gShadowTransform);
 
 	// Generate projective tex-coords to project SSAO map onto scene.
     vout.SsaoPosH = mul(vout.PosH, gViewProjTex);
@@ -217,8 +250,8 @@ VertexOut VS_Skinned(SkinnedVertexIn vin)
     vout.Tex = mul(float4(vin.Tex, 0.0f, 1.0f), gTexTransform).xy;
 
 	// Generate projective tex-coords to project shadow map onto scene.
-    vout.ShadowPosH = mul(float4(posL, 1.0f), gShadowTransform);
-
+    //vout.ShadowPosH = mul(float4(posL, 1.0f), gShadowTransform);
+    
 	// Generate projective tex-coords to project SSAO map onto scene.
     vout.SsaoPosH = mul(float4(posL, 1.0f), gWorldViewProjTex);
 
@@ -279,13 +312,48 @@ float4 PS(VertexOut pin) : SV_Target
         float4 diffuse = float4(0.0f, 0.0f, 0.0f, 0.0f);
         float4 spec = float4(0.0f, 0.0f, 0.0f, 0.0f);
 		  
-		// Only the first light casts a shadow.
-        float3 shadow = float3(1.0f, 1.0f, 1.0f);
-        if (gShaderSetting.gUseShadowMap) // 처음 빛의 그림자만
+        float dirShadow[LIGHT_SIZE];
+        float spotShadow[LIGHT_SIZE];
+        float pointShadow[LIGHT_SIZE];
+        
+        [unroll]
+        for (int shadowSize = 0; shadowSize < LIGHT_SIZE; shadowSize++)
         {
-            shadow[0] = CalcShadowFactor(samShadow, gShadowMap, pin.ShadowPosH);
+            dirShadow[shadowSize] = 1.0f;
+            spotShadow[shadowSize] = 1.0f;
+            pointShadow[shadowSize] = 1.0f;
         }
-
+        
+        if (gShaderSetting.gUseShadowMap)
+        {
+            [unloll]
+            for (int i = 0; i < LIGHT_SIZE; i++)
+            {
+                dirShadow[i] = CalcShadowFactor(samShadow, gDirShadowMaps[i], mul(float4(pin.PosW,1.0f), gDirShadowTransforms[i]));
+            }
+            
+            [unloll]
+            for (int j = 0; j < LIGHT_SIZE; j++)
+            {
+                spotShadow[j] = CalcShadowFactor(samShadow, gSpotShadowMaps[j], mul(float4(pin.PosW, 1.0f), gSpotShadowTransforms[j]));
+            }
+            
+            [unloll]
+            for (int l = 0; l < LIGHT_SIZE; l++)
+            {
+                int startIndex = l * 6;
+                [unloll]
+                for (int s = 0; s < 6; s++)
+                {
+                    pointShadow[l] += CalcShadowFactor(samShadow, gPointShadowMaps[startIndex + s], mul(float4(pin.PosW, 1.0f), gPointShadowTransforms[startIndex + s]));
+                }
+    
+                pointShadow[l] /= 6.0f; // 평균 내기
+            }
+            
+            //shadow[0] = CalcShadowFactor(samShadow, gShadowMap, pin.ShadowPosH);
+        }
+        
 		// Finish texture projection and sample SSAO map.
         pin.SsaoPosH /= pin.SsaoPosH.w;
         float ambientAccess = 1.0f;
@@ -295,39 +363,38 @@ float4 PS(VertexOut pin) : SV_Target
         }
 	    
         float4 A, D, S;
-        int i = 0;
 		// Sum the light contribution from each light source.  
-		[unroll] 
-        for (i = 0; i < gDirLightCount; ++i)
+		[unloll]
+        for (int i = 0; i < LIGHT_SIZE; ++i)
         {
             ComputeDirectionalLight(gMaterial, gDirLights[i], bumpedNormalW, toEye,
 				A, D, S);
 
             ambient += ambientAccess * A;
-            diffuse += shadow[i] * D;
-            spec += shadow[i] * S;
+            diffuse += dirShadow[i] * D;
+            spec += dirShadow[i] * S;
         }
-        
-        [unroll]
-        for (i = 0; i < gPointLightCount; ++i)
-        {
-            ComputePointLight(gMaterial, gPointLight[i], pin.PosW, bumpedNormalW, toEye,
-				A, D, S);
 
-            ambient += ambientAccess * A;
-            diffuse += shadow[i] * D;
-            spec += shadow[i] * S;
-        }
-        
-        [unroll] 
-        for (i = 0; i < gSpotLightCount; ++i)
+        [unloll]
+        for (int i = 0; i < LIGHT_SIZE; ++i)
         {
             ComputeSpotLight(gMaterial, gSpotLight[i], pin.PosW, bumpedNormalW, toEye,
 				A, D, S);
 
             ambient += ambientAccess * A;
-            diffuse += shadow[i] * D;
-            spec += shadow[i] * S;
+            diffuse += spotShadow[i] * D;
+            spec += spotShadow[i] * S;
+        }
+        
+        [unloll]
+        for (int i = 0; i < LIGHT_SIZE; ++i)
+        {
+            ComputePointLight(gMaterial, gPointLight[i], pin.PosW, bumpedNormalW, toEye,
+				A, D, S);
+
+            ambient += ambientAccess * A;
+            diffuse += pointShadow[i] * D;
+            spec += pointShadow[i] * S;
         }
 		   
         litColor = texColor * (ambient + diffuse) + spec;

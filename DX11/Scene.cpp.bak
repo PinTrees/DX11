@@ -4,24 +4,24 @@
 #include "MathHelper.h"
 
 Scene::Scene()
-	: m_VecRootGameObjects(),
-    m_ArrGameObjects{},
+	: m_vecRootGameObjects(),
+    m_arrGameObjects{},
     m_ScenePath(L"")
 {
 }
 
 Scene::~Scene()
 {
-    for (const auto& g : m_VecRootGameObjects)
+    for (const auto& g : m_vecRootGameObjects)
         g->OnDestroy(); 
 
-	Safe_Delete_Vec(m_VecRootGameObjects);
-    m_ArrGameObjects[0].clear();
+	Safe_Delete_Vec(m_vecRootGameObjects);
+    m_arrGameObjects[0].clear();
 }
 
 void Scene::Enter()
 {
-    for (auto& gameObject : m_ArrGameObjects[0])
+    for (auto& gameObject : m_arrGameObjects[0])
     {
         for (auto& component : gameObject->GetComponents())
         {
@@ -43,7 +43,7 @@ void Scene::RenderScene()
     {
         map<InstanceID, vector<GameObject*>> cache;
 
-        for (const auto& gameObject : m_ArrGameObjects[0]) // cullingObejcts로 변경예정, play아닐때도 업데이트할 함수 추가해야함 Light, camera
+        for (const auto& gameObject : m_arrGameObjects[0])
         {
             for (auto& component : gameObject->GetComponents())
             {
@@ -90,7 +90,7 @@ void Scene::RenderScene()
     }
     else
     {
-        for (auto& gameObject : m_ArrGameObjects[0])
+        for (auto& gameObject : m_arrGameObjects[0])
         {
             for (auto& component : gameObject->GetComponents())
             {
@@ -106,7 +106,7 @@ void Scene::RenderSceneShadow()
     {
         map<InstanceID, vector<GameObject*>> cache;
 
-        for (const auto& gameObject : m_ArrGameObjects[0])
+        for (const auto& gameObject : m_arrGameObjects[0])
         {
             auto meshRenderer = gameObject->GetComponent<MeshRenderer>();
             if (meshRenderer == nullptr)
@@ -143,7 +143,7 @@ void Scene::RenderSceneShadow()
     }
     else
     {
-        for (auto& gameObject : m_ArrGameObjects[0])
+        for (auto& gameObject : m_arrGameObjects[0])
         {
             MeshRenderer* meshRenderer = gameObject->GetComponent<MeshRenderer>();
             if (meshRenderer) meshRenderer->RenderShadow();
@@ -160,7 +160,7 @@ void Scene::RenderSceneShadowNormal()
     {
         map<InstanceID, vector<GameObject*>> cache;
 
-        for (const auto& gameObject : m_ArrGameObjects[0])
+        for (const auto& gameObject : m_arrGameObjects[0])
         {
             auto meshRenderer = gameObject->GetComponent<MeshRenderer>();
             if (meshRenderer == nullptr)
@@ -196,7 +196,7 @@ void Scene::RenderSceneShadowNormal()
     }
     else
     {
-        for (const auto& gameObject : m_ArrGameObjects[0])
+        for (const auto& gameObject : m_arrGameObjects[0])
         {
             MeshRenderer* meshRenderer = gameObject->GetComponent<MeshRenderer>();
             if (meshRenderer) meshRenderer->RenderShadowNormal();
@@ -209,7 +209,7 @@ void Scene::RenderSceneShadowNormal()
 
 void Scene::_Editor_RenderScene()
 {
-    for (auto& gameObject : m_ArrGameObjects[0])
+    for (auto& gameObject : m_arrGameObjects[0]) 
     {
         MeshRenderer* meshRenderer = gameObject->GetComponent<MeshRenderer>();
         if (meshRenderer) meshRenderer->_Editor_Render();
@@ -221,7 +221,7 @@ void Scene::_Editor_RenderScene()
 
 void Scene::_Editor_RenderSceneShadowNormal()
 {
-    for (const auto& gameObject : m_ArrGameObjects[0])
+    for (const auto& gameObject : m_arrGameObjects[0])
     {
         MeshRenderer* meshRenderer = gameObject->GetComponent<MeshRenderer>(); 
         if (meshRenderer) meshRenderer->_Editor_RenderShadowNormal();  
@@ -243,7 +243,7 @@ void Scene::RenderSceneGizmos()
         }
     }
 
-    for (auto& gameObject : m_ArrGameObjects[0])
+    for (auto& gameObject : m_arrGameObjects[0])
     {
         for (auto& component : gameObject->GetComponents())
         {
@@ -256,7 +256,7 @@ void Scene::RenderSceneGizmos()
 
 void Scene::LastFramUpdate()
 {
-    for (auto& gameObject : m_ArrGameObjects[0])
+    for (auto& gameObject : m_arrGameObjects[0])
     {
         gameObject->LastUpdate(); 
         gameObject->ApplyPendingComponents(); 
@@ -265,7 +265,7 @@ void Scene::LastFramUpdate()
 
 void Scene::UpdateScene()
 {
-    for (auto& gameObject : m_ArrGameObjects[0])
+    for (auto& gameObject : m_arrGameObjects[0])
     {
         for (auto& component : gameObject->GetComponents())
         {
@@ -273,7 +273,7 @@ void Scene::UpdateScene()
         }
     }
 
-    for (auto& gameObject : m_ArrGameObjects[0])
+    for (auto& gameObject : m_arrGameObjects[0])
     {
         for (auto& component : gameObject->GetComponents())
         {
@@ -387,12 +387,12 @@ void Scene::DestroyComponent(Component* component)
 
 void Scene::DestroyGameObject(GameObject* gameobject)
 {
-    auto it1 = std::find(m_VecRootGameObjects.begin(), m_VecRootGameObjects.end(), gameobject);  
-    auto it2 = std::find(m_ArrGameObjects[0].begin(), m_ArrGameObjects[0].end(), gameobject);
+    auto it1 = std::find(m_vecRootGameObjects.begin(), m_vecRootGameObjects.end(), gameobject);  
+    auto it2 = std::find(m_arrGameObjects[0].begin(), m_arrGameObjects[0].end(), gameobject); 
     
     gameobject->OnDestroy();
-    if (it1 != m_VecRootGameObjects.end())  m_VecRootGameObjects.erase(it1); 
-    if (it2 != m_ArrGameObjects[0].end())  m_ArrGameObjects[0].erase(it2);
+    if (it1 != m_vecRootGameObjects.end())  m_vecRootGameObjects.erase(it1); 
+    if (it2 != m_arrGameObjects[0].end())  m_arrGameObjects[0].erase(it2);  
 }
 
 void Scene::AddRootGameObject(GameObject* gameObject)
@@ -400,16 +400,16 @@ void Scene::AddRootGameObject(GameObject* gameObject)
     if (gameObject == nullptr)
         return;
 
-	m_VecRootGameObjects.push_back(gameObject);
-    m_ArrGameObjects[0].push_back(gameObject);
+	m_vecRootGameObjects.push_back(gameObject);
+	m_arrGameObjects[0].push_back(gameObject);
 }
 
 void Scene::RemoveRootGameObjects(GameObject* gameObject)
 {
-    auto it = std::find(m_VecRootGameObjects.begin(), m_VecRootGameObjects.end(), gameObject);
-    if (it != m_VecRootGameObjects.end())
+    auto it = std::find(m_vecRootGameObjects.begin(), m_vecRootGameObjects.end(), gameObject);  
+    if (it != m_vecRootGameObjects.end())  
     { 
-        m_VecRootGameObjects.erase(it);
+        m_vecRootGameObjects.erase(it); 
     }
 }
 
@@ -419,7 +419,7 @@ void to_json(json& j, const Scene& scene)
     {
         { "rootGameObjects", json::array() }
     };
-    for (const GameObject* gameObject : scene.m_VecRootGameObjects)
+    for (const GameObject* gameObject : scene.m_vecRootGameObjects)
     {
         j["rootGameObjects"].push_back(*gameObject);
     }
@@ -431,7 +431,7 @@ void from_json(const json& j, Scene& scene)
     {
         GameObject* gameObject = new GameObject();
         from_json(gameObjectJson, *gameObject); 
-        scene.m_VecRootGameObjects.push_back(gameObject);
-        scene.m_ArrGameObjects[0].push_back(gameObject);
+        scene.m_vecRootGameObjects.push_back(gameObject);
+        scene.m_arrGameObjects[0].push_back(gameObject);
     }
 }

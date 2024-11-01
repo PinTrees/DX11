@@ -107,3 +107,15 @@ Quaternion SafeGetQuaternion(const json& j, const std::string& key, const Quater
                                                      } else {                                                                           \
                                                          VALUE = XMFLOAT4{ 0, 0, 0, 0 };                                                \
                                                      }							
+
+
+#define DE_SERIALIZE_FLOAT3(JSON, VALUE, VALUE_NAME) if (JSON.contains(VALUE_NAME)) {                                                   \
+                                                         auto __val = JSON.at(VALUE_NAME).get<std::vector<float>>();                    \
+                                                         if (__val.size() == 3) {                                                       \
+                                                             VALUE = XMFLOAT3{ __val[0], __val[1], __val[2] };                \
+                                                         } else {                                                                       \
+                                                             VALUE = XMFLOAT3{ 0, 0, 0};                                            \
+                                                         }                                                                              \
+                                                     } else {                                                                           \
+                                                         VALUE = XMFLOAT3{ 0, 0, 0 };                                                \
+                                                     }				

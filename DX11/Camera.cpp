@@ -263,25 +263,23 @@ void Camera::LateUpdate()
 
 	ProjUpdate();
 	// OnPreCull 권장(Unity 생명주기)
-	FrustumUpdate();
-	//GetFrustumCulling();
+	GetFrustumCulling();
 }
 
 void Camera::GetFrustumCulling()
 {
-	vector<GameObject*> allObject = SceneManager::GetI()->GetCurrentScene()->GetAllGameObjects();
-	auto& culling = SceneManager::GetI()->GetCurrentScene()->GetCullingGameObjects();
-	vector<PointLight>& pointLight = LightManager::GetI()->GetPointLights(true);
-	vector<SpotLight>& spotLight = LightManager::GetI()->GetSpotLights(true);
-	vector<PointLight> tempPointLight;
-	vector<SpotLight> tempSpotLight;
+	FrustumUpdate();
 
-	culling.clear();
+	vector<GameObject*> allObject = SceneManager::GetI()->GetCurrentScene()->GetAllGameObjects();
+	vector<GameObject*> cullingObjects;
+	vector<shared_ptr<Light>> lights = LightManager::GetI()->GetLights();
+	vector<shared_ptr<Light>> cullingLights;
+
 	bool check;
 
-	for (int i = 0; i < allObject.size(); i++)
+	for (const auto& gameObject : allObject)
 	{
-		auto meshRenderer = allObject[i]->GetComponent<MeshRenderer>();
+		auto meshRenderer = gameObject->GetComponent<MeshRenderer>();
 
 		// meshRenderer 컴포넌트가 없는 객체이거나 mesh를 적용 안 시켰을 경우
 		if (!meshRenderer)
@@ -290,63 +288,55 @@ void Camera::GetFrustumCulling()
 		if (!(meshRenderer->GetMesh()))
 			continue;
 
+		Vec3 meshPos = meshRenderer->GetGameObject()->GetTransform()->GetPosition();
 		BouncingBall ball = meshRenderer->GetMesh()->Ball;
 		check = true;
 		for (int i = 0; i < 6; i++)
 		{
 			// 충돌체크
 			//plane.normal.x * center.x + plane.normal.y * center.y + plane.normal.z * center.z + plane.d;
-			float distance = m_frustum.planes[i].normal.x * ball.center.x + m_frustum.planes[i].normal.y * ball.center.y + m_frustum.planes[i].normal.z * ball.center.z + m_frustum.planes[i].d;
+			float distance = m_Frustum.planes[i].normal.x * (ball.center.x + meshPos.x) +
+				m_Frustum.planes[i].normal.y * (ball.center.y + meshPos.y) +
+				m_Frustum.planes[i].normal.z * (ball.center.z + meshPos.z) +
+				m_Frustum.planes[i].d;
 			if (distance < -ball.radius)
 				check = false; // 구가 평면의 밖에 있음
 		}
 
 		if (check)
-			culling.push_back(allObject[i]);
+			cullingObjects.push_back(gameObject);
 	}
 
-	// PointLight
-	for (int i = 0; i < pointLight.size(); i++)
+	// Point and Spot Light
+	for (const auto& light : lights)
 	{
+		if (LightType::Directional == light->GetLightType())
+		{
+			cullingLights.push_back(light);
+			continue;
+		}
+
+		Vec3 lightPos = light->GetGameObject()->GetTransform()->GetPosition();
+
 		check = true;
 		for (int i = 0; i < 6; i++)
 		{
 			// 충돌체크
 			//plane.normal.x * center.x + plane.normal.y * center.y + plane.normal.z * center.z + plane.d;
-			float distance = m_frustum.planes[i].normal.x * pointLight[i].Position.x + 
-							 m_frustum.planes[i].normal.y * pointLight[i].Position.y +
-							 m_frustum.planes[i].normal.z * pointLight[i].Position.z + 
-							 m_frustum.planes[i].d;
-			if (distance < -pointLight[i].Range)
+			float distance = m_Frustum.planes[i].normal.x * lightPos.x +
+				m_Frustum.planes[i].normal.y * lightPos.y +
+				m_Frustum.planes[i].normal.z * lightPos.z +
+				m_Frustum.planes[i].d;
+			if (distance < -light->GetRange())
 				check = false; // 구가 평면의 밖에 있음
 		}
 
 		if (check)
-			tempPointLight.push_back(pointLight[i]);
+			cullingLights.push_back(light);
 	}
 
-	// SpotLight를 PointLight처럼 구의 형태로 컬링을 하게되면 편하지만 정확도를 좀 떨어질 것이다.
-	for (int i = 0; spotLight.size(); i++)
-	{
-		check = true;
-		for (int i = 0; i < 6; i++)
-		{
-			// 충돌체크
-			//plane.normal.x * center.x + plane.normal.y * center.y + plane.normal.z * center.z + plane.d;
-			float distance = m_frustum.planes[i].normal.x * spotLight[i].Position.x +
-				m_frustum.planes[i].normal.y * spotLight[i].Position.y +
-				m_frustum.planes[i].normal.z * spotLight[i].Position.z +
-				m_frustum.planes[i].d;
-			if (distance < -spotLight[i].Range)
-				check = false; // 구가 평면의 밖에 있음
-		}
-
-		if (check)
-			tempSpotLight.push_back(spotLight[i]);
-	}
-
-	pointLight = tempPointLight;
-	spotLight = tempSpotLight;
+	SceneManager::GetI()->GetCurrentScene()->SetCullingGameObjects(cullingObjects);
+	LightManager::GetI()->SortingLights(cullingLights, m_pGameObject->GetTransform()->GetPosition());
 }
 
 void Camera::FrustumUpdate()
@@ -357,26 +347,26 @@ void Camera::FrustumUpdate()
 	::XMStoreFloat4x4(&clip, clipMatrix);
 
 	// 평면 계산 (각 면의 계수 계산)
-	m_frustum.planes[0] = { {clip._41 + clip._11, clip._42 + clip._12, clip._43 + clip._13}, clip._44 + clip._14 }; // left
-	m_frustum.planes[1] = { {clip._41 - clip._11, clip._42 - clip._12, clip._43 - clip._13}, clip._44 - clip._14 }; // right
-	m_frustum.planes[2] = { {clip._41 + clip._21, clip._42 + clip._22, clip._43 + clip._23}, clip._44 + clip._24 }; // bottom
-	m_frustum.planes[3] = { {clip._41 - clip._21, clip._42 - clip._22, clip._43 - clip._23}, clip._44 - clip._24 }; // top
-	m_frustum.planes[4] = { {clip._41 + clip._31, clip._42 + clip._32, clip._43 + clip._33}, clip._44 + clip._34 }; // near
-	m_frustum.planes[5] = { {clip._41 - clip._31, clip._42 - clip._32, clip._43 - clip._33}, clip._44 - clip._34 }; // far
+	m_Frustum.planes[0] = { {clip._41 + clip._11, clip._42 + clip._12, clip._43 + clip._13}, clip._44 + clip._14 }; // left
+	m_Frustum.planes[1] = { {clip._41 - clip._11, clip._42 - clip._12, clip._43 - clip._13}, clip._44 - clip._14 }; // right
+	m_Frustum.planes[2] = { {clip._41 + clip._21, clip._42 + clip._22, clip._43 + clip._23}, clip._44 + clip._24 }; // bottom
+	m_Frustum.planes[3] = { {clip._41 - clip._21, clip._42 - clip._22, clip._43 - clip._23}, clip._44 - clip._24 }; // top
+	m_Frustum.planes[4] = { {clip._41 + clip._31, clip._42 + clip._32, clip._43 + clip._33}, clip._44 + clip._34 }; // near
+	m_Frustum.planes[5] = { {clip._41 - clip._31, clip._42 - clip._32, clip._43 - clip._33}, clip._44 - clip._34 }; // far
 
 	// 각 평면의 정규화
 	for (int i = 0; i < 6; ++i) 
 	{
-		float length = sqrtf(m_frustum.planes[i].normal.x * m_frustum.planes[i].normal.x +
-			m_frustum.planes[i].normal.y * m_frustum.planes[i].normal.y +
-			m_frustum.planes[i].normal.z * m_frustum.planes[i].normal.z);
+		float length = sqrtf(m_Frustum.planes[i].normal.x * m_Frustum.planes[i].normal.x +
+			m_Frustum.planes[i].normal.y * m_Frustum.planes[i].normal.y +
+			m_Frustum.planes[i].normal.z * m_Frustum.planes[i].normal.z);
 
 		if (length > 0.0f)
 		{
-			m_frustum.planes[i].normal.x /= length;
-			m_frustum.planes[i].normal.y /= length;
-			m_frustum.planes[i].normal.z /= length;
-			m_frustum.planes[i].d /= length;
+			m_Frustum.planes[i].normal.x /= length;
+			m_Frustum.planes[i].normal.y /= length;
+			m_Frustum.planes[i].normal.z /= length;
+			m_Frustum.planes[i].d /= length;
 		}
 	}
 }

@@ -11,13 +11,13 @@ class Scene
 private:
 	wstring m_ScenePath;
 
-	vector<GameObject*> m_ArrGameObjects[(UINT)32];		// 태그 기반 배열 - 충돌 처리 최적화
+	vector<GameObject*> m_arrGameObjects[(UINT)32];		// 태그 기반 배열 - 충돌 처리 최적화
 	
-	vector<GameObject*> m_VecAllGameObjects;			// 미 구현
-	vector<GameObject*> m_VecRootGameObjects;
+	vector<GameObject*> m_vecAllGameObjects;			// 미 구현
+	vector<GameObject*> m_vecRootGameObjects;
 
-	vector<GameObject*> m_CullingGameObjects;
-	vector<GameObject*> m_CullingEditorGameObjects;
+	vector<GameObject*> m_cullingGameObjects;
+
 public:
 	Scene();
 	~Scene();
@@ -51,14 +51,10 @@ public:
 	void DestroyGameObject(GameObject* gameobject);
 	 
 	void AddRootGameObject(GameObject* gameObject);
-	vector<GameObject*> GetRootGameObjects() { return m_VecRootGameObjects; }
-	vector<GameObject*> GetAllGameObjects() const { return m_ArrGameObjects[0]; }
-	
-	void SetCullingGameObjects(vector<GameObject*> culling) { m_CullingGameObjects = culling; }
-	void SetCullingEditorGameObjects(vector<GameObject*> culling) { m_CullingEditorGameObjects = culling; }
-	
-	vector<GameObject*> GetCullingGameObjects() { return m_CullingGameObjects; }
-	vector<GameObject*> GetCullingEditorGameObjects() { return m_CullingEditorGameObjects; }
+	vector<GameObject*> GetRootGameObjects() { return m_vecRootGameObjects; }
+	vector<GameObject*> GetAllGameObjects() const { return m_arrGameObjects[0]; }
+	vector<GameObject*>& GetCullingGameObjects() { return m_cullingGameObjects; }
+
 	void RemoveRootGameObjects(GameObject* gameObject);
 
 public:

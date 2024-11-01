@@ -5,6 +5,8 @@ class EditorCamera
 public:
 	EditorCamera();
 	~EditorCamera();
+	Frustum m_Frustum;
+	void GetFrustumCulling();
 	
 	// Get/Set world camera position.
 	XMVECTOR GetPositionXM()const;
@@ -77,10 +79,5 @@ private:
 	// Cache View/Proj matrices.
 	XMFLOAT4X4 _view;
 	XMFLOAT4X4 _proj;
-
-	Frustum m_Frustum;
-
-	void FrustumUpdate(); // frustum 범위 계산
-	void GetFrustumCulling();
 };
 

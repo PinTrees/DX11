@@ -33,3 +33,22 @@ struct BouncingBall
 	Vec3 center;
 	float radius;
 };
+
+struct Plane
+{
+	DirectX::XMFLOAT3 normal; // 면의 법선 벡터
+	float d;                  // 평면의 거리 (ax + by + cz + d = 0)
+};
+
+struct Frustum
+{
+	Plane planes[6]; // 6개의 면 (left, right, top, bottom, near, far)
+};
+
+enum class LightType
+{
+	Directional,
+	Spot,
+	Point,
+	End
+};

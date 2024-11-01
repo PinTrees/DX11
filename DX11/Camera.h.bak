@@ -30,7 +30,7 @@ private:
 	XMFLOAT4X4 _view;
 	XMFLOAT4X4 _proj;
 
-	Frustum m_Frustum;
+	Frustum m_frustum;
 
 	void FrustumUpdate(); // frustum 범위 계산
 	void GetFrustumCulling();

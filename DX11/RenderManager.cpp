@@ -18,6 +18,7 @@ void RenderManager::Init()
 {
 	auto device = Application::GetI()->GetDevice();
 	BaseShadowMap = make_shared<ShadowMap>(device, SMapSize, SMapSize);   
+    EditorShadowMap = make_shared<ShadowMap>(device, SMapSize, SMapSize);
 
     SetEditorViewport(100, 100);
     SetViewport(100, 100);

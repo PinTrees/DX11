@@ -11,7 +11,7 @@ public:
 
 	// Common
 	shared_ptr<class ShadowMap> BaseShadowMap;
-	shared_ptr<class ShadowMap> EditorShadowMap;
+
 
 	// Editor Only
 	XMMATRIX EditorCameraViewMatrix;
@@ -25,11 +25,8 @@ public:
 	XMMATRIX CameraViewProjectionMatrix;
 	D3D11_VIEWPORT Viewport; 
 
-	// ShaodwTransform -> VPT
-	vector<XMMATRIX> ShadowTransformArray[(uint32)LightType::End];
-	vector<XMMATRIX> EditorShadowTransformArray[(uint32)LightType::End];
-	XMMATRIX LightViewProjection;
-	//XMMATRIX EditorLightViewProjection;
+	XMMATRIX DirectinalLightViewProjection;
+
 	// Editor Only
 public:
 	static const int SMapSize = 2048;

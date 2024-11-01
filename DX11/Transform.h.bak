@@ -68,12 +68,10 @@ public:
 	void Rotate(const Vec3& angle) { SetEulerAngle(GetEulerAngle() + angle); }
 
 	Vec3 GetAxis(int index) const;
-	Vec3 GetRight() { return XMVector3Normalize(m_WorldMatrix.Right()); }
-	Vec3 GetLeft() { return XMVector3Normalize(m_WorldMatrix.Left()); }
+	Vec3 GetRight() { return m_WorldMatrix.Right(); }
 	Vec3 GetUp() { return XMVector3Normalize(m_WorldMatrix.Up()); } 
-	Vec3 GetDown() { return XMVector3Normalize(m_WorldMatrix.Down()); }
 	Vec3 GetLook() { return XMVector3Normalize(m_WorldMatrix.Backward()); }
-	Vec3 GetBackward() { return XMVector3Normalize(m_WorldMatrix.Forward()); }
+	Vec3 GetForward() { return m_WorldMatrix.Forward(); }
 	Matrix GetWorldMatrix() { return m_WorldMatrix; }
 
 	// °èÃþ °ü°è

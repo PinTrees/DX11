@@ -259,16 +259,13 @@ public:
 	void SetWorldViewProjTex(CXMMATRIX M) { WorldViewProjTex->SetMatrix(reinterpret_cast<const float*>(&M)); }
 	void SetWorld(CXMMATRIX M) { World->SetMatrix(reinterpret_cast<const float*>(&M)); }
 	void SetWorldInvTranspose(CXMMATRIX M) { WorldInvTranspose->SetMatrix(reinterpret_cast<const float*>(&M)); }
-	//void SetView(CXMMATRIX M) { View->SetMatrix(reinterpret_cast<const float*>(&M)); }
-	//void SetProj(CXMMATRIX M) { Proj->SetMatrix(reinterpret_cast<const float*>(&M)); }
+	void SetView(CXMMATRIX M) { View->SetMatrix(reinterpret_cast<const float*>(&M)); }
+	void SetProj(CXMMATRIX M) { Proj->SetMatrix(reinterpret_cast<const float*>(&M)); }
 	void SetViewProj(CXMMATRIX M) { ViewProj->SetMatrix(reinterpret_cast<const float*>(&M)); }
 	void SetViewProjTex(CXMMATRIX M) { ViewProjTex->SetMatrix(reinterpret_cast<const float*>(&M)); }
 	void SetBoneTransforms(const XMFLOAT4X4* M, int cnt) { BoneTransforms->SetMatrixArray(reinterpret_cast<const float*>(M), 0, cnt); }
 	void SetTexTransform(CXMMATRIX M) { TexTransform->SetMatrix(reinterpret_cast<const float*>(&M)); }
-	
-	void SetDirShadowTransforms(const XMMATRIX* M, int cnt) { DirShadowTransforms->SetMatrixArray(reinterpret_cast<const float*>(M), 0, cnt); }
-	void SetSpotShadowTransforms(const XMMATRIX* M, int cnt) { SpotShadowTransforms->SetMatrixArray(reinterpret_cast<const float*>(M), 0, cnt); }
-	void SetPointShadowTransforms(const XMMATRIX* M, int cnt) { PointShadowTransforms->SetMatrixArray(reinterpret_cast<const float*>(M), 0, cnt); }
+	void SetShadowTransform(CXMMATRIX M) { ShadowTransform->SetMatrix(reinterpret_cast<const float*>(&M)); }
 	void SetEyePosW(const XMFLOAT3& v) { EyePosW->SetRawValue(&v, 0, sizeof(XMFLOAT3)); }
 	void SetFogColor(const FXMVECTOR v) { FogColor->SetFloatVector(reinterpret_cast<const float*>(&v)); }
 	void SetFogStart(float f) { FogStart->SetFloat(f); }
@@ -292,10 +289,7 @@ public:
 	void SetShaderSetting(const ShaderSetting& setting) { Setting->SetRawValue(&setting, 0, sizeof(ShaderSetting)); }
 	
 	void SetDiffuseMap(ID3D11ShaderResourceView* tex) { DiffuseMap->SetResource(tex); }
-	
-	void SetDirShadowMaps(ID3D11ShaderResourceView** tex, int cnt) { DirShadowMaps->SetResourceArray(tex, 0, cnt); }
-	void SetSpotShadowMaps(ID3D11ShaderResourceView** tex, int cnt) { SpotShadowMaps->SetResourceArray(tex, 0, cnt); }
-	void SetPointShadowMaps(ID3D11ShaderResourceView** tex, int cnt) { PointShadowMaps->SetResourceArray(tex, 0, cnt); }
+	void SetShadowMap(ID3D11ShaderResourceView* tex) { ShadowMap->SetResource(tex); }
 	void SetNormalMap(ID3D11ShaderResourceView* tex) { NormalMap->SetResource(tex); }
 	void SetSsaoMap(ID3D11ShaderResourceView* tex) { SsaoMap->SetResource(tex); }
 	void SetCubeMap(ID3D11ShaderResourceView* tex) { CubeMap->SetResource(tex); }
@@ -309,16 +303,13 @@ public:
 	ComPtr<ID3DX11EffectMatrixVariable> WorldViewProj;
 	ComPtr<ID3DX11EffectMatrixVariable> WorldViewProjTex;
 
-	//ComPtr<ID3DX11EffectMatrixVariable> View;
-	//ComPtr<ID3DX11EffectMatrixVariable> Proj;
+	ComPtr<ID3DX11EffectMatrixVariable> View;
+	ComPtr<ID3DX11EffectMatrixVariable> Proj;
 	ComPtr<ID3DX11EffectMatrixVariable> ViewProj;
 	ComPtr<ID3DX11EffectMatrixVariable> ViewProjTex;
 	ComPtr<ID3DX11EffectMatrixVariable> BoneTransforms;
 	ComPtr<ID3DX11EffectMatrixVariable> TexTransform;
-	
-	ComPtr<ID3DX11EffectMatrixVariable> DirShadowTransforms;
-	ComPtr<ID3DX11EffectMatrixVariable> SpotShadowTransforms;
-	ComPtr<ID3DX11EffectMatrixVariable> PointShadowTransforms;
+	ComPtr<ID3DX11EffectMatrixVariable> ShadowTransform;
 	ComPtr<ID3DX11EffectVectorVariable> EyePosW;
 	ComPtr<ID3DX11EffectVectorVariable> FogColor;
 	ComPtr<ID3DX11EffectScalarVariable> FogStart;
@@ -333,10 +324,7 @@ public:
 	ComPtr<ID3DX11EffectVariable> Setting;
 
 	ComPtr<ID3DX11EffectShaderResourceVariable> DiffuseMap;
-	
-	ComPtr<ID3DX11EffectShaderResourceVariable> DirShadowMaps;
-	ComPtr<ID3DX11EffectShaderResourceVariable> SpotShadowMaps;
-	ComPtr<ID3DX11EffectShaderResourceVariable> PointShadowMaps;
+	ComPtr<ID3DX11EffectShaderResourceVariable> ShadowMap;
 	ComPtr<ID3DX11EffectShaderResourceVariable> NormalMap;
 	ComPtr<ID3DX11EffectShaderResourceVariable> SsaoMap;
 	ComPtr<ID3DX11EffectShaderResourceVariable> CubeMap;

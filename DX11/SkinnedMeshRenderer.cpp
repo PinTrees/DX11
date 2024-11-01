@@ -53,7 +53,7 @@ void SkinnedMeshRenderer::Render()
 		Effects::InstancedBasicFX->SetViewProj(RenderManager::GetI()->CameraViewProjectionMatrix);
 		Effects::InstancedBasicFX->SetWorldViewProj(worldViewProj);
 		Effects::InstancedBasicFX->SetWorldViewProjTex(worldViewProj * toTexSpace);
-		Effects::InstancedBasicFX->SetShadowTransform(world * RenderManager::GetI()->shadowTransform);
+		//Effects::InstancedBasicFX->SetShadowTransform(world * RenderManager::GetI()->shadowTransform);
 		Effects::InstancedBasicFX->SetTexTransform(XMMatrixScaling(1.0f, 1.0f, 1.0f));
 
 		for (int i = 0; i < m_Mesh->Subsets.size(); ++i) 
@@ -110,7 +110,7 @@ void SkinnedMeshRenderer::RenderShadow()
 		 
 		world = transform->GetWorldMatrix(); 
 		worldInvTranspose = MathHelper::InverseTranspose(world); 
-		worldViewProj = world * RenderManager::GetI()->DirectinalLightViewProjection; 
+		worldViewProj = world * RenderManager::GetI()->LightViewProjection;
 
 		Effects::BuildShadowMapFX->SetWorld(world); 
 		Effects::BuildShadowMapFX->SetWorldInvTranspose(worldInvTranspose); 
@@ -204,7 +204,7 @@ void SkinnedMeshRenderer::_Editor_Render()
 		Effects::InstancedBasicFX->SetViewProj(RenderManager::GetI()->EditorCameraViewProjectionMatrix);
 		Effects::InstancedBasicFX->SetWorldViewProj(worldViewProj);
 		Effects::InstancedBasicFX->SetWorldViewProjTex(worldViewProj * toTexSpace);
-		Effects::InstancedBasicFX->SetShadowTransform(world * RenderManager::GetI()->shadowTransform);
+		//Effects::InstancedBasicFX->SetShadowTransform(world * RenderManager::GetI()->shadowTransform);
 		Effects::InstancedBasicFX->SetTexTransform(XMMatrixScaling(1.0f, 1.0f, 1.0f));
 
 		for (int i = 0; i < m_Mesh->Subsets.size(); ++i)

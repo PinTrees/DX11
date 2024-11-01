@@ -55,7 +55,7 @@ void MeshRenderer::Render()
 		Effects::InstancedBasicFX->SetViewProj(RenderManager::GetI()->CameraViewProjectionMatrix);
 		Effects::InstancedBasicFX->SetWorldViewProj(worldViewProj);
 		Effects::InstancedBasicFX->SetWorldViewProjTex(worldViewProj * toTexSpace);
-		Effects::InstancedBasicFX->SetShadowTransform(world * RenderManager::GetI()->shadowTransform);
+		//Effects::InstancedBasicFX->SetShadowTransform(world * RenderManager::GetI()->shadowTransform);
 		Effects::InstancedBasicFX->SetTexTransform(XMMatrixScaling(1.0f, 1.0f, 1.0f));
 
 		for (int i = 0; i < m_Mesh->Subsets.size(); ++i)
@@ -124,11 +124,9 @@ void MeshRenderer::RenderInstancing(shared_ptr<class InstancingBuffer>& buffer)
 		Effects::InstancedBasicFX->SetWorldViewProj(worldViewProj);
 		Effects::InstancedBasicFX->SetWorldViewProjTex(worldViewProj * toTexSpace);
 
-		Effects::InstancedBasicFX->SetView(View);
-		Effects::InstancedBasicFX->SetProj(Proj);
 		Effects::InstancedBasicFX->SetViewProj(View* Proj);
 		Effects::InstancedBasicFX->SetViewProjTex(ViewProj * toTexSpace);
-		Effects::InstancedBasicFX->SetShadowTransform(RenderManager::GetI()->shadowTransform);
+		//Effects::InstancedBasicFX->SetShadowTransform(RenderManager::GetI()->shadowTransform);
 		Effects::InstancedBasicFX->SetTexTransform(XMMatrixScaling(1.0f, 1.0f, 1.0f));
 
 		for (auto mat : m_pMaterials)
@@ -185,7 +183,7 @@ void MeshRenderer::RenderShadow()
 
 		world = transform->GetWorldMatrix();
 		worldInvTranspose = MathHelper::InverseTranspose(world);
-		worldViewProj = world * RenderManager::GetI()->DirectinalLightViewProjection;
+		worldViewProj = world * RenderManager::GetI()->LightViewProjection;
 
 		Effects::BuildShadowMapFX->SetWorld(world);
 		Effects::BuildShadowMapFX->SetWorldInvTranspose(worldInvTranspose);
@@ -223,7 +221,7 @@ void MeshRenderer::RenderShadowInstancing(shared_ptr<class InstancingBuffer>& bu
 		if (m_MeshSubsetIndex >= m_Mesh->Subsets.size())
 			break;
 
-		ViewProj = RenderManager::GetI()->DirectinalLightViewProjection;
+		ViewProj = RenderManager::GetI()->LightViewProjection;
 
 		Effects::BuildShadowMapFX->SetViewProj(ViewProj);
 		Effects::BuildShadowMapFX->SetTexTransform(::XMMatrixScaling(1.0f, 1.0f, 1.0f));
@@ -369,7 +367,7 @@ void MeshRenderer::_Editor_Render()
 		Effects::InstancedBasicFX->SetViewProj(RenderManager::GetI()->EditorCameraViewProjectionMatrix);
 		Effects::InstancedBasicFX->SetWorldViewProj(worldViewProj);
 		Effects::InstancedBasicFX->SetWorldViewProjTex(worldViewProj * toTexSpace);
-		Effects::InstancedBasicFX->SetShadowTransform(world * RenderManager::GetI()->shadowTransform);
+		//Effects::InstancedBasicFX->SetShadowTransform(world * RenderManager::GetI()->shadowTransform);
 		Effects::InstancedBasicFX->SetTexTransform(XMMatrixScaling(1.0f, 1.0f, 1.0f));
 
 		for (int i = 0; i < m_Mesh->Subsets.size(); ++i)

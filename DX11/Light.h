@@ -2,15 +2,8 @@
 #include "Component.h"
 #include "LightHelper.h"
 
-enum class LightType
-{
-	Directional,
-	Point,
-	Spot,
-	End
-};
-
-class Light : public Component
+class Light
+	: public Component
 {
 private:
 	LightType m_lightType = LightType::Directional;
@@ -20,11 +13,11 @@ private:
 	PointLight m_pointDesc;
 	SpotLight m_spotDesc;
 
-	XMFLOAT2 m_dirLightLen = XMFLOAT2(20.f, 20.f);
-	XMFLOAT2 m_spotLightLen = XMFLOAT2(20.f, 20.f);
+	vector<XMMATRIX> m_LightView;
+	XMMATRIX m_LightProj;
 
-	XMMATRIX m_lightView;
-	XMMATRIX m_lightProj;
+	vector<XMMATRIX> m_editorLightView;
+	XMMATRIX m_editorLightProj;
 
 	// shadowTransform => world * (lightV * lightP * toTexSpace)
 
@@ -44,12 +37,12 @@ public:
 	virtual void Update() override;
 	virtual void LateUpdate() override;
 	virtual void FixedUpdate() override;
-
 	virtual void LastUpdate() override;
-
 	virtual void Render() override;
-	virtual void OnInspectorGUI() override;
+
 	virtual void OnDestroy() override;
+
+	virtual void OnInspectorGUI() override;
 	virtual void OnDrawGizmos() override;
 
 	void SetDirLight(DirectionalLight light);
@@ -60,9 +53,17 @@ public:
 	PointLight GetPointLight() { return m_pointDesc; }
 	SpotLight GetSpotLight() { return m_spotDesc; }
 
-	XMMATRIX GetLightView() { return m_lightView; }
-	XMMATRIX GetLightProj() { return m_lightProj; }
-	XMMATRIX GetLightViewProj() { return m_lightView * m_lightProj; }
+	float GetRange();
+
+	vector<XMMATRIX> GetEditorLightViewArray() { return m_editorLightView; }
+	XMMATRIX GetEditorLightView() { return m_editorLightView[0]; }
+	XMMATRIX GetEditorLightProjection() { return m_editorLightProj; }
+	XMMATRIX GetEditorLightViewProjection(int index) { return m_editorLightView[index] * m_editorLightProj; }
+
+	vector<XMMATRIX> GetLightViewArray() { return m_LightView; }
+	XMMATRIX GetLightView() { return m_LightView[0]; }
+	XMMATRIX GetLightProjection() { return m_LightProj; }
+	XMMATRIX GetLightViewProjection(int index) { return m_LightView[index] * m_LightProj; }
 
 	// LightV * LightP * toTexSpace
 	LightType GetLightType() { return m_lightType; }

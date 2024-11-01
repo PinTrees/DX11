@@ -11,112 +11,6 @@ EditorCamera::~EditorCamera()
 {
 }
 
-void EditorCamera::GetFrustumCulling()
-{
-	FrustumUpdate();
-	
-	vector<GameObject*> allObject = SceneManager::GetI()->GetCurrentScene()->GetAllGameObjects();
-	vector<GameObject*> cullingObjects;
-	vector<shared_ptr<Light>> lights = LightManager::GetI()->GetLights();
-	vector<shared_ptr<Light>> cullingLights;
-
-	bool check;
-
-	for (const auto& gameObject : allObject)
-	{
-		auto meshRenderer = gameObject->GetComponent<MeshRenderer>();
-
-		// meshRenderer 컴포넌트가 없는 객체이거나 mesh를 적용 안 시켰을 경우
-		if (!meshRenderer)
-			continue;
-
-		if (!(meshRenderer->GetMesh()))
-			continue;
-
-		Vec3 meshPos = meshRenderer->GetGameObject()->GetTransform()->GetPosition();
-		BouncingBall ball = meshRenderer->GetMesh()->Ball;
-		check = true;
-		for (int i = 0; i < 6; i++)
-		{
-			// 충돌체크
-			//plane.normal.x * center.x + plane.normal.y * center.y + plane.normal.z * center.z + plane.d;
-			float distance = m_Frustum.planes[i].normal.x * (ball.center.x + meshPos.x) +
-				m_Frustum.planes[i].normal.y * (ball.center.y + meshPos.y) +
-				m_Frustum.planes[i].normal.z * (ball.center.z + meshPos.z) +
-				m_Frustum.planes[i].d;
-			if (distance < -ball.radius)
-				check = false; // 구가 평면의 밖에 있음
-		}
-
-		if (check)
-			cullingObjects.push_back(gameObject);
-	}
-
-	// Point and Spot Light
-	for (const auto& light : lights)
-	{
-		if (LightType::Directional == light->GetLightType())
-		{
-			cullingLights.push_back(light);
-			continue;
-		}
-
-		Vec3 lightPos = light->GetGameObject()->GetTransform()->GetPosition();
-
-		check = true;
-		for (int i = 0; i < 6; i++)
-		{
-			// 충돌체크
-			//plane.normal.x * center.x + plane.normal.y * center.y + plane.normal.z * center.z + plane.d;
-			float distance = m_Frustum.planes[i].normal.x * lightPos.x +
-				m_Frustum.planes[i].normal.y * lightPos.y +
-				m_Frustum.planes[i].normal.z * lightPos.z +
-				m_Frustum.planes[i].d;
-			if (distance < -light->GetRange())
-				check = false; // 구가 평면의 밖에 있음
-		}
-
-		if (check)
-			cullingLights.push_back(light);
-	}
-
-	SceneManager::GetI()->GetCurrentScene()->SetCullingEditorGameObjects(cullingObjects);
-	LightManager::GetI()->SortingEditorLights(cullingLights, _position);
-}
-
-void EditorCamera::FrustumUpdate()
-{
-	// 클립 행렬을 계산
-	::XMMATRIX clipMatrix = DirectX::XMMatrixMultiply(::XMLoadFloat4x4(&_proj), ::XMLoadFloat4x4(&_view));
-	::XMFLOAT4X4 clip;
-	::XMStoreFloat4x4(&clip, clipMatrix);
-
-	// 평면 계산 (각 면의 계수 계산)
-	m_Frustum.planes[0] = { {clip._41 + clip._11, clip._42 + clip._12, clip._43 + clip._13}, clip._44 + clip._14 }; // left
-	m_Frustum.planes[1] = { {clip._41 - clip._11, clip._42 - clip._12, clip._43 - clip._13}, clip._44 - clip._14 }; // right
-	m_Frustum.planes[2] = { {clip._41 + clip._21, clip._42 + clip._22, clip._43 + clip._23}, clip._44 + clip._24 }; // bottom
-	m_Frustum.planes[3] = { {clip._41 - clip._21, clip._42 - clip._22, clip._43 - clip._23}, clip._44 - clip._24 }; // top
-	m_Frustum.planes[4] = { {clip._41 + clip._31, clip._42 + clip._32, clip._43 + clip._33}, clip._44 + clip._34 }; // near
-	m_Frustum.planes[5] = { {clip._41 - clip._31, clip._42 - clip._32, clip._43 - clip._33}, clip._44 - clip._34 }; // far
-
-	// 각 평면의 정규화
-	for (int i = 0; i < 6; ++i) 
-	{
-		float length = sqrtf(m_Frustum.planes[i].normal.x * m_Frustum.planes[i].normal.x +
-			m_Frustum.planes[i].normal.y * m_Frustum.planes[i].normal.y +
-			m_Frustum.planes[i].normal.z * m_Frustum.planes[i].normal.z);
-
-		if (length > 0.0f)
-		{
-			m_Frustum.planes[i].normal.x /= length;
-			m_Frustum.planes[i].normal.y /= length;
-			m_Frustum.planes[i].normal.z /= length;
-			m_Frustum.planes[i].d /= length;
-		}
-	}
-}
-
-
 XMVECTOR EditorCamera::GetPositionXM()const
 {
 	return ::XMLoadFloat3(&_position);
@@ -345,8 +239,6 @@ void EditorCamera::UpdateViewMatrix()
 	_view(1, 3) = 0.0f;
 	_view(2, 3) = 0.0f;
 	_view(3, 3) = 1.0f;
-	
-	GetFrustumCulling();
 }
 
 XMMATRIX EditorCamera::GetWorldMatrix()
