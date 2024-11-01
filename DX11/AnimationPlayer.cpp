@@ -11,9 +11,25 @@ AnimationPlayer::~AnimationPlayer()
 {
 }
 
+void AnimationPlayer::Awake()
+{
+	m_pSkinnedMeshRenderer = m_pGameObject->GetComponent_SP<SkinnedMeshRenderer>();
+	
+	if (m_pSkinnedMeshRenderer == nullptr)
+		return;
+	if (m_AnimationClip == nullptr)
+		return;
+
+	m_FinalTransforms.resize(m_pSkinnedMeshRenderer->GetMesh()->SkinnedData.BoneCount()); 
+}
+
 void AnimationPlayer::Update()
 {
+	if (m_pSkinnedMeshRenderer == nullptr)
+		return;
 
+	m_TimePos += DT;  
+	//m_pSkinnedMeshRenderer->GetMesh()->SkinnedData.GetFinalTransforms(ClipName, TimePos, FinalTransforms);
 }
 
 void AnimationPlayer::LastUpdate()

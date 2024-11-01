@@ -20,10 +20,24 @@ void Component::RenderInspectorGUI()
 	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
 
 	EditorGUI::ComponentDivider();
+
+	string componentHeader_id = "ComponentHeader" + to_string(GetInstanceID());
+	ImGui::PushID(componentHeader_id.c_str());
+
 	bool isOpened = false;
 	if(m_InspectorIconPath != L"")
 		isOpened = EditorGUI::ComponentHeader(m_InspectorTitleName, L"ProjectSetting\\icons\\component\\" + m_InspectorIconPath, m_InspectorOpened);
 	else isOpened = EditorGUI::ComponentHeader(m_InspectorTitleName, L"ProjectSetting\\icons\\icon_camera.png", m_InspectorOpened);
+
+	// ComponentHeader context menu
+	if (ImGui::BeginPopupContextItem("ComponentContextMenu", ImGuiMouseButton_Right))
+	{
+		if (ImGui::MenuItem("Reset Component")) Reset();
+		if (ImGui::MenuItem("Remove Component")) GameObject::Destroy(this);
+		ImGui::EndPopup();
+	}
+
+	ImGui::PopID(); 
 
 	// Drag this component
 	if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))

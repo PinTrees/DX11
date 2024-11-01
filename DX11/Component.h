@@ -36,11 +36,13 @@ public:
 	virtual void LastUpdate() { }
 
 	virtual void Render() { }
+
+	// Editor Only
 	virtual void _Editor_Render() { }
 	virtual void _Editor_Update() { }
 
-	// Editor Only
-	void RenderInspectorGUI();
+	virtual void Reset() { }
+	void RenderInspectorGUI(); 
 	virtual void OnInspectorGUI() { }
 	virtual void OnDrawGizmos() { }
 	virtual void OnDestroy() { }

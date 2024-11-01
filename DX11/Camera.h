@@ -19,8 +19,7 @@ struct Frustum
 	Plane planes[6]; // 6°³ÀÇ ¸é (left, right, top, bottom, near, far)
 };
 
-class Camera
-	: public Component
+class Camera : public Component
 {
 private:
 	ProjectionType m_cameraType = ProjectionType::Perspective;

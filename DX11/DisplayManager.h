@@ -7,7 +7,11 @@ class DisplayManager
 	SINGLE_HEADER(DisplayManager)
 
 private:
-	vector<weak_ptr<Camera>> m_AllCameraComponents; 
+	vector<weak_ptr<Camera>> m_AllCameraComponents;  
+
+	// Setting
+	float				m_MainAspectRatio;
+	map<string, float>	m_DefaultAspectRatios;
 
 public:
 	void Init();

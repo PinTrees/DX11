@@ -22,6 +22,17 @@ void DisplayManager::Init()
 		if (camera != nullptr) 
 			m_AllCameraComponents.push_back(camera); 
 	}
+
+
+	// 기본 종횡비를 설정
+	m_DefaultAspectRatios["1:1"] = 1.0f;
+	m_DefaultAspectRatios["4:3"] = 4.0f / 3.0f;
+	m_DefaultAspectRatios["16:9"] = 16.0f / 9.0f;
+	m_DefaultAspectRatios["21:9"] = 21.0f / 9.0f;
+
+	m_DefaultAspectRatios["3:4"] = 3.0f / 4.0f;
+	m_DefaultAspectRatios["9:16"] = 9.0f / 16.0f;
+	m_DefaultAspectRatios["9:21"] = 9.0f / 21.0f;
 }
 
 void DisplayManager::RegisterCameraComponent(const weak_ptr<Camera>& camera)

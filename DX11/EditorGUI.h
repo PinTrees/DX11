@@ -66,6 +66,8 @@ public:
 	static bool SkinnedMeshField(string title, shared_ptr<SkinnedMesh>& mesh, wstring& meshFilePath, int& subsetIndex);
 	static bool AnimationClipField(string title, shared_ptr<AnimationClip>& animationClip, string& animationClipPath, int index);
 
+	//static bool EnumField(string title);
+
 public:
 	static void ContainerStylePush();
 	static void ContainerStylePop();

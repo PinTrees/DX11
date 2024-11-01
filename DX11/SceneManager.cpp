@@ -64,6 +64,13 @@ void SceneManager::RenderScene()
 	m_pCurrScene->RenderScene();
 }
 
+void SceneManager::LastUpdate()
+{
+	for (auto& action : m_Editor_LastUpdateActions)
+		action();
+	m_Editor_LastUpdateActions.clear();
+}
+
 void SceneManager::HandleSaveScene()
 {
 	if (INPUT_KEY_HOLD(KEY::CTRL) && INPUT_KEY_HOLD(KEY::LSHIFT) && INPUT_KEY_DOWN(KEY::S))

@@ -106,6 +106,19 @@ void SceneHierachyEditorWindow::DrawGameObject(GameObject* gameObject)
 	if (ImGui::Button(gamobject_entry_id.c_str(), ImVec2(availableSize.x, 26))) {
 		SelectionManager::SetSelectedGameObject(gameObject);
 	}
+
+	// 우클릭 컨텍스트 메뉴 열기
+	if (ImGui::BeginPopupContextItem(gamobject_entry_id.c_str()))
+	{
+		if (ImGui::MenuItem("Delete GameObject"))
+		{ 
+			GameObject::Destroy(gameObject); 
+			SelectionManager::SetSelectedGameObject(nullptr); 
+		}
+		
+		ImGui::EndPopup();
+	}
+
 	// Drag GameObject
 	if (ImGui::BeginDragDropSource())
 	{

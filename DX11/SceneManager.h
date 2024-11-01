@@ -10,6 +10,9 @@ private:
 	Scene* m_pCurrScene;
 	std::map<wstring, Scene*> m_Scenes;
 
+	// Editor
+	vector<function<void()>>		m_Editor_LastUpdateActions;
+
 public:
 	void Init();
 
@@ -17,10 +20,13 @@ public:
 
 	void UpdateScene();
 	void RenderScene();
+	void LastUpdate(); 
 
 	Scene* GetCurrentScene() { return m_pCurrScene; }
 
 public:
+	void AddLastUpdate(function<void()> action) { m_Editor_LastUpdateActions.push_back(action); } 
+	// Editor
 	void HandleSaveScene();
 	void HandlePlay();
 	void HandleStop();

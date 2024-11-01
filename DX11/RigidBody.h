@@ -3,8 +3,7 @@
 
 class Transform;
 
-class RigidBody
-	: public Component
+class RigidBody : public Component
 {
 private:
 	float m_Mass;						// Áú·®
@@ -34,7 +33,7 @@ private:
 
 public:
 	RigidBody();
-	~RigidBody();
+	virtual ~RigidBody();
 
 public:
 	void SetInertiaTensor(const Matrix3 mat);

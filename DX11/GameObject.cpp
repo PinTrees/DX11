@@ -28,6 +28,25 @@ GameObject::GameObject(const string& name)
 
 GameObject::~GameObject()
 {
+    m_Components.clear();
+    m_ComponentsToAdd.clear();
+    m_Scripts.clear();
+}
+
+void GameObject::Destroy(Component* component_ptr) 
+{
+    SceneManager::GetI()->AddLastUpdate([component_ptr]() { 
+        const auto& scene = SceneManager::GetI()->GetCurrentScene(); 
+        scene->DestroyComponent(component_ptr); 
+    });  
+}
+
+void GameObject::Destroy(GameObject* gameobject_ptr)
+{
+    SceneManager::GetI()->AddLastUpdate([gameobject_ptr]() { 
+        const auto& scene = SceneManager::GetI()->GetCurrentScene(); 
+        scene->DestroyGameObject(gameobject_ptr); 
+    }); 
 }
 
 void GameObject::SetParent(GameObject* parent)
@@ -129,10 +148,10 @@ void GameObject::LastUpdate()
 
 void GameObject::OnDestroy()
 {
-    for (const auto& c : m_Components) {
+    for (const auto& c : m_Components) 
+    {
         c->OnDestroy();
     }
-
     m_Components.clear(); 
 }
 

@@ -4,7 +4,7 @@
 #include "MathHelper.h"
 
 Scene::Scene()
-	: m_RootGameObjects(),
+	: m_vecRootGameObjects(),
     m_arrGameObjects{},
     m_ScenePath(L"")
 {
@@ -12,10 +12,10 @@ Scene::Scene()
 
 Scene::~Scene()
 {
-    for (const auto& g : m_RootGameObjects)
+    for (const auto& g : m_vecRootGameObjects)
         g->OnDestroy(); 
 
-	Safe_Delete_Vec(m_RootGameObjects);
+	Safe_Delete_Vec(m_vecRootGameObjects);
     m_arrGameObjects[0].clear();
 }
 
@@ -357,21 +357,59 @@ void Scene::SaveNewScene(Scene* scene)
     }
 }
 
+void Scene::DestroyComponent(Component* component)
+{
+    if (component->GetType() == "Transform")
+    {
+        // µð¹ö±×
+        return;
+    }
+
+    component->OnDestroy(); 
+    auto& components = component->GetGameObject()->GetComponents();
+
+    bool isDeleteComponent = false;
+    for (int i = 0; i < components.size(); ++i) 
+    {
+        auto& c = components[i]; 
+        if (c.get() == component)  
+        {
+            c.reset();
+            components.erase(components.begin() + i);
+            isDeleteComponent = true;
+            break;
+        }
+    }
+    
+    if (!isDeleteComponent && component != nullptr)
+        delete component; 
+}
+
+void Scene::DestroyGameObject(GameObject* gameobject)
+{
+    auto it1 = std::find(m_vecRootGameObjects.begin(), m_vecRootGameObjects.end(), gameobject);  
+    auto it2 = std::find(m_arrGameObjects[0].begin(), m_arrGameObjects[0].end(), gameobject); 
+    
+    gameobject->OnDestroy();
+    if (it1 != m_vecRootGameObjects.end())  m_vecRootGameObjects.erase(it1); 
+    if (it2 != m_arrGameObjects[0].end())  m_arrGameObjects[0].erase(it2);  
+}
+
 void Scene::AddRootGameObject(GameObject* gameObject)
 {
     if (gameObject == nullptr)
         return;
 
-	m_RootGameObjects.push_back(gameObject);
+	m_vecRootGameObjects.push_back(gameObject);
 	m_arrGameObjects[0].push_back(gameObject);
 }
 
 void Scene::RemoveRootGameObjects(GameObject* gameObject)
 {
-    auto it = std::find(m_RootGameObjects.begin(), m_RootGameObjects.end(), gameObject);  
-    if (it != m_RootGameObjects.end())  
+    auto it = std::find(m_vecRootGameObjects.begin(), m_vecRootGameObjects.end(), gameObject);  
+    if (it != m_vecRootGameObjects.end())  
     { 
-        m_RootGameObjects.erase(it); 
+        m_vecRootGameObjects.erase(it); 
     }
 }
 
@@ -381,7 +419,7 @@ void to_json(json& j, const Scene& scene)
     {
         { "rootGameObjects", json::array() }
     };
-    for (const GameObject* gameObject : scene.m_RootGameObjects)
+    for (const GameObject* gameObject : scene.m_vecRootGameObjects)
     {
         j["rootGameObjects"].push_back(*gameObject);
     }
@@ -393,7 +431,7 @@ void from_json(const json& j, Scene& scene)
     {
         GameObject* gameObject = new GameObject();
         from_json(gameObjectJson, *gameObject); 
-        scene.m_RootGameObjects.push_back(gameObject);
+        scene.m_vecRootGameObjects.push_back(gameObject);
         scene.m_arrGameObjects[0].push_back(gameObject);
     }
 }

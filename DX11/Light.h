@@ -10,8 +10,7 @@ enum class LightType
 	End
 };
 
-class Light
-	: public Component
+class Light : public Component
 {
 private:
 	LightType m_lightType = LightType::Directional;

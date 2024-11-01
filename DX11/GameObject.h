@@ -33,7 +33,7 @@ private:
 	bool m_IsActive;  
 
 	// Editor
-	vector<std::function<void()>>	m_Editor_LastUpdateActions; 
+	vector<function<void()>>		m_Editor_LastUpdateActions; 
 public:
 	bool							m_Editor_HierachOpened;
 
@@ -41,6 +41,12 @@ public:
 	GameObject();
 	GameObject(const string& name);
 	~GameObject();
+
+public:
+	static void Destroy(Component* component_ptr); 
+	static void Destroy(GameObject* gameobject_ptr);
+	// Editor Only
+	static void DestroyImmediatly(GameObject* gameobject_ptr);
 
 public:
 	uint64 GetInstanceID() const { return m_InstanceID; }
@@ -122,10 +128,7 @@ public:
 		}
 		return nullptr;
 	}
-	vector<shared_ptr<Component>> GetComponents()
-	{
-		return m_Components;
-	}
+	vector<shared_ptr<Component>>& GetComponents() { return m_Components; }
 
 private:
 	friend class GameObject;

@@ -6,6 +6,8 @@
 Light::Light()
 {
 	m_InspectorTitleName = "Light";
+	m_InspectorIconPath = L"directional_right.png"; 
+
 	m_directionalDesc.Init();
 	m_pointDesc.Init();
 	m_spotDesc.Init();

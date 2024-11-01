@@ -14,6 +14,7 @@
 Camera::Camera()
 {
 	m_InspectorTitleName = "Camera";
+	m_InspectorIconPath = L"camera.png";
 	SetLens(0.25f * XM_PI, 1.0f, 1.0f, 1000.0f);
 }
 
@@ -413,6 +414,7 @@ string Camera::GetStringCameraType(ProjectionType type)
 void Camera::OnInspectorGUI()
 {
 	// CameraType º±≈√GUI
+	//EditorGUI::FloatField
 	if (ImGui::BeginCombo("LightType", GetStringCameraType(m_cameraType).c_str())) // The second parameter is the previewed value
 	{
 		for (int n = 0; n < (int)ProjectionType::End; n++)

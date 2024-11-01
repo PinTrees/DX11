@@ -102,6 +102,8 @@ int32 App::Run()
 
 				// Last Frame
 				SceneManager::GetI()->GetCurrentScene()->LastFramUpdate();
+				SceneManager::GetI()->LastUpdate();
+
 				TaskSystem::ExecuteMainThreadTasks();
 			}
 			else
