@@ -277,30 +277,35 @@ void Camera::GetFrustumCulling()
 
 	bool check;
 
+	// 메쉬렌더러 컬링이 제대로 안되는 문제!
 	for (const auto& gameObject : allObject)
 	{
 		auto meshRenderer = gameObject->GetComponent<MeshRenderer>();
 
-		// meshRenderer 컴포넌트가 없는 객체이거나 mesh를 적용 안 시켰을 경우
-		if (!meshRenderer)
-			continue;
-
-		if (!(meshRenderer->GetMesh()))
+		// meshRenderer 컴포넌트가 없는 객체이거나 mesh를 적용 안 시켰을 경우, editor and game Camera에 SkinnedMesh도 포함시켜야함
+		if (!meshRenderer || !meshRenderer->GetMesh())
 			continue;
 
 		Vec3 meshPos = meshRenderer->GetGameObject()->GetTransform()->GetPosition();
 		BouncingBall ball = meshRenderer->GetMesh()->Ball;
+
+		Vec3 ballCenter = ball.center + meshPos;
+
 		check = true;
 		for (int i = 0; i < 6; i++)
 		{
 			// 충돌체크
 			//plane.normal.x * center.x + plane.normal.y * center.y + plane.normal.z * center.z + plane.d;
-			float distance = m_Frustum.planes[i].normal.x * (ball.center.x + meshPos.x) +
-				m_Frustum.planes[i].normal.y * (ball.center.y + meshPos.y) +
-				m_Frustum.planes[i].normal.z * (ball.center.z + meshPos.z) +
+			float distance = m_Frustum.planes[i].normal.x * ballCenter.x +
+				m_Frustum.planes[i].normal.y * ballCenter.y +
+				m_Frustum.planes[i].normal.z * ballCenter.z +
 				m_Frustum.planes[i].d;
+
 			if (distance < -ball.radius)
+			{
 				check = false; // 구가 평면의 밖에 있음
+				break;
+			}
 		}
 
 		if (check)
@@ -327,8 +332,12 @@ void Camera::GetFrustumCulling()
 				m_Frustum.planes[i].normal.y * lightPos.y +
 				m_Frustum.planes[i].normal.z * lightPos.z +
 				m_Frustum.planes[i].d;
+
 			if (distance < -light->GetRange())
+			{
 				check = false; // 구가 평면의 밖에 있음
+				break;
+			}
 		}
 
 		if (check)

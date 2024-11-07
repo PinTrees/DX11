@@ -311,16 +311,16 @@ float4 PS(VertexOut pin) : SV_Target
         float4 diffuse = float4(0.0f, 0.0f, 0.0f, 0.0f);
         float4 spec = float4(0.0f, 0.0f, 0.0f, 0.0f);
 		  
-        float dirShadow[LIGHT_SIZE];
-        float spotShadow[LIGHT_SIZE];
-        float pointShadow[LIGHT_SIZE];
+        float dirShadows[LIGHT_SIZE];
+        float spotShadows[LIGHT_SIZE];
+        float pointShadows[LIGHT_SIZE];
         
         [unroll]
         for (int shadowSize = 0; shadowSize < LIGHT_SIZE; shadowSize++)
         {
-            dirShadow[shadowSize] = 1.0f;
-            spotShadow[shadowSize] = 1.0f;
-            pointShadow[shadowSize] = 1.0f;
+            dirShadows[shadowSize] = 1.0f;
+            spotShadows[shadowSize] = 1.0f;
+            pointShadows[shadowSize] = 1.0f;
         }
         
         if (gShaderSetting.gUseShadowMap)
@@ -328,13 +328,13 @@ float4 PS(VertexOut pin) : SV_Target
             [unloll]
             for (int i = 0; i < LIGHT_SIZE; i++)
             {
-                dirShadow[i] = CalcShadowFactor(samShadow, gDirShadowMaps[i], mul(pin.PosW, gDirShadowTransforms[i]));
+                dirShadows[i] = CalcShadowFactor(samShadow, gDirShadowMaps[i], mul(pin.PosW, gDirShadowTransforms[i]));
             }
             
             [unloll]
             for (int j = 0; j < LIGHT_SIZE; j++)
             {
-                spotShadow[j] = CalcShadowFactor(samShadow, gSpotShadowMaps[j], mul(pin.PosW, gSpotShadowTransforms[j]));
+                spotShadows[j] = CalcShadowFactor(samShadow, gSpotShadowMaps[j], mul(pin.PosW, gSpotShadowTransforms[j]));
             }
             
             [unloll]
@@ -344,10 +344,10 @@ float4 PS(VertexOut pin) : SV_Target
                 [unloll]
                 for (int s = 0; s < 6; s++)
                 {
-                    pointShadow[l] += CalcShadowFactor(samShadow, gPointShadowMaps[startIndex + s], mul(pin.PosW, gPointShadowTransforms[startIndex + s]));
+                    pointShadows[l] += CalcShadowFactor(samShadow, gPointShadowMaps[startIndex + s], mul(pin.PosW, gPointShadowTransforms[startIndex + s]));
                 }
     
-                pointShadow[l] /= 6.0f; // Æò±Õ ³»±â
+                pointShadows[l] /= 6.0f; // Æò±Õ ³»±â
             }
             
             //shadow[0] = CalcShadowFactor(samShadow, gShadowMap, pin.ShadowPosH);
@@ -370,8 +370,8 @@ float4 PS(VertexOut pin) : SV_Target
 				A, D, S);
 
             ambient += ambientAccess * A;
-            diffuse += dirShadow[i] * D;
-            spec += dirShadow[i] * S;
+            diffuse += dirShadows[i] * D;
+            spec += dirShadows[i] * S;
         }
 
         [unloll]
@@ -381,8 +381,8 @@ float4 PS(VertexOut pin) : SV_Target
 				A, D, S);
 
             ambient += ambientAccess * A;
-            diffuse += spotShadow[j] * D;
-            spec += spotShadow[j] * S;
+            diffuse += spotShadows[j] * D;
+            spec += spotShadows[j] * S;
         }
         
         [unloll]
@@ -392,8 +392,8 @@ float4 PS(VertexOut pin) : SV_Target
 				A, D, S);
 
             ambient += ambientAccess * A;
-            diffuse += pointShadow[l] * D;
-            spec += pointShadow[l] * S;
+            diffuse += pointShadows[l] * D;
+            spec += pointShadows[l] * S;
         }
 		   
         litColor = texColor * (ambient + diffuse) + spec;

@@ -7,8 +7,6 @@ class RenderManager
 	SINGLE_HEADER(RenderManager)
 
 public:
-	XMMATRIX shadowTransform;
-
 	// Common
 	shared_ptr<class ShadowMap> BaseShadowMap;
 	shared_ptr<class ShadowMap> EditorShadowMap;
@@ -25,11 +23,11 @@ public:
 	XMMATRIX CameraViewProjectionMatrix;
 	D3D11_VIEWPORT Viewport; 
 
-	// ShaodwTransform -> VPT
+	// ShaodwTransform -> VPT, 렌더마다 clear 필수
 	vector<XMMATRIX> ShadowTransformArray[(uint32)LightType::End];
 	vector<XMMATRIX> EditorShadowTransformArray[(uint32)LightType::End];
-	XMMATRIX LightViewProjection;
-	//XMMATRIX EditorLightViewProjection;
+	XMMATRIX LightViewProjection; // shadowMap Render용 변수, Editor and Game 둘 다 사용
+
 	// Editor Only
 public:
 	static const int SMapSize = 2048;
