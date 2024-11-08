@@ -490,6 +490,9 @@ void MeshViewDemo::_Editor_OnSceneRender(ID3D11RenderTargetView* renderTargetVie
 
 	//_sky->Draw(_deviceContext, _camera);
 
+	// Texture2D 작은 화면으로 렌더 (디버깅)
+	DrawScreenQuad(shadowMap->DepthMapSRVArray(LightType::Directional)[0]);
+
 	_deviceContext->RSSetState(0);
 	_deviceContext->OMSetDepthStencilState(0, 0);
 

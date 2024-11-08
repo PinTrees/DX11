@@ -7,6 +7,7 @@
 #include "SceneEditorWindow.h"
 #include "EditorCamera.h"
 #include "Camera.h"
+#include "DisplayManager.h"
 
 Light::Light()
 {
@@ -86,7 +87,6 @@ void Light::LastUpdate()
 	XMVECTOR lookDir = m_pGameObject->GetTransform()->GetLook();
 	XMVECTOR target = pos + lookDir;
 	XMVECTOR upDir = m_pGameObject->GetTransform()->GetUp();
-	XMMATRIX V;
 
 	Vec3 r;
 
@@ -95,35 +95,48 @@ void Light::LastUpdate()
 	XMVECTOR rightDir;
 	XMVECTOR downDir;
 
-	XMVECTOR gamePos;
-	XMVECTOR editorPos;
-	float editorFarZ;
+	XMVECTOR tempPos;
+	float cameraFarZ;
 
-	XMFLOAT3 tempPos = SceneViewManager::GetI()->m_LastActiveSceneEditorWindow->GetSceneCamera()->GetPosition();
+	XMFLOAT3 editorCameraPos = SceneViewManager::GetI()->m_LastActiveSceneEditorWindow->GetSceneCamera()->GetPosition();
+	XMFLOAT3 gameCameraPos = DisplayManager::GetI()->GetActiveCamera()->GetPosition();
 
 	switch (m_lightType)
 	{
 	case LightType::Directional:
-		r = m_pGameObject->GetTransform()->GetLocalEulerRadians();
-
-		// gameCamera도 나중에 GameCameraManager에서 메인카메라를 가져오게 하기, projUpdate에도 변경 부분 있음
-		// gamePos
-
-		editorPos = XMLoadFloat3(&tempPos);
-		editorFarZ = SceneViewManager::GetI()->m_LastActiveSceneEditorWindow->GetSceneCamera()->GetFarZ();
-		pos = XMVectorSet
-		(
-			{ editorFarZ * sinf(r.x) * cosf(r.y) },
-			{ editorFarZ * sinf(r.x) * sinf(r.y) },
-			{ editorFarZ * cosf(r.x) },
-			{ 0 }
-		);
-
+		// Pos = GameCameraPosition + LightRotation방향쪽의 Camera 범위 경계선에 위치
 		// light pos = camera position + ((camerafarZ * 2) * light.dir)
 		// light pos는 camera position을 중심으로 CameraFarZ(반지름) 끝에 위치해야함
 
-		m_editorLightView[0] = ::XMMatrixLookAtLH(pos, pos + lookDir, upDir);
+		r = m_pGameObject->GetTransform()->GetLocalEulerRadians();
+		
+		tempPos = XMLoadFloat3(&gameCameraPos);
+		cameraFarZ = SceneViewManager::GetI()->m_LastActiveSceneEditorWindow->GetSceneCamera()->GetFarZ();
+		pos = XMVectorSet
+		(
+			{ cameraFarZ * sinf(r.x) * cosf(r.y) },
+			{ cameraFarZ * sinf(r.x) * sinf(r.y) },
+			{ cameraFarZ * cosf(r.x) },
+			{ 0 }
+		);
+
+		pos += tempPos;
+
 		m_LightView[0] = ::XMMatrixLookAtLH(pos, pos + lookDir, upDir);
+	
+		tempPos = XMLoadFloat3(&editorCameraPos);
+		cameraFarZ = SceneViewManager::GetI()->m_LastActiveSceneEditorWindow->GetSceneCamera()->GetFarZ();
+		pos = XMVectorSet
+		(
+			{ cameraFarZ * sinf(r.x) * cosf(r.y) },
+			{ cameraFarZ * sinf(r.x) * sinf(r.y) },
+			{ cameraFarZ * cosf(r.x) },
+			{ 0 }
+		);
+
+		pos += tempPos;
+
+		m_editorLightView[0] = ::XMMatrixLookAtLH(pos, pos + lookDir, upDir);
 
 		XMStoreFloat3(&m_directionalDesc.Direction, r);
 		break;

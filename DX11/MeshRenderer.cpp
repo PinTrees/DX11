@@ -37,6 +37,9 @@ void MeshRenderer::Render()
 		0.0f, 0.0f, 1.0f, 0.0f,
 		0.5f, 0.5f, 0.0f, 1.0f);
 
+	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	deviceContext->IASetInputLayout(InputLayouts::PosNormalTexTan.Get());
+
 	for (uint32 p = 0; p < techDesc.Passes; ++p)
 	{
 		if (m_Mesh->Subsets.size() <= 0)
@@ -348,6 +351,9 @@ void MeshRenderer::_Editor_Render()
 		0.0f, -0.5f, 0.0f, 0.0f,
 		0.0f, 0.0f, 1.0f, 0.0f,
 		0.5f, 0.5f, 0.0f, 1.0f);
+
+	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	deviceContext->IASetInputLayout(InputLayouts::PosNormalTexTan.Get());
 
 	for (uint32 p = 0; p < techDesc.Passes; ++p)
 	{
