@@ -93,6 +93,17 @@ const D3D11_INPUT_ELEMENT_DESC InputLayoutDesc::InstancedBasic[8] =
 	{ "WORLD", 3, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 48, D3D11_INPUT_PER_INSTANCE_DATA, 1 }
 };
 
+const D3D11_INPUT_ELEMENT_DESC InputLayoutDesc::TerrainVertex[7] =
+{
+	{"POSITION",	0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0,  0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+	{"TEXCOORD",	0, DXGI_FORMAT_R32G32_FLOAT,       0, 16, D3D11_INPUT_PER_VERTEX_DATA, 0},
+	{"NORMAL",		0, DXGI_FORMAT_R32G32B32_FLOAT,    0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0},
+	{"TANGENT",		0, DXGI_FORMAT_R32G32B32_FLOAT,    0, 36, D3D11_INPUT_PER_VERTEX_DATA, 0},
+	{"BINORMAL",	0, DXGI_FORMAT_R32G32B32_FLOAT,    0, 48, D3D11_INPUT_PER_VERTEX_DATA, 0},
+	{"COLOR",		0, DXGI_FORMAT_R32G32B32_FLOAT,    0, 60, D3D11_INPUT_PER_VERTEX_DATA, 0},
+	{"TEXCOORD",	1, DXGI_FORMAT_R32G32_FLOAT,       0, 72, D3D11_INPUT_PER_VERTEX_DATA, 0}
+};
+
 ComPtr<ID3D11InputLayout> InputLayouts::Pos;
 ComPtr<ID3D11InputLayout> InputLayouts::Basic32;
 ComPtr<ID3D11InputLayout> InputLayouts::TreePointSprite;
@@ -191,6 +202,14 @@ void InputLayouts::InitAll(ComPtr<ID3D11Device> device)
 	Effects::InstancedBasicFX->InstancingTech->GetPassByIndex(0)->GetDesc(&passDesc);
 	HR(device->CreateInputLayout(InputLayoutDesc::InstancedBasic, 8, passDesc.pIAInputSignature,
 		passDesc.IAInputSignatureSize, &InstancedBasic));
+
+	//
+	// TerrainVertex
+	//
+
+	// Effects::TerrainFX
+	HR(device->CreateInputLayout(InputLayoutDesc::TerrainVertex, 7, passDesc.pIAInputSignature,
+		passDesc.IAInputSignatureSize, &TerrainVertex));
 }
 
 void InputLayouts::DestroyAll()

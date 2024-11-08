@@ -79,6 +79,17 @@ namespace Vertex
 		BYTE boneIndices[4];   
 		//BYTE color[4];
 	};
+
+	struct TerrainVertex
+	{
+		XMFLOAT4 pos;
+		XMFLOAT2 tex;
+		XMFLOAT3 normal;
+		XMFLOAT3 tangentU;
+		XMFLOAT3 binormal;
+		XMFLOAT3 color;
+		XMFLOAT2 tex2;
+	};
 }
  
 
@@ -97,6 +108,7 @@ public:
 	static const D3D11_INPUT_ELEMENT_DESC AmbientOcclusion[4];
 	static const D3D11_INPUT_ELEMENT_DESC PosNormalTexTanSkinned[6];
 	static const D3D11_INPUT_ELEMENT_DESC InstancedBasic[8];
+	static const D3D11_INPUT_ELEMENT_DESC TerrainVertex[7];
 };
 
 class InputLayouts
@@ -116,4 +128,5 @@ public:
 	static ComPtr<ID3D11InputLayout> AmbientOcclusion;
 	static ComPtr<ID3D11InputLayout> PosNormalTexTanSkinned;
 	static ComPtr<ID3D11InputLayout> InstancedBasic;
+	static ComPtr<ID3D11InputLayout> TerrainVertex;
 };
