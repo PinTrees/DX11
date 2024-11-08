@@ -55,7 +55,9 @@ void SkinnedMeshRenderer::Render()
 		Effects::InstancedBasicFX->SetWorldViewProjTex(worldViewProj * toTexSpace);
 		//Effects::InstancedBasicFX->SetShadowTransform(world * RenderManager::GetI()->shadowTransform);
 		Effects::InstancedBasicFX->SetTexTransform(XMMatrixScaling(1.0f, 1.0f, 1.0f));
-		Effects::InstancedBasicFX->SetBoneTransforms(&m_FinalTransforms[0], m_FinalTransforms.size());
+
+		if (m_FinalTransforms.size() > 0)
+			Effects::InstancedBasicFX->SetBoneTransforms(&m_FinalTransforms[0], m_FinalTransforms.size());
 
 		for (int i = 0; i < m_Mesh->Subsets.size(); ++i) 
 		{
@@ -114,8 +116,9 @@ void SkinnedMeshRenderer::RenderShadow()
 		Effects::BuildShadowMapFX->SetWorldInvTranspose(worldInvTranspose); 
 		Effects::BuildShadowMapFX->SetWorldViewProj(worldViewProj); 
 		Effects::BuildShadowMapFX->SetTexTransform(::XMMatrixScaling(1.0f, 1.0f, 1.0f)); 
-		Effects::BuildShadowMapFX->SetBoneTransforms(
-			&m_FinalTransforms[0], m_FinalTransforms.size()); 
+		
+		if (m_FinalTransforms.size() > 0)
+			Effects::BuildShadowMapFX->SetBoneTransforms(&m_FinalTransforms[0], m_FinalTransforms.size());
 
 		for (int i = 0; i < m_Mesh->Subsets.size(); ++i)
 		{
@@ -159,7 +162,9 @@ void SkinnedMeshRenderer::RenderShadowNormal()
 		Effects::SsaoNormalDepthFX->SetWorldInvTransposeView(worldInvTransposeView); 
 		Effects::SsaoNormalDepthFX->SetWorldViewProj(worldViewProj); 
 		Effects::SsaoNormalDepthFX->SetTexTransform(XMMatrixScaling(1.0f, 1.0f, 1.0f));
-		Effects::SsaoNormalDepthFX->SetBoneTransforms(&m_FinalTransforms[0], m_FinalTransforms.size());
+
+		if (m_FinalTransforms.size() > 0)
+			Effects::SsaoNormalDepthFX->SetBoneTransforms(&m_FinalTransforms[0], m_FinalTransforms.size());
 
 		for (int i = 0; i < m_Mesh->Subsets.size(); ++i) 
 		{

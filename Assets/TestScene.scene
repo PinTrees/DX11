@@ -48,7 +48,7 @@
                     "type": "Transform"
                 },
                 {
-                    "aspect": 2.0139999389648438,
+                    "aspect": 1.8928571939468384,
                     "cameraType": 0,
                     "farZ": 1000.0,
                     "fovY": 1.0471975803375244,
@@ -253,6 +253,8 @@
                     "m_AnimationClipIndex": 0,
                     "m_AnimationFilePath": "Assets\\Art\\Character\\Animations\\GreatSword_Idle_Root.FBX",
                     "m_PlayAutomatically": true,
+                    "m_SkeletoneAvataFilePath": "Assets\\Art\\Character\\Model_Unity_Ver1.FBX",
+                    "m_SkeletoneAvataIndex": 0,
                     "type": "AnimationPlayer"
                 }
             ],
