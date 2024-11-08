@@ -13,7 +13,7 @@ class LightManager
 	SINGLE_HEADER(LightManager)
 
 private:
-	vector<shared_ptr<Light>> m_lights; // 씬의 모든 빛들
+	vector<shared_ptr<Light>> m_Lights; // 씬의 모든 빛들
 
 	int m_SortedLightSize = 0;
 	int m_SortedEditorLightSize = 0;
@@ -33,8 +33,11 @@ private:
 public:
 	void Init();
 
-	void SetLight(shared_ptr<Light> light) { m_lights.push_back(light); }
+	void SetLight(shared_ptr<Light> light) { m_Lights.push_back(light); }
 	void DeleteLight(InstanceID id);
+
+	void ViewUpdates();
+	void EditorViewUpdates();
 
 	// Camera 클래스에서 Frustum 컬링 된 라이트들만 정렬
 	void SortingLights(vector<shared_ptr<Light>> cullingLights, Vec3 cameraPos);
@@ -43,7 +46,7 @@ public:
 	int GetSortedLightSize() { return m_SortedLightSize; }
 	int GetSortedEditorLightSize() { return m_SortedEditorLightSize; }
 
-	vector<shared_ptr<Light>> GetLights() { return m_lights; }
+	vector<shared_ptr<Light>> GetLights() { return m_Lights; }
 	vector<shared_ptr<Light>> GetSortedLights() { return m_SortedLights; }
 	vector<shared_ptr<Light>> GetSortedEditorLights() { return m_SortedEditorLights; }
 

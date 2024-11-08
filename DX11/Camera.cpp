@@ -253,6 +253,11 @@ void Camera::Update()
 
 void Camera::LateUpdate()
 {
+	
+}
+
+void Camera::ViewUpdate()
+{
 	XMVECTOR pos = m_pGameObject->GetTransform()->GetPosition();
 	XMVECTOR dir = m_pGameObject->GetTransform()->GetLook();
 	XMVECTOR target = pos + dir;
@@ -412,9 +417,11 @@ string Camera::GetStringCameraType(ProjectionType type)
 
 void Camera::OnInspectorGUI()
 {
+	bool ProjectionChanged = false;
+
 	// CameraType 선택GUI
 	//EditorGUI::FloatField
-	if (ImGui::BeginCombo("LightType", GetStringCameraType(m_cameraType).c_str())) // The second parameter is the previewed value
+	if (ImGui::BeginCombo("CameraType", GetStringCameraType(m_cameraType).c_str())) // The second parameter is the previewed value
 	{
 		for (int n = 0; n < (int)ProjectionType::End; n++)
 		{
@@ -422,6 +429,7 @@ void Camera::OnInspectorGUI()
 			if (ImGui::Selectable(GetStringCameraType((ProjectionType)n).c_str(), is_selected))
 			{
 				m_cameraType = (ProjectionType)n;
+				ProjectionChanged = true;
 			}
 
 			if (is_selected)
@@ -433,9 +441,11 @@ void Camera::OnInspectorGUI()
 	// Camera 값들 설정
 	if (EditorGUI::FloatField("Near", m_nearZ)) {
 		m_nearZ = max(m_nearZ, 0.001f);
+		ProjectionChanged = true;
 	}
 	if (EditorGUI::FloatField("Far", m_farZ)) {
 		m_nearZ = min(m_nearZ, 9999);
+		ProjectionChanged = true;
 	}
 
 	if (ProjectionType::Perspective == m_cameraType)
@@ -445,11 +455,16 @@ void Camera::OnInspectorGUI()
 			fov_degree = max(fov_degree, 1);  
 			fov_degree = min(fov_degree, 360);
 			m_fovY = XMConvertToRadians(fov_degree); 
+			ProjectionChanged = true;
 		} 
 
 		//ImGui::Text("Aspect");
 		//ImGui::DragFloat("##Aspect", reinterpret_cast<float*>(&m_aspect), 0.1f);
 	}
+
+	if(ProjectionChanged)
+		ProjUpdate();
+
 }
 
 // 카메라 렌더 범위Draw

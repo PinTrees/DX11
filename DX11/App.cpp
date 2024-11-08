@@ -10,6 +10,7 @@
 #include "GameViewEditorWindow.h"
 #include "ConsoleEditorWindow.h"
 #include "AnimatorEditorWindow.h"
+#include "DisplayManager.h"
 
 #include "EditorGUIResourceManager.h"
 #include "TaskSystem.h"
@@ -87,6 +88,10 @@ int32 App::Run()
 				EditorGUIManager::GetI()->Update();
 
 				// OnPreCull, 렌더 직전 매트릭스 연산 등
+				
+				DisplayManager::GetI()->GetActiveCamera()->ViewUpdate();
+				LightManager::GetI()->ViewUpdates();
+				LightManager::GetI()->EditorViewUpdates();
 
 				// Render
 				RenderApplication();

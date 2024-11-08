@@ -21,10 +21,26 @@ void LightManager::Init()
 
 void LightManager::DeleteLight(InstanceID id)
 {
-	for (int i = 0; i < m_lights.size(); i++)
+	for (int i = 0; i < m_Lights.size(); i++)
 	{
-		if (m_lights[i]->GetInstanceID() == id)
-			m_lights.erase(m_lights.begin() + i);
+		if (m_Lights[i]->GetInstanceID() == id)
+			m_Lights.erase(m_Lights.begin() + i);
+	}
+}
+
+void LightManager::ViewUpdates()
+{
+	for (auto& light : m_Lights)
+	{
+		light->ViewUpdate();
+	}
+}
+
+void LightManager::EditorViewUpdates()
+{
+	for (auto& light : m_Lights)
+	{
+		light->EditorViewUpdate();
 	}
 }
 

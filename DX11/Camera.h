@@ -42,6 +42,8 @@ public:
 	Camera();
 	~Camera();
 
+	void ViewUpdate();
+
 	// Get/Set world camera position.
 	XMVECTOR GetPositionXM();
 	XMFLOAT3 GetPosition()const;

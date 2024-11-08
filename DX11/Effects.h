@@ -274,7 +274,32 @@ public:
 	void SetFogColor(const FXMVECTOR v) { FogColor->SetFloatVector(reinterpret_cast<const float*>(&v)); }
 	void SetFogStart(float f) { FogStart->SetFloat(f); }
 	void SetFogRange(float f) { FogRange->SetFloat(f); }
+	/*
+	template <typename T, int maxSize>
+	void SetLights(const T* lights, int cnt, ComPtr<ID3DX11EffectVariable> LightEffect, ComPtr<ID3DX11EffectScalarVariable> LightCountEffect)
+	{
+		T lightArray[maxSize];
 
+		// 실제 라이트 데이터를 배열에 복사
+		for (int i = 0; i < cnt; i++)
+		{
+			lightArray[i] = lights[i];
+		}
+
+		// 기본값으로 초기화
+		T temp;
+		temp.Init();
+		for (int i = cnt; i < maxSize; i++)
+		{
+			lightArray[i] = temp;
+		}
+
+		LightEffect->SetRawValue(lightArray, 0, maxSize * sizeof(T));
+
+		// 라이트 개수 설정
+		LightCountEffect->SetInt(cnt);
+	}
+	*/
 	void SetDirLights(const DirectionalLight* lights, int cnt)
 	{ 
 		DirLights->SetRawValue(lights, 0, cnt * sizeof(DirectionalLight));
