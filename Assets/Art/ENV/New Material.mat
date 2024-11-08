@@ -6,7 +6,7 @@
         1.0,
         1.0
     ],
-    "BaseMapPath": "Assets\\Art\\ENV\\Rock\\Mossy_rock_var7-8_basecolor.png",
+    "BaseMapPath": "Assets\\Art\\Troll\\Textures\\Troll_Default_color.png",
     "Diffuse": [
         1.0,
         1.0,
@@ -14,14 +14,14 @@
         1.0
     ],
     "FogEnabled": 0,
-    "NormalMapPath": "Assets\\Art\\ENV\\Rock\\Mossy_rock_var7-8_normal.png",
+    "NormalMapPath": "Assets\\Art\\Troll\\Textures\\Troll_Default_nmap.png",
     "Reflect": [
         0.0,
         0.0,
         0.0,
         1.0
     ],
-    "ReflectionEnabled": 0,
+    "ReflectionEnabled": 1,
     "ResourcePath": "Assets\\Art\\ENV\\New Material.mat",
     "Specular": [
         0.0,

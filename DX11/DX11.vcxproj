@@ -284,6 +284,7 @@
     <ClInclude Include="ShaderSetting.h" />
     <ClInclude Include="ShadowMap.h" />
     <ClInclude Include="SimpleMath.h" />
+    <ClInclude Include="SkeletonAvataSelectEditorDailog.h" />
     <ClInclude Include="SkinnedData.h" />
     <ClInclude Include="SkinnedMesh.h" />
     <ClInclude Include="SkinnedMeshRenderer.h" />
@@ -450,6 +451,7 @@
     <ClCompile Include="ShaderSetting.cpp" />
     <ClCompile Include="ShadowMap.cpp" />
     <ClCompile Include="SimpleMath.cpp" />
+    <ClCompile Include="SkeletonAvataSelectEditorDailog.cpp" />
     <ClCompile Include="SkinnedData.cpp" />
     <ClCompile Include="SkinnedMesh.cpp" />
     <ClCompile Include="SkinnedMeshRenderer.cpp" />

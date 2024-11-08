@@ -29,6 +29,7 @@ void ResourceManager::Destroy()
 	m_MeshFiles.clear();  
 	m_Meshs.clear(); 
 	m_AnimationClips.clear(); 
+	m_SkeletonAvatas.clear();
 }
 
 ComPtr<ID3D11ShaderResourceView> ResourceManager::LoadTexture(wstring filename)
@@ -178,5 +179,24 @@ shared_ptr<AnimationClip> ResourceManager::LoadAnimationClip(string filename, in
 			return nullptr;
 
 		return m_AnimationClips[key] = meshFile->SkinnedData.AnimationClips[index];
+	}
+}
+
+shared_ptr<SkeletonAvataData> ResourceManager::LoadSkeletonAvata(string filepath, int index)
+{
+	tuple<string, int> key = make_tuple(filepath, index);
+
+	if (m_SkeletonAvatas.find(key) != m_SkeletonAvatas.end())
+	{
+		return m_SkeletonAvatas[key];
+	}
+	else
+	{
+		// Load MeshFile
+		shared_ptr<MeshFile> meshFile = ResourceManager::GetI()->LoadMeshFile(filepath);
+		if (meshFile == nullptr)
+			return nullptr;
+
+		return m_SkeletonAvatas[key] = meshFile->Avatas[index]; 
 	}
 }

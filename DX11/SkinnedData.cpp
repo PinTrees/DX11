@@ -322,3 +322,52 @@ void SkinnedData::to_byte(ofstream& outStream)
 		animation->to_byte(outStream);
 	}
 }
+
+
+
+
+
+void SkeletonAvataData::from_byte(ifstream& inStream)
+{
+	if (!inStream.is_open())
+		return;
+
+	// Name 크기 읽기 및 데이터 읽기
+	size_t nameSize;
+	inStream.read(reinterpret_cast<char*>(&nameSize), sizeof(size_t));
+	Name.resize(nameSize);
+	inStream.read(reinterpret_cast<char*>(&Name[0]), nameSize);
+
+	// BoneHierarchy 크기 읽기 및 데이터 읽기
+	size_t hierarchySize;
+	inStream.read(reinterpret_cast<char*>(&hierarchySize), sizeof(size_t));
+	BoneHierarchy.resize(hierarchySize);
+	inStream.read(reinterpret_cast<char*>(BoneHierarchy.data()), hierarchySize * sizeof(int));
+
+	// BoneOffsets 크기 읽기 및 데이터 읽기
+	size_t offsetsSize;
+	inStream.read(reinterpret_cast<char*>(&offsetsSize), sizeof(size_t));
+	BoneOffsets.resize(offsetsSize);
+	inStream.read(reinterpret_cast<char*>(BoneOffsets.data()), offsetsSize * sizeof(XMFLOAT4X4));
+}
+
+void SkeletonAvataData::to_byte(ofstream& outStream)
+{
+	if (!outStream.is_open())
+		return;
+
+	// Name 크기와 데이터 쓰기
+	size_t nameSize = Name.size();
+	outStream.write(reinterpret_cast<const char*>(&nameSize), sizeof(size_t));
+	outStream.write(Name.data(), nameSize);
+
+	// BoneHierarchy 크기와 데이터 쓰기
+	size_t hierarchySize = BoneHierarchy.size();
+	outStream.write(reinterpret_cast<const char*>(&hierarchySize), sizeof(size_t));
+	outStream.write(reinterpret_cast<const char*>(BoneHierarchy.data()), hierarchySize * sizeof(int));
+
+	// BoneOffsets 크기와 데이터 쓰기
+	size_t offsetsSize = BoneOffsets.size();
+	outStream.write(reinterpret_cast<const char*>(&offsetsSize), sizeof(size_t));
+	outStream.write(reinterpret_cast<const char*>(BoneOffsets.data()), offsetsSize * sizeof(XMFLOAT4X4));
+}

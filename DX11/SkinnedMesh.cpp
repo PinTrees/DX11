@@ -182,6 +182,7 @@ MeshFile* MeshFile::LoadFromMetaFile(string path)
 	// Parsing
 	string load_path_mesh = loadMeshFile->FullPath + ".mesh";
 	string load_path_animations = loadMeshFile->FullPath + ".animations"; 
+	string load_path_skeletone = loadMeshFile->FullPath + ".skeletons";
 
 	if (filesystem::exists(load_path_mesh))
 	{
@@ -202,10 +203,22 @@ MeshFile* MeshFile::LoadFromMetaFile(string path)
 
 		}
 	}
+	if (filesystem::exists(load_path_skeletone))
+	{
+		try
+		{
+			ifstream skeletons_instream(load_path_skeletone, ios::binary);
+			loadMeshFile->load_skeletone(skeletons_instream);
+			skeletons_instream.close(); 
+		}
+		catch (const std::exception&) 
+		{
+
+		}
+	}
 
 	return loadMeshFile;  
 }
-
 MeshFile* MeshFile::LoadFromFbxFile(string path)
 {
 	MeshFile* loadMeshFile = new MeshFile;
@@ -228,6 +241,7 @@ MeshFile* MeshFile::LoadFromFbxFile(string path)
 	return loadMeshFile;
 }
 
+
 void MeshFile::OnInspectorGUI()
 {
 	EditorGUI::LabelHeader(Name + " Fbx Import Setting");
@@ -247,31 +261,47 @@ void MeshFile::OnInspectorGUI()
 
 void MeshFile::ImportFile() 
 {
+	// Load ==========================
+	FBXLoader fbxLoader;
+
+	// Load Mesh data
+	Meshs.clear();
+	SkinnedMeshs.clear(); 
+	fbxLoader.LoadModelFbx(FullPath, this); 
+
+	// Load Skeleton data
+	Avatas.clear();
+	fbxLoader.LoadSkeletonAvata(FullPath, Avatas);  
+	 
+	// Load Animation data
 	if (UseImportAnimation) 
 	{
 		SkinnedData.AnimationClips.clear(); 
-		FBXLoader fbxLoader; 
 		fbxLoader.LoadAnimation(FullPath, SkinnedData); 
-
-		wstring save_path_animations = Path + L".animations"; 
-		std::ofstream out_stream_animations(PathManager::GetI()->GetMovePathS(wstring_to_string(save_path_animations)), std::ios::binary);
-		if (!out_stream_animations)	return; 
-		save_animations(out_stream_animations); 
-		out_stream_animations.close(); 
 	}
 
+	// Save ========================
+	
+	// Save Mesh data
 	wstring save_path_mesh = Path + L".mesh";
-	std::ofstream out_stream_mesh(PathManager::GetI()->GetMovePathS(wstring_to_string(save_path_mesh)), std::ios::binary);
-
-	if (!out_stream_mesh)
-	{
-		std::cerr << "파일을 열 수 없습니다: " << PathManager::GetI()->GetMovePathS(wstring_to_string(save_path_mesh)) << std::endl;
-		return;
-	}
-
-	// FbxModel 바이너리 저장
+	ofstream out_stream_mesh(PathManager::GetI()->GetMovePathS(wstring_to_string(save_path_mesh)), ios::binary);
 	save_mesh(out_stream_mesh);
 	out_stream_mesh.close();
+
+	// Save Animation data
+	if (UseImportAnimation)
+	{
+		wstring save_path_animations = Path + L".animations";
+		ofstream out_stream_animations(PathManager::GetI()->GetMovePathS(wstring_to_string(save_path_animations)), ios::binary);
+		save_animations(out_stream_animations);
+		out_stream_animations.close();
+	}
+	
+	// Save Skeleton data
+	wstring save_path_skeletons = Path + L".skeletons";
+	ofstream out_stream_skeletons(PathManager::GetI()->GetMovePathS(wstring_to_string(save_path_skeletons)), ios::binary); 
+	save_skeletone(out_stream_skeletons); 
+	out_stream_skeletons.close(); 
 }
 
 
@@ -345,8 +375,6 @@ void MeshFile::save_mesh(ofstream& outStream)
 	{
 		skinnedMesh->to_byte(outStream);
 	}
-
-
 }
 
 
@@ -357,4 +385,42 @@ void MeshFile::load_animations(ifstream& inStream)
 void MeshFile::save_animations(ofstream& outStream)
 {
 	SkinnedData.to_byte(outStream); 
+}
+
+
+void MeshFile::save_skeletone(ofstream& outStream)
+{
+	if (!outStream.is_open())
+		return;
+
+	size_t avatasSize = Avatas.size();
+	outStream.write(reinterpret_cast<const char*>(&avatasSize), sizeof(size_t));
+
+	for (const auto& avata : Avatas)
+	{
+		avata->to_byte(outStream); 
+	}
+}
+void MeshFile::load_skeletone(ifstream& inStream)
+{
+	if (!inStream.is_open())
+		return;
+
+	try
+	{
+		size_t avatasSize;
+		inStream.read(reinterpret_cast<char*>(&avatasSize), sizeof(size_t));
+		Avatas.resize(avatasSize);
+
+		for (size_t i = 0; i < Avatas.size(); ++i)
+		{
+			shared_ptr<SkeletonAvataData> avata_ptr = make_shared<SkeletonAvataData>();
+			Avatas[i] = avata_ptr;
+			Avatas[i]->from_byte(inStream);
+		}
+	}
+	catch (const std::exception&)
+	{
+		// Debug Log
+	}
 }

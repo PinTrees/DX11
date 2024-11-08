@@ -65,6 +65,7 @@ public:
 	static bool MeshField(string title, shared_ptr<Mesh>& mesh, wstring& meshFilePath, int& subsetIndex);
 	static bool SkinnedMeshField(string title, shared_ptr<SkinnedMesh>& mesh, wstring& meshFilePath, int& subsetIndex);
 	static bool AnimationClipField(string title, shared_ptr<AnimationClip>& animationClip, string& animationClipPath, int index);
+	static bool SkeletonAvataField(string title, shared_ptr<SkeletonAvataData>& skeletonAvata, string& skeletonAvataPath, int index);
 
 	//static bool EnumField(string title);
 

@@ -6,6 +6,7 @@
 // EditorDialog
 #include "MeshSelectEditorDialog.h"
 #include "AnimationClipSelectEditorDialog.h"
+#include "SkeletonAvataSelectEditorDailog.h"
 
 EditorTextStyle EditorGUI::DefaultTextStyle = EditorTextStyle();
 
@@ -605,6 +606,52 @@ bool EditorGUI::AnimationClipField(string title, shared_ptr<AnimationClip>& anim
         if (EditorGUI::Button(ICON_FA_CIRCLE_DOT, Vec2(28, 28)))
         {
             AnimationClipSelectEditorDialog::Open(animationClip, animationClipPath, index);
+        }
+    }
+    ImGui::EndChild();
+
+    EditorGUI::DropFieldStylePop();
+
+    return isDirty;
+}
+
+bool EditorGUI::SkeletonAvataField(string title, shared_ptr<SkeletonAvataData>& skeletonAvata, string& skeletonAvataPath, int index)
+{
+    bool isDirty = false;
+    float fieldWidth = EDITOR_GUI_FIELD_WIDTH;
+
+    EDITOR_GUI_FIELD_PADDING;
+    EditorGUI::Label(title);
+    EDITOR_GUI_FIELD_SPACING(fieldWidth - 8);
+
+    EditorGUI::DropFieldStylePush();
+
+    if (ImGui::BeginChild("SkeletonAvata Field", ImVec2(fieldWidth, FIELD_DEFAULT_HEIGHT), true, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse))
+    {
+        if (skeletonAvata == nullptr)
+        {
+            EditorGUI::Label(" None (Skeleton Avata)");
+        }
+        else
+        {
+            ImGui::PushItemWidth(fieldWidth - (EDITOR_GUI_BUTTON_WIDTH + 4));
+            ImGui::Dummy(ImVec2(1, 0));
+            ImGui::SameLine();
+            ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 4);
+            EditorGUI::Image(L"\\ProjectSetting\\icons\\File\\skeleton_avata.png", ImVec2(24, 24));
+            ImGui::SameLine();
+            ImGui::Dummy(ImVec2(4, 0));
+            ImGui::SameLine();
+            EditorGUI::Label(skeletonAvata->Name);
+        }
+
+        ImGui::SameLine();
+        ImGui::Dummy(ImVec2(ImGui::GetContentRegionAvail().x - 28, 0));
+        ImGui::SameLine();
+
+        if (EditorGUI::Button(ICON_FA_CIRCLE_DOT, Vec2(28, 28)))
+        {
+            SkeletonAvataSelectEditorDailog::Open(skeletonAvata, skeletonAvataPath, index);
         }
     }
     ImGui::EndChild();

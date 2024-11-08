@@ -15,10 +15,15 @@ class AnimationPlayer : public Component
 	using Super = Component;
 
 private:
-	shared_ptr<AnimationClip>	m_AnimationClip;
+	shared_ptr<AnimationClip>		m_AnimationClip;
+	shared_ptr<SkeletonAvataData>	m_SkeletonAvata;
+
 	// Hidden
 	string						m_AnimationFilePath;
 	int							m_AnimationClipIndex;
+
+	string						m_SkeletoneAvataFilePath;
+	int							m_SkeletoneAvataIndex;
 
 	bool		m_PlayAutomatically = true; 
 
@@ -28,10 +33,12 @@ private:
 
 	// Runtime Value
 	shared_ptr<SkinnedMeshRenderer> m_pSkinnedMeshRenderer; 
-	vector<XMFLOAT4X4>				m_FinalTransforms;
 public:
 	AnimationPlayer();
 	virtual ~AnimationPlayer();
+
+private:
+	void GetFinalTransforms(float timePos, std::vector<XMFLOAT4X4>& finalTransforms) const;
 
 public:
 	virtual void Awake() override; 

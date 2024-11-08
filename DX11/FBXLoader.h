@@ -39,6 +39,10 @@ public:
         const std::string& filename, 
         MeshFile* skinnedModel);
 
+    bool LoadSkeletonAvata(
+        const std::string& filename,
+        vector<shared_ptr<SkeletonAvataData>>& skeletones);
+
     bool LoadAnimation(
         const std::string& filename,
         SkinnedData& skinnedData); 

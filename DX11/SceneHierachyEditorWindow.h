@@ -13,6 +13,7 @@ protected:
 
 private:
 	void DrawGameObject(GameObject* gameObject);
+	void PopupContextMenu();
 
 	// Handle Drag an Drop
 	void HandleFbxFileDrop(const std::string& filePath, GameObject* parent);

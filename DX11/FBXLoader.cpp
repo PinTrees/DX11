@@ -82,7 +82,7 @@ void OptimizeVertices(std::vector<Vertex::PosNormalTexTanSkinned>& vertices, std
 bool FBXLoader::LoadModelFbx(const std::string& filename, MeshFile* model)
 {
     Assimp::Importer importer; 
-    //const aiScene* scene = importer.ReadFile(filename, aiProcess_Triangulate | aiProcess_ConvertToLeftHanded);
+
     const aiScene* scene = importer.ReadFile( 
         filename
         , aiProcess_ConvertToLeftHanded
@@ -100,6 +100,40 @@ bool FBXLoader::LoadModelFbx(const std::string& filename, MeshFile* model)
     {
         ParsingMeshNode(scene->mRootNode, scene, model);
     }
+
+    return true;
+}
+
+bool FBXLoader::LoadSkeletonAvata(const std::string& filepath, vector<shared_ptr<SkeletonAvataData>>& skeletones) 
+{
+    Assimp::Importer importer;
+
+    const aiScene* scene = importer.ReadFile(
+        filepath
+        , aiProcess_ConvertToLeftHanded
+        | aiProcessPreset_TargetRealtime_MaxQuality
+        | 0
+    );
+
+    if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
+    {
+        printf("ERROR::ASSIMP:: %s\n", importer.GetErrorString());
+        return false;
+    }
+
+    // Skeleton 데이터 초기화 및 본 정보 파싱
+    shared_ptr<SkeletonAvataData> skeletonData = make_shared<SkeletonAvataData>();
+    skeletonData->Name = filesystem::path(filepath).filename().string(); 
+
+    map<string, int> boneMapping; 
+    ParseBonesFromNodes(scene->mRootNode, boneMapping); 
+
+    skeletonData->BoneHierarchy.resize(boneMapping.size(), -1);  
+    ParseBoneHierarchy(scene->mRootNode, boneMapping, skeletonData->BoneHierarchy, -1); 
+    ParseBoneOffsets(scene, boneMapping, skeletonData->BoneOffsets);  
+      
+    skeletones.push_back(skeletonData); 
+
     return true;
 }
 

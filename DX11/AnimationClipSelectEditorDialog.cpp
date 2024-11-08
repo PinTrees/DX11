@@ -53,7 +53,6 @@ void AnimationClipSelectEditorDialog::Show()
             }
         }
     }
-
 }
 
 void AnimationClipSelectEditorDialog::Close()
@@ -63,10 +62,6 @@ void AnimationClipSelectEditorDialog::Close()
 
 void AnimationClipSelectEditorDialog::OnRender()
 {
-    m_SelectAnimationClip;
-    m_SelectAnimationClipFilePath; 
-    m_SelectAnimationClipIndex; 
-
     ImGui::BeginChild("ScrollableRegion", ImVec2(0, -40), true, ImGuiWindowFlags_HorizontalScrollbar); 
 
     ImGui::Dummy(ImVec2(16, 16));

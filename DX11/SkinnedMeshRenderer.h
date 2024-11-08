@@ -24,6 +24,9 @@ private:
 	vector<shared_ptr<UMaterial>>	m_pMaterials;
 	vector<wstring>					m_MaterialPaths;
 
+	// Runtime Value
+	vector<XMFLOAT4X4>				m_FinalTransforms;
+
 public:
 	SkinnedMeshRenderer();
 	virtual ~SkinnedMeshRenderer();
@@ -32,6 +35,7 @@ public:
 	void SetMesh(shared_ptr<SkinnedMesh> mesh) { m_Mesh = mesh; }
 	void SetShader(Shader* shader) { m_Shader = shader; }
 	void SetShader(shared_ptr<Effect> effect) { m_Effect = effect; }
+	vector<XMFLOAT4X4>& GetFinalTransforms() { return m_FinalTransforms; }
 
 	shared_ptr<SkinnedMesh> GetMesh() { return m_Mesh; }
 

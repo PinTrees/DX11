@@ -55,17 +55,18 @@ public:
 	static MeshFile* LoadFromMetaFile(string path); 
 	static MeshFile* LoadFromFbxFile(string path); 
 
-	vector<shared_ptr<SkinnedMesh>>	SkinnedMeshs;
-	vector<shared_ptr<Mesh>>		Meshs; 
-	SkinnedData						SkinnedData;
+	vector<shared_ptr<SkinnedMesh>>			SkinnedMeshs;
+	vector<shared_ptr<Mesh>>				Meshs; 
+	vector<shared_ptr<SkeletonAvataData>>	Avatas; 
+	SkinnedData								SkinnedData; 
 
 	wstring				Path;  
 	string				FullPath;
 	string				Name;
 
 	// metadata setting
-	bool				UseImportAnimation; 
-	float				ScaleFactor;
+	bool				UseImportAnimation;  
+	float				ScaleFactor; 
 
 public:
 	void OnInspectorGUI();
@@ -79,7 +80,6 @@ public:
 	void load_animations(ifstream& inStream); 
 	void save_animations(ofstream& outStream);
 	 
-	// meta setting file
-	void save_meta();
-	void load_meta();
-};
+	void load_skeletone(ifstream& outStream);
+	void save_skeletone(ofstream& inStream);
+}; 

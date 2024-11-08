@@ -25,6 +25,27 @@ void SceneHierachyEditorWindow::OnRender()
 	EditorGUI::Divider(Color(0.2f, 0.2f, 0.2f, 1.0f), 4.0f);
 	ImGui::EndChild();
 
+	// Top tab bar - Context menu
+	if (ImGui::BeginPopupContextItem("##TopBarContextMenu", ImGuiMouseButton_Right))
+	{
+		if (ImGui::MenuItem("Add Camera"))
+		{
+			GameObject* newCamera = new GameObject("Camera");
+			currentScene->AddRootGameObject(newCamera);
+		}
+		if (ImGui::MenuItem("Add Directional Light"))
+		{
+			GameObject* newLight = new GameObject("Directional Light");
+			currentScene->AddRootGameObject(newLight);
+		}
+		if (ImGui::MenuItem("Add Empty GameObject"))
+		{
+			GameObject* newEmpty = new GameObject("GameObject");
+			currentScene->AddRootGameObject(newEmpty);
+		}
+		ImGui::EndPopup();
+	}
+
 	// Root GameObject UI
 	ImGui::BeginChild("##RootGameObjectRegion", ImVec2(0, 0), true);
 	for (const auto& g : currentScene->GetRootGameObjects()) {
@@ -32,13 +53,9 @@ void SceneHierachyEditorWindow::OnRender()
 	}
 	ImGui::EndChild();
 
-	// 전체 화면을 드래그 앤 드롭 영역으로 확장
-	ImVec2 windowPos = ImGui::GetWindowPos(); // 창의 위치
-	ImVec2 windowSize = ImGui::GetWindowSize(); // 창의 크기
-
-	ImGui::SetCursorPos(ImVec2(0, 0)); // 커서를 창의 좌상단으로 이동
-	ImGui::InvisibleButton("##DragDropSpace", windowSize); // 창 크기만큼 보이지 않는 버튼 생성
-
+	// 남은 영역을 드래그 앤 드롭 및 우클릭 컨텍스트 메뉴로 설정
+	ImGui::BeginChild("##SceneHierachyDropContainer", ImVec2(0, 0), false, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse); 
+ 
 	if (ImGui::BeginDragDropTarget())
 	{
 		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("FBX_FILE"))
@@ -55,37 +72,7 @@ void SceneHierachyEditorWindow::OnRender()
 		ImGui::EndDragDropTarget();
 	}
 
-	// 우클릭 메뉴 추가
-	if (ImGui::BeginPopupContextWindow("##SceneHierarchyContextMenu"))
-	{
-		if (ImGui::MenuItem("Add Camera"))
-		{
-			// 카메라 추가 로직
-			GameObject* newCamera = new GameObject("Camera");
-			currentScene->AddRootGameObject(newCamera);
-			//newCamera->AddComponent<CameraComponent>();
-			//currentScene->AddGameObject(newCamera);
-		}
-		if (ImGui::MenuItem("Add Directinal Light"))
-		{
-			// 라이트 추가 로직
-			GameObject* newLight = new GameObject("Directinal Light");
-			currentScene->AddRootGameObject(newLight);
-		}
-		if (ImGui::MenuItem("Add Empty GameObject"))
-		{
-			// 빈 게임 오브젝트 추가 로직
-			GameObject* newEmpty = new GameObject("GameObject");
-			currentScene->AddRootGameObject(newEmpty);
-		}
-		ImGui::EndPopup();
-	}
-
-	// 우클릭 감지하여 팝업 메뉴 열기
-	if (ImGui::IsMouseClicked(1) && ImGui::IsWindowHovered())
-	{
-		ImGui::OpenPopup("##SceneHierarchyContextMenu");
-	}
+	ImGui::EndChild();
 }
 
 
@@ -185,6 +172,39 @@ void SceneHierachyEditorWindow::DrawGameObject(GameObject* gameObject)
 	ImGui::PopStyleVar(1);  
 	ImGui::PopStyleColor(4);
 	ImGui::PopID(); // ImGui ID 스택에서 팝
+}
+
+void SceneHierachyEditorWindow::PopupContextMenu()
+{
+	Scene* currentScene = SceneManager::GetI()->GetCurrentScene();
+
+	if (currentScene == nullptr)
+		return;
+
+	if (ImGui::BeginPopupContextWindow("##SceneHierarchyContextMenu"))
+	{
+		if (ImGui::MenuItem("Add Camera"))
+		{
+			// 카메라 추가 로직
+			GameObject* newCamera = new GameObject("Camera");
+			currentScene->AddRootGameObject(newCamera);
+			//newCamera->AddComponent<CameraComponent>();
+			//currentScene->AddGameObject(newCamera);
+		}
+		if (ImGui::MenuItem("Add Directinal Light"))
+		{
+			// 라이트 추가 로직
+			GameObject* newLight = new GameObject("Directinal Light");
+			currentScene->AddRootGameObject(newLight);
+		}
+		if (ImGui::MenuItem("Add Empty GameObject"))
+		{
+			// 빈 게임 오브젝트 추가 로직
+			GameObject* newEmpty = new GameObject("GameObject");
+			currentScene->AddRootGameObject(newEmpty);
+		}
+		ImGui::EndPopup();
+	}
 }
 
 void SceneHierachyEditorWindow::HandleFbxFileDrop(const std::string& filePath, GameObject* parent)

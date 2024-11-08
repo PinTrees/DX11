@@ -106,3 +106,17 @@ public:
 	void from_byte(ifstream& inStream);
 	void to_byte(ofstream& outStream);
 };
+
+
+
+class SkeletonAvataData
+{
+public:
+	string								Name;
+	vector<int>							BoneHierarchy;		
+	vector<XMFLOAT4X4>					BoneOffsets;		
+
+public:
+	void from_byte(ifstream& inStream); 
+	void to_byte(ofstream& outStream); 
+};
