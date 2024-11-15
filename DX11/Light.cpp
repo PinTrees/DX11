@@ -100,6 +100,7 @@ void Light::ViewUpdate()
 	XMVECTOR downDir;
 
 	XMVECTOR tempPos;
+	XMVECTOR defaultPos;
 	float cameraFarZ;
 
 	XMFLOAT3 gameCameraPos = DisplayManager::GetI()->GetActiveCamera()->GetPosition();
@@ -115,15 +116,11 @@ void Light::ViewUpdate()
 
 		tempPos = XMLoadFloat3(&gameCameraPos);
 		cameraFarZ = SceneViewManager::GetI()->m_LastActiveSceneEditorWindow->GetSceneCamera()->GetFarZ();
-		pos = XMVectorSet
-		(
-			{ cameraFarZ * sinf(r.x) * cosf(r.y) },
-			{ cameraFarZ * sinf(r.x) * sinf(r.y) },
-			{ cameraFarZ * cosf(r.x) },
-			{ 0 }
-		);
+		defaultPos = XMVectorSet(0, 0, -cameraFarZ, 0);
 
-		pos += tempPos;
+		defaultPos = Vector3::Transform(defaultPos, Matrix::CreateRotationZ(r.z) * Matrix::CreateRotationY(r.y) * Matrix::CreateRotationX(r.x));
+
+		pos = defaultPos + tempPos;
 
 		m_LightView[0] = ::XMMatrixLookAtLH(pos, pos + lookDir, upDir);
 
@@ -176,10 +173,10 @@ void Light::EditorViewUpdate()
 	XMVECTOR downDir;
 
 	XMVECTOR tempPos;
+	XMVECTOR defaultPos;
 	float cameraFarZ;
 
 	XMFLOAT3 editorCameraPos = SceneViewManager::GetI()->m_LastActiveSceneEditorWindow->GetSceneCamera()->GetPosition();
-
 
 	switch (m_LightType)
 	{
@@ -192,16 +189,12 @@ void Light::EditorViewUpdate()
 
 		tempPos = XMLoadFloat3(&editorCameraPos);
 		cameraFarZ = SceneViewManager::GetI()->m_LastActiveSceneEditorWindow->GetSceneCamera()->GetFarZ();
-		pos = XMVectorSet
-		(
-			{ cameraFarZ * sinf(r.x) * cosf(r.y) },
-			{ cameraFarZ * sinf(r.x) * sinf(r.y) },
-			{ cameraFarZ * cosf(r.x) },
-			{ 0 }
-		);
-
-		pos += tempPos;
-
+		defaultPos = XMVectorSet(0, 0, -cameraFarZ, 0);
+		
+		defaultPos = Vector3::Transform(defaultPos, Matrix::CreateRotationZ(r.z) * Matrix::CreateRotationY(r.y) * Matrix::CreateRotationX(r.x));
+		
+		pos = defaultPos + tempPos;
+		
 		m_EditorLightView[0] = ::XMMatrixLookAtLH(pos, pos + lookDir, upDir);
 
 		XMStoreFloat3(&m_DirectionalDesc.Direction, r);

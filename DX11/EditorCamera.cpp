@@ -4,7 +4,7 @@
 
 EditorCamera::EditorCamera()
 {
-	SetLens(0.25f * XM_PI, 1.0f, 1.0f, 1000.0f);
+	SetLens(0.25f * XM_PI, 1.0f, 1.0f, 100.0f);
 }
 
 EditorCamera::~EditorCamera()

@@ -46,6 +46,7 @@ public:
 	///</summary>
 	void BlurAmbientMap(int32 blurCount);
 
+	ComPtr<ID3D11ShaderResourceView> GetRandomVectorSRV() { return _randomVectorSRV; }
 private:
 	void BlurAmbientMap(ComPtr<ID3D11ShaderResourceView> inputSRV, ComPtr<ID3D11RenderTargetView> outputRTV, bool horzBlur);
 

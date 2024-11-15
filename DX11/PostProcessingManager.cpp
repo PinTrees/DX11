@@ -22,7 +22,7 @@ void PostProcessingManager::Init()
 void PostProcessingManager::_Editor_RenderSSAO(EditorCamera* camera)
 {
 	m_EditorSSAO->ComputeSsao(*camera);
-	m_EditorSSAO->BlurAmbientMap(4); 
+	//m_EditorSSAO->BlurAmbientMap(4); 
 }
 
 void PostProcessingManager::RenderSSAO(Camera* camera)

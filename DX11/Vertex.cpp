@@ -208,8 +208,8 @@ void InputLayouts::InitAll(ComPtr<ID3D11Device> device)
 	//
 
 	// Effects::TerrainFX
-	HR(device->CreateInputLayout(InputLayoutDesc::TerrainVertex, 7, passDesc.pIAInputSignature,
-		passDesc.IAInputSignatureSize, &TerrainVertex));
+	//HR(device->CreateInputLayout(InputLayoutDesc::TerrainVertex, 7, passDesc.pIAInputSignature,
+	//	passDesc.IAInputSignatureSize, &TerrainVertex));
 }
 
 void InputLayouts::DestroyAll()

@@ -181,7 +181,7 @@ float4 PS(VertexOut pin, uniform int gSampleCount) : SV_Target
     float access = 1.0f - occlusionSum;
 
 	// Sharpen the contrast of the SSAO map to make the SSAO affect more dramatic.
-    return saturate(pow(access, 8.0f));
+    return saturate(pow(access, 16.0f));
 }
 
 technique11 Ssao
@@ -190,7 +190,7 @@ technique11 Ssao
     {
         SetVertexShader(CompileShader(vs_5_0, VS()));
         SetGeometryShader(NULL);
-        SetPixelShader(CompileShader(ps_5_0, PS(14)));
+        SetPixelShader(CompileShader(ps_5_0, PS(1)));
     }
 }
  

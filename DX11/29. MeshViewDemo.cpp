@@ -357,7 +357,7 @@ void MeshViewDemo::_Editor_OnSceneRender(ID3D11RenderTargetView* renderTargetVie
 		for (int i = 0; i < dirLights.size(); i++)
 		{
 			shadowMap->BindDsvAndSetNullRenderTarget(_deviceContext, LightType::Directional, i);
-
+			XMMATRIX V = sortedLights[i]->GetEditorLightView();
 			XMMATRIX VP = sortedLights[i]->GetEditorLightViewProjection(0);
 
 			RenderManager::GetI()->LightViewProjection = VP;
@@ -427,7 +427,7 @@ void MeshViewDemo::_Editor_OnSceneRender(ID3D11RenderTargetView* renderTargetVie
 			}
 		}
 	}
-
+	
 	// PostProcessing - SSAO
 	auto ssao = PostProcessingManager::GetI()->_EditorGetSSAO();
 	ssao->SetNormalDepthRenderTarget(_depthStencilView.Get());
@@ -491,7 +491,9 @@ void MeshViewDemo::_Editor_OnSceneRender(ID3D11RenderTargetView* renderTargetVie
 	//_sky->Draw(_deviceContext, _camera);
 
 	// Texture2D 작은 화면으로 렌더 (디버깅)
-	DrawScreenQuad(shadowMap->DepthMapSRVArray(LightType::Directional)[0]);
+	//DrawScreenQuad(shadowMap->DepthMapSRVArray(LightType::Directional)[0]);
+	//DrawScreenQuad(ssao->AmbientSRV().Get());
+	DrawScreenQuad(PostProcessingManager::GetI()->_EditorGetSSAO()->GetRandomVectorSRV());
 
 	_deviceContext->RSSetState(0);
 	_deviceContext->OMSetDepthStencilState(0, 0);

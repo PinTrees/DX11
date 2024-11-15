@@ -241,6 +241,7 @@ float3 NormalSampleToWorldSpace(float3 normalMapSample, float3 unitNormalW, floa
 
 static const float SMAP_SIZE = 2048.0f;
 static const float SMAP_DX = 1.0f / SMAP_SIZE;
+static const float SMAP_PERSENT = 16.0f;
 
 float CalcShadowFactor(SamplerComparisonState samShadow,
 	Texture2D shadowMap,
@@ -272,5 +273,5 @@ float CalcShadowFactor(SamplerComparisonState samShadow,
 			shadowPosH.xy + offsets[i], depth).r;
 	}
 
-	return percentLit /= 9.0f;
+    return percentLit /= SMAP_PERSENT;
 }
