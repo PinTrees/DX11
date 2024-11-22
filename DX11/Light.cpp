@@ -165,7 +165,7 @@ void Light::EditorViewUpdate()
 	XMVECTOR target = pos + lookDir;
 	XMVECTOR upDir = m_pGameObject->GetTransform()->GetUp();
 
-	Vec3 r;
+	Vec3 r; Vec3 angleTest;
 
 	XMVECTOR backwardDir;
 	XMVECTOR leftDir;
@@ -181,23 +181,53 @@ void Light::EditorViewUpdate()
 	switch (m_LightType)
 	{
 	case LightType::Directional:
+	{
 		// Pos = GameCameraPosition + LightRotation방향쪽의 Camera 범위 경계선에 위치
 		// light pos = camera position + ((camerafarZ * 2) * light.dir)
 		// light pos는 camera position을 중심으로 CameraFarZ(반지름) 끝에 위치해야함
 
 		r = m_pGameObject->GetTransform()->GetLocalEulerRadians();
-
+		angleTest = m_pGameObject->GetTransform()->GetLocalEulerAngles();
 		tempPos = XMLoadFloat3(&editorCameraPos);
 		cameraFarZ = SceneViewManager::GetI()->m_LastActiveSceneEditorWindow->GetSceneCamera()->GetFarZ();
-		defaultPos = XMVectorSet(0, 0, -cameraFarZ, 0);
-		
-		defaultPos = Vector3::Transform(defaultPos, Matrix::CreateRotationZ(r.z) * Matrix::CreateRotationY(r.y) * Matrix::CreateRotationX(r.x));
-		
-		pos = defaultPos + tempPos;
-		
+		auto camdefaultPos = XMVectorSet(0, 0, -cameraFarZ, 0);
+
+		Vec3 posVec3 = Vec3(0, 0, -cameraFarZ);
+		Matrix posMat = Matrix::CreateTranslation(posVec3);
+	
+		//auto rotx = Matrix::CreateRotationZ(r.x);
+		//auto roty = Matrix::CreateRotationZ(r.y);
+		//auto rotz = Matrix::CreateRotationZ(r.z);
+		//
+		//posMat *= rotz;
+		//posMat *= roty;
+		//posMat *= rotx;
+		//
+		//auto rotmat = Matrix::CreateRotationZ(r.z) * Matrix::CreateRotationY(r.y) * Matrix::CreateRotationX(r.x);
+		//Matrix rarar = Matrix::CreateFromYawPitchRoll(r.z, r.y, r.x);
+		XMVECTOR tempdefaultPos = Vector3::Transform(camdefaultPos, Matrix::CreateRotationZ(r.z) * Matrix::CreateRotationY(r.y) * Matrix::CreateRotationX(r.x));
+		//Matrix tttt = posMat * rarar;
+		//tttt = tttt * Matrix::CreateTranslation(tempPos);
+		//
+		//XMVECTOR aa = XMVectorSet(tttt._41, tttt._42, tttt._43,0);
+		//
+		//pos = aa + tempPos;
+		//
+		//float theta = std::atan2(r.y, r.x);
+		//float phi = acos(r.z / cameraFarZ);
+		//
+		//XMVECTOR ab = XMVectorSet(cameraFarZ * std::sinf(phi) * std::cosf(theta), cameraFarZ * std::sinf(phi) * std::sinf(theta), cameraFarZ * std::cosf(phi), 0);
+		////x = r sin(phi)cos(theta)
+		////y = r sin(phi)sin(theta)
+		////z = r cos(phi)
+
+		pos = tempdefaultPos + tempPos;
+
 		m_EditorLightView[0] = ::XMMatrixLookAtLH(pos, pos + lookDir, upDir);
 
 		XMStoreFloat3(&m_DirectionalDesc.Direction, r);
+	}
+		
 		break;
 	case LightType::Point:
 		// 전방향이므로 6개의 매트릭스 필요, proj는 하나만이여도 상관없(범위)

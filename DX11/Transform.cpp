@@ -47,19 +47,30 @@ Vec3 Transform::ToEulerRadians(Quaternion q)
 {
 	Vec3 radians;
 
-	// roll (x-axis rotation)
-	double sinr_cosp = 2 * (q.w * q.x + q.y * q.z);
-	double cosr_cosp = 1 - 2 * (q.x * q.x + q.y * q.y);
+	//// roll (x-axis rotation)
+	//double sinr_cosp = 2 * (q.w * q.x + q.y * q.z);
+	//double cosr_cosp = 1 - 2 * (q.x * q.x + q.y * q.y);
+	//radians.x = std::atan2(sinr_cosp, cosr_cosp);
+
+	//// pitch (y-axis rotation)
+	//double sinp = 2 * (q.w * q.y + q.x * q.z);
+	////double cosp = 1 - 2 * (q.y * q.y + q.z * q.z);
+	//radians.y = std::asin(sinp);
+
+	//// yaw (z-axis rotation)
+	//double siny_cosp = 2 * (q.w * q.z + q.x * q.y);
+	//double cosy_cosp = 1 - 2 * (q.y * q.y + q.z * q.z);
+	//radians.z = std::atan2(siny_cosp, cosy_cosp);
+
+	double sinr_cosp = 2.0 * (q.w * q.x + q.y * q.z);
+	double cosr_cosp = 1.0 - 2.0 * (q.x * q.x + q.y * q.y);
 	radians.x = std::atan2(sinr_cosp, cosr_cosp);
 
-	// pitch (y-axis rotation)
-	double sinp = 2 * (q.w * q.y + q.x * q.z);
-	double cosp = 1 - 2 * (q.y * q.y + q.z * q.z);
-	radians.y = std::atan2(sinp, cosp);
+	double sinp = 2.0 * (q.w * q.y - q.z * q.x);
+	radians.y = std::asin(std::clamp(sinp, -1.0, 1.0));  // -1 <= sin(pitch) <= 1À» º¸Àå
 
-	// yaw (z-axis rotation)
-	double siny_cosp = 2 * (q.w * q.z + q.x * q.y);
-	double cosy_cosp = 1 - 2 * (q.y * q.y + q.z * q.z);
+	double siny_cosp = 2.0 * (q.w * q.z + q.x * q.y);
+	double cosy_cosp = 1.0 - 2.0 * (q.y * q.y + q.z * q.z);
 	radians.z = std::atan2(siny_cosp, cosy_cosp);
 
 	return radians;
@@ -70,10 +81,9 @@ Vec3 Transform::ToEulerAngles(Quaternion q)
 	Vec3 angles;
 
 	angles = ToEulerRadians(q);
-
-	angles.x = angles.x * (180.0 / PI);
-	angles.y = angles.y * (180.0 / PI);
-	angles.z = angles.z * (180.0 / PI);
+	angles.x = XMConvertToDegrees(angles.x);
+	angles.y = XMConvertToDegrees(angles.y);
+	angles.z = XMConvertToDegrees(angles.z);
 
 	return angles;
 }
@@ -112,12 +122,14 @@ void Transform::UpdateTransform()
 
 Vec3 Transform::GetLocalEulerAngles()
 {
-	return ToEulerAngles(m_LocalRotation);
+	//return ToEulerAngles(m_LocalRotation);
+	return m_LocalEulerAngles;
 }
 
 Vec3 Transform::GetLocalEulerRadians()
 {
-	return ToEulerRadians(m_LocalRotation);
+	//return ToEulerRadians(m_LocalRotation);
+	return m_LocalEulerRadians;
 }
 
 void Transform::SetLocalEulerAngles(const Vec3& angles)

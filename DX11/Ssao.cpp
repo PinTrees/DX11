@@ -344,13 +344,14 @@ void Ssao::BuildRandomVectorTexture()
 
 	vector<Color> color(256 * 256);
 	std::random_device rd;    // 시스템의 하드웨어 난수 생성기 사용
-	std::mt19937 gen(rd());   // Mersenne Twister 엔진을 사용하여 난수 생성기 초기화
 	std::uniform_real_distribution<> dis(0.0, 1.0);
 
 	for (int32 i = 0; i < 256; ++i)
 	{
 		for (int32 j = 0; j < 256; ++j)
 		{
+			std::mt19937 gen(rd());   // Mersenne Twister 엔진을 사용하여 난수 생성기 초기화
+
 			XMFLOAT3 v(dis(gen), dis(gen), dis(gen));
 
 			color[i * 256 + j] = Color(v.x, v.y, v.z, 0.0f);
