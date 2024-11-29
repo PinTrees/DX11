@@ -64,7 +64,7 @@ void ComputeDirectionalLight(Material mat, DirectionalLight L,
 	spec    = float4(0.0f, 0.0f, 0.0f, 0.0f);
 
 	// The light vector aims opposite the direction the light rays travel.
-	float3 lightVec = -L.Direction;
+    float3 lightVec = normalize(-L.Direction);
 
 	// Add ambient term.
 	ambient = mat.Ambient * L.Ambient;	
@@ -85,42 +85,6 @@ void ComputeDirectionalLight(Material mat, DirectionalLight L,
 		spec    = specFactor * mat.Specular * L.Specular;
 	}
 }
-
-//void ComputeDirectionalLight(Material mat, DirectionalLight L,
-//                             float3 normal, float3 toEye,
-//                             out float4 ambient,
-//                             out float4 diffuse,
-//                             out float4 spec)
-//{
-//    // Initialize outputs.
-//    ambient = float4(0.0f, 0.0f, 0.0f, 0.0f);
-//    diffuse = float4(0.0f, 0.0f, 0.0f, 0.0f);
-//    spec = float4(0.0f, 0.0f, 0.0f, 0.0f);
-
-//    // Normalize the light direction and normal vector.
-//    float3 lightVec = normalize(-L.Direction); // Á¤±ÔÈ­µÈ ºû º¤ÅÍ
-//    float3 norm = normalize(normal); // Á¤±ÔÈ­µÈ ³ë¸Ö º¤ÅÍ
-
-//    // Add ambient term.
-//    ambient = mat.Ambient * L.Ambient;
-
-//    // Compute the diffuse factor (clamped between 0 and 1).
-//    float diffuseFactor = max(dot(norm, lightVec), 0.0f);
-
-//    // Apply attenuation to smooth out brightness changes.
-//    diffuseFactor = saturate(pow(diffuseFactor, 0.7f));
-
-//    // Compute diffuse and specular terms only when diffuseFactor > 0.
-//    [flatten]
-//    if (diffuseFactor > 0.0f)
-//    {
-//        float3 v = reflect(-lightVec, norm);
-//        float specFactor = pow(max(dot(v, toEye), 0.0f), mat.Specular.w);
-
-//        diffuse = diffuseFactor * mat.Diffuse * L.Diffuse;
-//        spec = specFactor * mat.Specular * L.Specular;
-//    }
-//}
 
 //---------------------------------------------------------------------------------------
 // Computes the ambient, diffuse, and specular terms in the lighting equation
